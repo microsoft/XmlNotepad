@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ErrorList>
+  <Error>
+    <Severity>Error</Severity>
+    <Description>Illegal surrogate character pair 0xd900, 0xd800 at position 4 in this text node.</Description>
+    <Line>4</Line>
+    <Column>4</Column>
+    <FileName>unicode.xml</FileName>
+  </Error>
+  <Error>
+    <Severity>Error</Severity>
+    <Description>Character value 0 at position 6 in this text node is illegal in XML documents.  See http://www.w3.org/TR/2006/REC-xml-20060816/#NT-Char.</Description>
+    <Line>12</Line>
+    <Column>4</Column>
+    <FileName>unicode.xml</FileName>
+  </Error>
+</ErrorList>

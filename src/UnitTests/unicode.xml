@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ETLDataMappings>
+  <TaskId>0bc3d4a3-e653-41a3-8500-85b8fe581859</TaskId>
+  <SourceSchema>SQL &#xD900;&#xD800;</SourceSchema>
+  <SourceObject>SQL</SourceObject>
+  <SourceObjectType>SQL</SourceObjectType>
+  <SourceColumn>REAINLINE</SourceColumn>
+  <TargetSchema>SEDC</TargetSchema>
+  <TargetObject>STG_GL_220_ACCTMSTR_DATA</TargetObject>
+  <TargetObjectType>Table</TargetObjectType>
+  <TargetColumn>REAINLINE</TargetColumn>
+  <ETLSubstitutionChars>Test [&#0;]</ETLSubstitutionChars>
+</ETLDataMappings>

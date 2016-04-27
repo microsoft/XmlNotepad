@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root id="55">
+  <?pi end?>
+  <Card>
+    <foo>1</foo>
+    <bar>2</bar>
+    <end>3</end>
+  </Card>
+  <Contact>
+    <!--inner comment-->
+    <Name First="Chris" Last="Lovett"><![CDATA[A CDATA block]]></Name>
+  </Contact>
+</Root>

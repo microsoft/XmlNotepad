@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>Menus</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+    <h1><img src="images/xmlicon.png" /> Microsoft XML Notepad - Menus</h1>
+    <div class="content">
+        <p>
+            <a href="Help.htm">Home</a> > <a href="Overview.htm">Overview</a> > <a href="UI.htm">User Interface</a> >
+        </p>
+        <p>
+            Microsoft XML Notepad provides the following menu commands.
+        </p>
+        <dl>
+            <dt>File</dt>
+            <dd>
+                The file menu contains the following commands:
+                <dl>
+                    <dt>New</dt>
+                    <dd>
+                        Start a new XML document.
+                    </dd>
+                    <dt>Open</dt>
+                    <dd>
+                        Open an XML document for editing.
+                    </dd>
+                    <dt>Reload</dt>
+                    <dd>
+                        Discard any edits you've made and reload the file as it exists on disk.
+                    </dd>
+                    <dt>Save</dt>
+                    <dd>
+                        Save any edits you've made to the file disk.
+                    </dd>
+                    <dt>Save As</dt>
+                    <dd>
+                        Save the current document to a different file name on disk.
+                    </dd>
+                    <dt>Export Errors</dt>
+                    <dd>
+                        Save the contents of the Error List in an XML format.
+                    </dd>
+                    <dt>Recent Files</dt>
+                    <dd>
+                        This menu provides quick access to the last 10 XML documents you've edited.
+                    </dd>
+                    <dt>Exit</dt>
+                    <dd>Closes Microsoft XML Notepad.</dd>
+                </dl>
+            </dd>
+            <dt>Edit</dt>
+            <dd>
+                The edit menu contains the following commands:
+                <dl>
+                    <dt>Undo</dt>
+                    <dd>
+                        Undo the previous edit operation.
+                    </dd>
+                    <dt>Redo</dt>
+                    <dd>Reverses the last undo operation.</dd>
+                    <dt>Cut</dt>
+                    <dd>
+                        Copy the selected node to the clipboard (and its children) and remove
+                        that node from the tree. See <a href="Clipboard.htm">Clipboard support</a>.
+                    </dd>
+                    <dt>Copy</dt>
+                    <dd>Copy the selected node to the clipboard (and its children).</dd>
+                    <dt>Paste</dt>
+                    <dd>
+                        Parse the XML in the clipboard and create new nodes in the tree under
+                        the selected node.
+                    </dd>
+                    <dt>Delete</dt>
+                    <dd>Delete the seletced node.</dd>
+                    <dt>Insert</dt>
+                    <dd>
+                        Insert a new node of the same type (element, attribute, processing
+                        instruction, comment, etc) as the currently selected node.&nbsp; This makes it easy
+                        to build a list of nodes that have the same type.
+                    </dd>
+                    <dt>Duplicate</dt>
+                    <dd>
+                        Clone the selected node (and its children) and insert the clone
+                        as the next sibling.
+                    </dd>
+                    <dt>Change To</dt>
+                    <dd>
+                        Changes the selected node to the specified node type.
+                    </dd>
+                    <dt>Goto Definition</dt>
+                    <dd>
+                        Open the selected XInclude or open the XML Schema that defines the selected node
+                        in a new instance of Microsoft XML Notepad.
+                    </dd>
+                    <dt>Expand XIncludes</dt>
+                    <dd>
+                        Expand all XInlcude elements with the contents of the XML documents they point to.
+                    </dd>
+                    <dt>Nudge</dt>
+                    <dd>
+                        Moves the selected node:
+                        <dl>
+                            <dt>Up</dt>
+                            <dd>
+                                Before the previous sibling, or before the parent if there are no previous siblings.
+                            </dd>
+                            <dt>Down</dt>
+                            <dd>
+                                After the next sibling, or after the parent if there is no next sibling.
+                            </dd>
+                            <dt>Left</dt>
+                            <dd>
+                                Before the parent if this is the first child, otherwise after the parent.
+                            </dd>
+                            <dt>Right</dt>
+                            <dd>
+                                so it becomes the last child of the previous sibling.
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt>Find...</dt>
+                    <dd>Brings up the <a href="FindReplace.htm">find dialog</a>.</dd>
+                    <dt>Replace...</dt>
+                    <dd>Brings up the <a href="FindReplace.htm">replace dialog</a>.</dd>
+                    <dt>Incremental Search...</dt>
+                    <dt>Allows you to instantly find what you type.</dt>
+                </dl>
+            </dd>
+            <dt>View</dt>
+            <dd>
+                <dl>
+                    <dt>Expand All</dt>
+                    <dd>
+                        Expand all collapsed nodes in the entire tree. See "Expand" item on the context
+                        menu if you just want to expand the selected node.
+                    </dd>
+                    <dt>Collapse all</dt>
+                    <dd>
+                        Collapse all expanded nodes in the entire tree (except the root node). See "Collapse"
+                        item on the context menu if you just want to collapse the selected node.
+                    </dd>
+                    <dt>Status Bar</dt>
+                    <dd>
+                        Toggle the visiblity of the status bar.
+                    </dd>
+                    <dt>Source</dt>
+                    <dd>
+                        Show the current XML document in text form using "Notepad".
+                    </dd>
+                    <dt>Options...</dt>
+                    <dd>
+                        Display the <a href="Options.htm">Options Dialog.</a>
+                    </dd>
+                    <dt>Schemas...</dt>
+                    <dd>
+                        Display the <a href="Schemas.htm">Schemas Dialog.</a>
+                    </dd>
+                    <dt>Next Error</dt>
+                    <dd>
+                        Navigate to the next error in the list of errors.
+                    </dd>
+                    <dt>Compare XML Files...</dt>
+                    <dd>
+                        Launches XML Diff which compares the currrent document
+                        you are editing with another document on disk and displays the results.
+                    </dd>
+                </dl>
+            </dd>
+            <dt>Insert</dt>
+            <dd>
+                Contains commands for inserting various node types. You can insert before, after
+                or as a child of the currently selected node. Only those insert operations that
+                result in well formed document will be enabled.
+            </dd>
+            <dt>Window</dt>
+            <dd>
+                Provides a "New window" command for launching another instance of Microsoft XML Notepad.
+            </dd>
+            <dt>Help</dt>
+            <dd>
+                Bring up the help contents and index as well as the About Dialog.
+            </dd>
+        </dl>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="updates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="application">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="title" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>The name of the application being updated.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="location" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>The location of the update xml page.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="download" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Location of the download page.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="frequency" type="xs:string" >
+                <xs:annotation>
+                  <xs:documentation>The frequency we need to check for updates to the application, any valid TimeSpan.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element maxOccurs="unbounded" name="version">
+          <xs:annotation>
+            <xs:documentation>This element describes a new version of the application.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded" >
+              <xs:element name="feature" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Description of a new feature added in this version.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="bug" type="xs:string" >
+                <xs:annotation>
+                  <xs:documentation>Description of a bug fixed in this version.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+            <xs:attribute name="number" type="xs:string" use="required">
+              <xs:annotation>
+                <xs:documentation>The version number.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>           
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

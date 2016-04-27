@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="Updates.xslt"?>
+<updates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Updates.xsd">
+  <application>
+    <title>Microsoft XML Notepad</title>
+    <location>http://download.microsoft.com/download/6/e/e/6eef2361-33d4-48a2-b52e-5827c7f2ad68/Updates.xml</location>
+    <download>http://www.microsoft.com/downloads/details.aspx?familyid=72d6aa49-787d-4118-ba5f-4f30fe913628</download>
+    <frequency>20.00:00:00</frequency>
+  </application>
+  <version number="300">
+    <feature>Test Updates Feature</feature>
+  </version>
+  <version number="2.4">
+    <bug>Fixed location of updates.xml page so auto-updater works properly</bug>
+    <bug>Fixed problems in incremental search (CTRL+I) giving up too soon</bug>
+    <bug>Fixed layout to remove margins around the TabControls and prettied up the XSLT output tab</bug>
+    <bug>Fixed Find (CTRL+F), Copy (CTRL+C) and View Source commands in XSLT output window</bug>
+    <bug>Fixed options dialog resize bug</bug>
+    <bug>Fix null reference exception on Window/New Window when window is empty</bug>
+    <bug>Turn off reload loading of previously opened file</bug>
+  </version>
+  <version number="2.3">
+    <feature>Added "change to" menu for changing node types</feature>
+    <feature>Added support for XInclude</feature>
+    <feature>Added DynamicHelp tab and Tooltips based on xsd:annotations</feature>
+    <feature>Added [next|prev] links to XmlDiff output window for navigating changes</feature>
+    <feature>
+      Added support for loading XML documents containing illegal characters, reporting
+      these errors in the error list
+    </feature>
+    <feature>Added "Export Errors" option for saving contents of the error list to a file</feature>
+    <feature>Added "Goto Definition" option for navigating to XIncludes and XSD schemas</feature>
+    <feature>
+      Added keyboard accelerators for inserting a child element (Ctrl+Insert) and
+      a child attribute (Alt+Insert)
+    </feature>
+    <feature>Added simple auto-updater to help user know when a new version is available</feature>
+    <feature>Added navigation combo box for easy entry of http file locations</feature>
+    <feature>Improved unit test coverage to 87%</feature>
+    <bug>Fixed bug in task list when different sort order is in effect</bug>
+    <bug>Fixed bug in scroll bar not recalculating properly</bug>
+    <bug>Fixed focus issues with intellisense window</bug>
+    <bug>Clear undo stack when new file is loaded</bug>
+    <bug>Fixed a few null reference exceptions</bug>
+    <bug>Fixed bug in restoring window size when window is closed in minimized or maximized state</bug>
+    <bug>Fixed xsi:type attribute validation (properly this time!)</bug>
+    <bug>Fixed performance of changing namespace values on a large document</bug>
+    <bug>
+      Made it so that Escape key closes intellisense drop down window without cancelling the edit
+      which allows you to edit a value that is not in the list - which is important for simpleType unions
+    </bug>
+    <bug>Fixed insert of processing instruction named 'xml'</bug>
+    <bug>Fixed schema cache when targetNamespace is changed</bug>
+    <bug>Fix performance and layout of find dialog</bug>
+    <bug>Track edits to xml-stylesheet processing instruction so XSLT output tab stays in sync</bug>
+  </version>
+  <version number="2.2">
+    <bug>Fixed Compare Files...</bug>
+    <bug>Fixed file open and save as filters so the dialogs work properly when you select a different file type</bug>
+  </version>
+  <version number="2.1">
+    <feature>Added keyboard accelerators for find again (F3) and reverse find (SHIFT+F3)</feature>
+    <feature>
+      Added support for loading IXmlBuilder and IXmlEditor implementations
+      from different assemblies using new vs:assembly attribute
+    </feature>
+    <feature>Made source code localizable by moving all error messages and dialog strings to .resx files</feature>
+    <feature>Added a default XSL transform</feature>
+    <feature>New icons, a play on the Vista "Notepad" icons</feature>
+    <bug>Fixed install on Windows Vista machines</bug>
+    <bug>Performance of expand node when validating</bug>
+    <bug>Fixed bug where changed schemas and transforms were not being re-loaded</bug>
+    <bug>Fixed spurious warnings about file being changed on disk</bug>
+    <bug>Fixed handling of very long text nodes</bug>
+    <bug>Fixed round trip of DTD content in &lt;!DOCTYPE&gt; tags</bug>
+    <bug>Fixed validation of elements with xsi:type attributes</bug>
+    <bug>Scroll bar not updating when node expanded/collapsed in some cases</bug>
+    <bug>Tree view needs horizontal scrollbar</bug>
+    <bug>
+      When Microsoft XML Notepad is minimized and file changes on disk, the file reload prompt is
+      confusing -- Microsoft XML Notepad should be restored first
+    </bug>
+    <bug>XSL output window should pick up new xsl-transform based on input document</bug>
+    <bug>Fixed unhandled exception when closing a group of Microsoft XML Notepad windows</bug>
+    <bug>Added registration of "Edit" action for .xml file extension</bug>
+  </version>
+</updates>

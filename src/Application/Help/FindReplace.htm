@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>XML Schema Dialog</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+    <h1><img src="images/xmlicon.png" /> Microsoft XML Notepad - Find/Replace Dialog</h1>
+    <div class="content">
+        <p>
+            <a href="Help.htm">Home</a> > <a href="Overview.htm">Overview</a> > <a href="UI.htm">User Interface</a> > <a href="Menus.htm">Menus</a> >
+        </p>
+        <p>
+            The "Find..." item under the Edit Menu (CTRL+F) brings up the following dialog:
+        </p>
+        <img src="images/Find.jpg" />
+        <br />
+        <br />
+        <p>
+            The "Replace..." item under the Edit Menu (CTRL+H) changes this dialog to show the
+            extra replace fields:&nbsp;
+        </p>
+        <p><img src="images/Replace.jpg" /></p>
+        <p>
+            By default this dialog will allow you to search "Everything" in the current XML
+            document with a given find string.&nbsp; You can limit the search in the following
+            ways:
+        </p>
+        <p>
+            <strong>Match case</strong>:
+            This will only find nodes that contain the exact search
+            string in the same case.&nbsp;
+        </p>
+        <p>
+            <strong>Match whole word</strong>: this will only find nodes that contain the search
+            string as a complete word, i.e., not a substring.
+        </p>
+        <p>
+            <strong>Use Regular Expressions</strong>: this will treat the find string as a regular
+            expression. See 
+            <a href="http://msdn.microsoft.com/en-us/library/az24scfc(v=vs.110).aspx ">.NET regular expressions</a>
+            for help with the regular expression language.
+        </p>
+        <p>
+            <strong>Use XPath</strong>: this option allows you to find nodes using an XPath
+            expression.&nbsp; When you choose this option an extra table appears where you can
+            edit the namespace prefix mappings used in the XPath expression.
+            See <a href="http://msdn.microsoft.com/en-us/library/ms256471(v=vs.110).aspx">XPath Syntax</a>
+            for help with the XPath expression language.
+        </p>
+        <p>
+            <img src="images/FindXPath.jpg" />&nbsp;
+        </p>
+        <p>
+            <strong>Search Filter</strong>: this option allows you to limit the search to just
+            "Names" which means only search node names, or "Text" which means only search node
+            values, or "Comments" which means only search comment nodes.
+        </p>
+        <p>
+            <strong>Direction</strong>: this allows you to search backwards from the current
+            location in the document ("Up") or forwards ("Down").
+        </p>
+        <p>
+            <strong>Find Next</strong>: this button finds the next matching node in the specified
+            direction after the currently selected node and it highlights the matching substring
+            within the node name or value.
+        </p>
+        <p>
+            <strong>Replace</strong>: this button finds the next matching node in the specified
+            direction after the currently selected node and if it finds something it replaces
+            it with the replace text.
+        </p>
+        <p>
+            <strong>Replace All</strong>: this button replaces all matching text with the replace
+            text.
+        </p>
+    </div>
+</body>
+</html>

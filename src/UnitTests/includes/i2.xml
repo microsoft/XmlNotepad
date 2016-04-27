@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- start include -->
+<more x="10" >
+  <test>data</test>
+  <x:include href="i3.xml" xmlns:x="http://www.w3.org/2001/XInclude" >
+    <!-- ignore this comment-->
+  </x:include>
+  <?pi target?>
+</more>
+<!-- end include -->

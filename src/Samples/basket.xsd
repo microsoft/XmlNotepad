@@ -1,0 +1,807 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense">
+  <xs:annotation>
+    <xs:documentation>
+      This is a sample schema that demonstrates the various types of intellisense supported by <b>XML Notepad 2007</b>.
+    </xs:documentation>
+  </xs:annotation>
+  <xs:element name="Basket">
+    <xs:annotation>
+      <xs:documentation>Baskets contain <b>all kinds</b> of stuff...</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="2">
+        <xs:element name="color" type="color" />
+        <xs:element name="date" type="xs:date">
+          <xs:annotation>
+            <xs:documentation>Select the date the basket was created.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="dateTime" type="xs:dateTime">
+          <xs:annotation>
+            <xs:documentation>Notice the dateTime picker is customized for different types of XSD dates.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:choice maxOccurs="3">
+          <xs:element name="fruit" type="fruits" />
+          <xs:element name="vegetable" type="veges" />
+          <xs:element name="berry" type="berries" />
+        </xs:choice>
+        <xs:element name="weight" type="xs:decimal">
+          <xs:annotation>
+            <xs:documentation>Enter the weight of the basket.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="language" type="xs:language">
+        <xs:annotation>
+          <xs:documentation>What language is the contents of the basket written in?</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="sold" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Is the basket sold?</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="time" type="xs:time">
+        <xs:annotation>
+          <xs:documentation>When was the basket sold?</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="fruits">
+    <xs:annotation>
+      <xs:documentation>Fruit is good for you.  Have some today!</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="apricot" />
+      <xs:enumeration value="banana" />
+      <xs:enumeration value="grape" />
+      <xs:enumeration value="nectrine" />
+      <xs:enumeration value="peach" />
+      <xs:enumeration value="pear" />
+      <xs:enumeration value="pineapple" />
+      <xs:enumeration value="plum" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="veges">
+    <xs:annotation>
+      <xs:documentation>Vegetables make for a balanced diet.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="carrot" />
+      <xs:enumeration value="cantelope" />
+      <xs:enumeration value="corn" />
+      <xs:enumeration value="cucumber" />
+      <xs:enumeration value="egg plant" />
+      <xs:enumeration value="lettuce" />
+      <xs:enumeration value="potato" />
+      <xs:enumeration value="pumpkin" />
+      <xs:enumeration value="squash" />
+      <xs:enumeration value="tomato" />
+      <xs:enumeration value="yam" />
+      <xs:enumeration value="zucchini" />
+      <xs:enumeration value="watermelon" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="berries">
+    <xs:annotation>
+      <xs:documentation>Berries are yummy.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="blackberry" />
+      <xs:enumeration value="blueberry" />
+      <xs:enumeration value="cranberry" />
+      <xs:enumeration value="huckleberry" />
+      <xs:enumeration value="strawberry" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="color" vs:builder="XmlNotepad.ColorBuilder">
+    <xs:annotation>
+      <xs:documentation>Pick an HTML color from this drop down or click the color picker button to define a custom color.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AliceBlue">
+        <xs:annotation>
+          <xs:documentation>#F0F8FF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="AntiqueWhite">
+        <xs:annotation>
+          <xs:documentation>#FAEBD7</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Aqua">
+        <xs:annotation>
+          <xs:documentation>#00FFFF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Aquamarine">
+        <xs:annotation>
+          <xs:documentation>#7FFFD4</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Azure">
+        <xs:annotation>
+          <xs:documentation>#F0FFFF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Beige">
+        <xs:annotation>
+          <xs:documentation>#F5F5DC</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Bisque">
+        <xs:annotation>
+          <xs:documentation>#FFE4C4</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Black">
+        <xs:annotation>
+          <xs:documentation>#000000</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BlanchedAlmond">
+        <xs:annotation>
+          <xs:documentation>#FFEBCD</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Blue">
+        <xs:annotation>
+          <xs:documentation>#0000FF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BlueViolet">
+        <xs:annotation>
+          <xs:documentation>#8A2BE2</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Brown">
+        <xs:annotation>
+          <xs:documentation>#A52A2A</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BurlyWood">
+        <xs:annotation>
+          <xs:documentation>#DEB887</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CadetBlue">
+        <xs:annotation>
+          <xs:documentation>#5F9EA0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Chartreuse">
+        <xs:annotation>
+          <xs:documentation>#7FFF00</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Chocolate">
+        <xs:annotation>
+          <xs:documentation>#D2691E</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Coral">
+        <xs:annotation>
+          <xs:documentation>#FF7F50</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CornflowerBlue">
+        <xs:annotation>
+          <xs:documentation>#6495ED</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Cornsilk">
+        <xs:annotation>
+          <xs:documentation>#FFF8DC</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Crimson">
+        <xs:annotation>
+          <xs:documentation>#DC143C</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Cyan">
+        <xs:annotation>
+          <xs:documentation>#00FFFF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkBlue">
+        <xs:annotation>
+          <xs:documentation>#00008B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkCyan">
+        <xs:annotation>
+          <xs:documentation>#008B8B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkGoldenrod">
+        <xs:annotation>
+          <xs:documentation>#B8860B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkGray">
+        <xs:annotation>
+          <xs:documentation>#A9A9A9</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkGreen">
+        <xs:annotation>
+          <xs:documentation>#006400</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkKhaki">
+        <xs:annotation>
+          <xs:documentation>#BDB76B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkMagenta">
+        <xs:annotation>
+          <xs:documentation>#8B008B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkOliveGreen">
+        <xs:annotation>
+          <xs:documentation>#556B2F</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkOrange">
+        <xs:annotation>
+          <xs:documentation>#FF8C00</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkOrchid">
+        <xs:annotation>
+          <xs:documentation>#9932CC</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkRed">
+        <xs:annotation>
+          <xs:documentation>#8B0000</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkSalmon">
+        <xs:annotation>
+          <xs:documentation>#E9967A</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkSeaGreen">
+        <xs:annotation>
+          <xs:documentation>#8FBC8B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkSlateBlue">
+        <xs:annotation>
+          <xs:documentation>#483D8B</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkSlateGray">
+        <xs:annotation>
+          <xs:documentation>#2F4F4F</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkTurquoise">
+        <xs:annotation>
+          <xs:documentation>#00CED1</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DarkViolet">
+        <xs:annotation>
+          <xs:documentation>#9400D3</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DeepPink">
+        <xs:annotation>
+          <xs:documentation>#FF1493</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DeepSkyBlue">
+        <xs:annotation>
+          <xs:documentation>#00BFFF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DimGray">
+        <xs:annotation>
+          <xs:documentation>#696969</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DodgerBlue">
+        <xs:annotation>
+          <xs:documentation>#1E90FF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Firebrick">
+        <xs:annotation>
+          <xs:documentation>#B22222</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="FloralWhite">
+        <xs:annotation>
+          <xs:documentation>#FFFAF0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ForestGreen">
+        <xs:annotation>
+          <xs:documentation>#228B22</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Fuchsia">
+        <xs:annotation>
+          <xs:documentation>#FF00FF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Gainsboro">
+        <xs:annotation>
+          <xs:documentation>#DCDCDC</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="GhostWhite">
+        <xs:annotation>
+          <xs:documentation>#F8F8FF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Gold">
+        <xs:annotation>
+          <xs:documentation>#FFD700</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Goldenrod">
+        <xs:annotation>
+          <xs:documentation>#DAA520</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Gray">
+        <xs:annotation>
+          <xs:documentation>#808080</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Green">
+        <xs:annotation>
+          <xs:documentation>#008000</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="GreenYellow">
+        <xs:annotation>
+          <xs:documentation>#ADFF2F</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Honeydew">
+        <xs:annotation>
+          <xs:documentation>#F0FFF0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="HotPink">
+        <xs:annotation>
+          <xs:documentation>#FF69B4</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="IndianRed">
+        <xs:annotation>
+          <xs:documentation>#CD5C5C</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Indigo">
+        <xs:annotation>
+          <xs:documentation>#4B0082</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Ivory">
+        <xs:annotation>
+          <xs:documentation>#FFFFF0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Khaki">
+        <xs:annotation>
+          <xs:documentation>#F0E68C</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Lavender">
+        <xs:annotation>
+          <xs:documentation>#E6E6FA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LavenderBlush">
+        <xs:annotation>
+          <xs:documentation>#FFF0F5</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LawnGreen">
+        <xs:annotation>
+          <xs:documentation>#7CFC00</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LemonChiffon">
+        <xs:annotation>
+          <xs:documentation>#FFFACD</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightBlue">
+        <xs:annotation>
+          <xs:documentation>#ADD8E6</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightCoral">
+        <xs:annotation>
+          <xs:documentation>#F08080</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightCyan">
+        <xs:annotation>
+          <xs:documentation>#E0FFFF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightGoldenrodYellow">
+        <xs:annotation>
+          <xs:documentation>#FAFAD2</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightGreen">
+        <xs:annotation>
+          <xs:documentation>#90EE90</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightGray">
+        <xs:annotation>
+          <xs:documentation>#D3D3D3</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightPink">
+        <xs:annotation>
+          <xs:documentation>#FFB6C1</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightSalmon">
+        <xs:annotation>
+          <xs:documentation>#FFA07A</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightSeaGreen">
+        <xs:annotation>
+          <xs:documentation>#20B2AA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightSkyBlue">
+        <xs:annotation>
+          <xs:documentation>#87CEFA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightSlateGray">
+        <xs:annotation>
+          <xs:documentation>#778899</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightSteelBlue">
+        <xs:annotation>
+          <xs:documentation>#B0C4DE</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LightYellow">
+        <xs:annotation>
+          <xs:documentation>#FFFFE0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Lime">
+        <xs:annotation>
+          <xs:documentation>#00FF00</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="LimeGreen">
+        <xs:annotation>
+          <xs:documentation>#32CD32</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Linen">
+        <xs:annotation>
+          <xs:documentation>#FAF0E6</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Magenta">
+        <xs:annotation>
+          <xs:documentation>#FF00FF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Maroon">
+        <xs:annotation>
+          <xs:documentation>#800000</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumAquamarine">
+        <xs:annotation>
+          <xs:documentation>#66CDAA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumBlue">
+        <xs:annotation>
+          <xs:documentation>#0000CD</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumOrchid">
+        <xs:annotation>
+          <xs:documentation>#BA55D3</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumPurple">
+        <xs:annotation>
+          <xs:documentation>#9370DB</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumSeaGreen">
+        <xs:annotation>
+          <xs:documentation>#3CB371</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumSlateBlue">
+        <xs:annotation>
+          <xs:documentation>#7B68EE</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumSpringGreen">
+        <xs:annotation>
+          <xs:documentation>#00FA9A</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumTurquoise">
+        <xs:annotation>
+          <xs:documentation>#48D1CC</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MediumVioletRed">
+        <xs:annotation>
+          <xs:documentation>#C71585</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MidnightBlue">
+        <xs:annotation>
+          <xs:documentation>#191970</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MintCream">
+        <xs:annotation>
+          <xs:documentation>#F5FFFA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MistyRose">
+        <xs:annotation>
+          <xs:documentation>#FFE4E1</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Moccasin">
+        <xs:annotation>
+          <xs:documentation>#FFE4B5</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="NavajoWhite">
+        <xs:annotation>
+          <xs:documentation>#FFDEAD</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Navy">
+        <xs:annotation>
+          <xs:documentation>#000080</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="OldLace">
+        <xs:annotation>
+          <xs:documentation>#FDF5E6</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Olive">
+        <xs:annotation>
+          <xs:documentation>#808000</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="OliveDrab">
+        <xs:annotation>
+          <xs:documentation>#6B8E23</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Orange">
+        <xs:annotation>
+          <xs:documentation>#FFA500</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="OrangeRed">
+        <xs:annotation>
+          <xs:documentation>#FF4500</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Orchid">
+        <xs:annotation>
+          <xs:documentation>#DA70D6</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PaleGoldenrod">
+        <xs:annotation>
+          <xs:documentation>#EEE8AA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PaleGreen">
+        <xs:annotation>
+          <xs:documentation>#98FB98</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PaleTurquoise">
+        <xs:annotation>
+          <xs:documentation>#AFEEEE</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PaleVioletRed">
+        <xs:annotation>
+          <xs:documentation>#DB7093</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PapayaWhip">
+        <xs:annotation>
+          <xs:documentation>#FFEFD5</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PeachPuff">
+        <xs:annotation>
+          <xs:documentation>#FFDAB9</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Peru">
+        <xs:annotation>
+          <xs:documentation>#CD853F</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pink">
+        <xs:annotation>
+          <xs:documentation>#FFC0CB</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Plum">
+        <xs:annotation>
+          <xs:documentation>#DDA0DD</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PowderBlue">
+        <xs:annotation>
+          <xs:documentation>#B0E0E6</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Purple">
+        <xs:annotation>
+          <xs:documentation>#800080</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Red">
+        <xs:annotation>
+          <xs:documentation>#FF0000</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="RosyBrown">
+        <xs:annotation>
+          <xs:documentation>#BC8F8F</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="RoyalBlue">
+        <xs:annotation>
+          <xs:documentation>#4169E1</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SaddleBrown">
+        <xs:annotation>
+          <xs:documentation>#8B4513</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Salmon">
+        <xs:annotation>
+          <xs:documentation>#FA8072</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SandyBrown">
+        <xs:annotation>
+          <xs:documentation>#F4A460</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SeaGreen">
+        <xs:annotation>
+          <xs:documentation>#2E8B57</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SeaShell">
+        <xs:annotation>
+          <xs:documentation>#FFF5EE</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Sienna">
+        <xs:annotation>
+          <xs:documentation>#A0522D</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Silver">
+        <xs:annotation>
+          <xs:documentation>#C0C0C0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SkyBlue">
+        <xs:annotation>
+          <xs:documentation>#87CEEB</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SlateBlue">
+        <xs:annotation>
+          <xs:documentation>#6A5ACD</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SlateGray">
+        <xs:annotation>
+          <xs:documentation>#708090</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Snow">
+        <xs:annotation>
+          <xs:documentation>#FFFAFA</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SpringGreen">
+        <xs:annotation>
+          <xs:documentation>#00FF7F</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="SteelBlue">
+        <xs:annotation>
+          <xs:documentation>#4682B4</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Tan">
+        <xs:annotation>
+          <xs:documentation>#D2B48C</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Teal">
+        <xs:annotation>
+          <xs:documentation>#008080</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Thistle">
+        <xs:annotation>
+          <xs:documentation>#D8BFD8</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Tomato">
+        <xs:annotation>
+          <xs:documentation>#FF6347</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Turquoise">
+        <xs:annotation>
+          <xs:documentation>#40E0D0</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Violet">
+        <xs:annotation>
+          <xs:documentation>#EE82EE</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Wheat">
+        <xs:annotation>
+          <xs:documentation>#F5DEB3</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="White">
+        <xs:annotation>
+          <xs:documentation>#FFFFFF</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="WhiteSmoke">
+        <xs:annotation>
+          <xs:documentation>#F5F5F5</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Yellow">
+        <xs:annotation>
+          <xs:documentation>#FFFF00</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="YellowGreen">
+        <xs:annotation>
+          <xs:documentation>#9ACD32</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

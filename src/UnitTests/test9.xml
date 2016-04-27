@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- This tests all element types -->
+<?pi at root level?>
+<Root id="55" name="foo">
+  <!--inner comment--><![CDATA[A CDATA block]]><item>Some text</item><?pi end?><FM><P>ASCII text placed in the public domain by Moby Lexical Tools, 1992.</P><P>SGML markup by Jon Bosak, 1992-1994.</P><P>XML version by Jon Bosak, 1996-1999.</P><P>
+    The XML markup in this version is Copyright © 1999 Jon Bosak.
+    This work may freely be distributed on condition that it not be
+    modified or altered in any way.
+    </P></FM><Employee xmlns="http://www.hr.org" id="46613" title="Architect"><Name First="Chris" Last="Lovett" /><Street>One Microsoft Way</Street><City>Redmond</City><Zip>98052</Zip><Country><Name>U.S.A.</Name></Country><Office /></Employee><!--last comment--></Root>

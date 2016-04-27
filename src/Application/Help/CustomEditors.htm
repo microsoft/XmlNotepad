@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>Custom Editors</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+    <h1><img src="images/xmlicon.png" /> Microsoft XML Notepad - Custom Editors</h1>
+    <div class="content">
+        <p>
+            <a href="Help.htm">Home</a> > <a href="Overview.htm">Overview</a> > <a href="UI.htm">User Interface</a> > <a href="Menus.htm">Menus</a> >
+        </p>
+
+        <p>
+            If an XML schema is provided for <a href="Validation.htm">validation</a> then that schema
+            can also define custom editors on specific
+            <span class="delim">&lt;</span><span class="element">xsd:simpleType</span><span class="delim">&gt;</span>
+            tags.
+        </p>
+        <p>
+            A default custom editor is provided for the simpleTypes
+            <span class="element">xsd:date</span>
+            <span class="element">xsd:dateTime</span>	and
+            <span class="element">xsd:time</span>.
+            Any element or attribute of this type will be edited using the WinForms DateTimePicker, configured
+            for the current system locale, for example:
+        </p>
+        <img src="images/dateTime.JPG" align="left" />
+        <p>&nbsp;</p>
+        <p>
+            Then when the edit is committed, the correct ISO date/time format is extracted from the
+            WinForms DateTimePicker and stored in the XML document.  In the above example you will see the
+            valid value "2005-12-27".
+        </p>
+        <p>
+            You can provide your own editors by implementing IXmlEditor and specifying your full class name
+            via the
+            <span class="attribute">vs:editor</span>
+            attribute in your schema where the "vs" prefix is bound to the following namespace:
+            <span class="attribute">xmlns:vs</span><span class="delim">="http://schemas.microsoft.com/Visual-Studio-Intellisense"</span>.
+
+        </p>
+        <br clear="all" /><br />
+        <h2>Custom Builders</h2>
+        <p>
+            Custom Builders provide a button that appears at the top of the intellisense
+            list, when the user clicks on that button it invokes the builder to edit the value, which usually
+            pops up a modal dialog.
+        </p>
+        <p>
+            A custom builder for editing file names is provided and is automatically associated with the
+            <span class="element">xsd:anyURI</span> data type.  You can associate this builder manually
+            using the <span class="attribute">vs:builder</span><span class="delim">="XmlNotepad.UriBuilder"&gt;</span>
+            attribute.  When you edit an element of this type a button will appear titled "Browse..." at the top
+            of the intellisense list and when you click on this button the WinForms OpenFileDialog will appear.
+        </p>
+        <p>
+            A custom builder for editing colors is provided.  But since there is no standard color type
+            defined in XSD, you must specify the vs:builder attribute as shown in the following example:
+            <span class="delim">&lt;</span><span class="element">xsd:simpleType</span><span class="delim">&nbsp;</span>
+            <span class="attribute">name</span><span class="delim">="color"</span>
+            <span class="attribute">vs:builder</span><span class="delim">="XmlNotepad.ColorBuilder"&gt;</span>
+            Where the "vs" prefix is bound to the following namespace:
+            <span class="attribute">xmlns:vs</span><span class="delim">="http://schemas.microsoft.com/Visual-Studio-Intellisense"</span>.
+        </p>
+        <p>
+            If you build your own custom editors you will also need to specify the
+            <span class="attribute">vs:assembly</span><span class="delim">="FontBuilder, Version=1.0.0.0, Culture=neutral, PublicKeyToken=007b972e7cff2ded, processorArchitecture=MSIL"</span>
+            attribute to point to your assembly.  Microsoft XML Notepad will then load your assembly so it can find the
+            specified types.
+        </p>
+        <img src="images/Colors.jpg" align="left" />
+        <p>&nbsp;</p>
+        <p>
+            When you edit an element of this type a button will appear titled "Color Picker" at the top
+            of the intellisense list and when you click on this button the WinForms ColorDialog will appear.  The resulting
+            color will then be serialized back to the XML string using the ColorConverter.
+        </p>
+        <p>
+            You can implement your own builders by implementing IXmlBuilder and specifying your full class name
+            in the vs:builder attribute.
+        </p>
+    </div>
+</body>
+</html>

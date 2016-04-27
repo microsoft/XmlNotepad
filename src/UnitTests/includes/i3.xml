@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- start include -->
+<include id="3">
+  <x:include href="nonexist.xml" xmlns:x="http://www.w3.org/2001/XInclude" >
+    <x:fallback>
+      <!-- This is the fall back stuff -->
+      <data>
+        <item name="f3">
+          and so on
+        </item>
+      </data>
+    </x:fallback>
+  </x:include>
+</include>
+<!-- end include -->

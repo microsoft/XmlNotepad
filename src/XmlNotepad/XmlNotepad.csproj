@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E401BDD0-8862-4818-98BD-83E457607E16}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Microsoft.XmlNotepad</AssemblyName>
+    <AssemblyOriginatorKeyFile>$(MYKEYFILE)</AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XmlNotepad</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <TargetZone>LocalIntranet</TargetZone>
+    <GenerateManifests>false</GenerateManifests>
+    <SignAssembly>true</SignAssembly>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG;WHIDBEY</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRules>-Microsoft.Design#CA1020;-Microsoft.Design#CA1021;-Microsoft.Design#CA1011;-Microsoft.Design#CA1009;-Microsoft.Design#CA1031;-Microsoft.Design#CA1033;-Microsoft.Design#CA1059;-Microsoft.Design#CA1060;-Microsoft.Design#CA1054;-Microsoft.Design#CA1056;-Microsoft.Design#CA1055;-Microsoft.Design#CA1024;-Microsoft.Design#CA1062;-Microsoft.Globalization#CA1301;-Microsoft.Globalization#CA1302;-Microsoft.Globalization#CA1303;-Microsoft.Globalization#CA1306;-Microsoft.Globalization#CA1304;-Microsoft.Globalization#CA1305;-Microsoft.Globalization#CA1300;-Microsoft.Maintainability#CA1500;-Microsoft.Naming#CA1713;-Microsoft.Performance#CA1811;-Microsoft.Performance#CA1812;-Microsoft.Performance#CA1800;-Microsoft.Performance#CA1820;-Microsoft.Reliability#CA2000;-Microsoft.Security#CA2122;-Microsoft.Usage#CA2227;-Microsoft.Usage#CA2201;-Microsoft.Usage#CA2234;-Microsoft.Usage#CA1801</CodeAnalysisRules>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;WHIDBEY</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Version\Version.cs">
+      <Link>Version.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builders.cs" />
+    <Compile Include="Commands.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomLoader.cs" />
+    <Compile Include="EditableView.cs" />
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSchemas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSchemas.Designer.cs">
+      <DependentUpon>FormSchemas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSearch.Designer.cs">
+      <DependentUpon>FormSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HLSColor.cs" />
+    <Compile Include="IntellisenseProvider.cs" />
+    <Compile Include="IntelliTip.cs" />
+    <Compile Include="localizableattributes.cs" />
+    <Compile Include="NoBorderTabControl.cs" />
+    <Compile Include="proxy.cs" />
+    <Compile Include="RecentFilesMenu.cs" />
+    <Compile Include="FindTarget.cs" />
+    <Compile Include="SR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TabNavigator.cs" />
+    <Compile Include="TreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NodeTextView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PerfTimer.cs" />
+    <Compile Include="Checker.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resizer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SchemaCache.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="TaskList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TaskList.Designer.cs">
+      <DependentUpon>TaskList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditorOverlay.cs" />
+    <Compile Include="UndoManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Updater.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="WebBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebBrowserForm.designer.cs">
+      <DependentUpon>WebBrowserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XInclude.cs" />
+    <Compile Include="XmlCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlIntellisenseProvider.cs" />
+    <Compile Include="XmlTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreeViewFindTarget.cs">
+    </Compile>
+    <Compile Include="XPathGenerator.cs" />
+    <Compile Include="XsltViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XsltViewer.Designer.cs">
+      <DependentUpon>XsltViewer.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormOptions.resx">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSchemas.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormSchemas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSearch.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NodeTextView.resx">
+      <DependentUpon>NodeTextView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resizer.resx">
+      <DependentUpon>Resizer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TaskList.resx">
+      <DependentUpon>TaskList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebBrowserForm.resx">
+      <DependentUpon>WebBrowserForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeView.resx">
+      <DependentUpon>XmlTreeView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\errorlist.bmp" />
+    <EmbeddedResource Include="Resources\isearch.cur" />
+    <EmbeddedResource Include="XsltViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>XsltViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DefaultSS.xslt" />
+    <EmbeddedResource Include="DynamicHelp.xslt" />
+    <Content Include="placeholder.xslt" />
+    <Content Include="Resources\BlueBall.gif" />
+    <Content Include="Resources\cdata.ico" />
+    <Content Include="Resources\Copy.bmp" />
+    <Content Include="Resources\Cut.bmp" />
+    <Content Include="Resources\Delete.bmp" />
+    <Content Include="Resources\Element.ICO" />
+    <Content Include="Resources\goleft.bmp" />
+    <Content Include="Resources\goright.bmp" />
+    <Content Include="Resources\GreenBall.gif" />
+    <Content Include="Resources\new.bmp" />
+    <Content Include="Resources\NudgeDown.bmp" />
+    <Content Include="Resources\NudgeLeft.bmp" />
+    <Content Include="Resources\NudgeRight.bmp" />
+    <Content Include="Resources\NudgeUp.bmp" />
+    <Content Include="Resources\open.bmp" />
+    <Content Include="Resources\Open.ico" />
+    <Content Include="Resources\parentfolder.bmp" />
+    <Content Include="Resources\Paste.bmp" />
+    <Content Include="Resources\programicon.png" />
+    <Content Include="Resources\purple-bullet.gif" />
+    <Content Include="Resources\PurpleBall.gif" />
+    <Content Include="Resources\RedBall.gif" />
+    <Content Include="Resources\Redo.bmp" />
+    <Content Include="Resources\save.bmp" />
+    <Content Include="Resources\taskerror.bmp" />
+    <Content Include="Resources\taskinfo.bmp" />
+    <Content Include="Resources\tasknone.bmp" />
+    <Content Include="Resources\taskwarning.bmp" />
+    <Content Include="Resources\Text.ICO" />
+    <BaseApplicationManifest Include="Properties\app.manifest" />
+    <Content Include="Resources\Undo.bmp" />
+    <Content Include="Resources\xmlnote.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XmlDiffView\XmlDiffView8.csproj">
+      <Project>{694d8b35-e80f-4daf-b454-6bb992630eca}</Project>
+      <Name>XmlDiffView8</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XmlDiff\XmlDiffPatch8.csproj">
+      <Project>{8ba90da5-e8eb-4dec-9d41-951d012b90ce}</Project>
+      <Name>XmlDiffPatch8</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

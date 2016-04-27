@@ -1,0 +1,48 @@
+
+h1, h2, h3, h4, h5 {
+    color: navy;
+}
+
+h1 {
+    background: Navy;
+    color: white;
+    padding: 5px;
+}
+
+body, td {
+    font-family: Verdana;
+}
+
+body {
+    padding: 0px;
+    margin: 0px;
+}
+
+dt {
+    font-weight: bold;
+}
+
+.delim {
+    color: Blue;
+    font-family: Courier New;
+}
+
+.element {
+    color: maroon;
+    font-family: Courier New;
+}
+
+.attribute {
+    color: red;
+    font-family: Courier New;
+}
+
+.value {
+    color: blue;
+    font-family: Courier New;
+}
+
+.content {
+    margin-left: 50px;
+    margin-top: 10px;
+}

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="defaultss.xslt"?>
+<test>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="i2.xml" />
+  <last />
+</test>

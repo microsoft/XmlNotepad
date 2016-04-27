@@ -1,0 +1,12 @@
+<Basket xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="test2.xsd" language="en-AU" sold="true" time="23:18:38">
+  <color>Thistle</color>
+  <date>2005-12-25</date>
+  <dateTime>2006-11-11T07:30:00</dateTime>
+  <photo>test1.xml</photo>
+  <fruit>banana</fruit>
+  <font>Arial, 8.25pt</font>
+  <vegetable>cucumber</vegetable>
+  <berry>huckleberry</berry>
+  <weight>1.234</weight>
+  <?pi ?>
+</Basket>

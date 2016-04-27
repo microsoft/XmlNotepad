@@ -1,0 +1,18 @@
+<Employees xmlns="http://Employees" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://Employees emp.xsd">
+  <Employee id="46613" title="Architect">
+    <!--This is a comment-->
+    <Name>
+      <First>Chris</First>
+      <Middle>J.</Middle>
+      <Last>Lovett</Last>
+    </Name>
+    <Street>One Microsoft Way</Street>
+    <City>Redmond</City>
+    <Zip>98052</Zip>
+    <Country>
+      <Name>U.S.A.</Name>
+    </Country>
+    <Office>35/1682</Office>
+    <Photo>Photo.jpg</Photo>
+  </Employee>
+</Employees>

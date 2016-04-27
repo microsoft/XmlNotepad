@@ -1,0 +1,19 @@
+<Employees xmlns="http://Employees">
+  <Employee id="12615" title="Architect">
+    <!--This is a comment-->
+    <Name>
+      <First>Nancy</First>
+      <Middle>J.</Middle>
+      <Last>Davolio</Last>
+    </Name>
+    <Street>507 - 20th Ave. E. Apt. 2A</Street>
+    <City>Seattle</City>
+    <Zip>98122</Zip>
+    <Country>
+      <Name>U.S.A.</Name>
+    </Country>
+    <Office>5/7682</Office>
+    <Phone>(206) 555-9857</Phone>
+    <Photo>Photo.jpg</Photo>
+  </Employee>
+</Employees>
