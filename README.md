@@ -1,1 +1,1 @@
-See [wiki](https://github.com/clovett/xmlnotepad/wiki)
+See [wiki](https://github.com/Microsoft/XmlNotepad/wiki)
