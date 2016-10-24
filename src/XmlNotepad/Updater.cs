@@ -33,20 +33,14 @@ namespace XmlNotepad {
             s["UpdateLocation"] = "";
             s["UpdateEnabled"] = enabled;
             s.Changed += new SettingsEventHandler(OnSettingChanged);
-            StartTimer(5000); // give time for process to start & load
+            StartTimer();
         }
 
-        void StartTimer() {
-            if (this.updateFrequency != TimeSpan.MaxValue) {
-                StartTimer((int)this.updateFrequency.TotalMilliseconds);
-            }
-        }
-
-        void StartTimer(int interval) {
+        void StartTimer() { 
             StopTimer();
             if (this.enabled && !this.disposed) {
                 timer = new System.Windows.Forms.Timer();
-                timer.Interval = interval;
+                timer.Interval = 5000;
                 timer.Tick += new EventHandler(OnTimerTick);
                 timer.Start();
             }
@@ -100,7 +94,7 @@ namespace XmlNotepad {
             if (f != ts) {
                 settings["UpdateFrequency"] = ts;
             }
-            StartTimer((int)ts.TotalMilliseconds);
+            StartTimer();
         }
 
         void SetUpdateLocation(string location) {
@@ -121,7 +115,7 @@ namespace XmlNotepad {
                 // then this user changed the location, so we need to ping the new
                 // location right away.
                 this.lastCheck = DateTime.MinValue;
-                StartTimer(1000);
+                StartTimer();
             }
         }
         
