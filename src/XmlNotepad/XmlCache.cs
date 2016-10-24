@@ -206,6 +206,32 @@ namespace XmlNotepad
             FireModelChanged(ModelChangeType.Reloaded, this.doc);
         }
 
+        public void Load(XmlReader reader, string fileName)
+        {
+            this.Clear();
+            loader = new DomLoader(this.site);
+            StopFileWatch();
+
+            Uri uri = new Uri(fileName, UriKind.RelativeOrAbsolute);
+            if (!uri.IsAbsoluteUri)
+            {
+                Uri resolved = new Uri(new Uri(Directory.GetCurrentDirectory() + "\\"), uri);
+                fileName = resolved.LocalPath;
+                uri = resolved;
+            }
+
+            this.filename = fileName;
+            this.lastModified = this.LastModTime;
+            this.dirty = false;
+            StartFileWatch();
+
+            this.Document = loader.Load(reader);
+            this.xsltFilename = this.loader.XsltFileName;
+
+            // calling this event will cause the XmlTreeView to populate
+            FireModelChanged(ModelChangeType.Reloaded, this.doc);
+        }
+
         internal XmlReaderSettings GetReaderSettings() {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.ProhibitDtd = false;

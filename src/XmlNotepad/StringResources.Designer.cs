@@ -850,6 +850,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No byte order mark on save.
+        /// </summary>
+        internal static string NoByteOrderMark {
+            get {
+                return ResourceManager.GetString("NoByteOrderMark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not write any byte order mark at the beginning of the file for UTF-8 (0xef 0xbb 0xbf) or UTF-16 (0xff ffe).
+        /// </summary>
+        internal static string NoByteOrderMarkDescription {
+            get {
+                return ResourceManager.GetString("NoByteOrderMarkDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot edit name of node of type &apos;{0}&apos;.
         /// </summary>
         internal static string NodeNameNotEditable {
@@ -909,6 +927,15 @@ namespace XmlNotepad {
         internal static string NudgeErrorCaption {
             get {
                 return ResourceManager.GetString("NudgeErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|All files (*.*)|*.*.
+        /// </summary>
+        internal static string OpenFileFilter {
+            get {
+                return ResourceManager.GetString("OpenFileFilter", resourceCulture);
             }
         }
         

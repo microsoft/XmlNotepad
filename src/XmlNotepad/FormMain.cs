@@ -16,6 +16,7 @@ using MyContextMenu = System.Windows.Forms.ContextMenu;
 using TopLevelMenuItemBaseType = System.Windows.Forms.MenuItem;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
+using Microsoft.Xml;
 
 namespace XmlNotepad {
     /// <summary>
@@ -2155,7 +2156,7 @@ namespace XmlNotepad {
                     od.FileName = model.FileName;
                 }
             }
-            string filter = SR.SaveAsFilter;
+            string filter = SR.OpenFileFilter;
             od.Filter = filter;
             string[] parts = filter.Split('|');
             int index = -1;
@@ -2178,13 +2179,53 @@ namespace XmlNotepad {
         public virtual void Open(string filename) {
             try {
                 // Make sure you've called SaveIfDirty before calling this method.
-                InternalOpen(filename);             
+                string ext = System.IO.Path.GetExtension(filename).ToLowerInvariant();
+                if (ext == ".csv")
+                {
+                    ImportCsv(filename);
+                }
+                else
+                {
+                    InternalOpen(filename);
+                }
             } catch (Exception e){
                 if (MessageBox.Show(this,
                     string.Format(SR.LoadErrorPrompt, filename, e.Message),
                     SR.LoadErrorCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes) {
                     OpenNotepad(filename);
                 }
+            }
+        }
+
+        private void ImportCsv(string filename)
+        {
+            FormCsvImport importForm = new XmlNotepad.FormCsvImport();
+            importForm.FileName = filename;
+            if (importForm.ShowDialog() == DialogResult.OK)
+            {
+                // then import it for real...
+                using (StreamReader reader = new StreamReader(filename))
+                {
+                    string xmlFile = Path.Combine(Path.GetDirectoryName(filename),
+                        Path.GetFileNameWithoutExtension(filename) + ".xml");
+
+                    XmlCsvReader csv = new XmlCsvReader(reader, new Uri(filename), new NameTable());
+                    csv.Delimiter = importForm.Deliminter;
+                    csv.FirstRowHasColumnNames = importForm.FirstRowIsHeader;
+
+                    includesExpanded = false;
+                    DateTime start = DateTime.Now;
+                    this.model.Load(csv, xmlFile);
+                    DateTime finish = DateTime.Now;
+                    TimeSpan diff = finish - start;
+                    string s = diff.ToString();
+                    this.settings["FileName"] = this.model.Location;
+                    this.UpdateCaption();
+                    ShowStatus(string.Format(SR.LoadedTimeStatus, s));
+                    EnableFileMenu();
+                    this.recentFiles.AddRecentFile(this.model.Location);
+                    SelectTreeView();
+                }   
             }
         }
 

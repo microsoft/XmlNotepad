@@ -105,6 +105,12 @@
     </Compile>
     <Compile Include="DomLoader.cs" />
     <Compile Include="EditableView.cs" />
+    <Compile Include="FormCsvImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCsvImport.Designer.cs">
+      <DependentUpon>FormCsvImport.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,7 +140,7 @@
     <Compile Include="proxy.cs" />
     <Compile Include="RecentFilesMenu.cs" />
     <Compile Include="FindTarget.cs" />
-    <Compile Include="SR.Designer.cs">
+    <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SR.resx</DependentUpon>
@@ -180,6 +186,7 @@
     <Compile Include="XmlCache.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="XmlCsvReader.cs" />
     <Compile Include="XmlIntellisenseProvider.cs" />
     <Compile Include="XmlTreeView.cs">
       <SubType>UserControl</SubType>
@@ -193,6 +200,9 @@
     <Compile Include="XsltViewer.Designer.cs">
       <DependentUpon>XsltViewer.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormCsvImport.resx">
+      <DependentUpon>FormCsvImport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
       <SubType>Designer</SubType>
