@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>XML Notepad Policy</title>
+</head>
+
+<style id="ctl00_Style1" type="text/css">
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body {
+        font-family: Segoe UI,Arial,Verdana,Tahoma,sans-serif;
+    }
+    h1 { 
+        background:#2978CC;                 
+    }  
+    .banner {
+        -webkit-margin-before: 0em;
+        padding:10px;
+    }
+    div.content {
+        padding-left:20px;
+        padding-top:10px;
+    }
+}
+</style>
+<script>
+    function SetEmailAddress() {
+        var anchor = document.getElementById("emailaddress");
+        var colon = ":";
+        var at = "@";
+        anchor.href = "mailto" + colon + "lovett" + "chris" + at + "hotmail.com" + "?Subject=XML Notepad";
+    }
+</script>
+<body onload="SetEmailAddress()">
+    <h1 class="banner"><img src="images/icon.png" /> XML Notepad  Privacy Policy</h1>
+    <div class="content">
+        <p>
+            This is the privacy policy for
+            <a href="https://www.microsoft.com/store/apps/9nblggh2l5wv">XML Notepad</a>.
+        </p>
+        <p>
+            This app does not share anything about you or your XML documents with anyone.
+        </p>
+        <p>
+            This is not a privacy policy for Windows, Windows may keep track of app usage for the purpose
+            of monitoring windows and windows app quality.
+            See <a href="https://privacy.microsoft.com/en-us/privacystatement/">Microsoft</a> for more infomration.
+        </p>
+        <p>
+            If you have any questions about this app
+            please email <a id="emailaddress" href=""> Chris Lovett</a>.
+        </p>
+        <p>
+            <a href="https://github.com/Microsoft/XmlNotepad">Home Page</a>
+        </p>
+    </div>
+</body>
+</html>
