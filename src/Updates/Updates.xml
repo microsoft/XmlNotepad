@@ -11,6 +11,9 @@
     <feature>Add line numbers on the XML diff output.</feature>
     <bug>Fix navigation of differences</bug>
   </version>
+  <version number="2.7.1.6">
+    <feature>Add ability to import *.csv files.</feature>
+  </version>
   <version number="2.7.1">
     <feature>Add new option to allow you to save XML files without the UTF-8 byte order mark.</feature>
     <feature>Add SHA 256 digital signature for stronger security.</feature>

@@ -714,4 +714,8 @@ Do you want to visit the web page that describes this update?</value>
     <value>Do not write any byte order mark at the beginning of the file for UTF-8 (0xef 0xbb 0xbf) or UTF-16 (0xff ffe)</value>
     <comment>Property Grid description</comment>
   </data>
+  <data name="OpenFileFilter" xml:space="preserve">
+    <value>XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|All files (*.*)|*.*</value>
+    <comment>Open file dialog filter.</comment>
+  </data>
 </root>

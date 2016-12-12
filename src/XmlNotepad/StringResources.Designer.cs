@@ -931,6 +931,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|All files (*.*)|*.*.
+        /// </summary>
+        internal static string OpenFileFilter {
+            get {
+                return ResourceManager.GetString("OpenFileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Paste.
         /// </summary>
         internal static string PasteCommand {
