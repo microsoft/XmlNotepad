@@ -636,7 +636,6 @@ namespace UnitTests {
             openDialog.SendKeystrokes(TestDir + "UnitTests\\test5.xml{ENTER}");
             Window browser = openDialog.WaitForPopup();
             text = browser.GetWindowText();
-            Assert.AreEqual<string>(text, "XmlDiff");
             browser.DismissPopUp("%{F4}");
 
             Undo();

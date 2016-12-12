@@ -850,6 +850,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No byte order mark on save.
+        /// </summary>
+        internal static string NoByteOrderMark {
+            get {
+                return ResourceManager.GetString("NoByteOrderMark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not write any byte order mark at the beginning of the file for UTF-8 (0xef 0xbb 0xbf) or UTF-16 (0xff ffe).
+        /// </summary>
+        internal static string NoByteOrderMarkDescription {
+            get {
+                return ResourceManager.GetString("NoByteOrderMarkDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot edit name of node of type &apos;{0}&apos;.
         /// </summary>
         internal static string NodeNameNotEditable {
@@ -1319,25 +1337,6 @@ namespace XmlNotepad {
         internal static string XmlDiffErrorCaption {
             get {
                 return ResourceManager.GetString("XmlDiffErrorCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;html&gt;&lt;head&gt;
-        ///                &lt;style TYPE=&apos;text/css&apos; MEDIA=&apos;screen&apos;&gt;
-        ///                &lt;!-- td { font-family: Courier New; font-size:14; } 
-        ///                th { font-family: Arial; } 
-        ///                p { font-family: Arial; } 
-        ///                .match { }
-        ///                .ignore { color:#AAAAAA; }
-        ///                .add { background-color:yellow; }
-        ///                .moveto { background-color:cyan; color:navy; }
-        ///                .remove { background-color:red; }
-        ///                .movefrom {  background-color [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string XmlDiffHeader {
-            get {
-                return ResourceManager.GetString("XmlDiffHeader", resourceCulture);
             }
         }
         

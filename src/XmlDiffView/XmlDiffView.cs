@@ -261,7 +261,7 @@ namespace Microsoft.XmlDiffPatch
         /// </summary>
         /// <param name="sourceXml">baseline data</param>
         /// <param name="diffgram">diffgram data stream</param>
-        public void Load(XmlReader sourceXml, XmlReader diffGram)
+        public void Load(XmlTextReader sourceXml, XmlReader diffGram)
         {
             nextOperationId = 1;
 
@@ -544,38 +544,9 @@ namespace Microsoft.XmlDiffPatch
         public void GetHtml(TextWriter htmlOutput)
         {
             LastVisitedOpId = 0;
-
+            XmlDiffViewNode.ResetLineNumbers();
             XmlTextWriter writer = new XmlTextWriter(htmlOutput);
-            if (XmlDiffView.LastOperationId > 0) {
-                writer.WriteStartElement("tr");
-                    writer.WriteStartElement("td");
-                        writer.WriteStartElement("a");
-                        writer.WriteAttributeString("href", "#id1");
-                        writer.WriteString("first");
-                        writer.WriteEndElement();
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("td");
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("td");
-                    writer.WriteEndElement();
-                writer.WriteEndElement();
-            }
             this.viewDocument.DrawHtml(writer, 10);
-
-            if (XmlDiffView.LastOperationId > 0) {
-                writer.WriteStartElement("tr");
-                writer.WriteStartElement("td");
-                writer.WriteStartElement("a");
-                writer.WriteAttributeString("href", "#id" + (XmlDiffView.LastOperationId-1));
-                writer.WriteString("last");
-                writer.WriteEndElement();
-                writer.WriteEndElement();
-                writer.WriteStartElement("td");
-                writer.WriteEndElement();
-                writer.WriteStartElement("td");
-                writer.WriteEndElement();
-                writer.WriteEndElement();
-            }
         }
 
         #endregion
@@ -1051,7 +1022,7 @@ namespace Microsoft.XmlDiffPatch
         /// <param name="emptyElement">Node has no children</param>
         private void LoadSourceChildNodes(
             XmlDiffViewParentNode parent,
-            XmlReader reader,
+            XmlTextReader reader,
             bool emptyElement)
         {
             LoadState savedLoadState = this.loadState;
@@ -1086,6 +1057,7 @@ namespace Microsoft.XmlDiffPatch
                         reader.NamespaceURI,
                         attrValue);
                 }
+                attr.LineNumber = reader.LineNumber;
                 ((XmlDiffViewElement)parent).InsertAttributeAfter(
                     attr,
                     this.loadState.LastAttribute);
@@ -1116,6 +1088,7 @@ namespace Microsoft.XmlDiffPatch
                             reader.Prefix,
                             reader.NamespaceURI,
                             this.ignorePrefixes);
+                        elem.LineNumber = reader.LineNumber;
                         this.LoadSourceChildNodes(elem, reader, emptyElementNode);
                         child = elem;
                         break;
@@ -1167,6 +1140,7 @@ namespace Microsoft.XmlDiffPatch
                         }
                         break;
                     case XmlNodeType.EndElement:
+                        parent.EndLine = reader.LineNumber;
                         goto End;
 
                     case XmlNodeType.DocumentType:
@@ -1185,8 +1159,15 @@ namespace Microsoft.XmlDiffPatch
                         Debug.Assert(false, "Invalid node type");
                         break;
                 }
-                parent.InsertChildAfter(child, this.loadState.LastChild, true);
-                this.loadState.LastChild = child;
+                if (child != null)
+                {
+                    if (child.LineNumber == 0 && child.EndLine == 0)
+                    {
+                        child.LineNumber = child.EndLine = reader.LineNumber;
+                    }
+                    parent.InsertChildAfter(child, this.loadState.LastChild, true);
+                    this.loadState.LastChild = child;
+                }
             }
 
         End:
@@ -1821,7 +1802,7 @@ namespace Microsoft.XmlDiffPatch
                 {
                     attr.Operation = op;
                     attr.OperationId = opid;
-                    attr = (XmlDiffViewAttribute)attr.NextSibbling;
+                    attr = (XmlDiffViewAttribute)attr.NextSibling;
                 }
             }
 
@@ -1831,7 +1812,7 @@ namespace Microsoft.XmlDiffPatch
                 while (childNode != null)
                 {
                     this.AnnotateNode(childNode, op, opid, true);
-                    childNode = childNode.NextSibbling;
+                    childNode = childNode.NextSibling;
                 }
             }
         }

@@ -148,7 +148,7 @@ namespace Microsoft.XmlDiffPatch {
             if (parentElement.Attributes == null) {
                 OnNoMatchingNode("@*");
                 return null;
-            } else if (parentElement.Attributes.NextSibbling == null) {
+            } else if (parentElement.Attributes.NextSibling == null) {
                 XmlDiffPathNodeList nodeList = new XmlDiffPathSingleNodeList();
                 nodeList.AddNode(parentElement.Attributes);
                 return nodeList;
@@ -219,7 +219,7 @@ namespace Microsoft.XmlDiffPatch {
             if (parentNode.ChildNodes == null) {
                 OnNoMatchingNode("*");
                 return null;
-            } else if (parentNode.ChildNodes.NextSibbling == null) {
+            } else if (parentNode.ChildNodes.NextSibling == null) {
                 XmlDiffPathNodeList nodeList = new XmlDiffPathSingleNodeList();
                 nodeList.AddNode(parentNode.ChildNodes);
                 return nodeList;
@@ -228,7 +228,7 @@ namespace Microsoft.XmlDiffPatch {
                 XmlDiffViewNode childNode = parentNode.ChildNodes;
                 while (childNode != null) {
                     nodeList.AddNode(childNode);
-                    childNode = childNode.NextSibbling;
+                    childNode = childNode.NextSibling;
                 }
                 return nodeList;
             }

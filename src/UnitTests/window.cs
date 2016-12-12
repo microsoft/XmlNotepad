@@ -188,6 +188,7 @@ namespace UnitTests
         public void DismissPopUp(string keys)
         {
             Sleep(1000);
+            this.Activate();
 
             IntPtr h = this.handle;
             IntPtr popup = GetLastActivePopup(h);
@@ -222,8 +223,17 @@ namespace UnitTests
         public Window ExpectingPopup(string name)
         {
             Application.DoEvents();
-            Window popup = this.WaitForPopup();
-            string text = Window.GetForegroundWindowText();
+            Window popup = null;
+            string text = "";
+            int retries = 3;
+            while (text.ToLowerInvariant() != name.ToLowerInvariant() && retries-- > 0)
+            {
+                popup = this.WaitForPopup();
+                if (popup != null)
+                {
+                    text = popup.GetWindowText();
+                }
+            }
             if (text.ToLowerInvariant() != name.ToLowerInvariant())
             {
                 throw new ApplicationException(string.Format("Expecting popup '{0}'", name));

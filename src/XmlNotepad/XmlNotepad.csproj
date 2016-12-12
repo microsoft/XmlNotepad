@@ -134,7 +134,7 @@
     <Compile Include="proxy.cs" />
     <Compile Include="RecentFilesMenu.cs" />
     <Compile Include="FindTarget.cs" />
-    <Compile Include="SR.Designer.cs">
+    <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SR.resx</DependentUpon>
@@ -170,12 +170,6 @@
     </Compile>
     <Compile Include="Updater.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="WebBrowserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WebBrowserForm.designer.cs">
-      <DependentUpon>WebBrowserForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="XInclude.cs" />
     <Compile Include="XmlCache.cs">
       <SubType>Code</SubType>
@@ -235,10 +229,6 @@
       <DependentUpon>TaskList.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="WebBrowserForm.resx">
-      <DependentUpon>WebBrowserForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="XmlTreeView.resx">
       <DependentUpon>XmlTreeView.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -283,6 +273,7 @@
     <Content Include="Resources\Text.ICO" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
     <Content Include="Resources\Undo.bmp" />
+    <EmbeddedResource Include="Resources\XmlDiffHeader.html" />
     <Content Include="Resources\xmlnote.ico" />
   </ItemGroup>
   <ItemGroup>

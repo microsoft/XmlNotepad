@@ -152,7 +152,7 @@ namespace Microsoft.XmlDiffPatch
                 XmlDiffViewNode[this.SourceChildNodesCount];
         
             XmlDiffViewNode curChild = this.ChildNodes;
-            for (int i = 0; i < this.SourceChildNodesCount; i++, curChild = curChild.NextSibbling) 
+            for (int i = 0; i < this.SourceChildNodesCount; i++, curChild = curChild.NextSibling) 
             {
                 Debug.Assert(curChild != null);
                 this.SourceChildNodesIndex[i] = curChild;
@@ -174,13 +174,22 @@ namespace Microsoft.XmlDiffPatch
             Debug.Assert(newChild != null);
             if (referenceChild == null) 
             {
-                newChild.NextSibbling = this.ChildNodes;
+                // head of list.
+                newChild.NextSibling = this.ChildNodes;
+                if (this.ChildNodes != null)
+                {
+                    this.ChildNodes.PreviousSibling = newChild;
+                }
                 this.ChildNodes = newChild;
             }
             else 
             {
-                newChild.NextSibbling = referenceChild.NextSibbling;
-                referenceChild.NextSibbling = newChild;
+                newChild.NextSibling = referenceChild.NextSibling;
+                newChild.PreviousSibling = referenceChild;
+                if (referenceChild.NextSibling != null) {
+                    referenceChild.NextSibling.PreviousSibling = newChild;
+                }
+                referenceChild.NextSibling = newChild;
             }
             if (sourceNode)
             {
@@ -200,7 +209,7 @@ namespace Microsoft.XmlDiffPatch
             while (curChild != null) 
             {
                 curChild.DrawHtml(writer, indent);
-                curChild = curChild.NextSibbling;
+                curChild = curChild.NextSibling;
             }
         }
 
@@ -218,7 +227,7 @@ namespace Microsoft.XmlDiffPatch
             while (curChild != null) 
             {
                 curChild.DrawText(writer, indent);
-                curChild = curChild.NextSibbling;
+                curChild = curChild.NextSibling;
             }
         }
 

@@ -53,7 +53,7 @@
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
-    <PostBuildEvent>set SIGNTOOL=$(DevEnvDir)..\..\..\Windows Kits\10\bin\x86\signtool.exe
+    <PostBuildEvent>set SIGNTOOL=$(MSBuildThisFileDirectory)..\..\tools\signtool.exe
 "%25SIGNTOOL%25" sign /v /debug /i "COMODO RSA Code Signing CA"  /t http://timestamp.comodoca.com/authenticode /fd sha256 "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!--

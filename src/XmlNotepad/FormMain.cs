@@ -3181,6 +3181,15 @@ namespace XmlNotepad {
             }
         }
 
+        string GetXmlDiffHeader()
+        {
+            using (Stream stream = typeof(XmlNotepad.FormMain).Assembly.GetManifestResourceStream("XmlNotepad.Resources.XmlDiffHeader.html"))
+            {
+                StreamReader sr = new StreamReader(stream);
+                return sr.ReadToEnd();
+            }
+        }
+
         /// <summary>
         /// The html header used by XmlNotepad.
         /// </summary>
@@ -3192,7 +3201,7 @@ namespace XmlNotepad {
             string changedXmlFile,
             TextWriter resultHtml) {
             // this initializes the html
-            resultHtml.WriteLine(SR.XmlDiffHeader);
+            resultHtml.WriteLine(GetXmlDiffHeader());
             resultHtml.WriteLine(string.Format(SR.XmlDiffBody,
                     System.IO.Path.GetDirectoryName(sourceXmlFile),
                     System.IO.Path.GetFileName(sourceXmlFile),
@@ -3212,6 +3221,9 @@ namespace XmlNotepad {
             CleanupTempFiles();
 
             // todo: add UI for setting XmlDiffOptions.
+            this.xmlTreeView1.Commit();
+            this.SaveIfDirty(false);
+            string filename = this.model.FileName;
 
             XmlDocument original = this.model.Document;
             XmlDocument doc = new XmlDocument();
@@ -3249,18 +3261,16 @@ namespace XmlNotepad {
             
             using (XmlReader diffGram = XmlReader.Create(diffFile, settings)) {
                 XmlDiffView diffView = new XmlDiffView();
-                diffView.Load(new XmlNodeReader(original), diffGram);
+                diffView.Load(new XmlTextReader(filename), diffGram);
                 using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8)) {
                     SideBySideXmlNotepadHeader(this.model.FileName, changed, htmlWriter);
                     diffView.GetHtml(htmlWriter);
                 }
             }
 
-            Uri uri = new Uri(tempFile);
-            WebBrowserForm browserForm = new WebBrowserForm(uri, "XmlDiff");
-            browserForm.Show();
-        }        
-
+            Utilities.OpenUrl(this.Handle, tempFile);
+        }
+        
         string ApplicationPath {
             get {
                 string path = Application.ExecutablePath;

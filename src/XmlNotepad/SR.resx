@@ -385,34 +385,6 @@ Would you like to reformat the text into multiple lines?</value>
 Do you want to enable execution of this script code?</value>
     <comment>Message box prompt</comment>
   </data>
-  <data name="XmlDiffHeader" xml:space="preserve">
-    <value>&lt;html&gt;&lt;head&gt;
-                &lt;style TYPE='text/css' MEDIA='screen'&gt;
-                &lt;!-- td { font-family: Courier New; font-size:14; } 
-                th { font-family: Arial; } 
-                p { font-family: Arial; } 
-                .match { }
-                .ignore { color:#AAAAAA; }
-                .add { background-color:yellow; }
-                .moveto { background-color:cyan; color:navy; }
-                .remove { background-color:red; }
-                .movefrom {  background-color:cyan; color:navy; }
-                .change {  background-color:lightgreen;  }
-                --&gt;
-            &lt;/style&gt;&lt;/head&gt;
-            &lt;body&gt;
-                &lt;table border='0' width='100%'&gt;
-                    &lt;tr&gt;&lt;td&gt;&lt;table border='0' width='100%' style='table-layout:fixed;'&gt;
-                    &lt;COL WIDTH='40'&gt;&lt;COL WIDTH='50%'&gt;&lt;COL WIDTH='50%'&gt;
-                    &lt;tr&gt;&lt;td colspan='3' align='center'&gt;
-                    &lt;b&gt;Legend:&lt;/b&gt; &lt;span class='add'&gt;added&lt;/span&gt;&amp;nbsp;&amp;nbsp;
-                        &lt;span class='remove'&gt;removed&lt;/span&gt;&amp;nbsp;&amp;nbsp;
-                        &lt;span class='change'&gt;changed&lt;/span&gt;&amp;nbsp;&amp;nbsp;
-                        &lt;span class='movefrom'&gt;moved from&lt;/span&gt;&amp;nbsp;&amp;nbsp;
-                        &lt;span class='moveto'&gt;moved to&lt;/span&gt;&amp;nbsp;&amp;nbsp;
-                        &lt;span class='ignore'&gt;ignored&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;
-                    &lt;/td&gt;&lt;/tr&gt;</value>
-  </data>
   <data name="EditNamespaceCommand" xml:space="preserve">
     <value>Edit Namespace</value>
     <comment>Command label</comment>

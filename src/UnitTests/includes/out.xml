@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="defaultss.xslt"?>
+<test>
+  <!-- start include -->
+  <more x="10">
+    <test>data</test>
+    <!-- start include -->
+    <include id="3">
+      <!-- This is the fall back stuff -->
+      <data>
+        <item name="f3">
+          and so on
+        </item>
+      </data>
+    </include>
+    <!-- end include -->
+    <?pi target?>
+  </more>
+  <!-- end include -->
+  <last />
+</test>

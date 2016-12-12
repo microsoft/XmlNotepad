@@ -188,7 +188,7 @@ namespace Microsoft.XmlDiffPatch
             if (Operation == XmlDiffViewOperation.Change) 
             {
                 XmlDiffView.HtmlStartRow(writer);
-                this.DrawLinkNode(writer);
+                this.DrawLineNumber(writer);
 
                 for (int i = 0; i < 2; i++) 
                 {

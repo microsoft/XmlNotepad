@@ -106,7 +106,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(MyPrivateKeyPassword)' != ''">"$(WindowsSdkDir)bin\x86\signtool.exe" sign /p $(MyPrivateKeyPassword) /f "$(MyKeyFile)" /d $(TargetName) /du $(SupportUrl) /t $(ManifestTimestampUrl) "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent Condition="'$(MyPrivateKeyPassword)' != ''">"$(MSBuildThisFileDirectory)..\..\tools\signtool.exe" sign /p $(MyPrivateKeyPassword) /f "$(MyKeyFile)" /d $(TargetName) /du $(SupportUrl) /t $(ManifestTimestampUrl) "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(TargetDir)\.."</PostBuildEvent>

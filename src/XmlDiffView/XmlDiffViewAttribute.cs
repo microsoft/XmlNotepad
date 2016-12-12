@@ -267,8 +267,138 @@ namespace Microsoft.XmlDiffPatch
             throw new Exception("This method should never be called.");
         }
 
+        /// <summary>
+        /// Generate html output data for a differences 
+        /// due to a change in an attribute.
+        /// </summary>
+        /// <param name="writer">output stream</param>
+        /// <param name="attr">Attribute object</param>
+        /// <param name="typeOfDifference">type of difference</param>
+        public void DrawHtmlAttribute(
+            XmlWriter writer,
+            bool ignorePrefixes,
+            XmlDiffViewOperation typeOfDifference)
+        {
+            bool opid = false;
+            if (this.OperationId != XmlDiffView.LastVisitedOpId)
+            {
+                XmlDiffView.LastVisitedOpId = this.OperationId;
+                // only write this anchor if the parent elemnt was not also changed.
+                if (this.OperationId != 0 && this.Parent.Operation != this.Operation &&
+                    (this.PreviousSibling == null || this.PreviousSibling.Operation != this.Operation))
+                {
+                    writer.WriteStartElement("a");
+                    writer.WriteAttributeString("name", "id" + this.OperationId);
+                    opid = true;
+                }
+            }
+            if (ignorePrefixes)
+            {
+                if (this.Prefix == "xmlns" || (this.LocalName == "xmlns" &&
+                    this.Prefix == string.Empty))
+                {
+                    XmlDiffView.HtmlWriteString(
+                        writer,
+                        XmlDiffViewOperation.Ignore,
+                        this.Name);
+                    XmlDiffView.HtmlWriteString(
+                        writer,
+                        typeOfDifference,
+                        "=\"" + this.AttributeValue + "\"");
+                    return;
+                }
+                else if (this.Prefix != string.Empty)
+                {
+                    XmlDiffView.HtmlWriteString(
+                        writer,
+                        XmlDiffViewOperation.Ignore,
+                        this.Prefix + ":");
+                    XmlDiffView.HtmlWriteString(
+                        writer,
+                        typeOfDifference,
+                        this.LocalName + "=\"" + this.AttributeValue + "\"");
+                    return;
+                }
+            }
+
+            XmlDiffView.HtmlWriteString(
+                writer,
+                typeOfDifference,
+                this.Name + "=\"" + this.AttributeValue + "\"");
+
+            if (opid)
+            {
+                writer.WriteEndElement();
+            }
+        }
+
+        /// <summary>
+        /// Generates output data in html for a difference due
+        /// to changing attribute data.
+        /// </summary>
+        /// <param name="writer">output stream</param>
+        /// <param name="attr">Attribute object</param>
+        /// <param name="localName">name of attribute 
+        /// (without the prefix)</param>
+        /// <param name="prefix">xml attribute prefix</param>
+        /// <param name="attributeValue">The value for the attribute.</param>
+        public void DrawHtmlAttributeChange(
+            XmlWriter writer,
+            string localName,
+            string prefix,
+            string attributeValue,
+            bool ignorePrefixes)
+        {
+            bool opid = false;
+
+            if (this.OperationId != XmlDiffView.LastVisitedOpId)
+            {
+                // only write this anchor if the parent elemnt was not also changed.
+                if (this.OperationId != 0 && this.Parent.Operation == XmlDiffViewOperation.Match &&
+                    (this.PreviousSibling == null || this.PreviousSibling.Operation == XmlDiffViewOperation.Match))
+                {
+                    XmlDiffView.LastVisitedOpId = this.OperationId;
+                    writer.WriteStartElement("a");
+                    writer.WriteAttributeString("name", "id" + this.OperationId);
+                    opid = true;
+                }
+            }
+            if (prefix != string.Empty)
+            {
+                XmlDiffView.HtmlWriteString(
+                    writer,
+                    ignorePrefixes ? XmlDiffViewOperation.Ignore : (this.Prefix == this.ChangeInformation.Prefix) ? XmlDiffViewOperation.Match : XmlDiffViewOperation.Change,
+                    prefix + ":");
+            }
+
+            XmlDiffView.HtmlWriteString(
+                writer,
+                (this.LocalName == this.ChangeInformation.LocalName) ? XmlDiffViewOperation.Match : XmlDiffViewOperation.Change,
+                this.localName);
+
+            if (this.AttributeValue != this.ChangeInformation.Subset)
+            {
+                XmlDiffView.HtmlWriteString(writer, "=\"");
+                XmlDiffView.HtmlWriteString(
+                    writer,
+                    XmlDiffViewOperation.Change,
+                    attributeValue);
+                XmlDiffView.HtmlWriteString(writer, "\"");
+            }
+            else
+            {
+                XmlDiffView.HtmlWriteString(
+                    writer,
+                    "=\"" + attributeValue + "\"");
+            }
+            if (opid)
+            {
+                writer.WriteEndElement();
+            }
+        }
+
         #endregion
-         
+
     }
 
 }
