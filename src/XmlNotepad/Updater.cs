@@ -130,7 +130,15 @@ namespace XmlNotepad {
             }
         }
 
-        void CheckForUpdate(object state) {
+        bool busy;
+
+        void CheckForUpdate(object state)
+        {
+            if (busy)
+            {
+                return;
+            }
+            busy = true;
             if (this.updateUri != null) {
                 try {
                     // assume success in this request so we don't create DOS attacks on the server!
@@ -158,6 +166,7 @@ namespace XmlNotepad {
                     this.req = null;
                 }
             }
+            busy = false;
         }
 
         void Bootstrap() {
@@ -237,6 +246,15 @@ namespace XmlNotepad {
                 }
             }            
         }
-     
+
+        internal void CheckNow()
+        {
+            StopTimer();
+            if (this.updateUri != null)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(CheckForUpdate));
+            }
+            StartTimer();
+        }
     }
 }

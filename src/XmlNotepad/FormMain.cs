@@ -216,6 +216,8 @@ namespace XmlNotepad {
         private ToolStripMenuItem replaceToolStripMenuItem;
         private ToolStripMenuItem ctxAttributeBeforeToolStripMenuItem;
         private ToolStripMenuItem fileAssociationsToolStripMenuItem;
+        private ToolStripMenuItem statsToolStripMenuItem;
+        private ToolStripMenuItem checkUpdatesToolStripMenuItem;
         private string redoLabel;
 
 
@@ -851,6 +853,8 @@ namespace XmlNotepad {
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
             this.taskList = new XmlNotepad.TaskList();
             this.dynamicHelpViewer = new XmlNotepad.XsltViewer();
+            this.statsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).BeginInit();
             this.contextMenu1.SuspendLayout();
@@ -963,7 +967,6 @@ namespace XmlNotepad {
             this.changeToProcessingInstructionContextMenuItem});
             this.changeToContextMenuItem.Name = "changeToContextMenuItem";
             resources.ApplyResources(this.changeToContextMenuItem, "changeToContextMenuItem");
-
             // 
             // changeToElementContextMenuItem
             // 
@@ -1516,6 +1519,7 @@ namespace XmlNotepad {
             this.sourceToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.schemasToolStripMenuItem,
+            this.statsToolStripMenuItem,
             this.fileAssociationsToolStripMenuItem,
             this.toolStripMenuItem11,
             this.nextErrorToolStripMenuItem,
@@ -1791,6 +1795,7 @@ namespace XmlNotepad {
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
             this.indexToolStripMenuItem,
+            this.checkUpdatesToolStripMenuItem,
             this.toolStripMenuItem10,
             this.aboutXMLNotepadToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -2033,7 +2038,19 @@ namespace XmlNotepad {
             this.dynamicHelpViewer.Name = "dynamicHelpViewer";
             this.dynamicHelpViewer.ShowFileStrip = true;
             this.helpProvider1.SetShowHelp(this.dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
-           
+            //
+            // checkUpdatesToolStripMenuItem
+            //
+            this.checkUpdatesToolStripMenuItem.Name = "checkUpdatesToolStripMenuItem";
+            resources.ApplyResources(this.checkUpdatesToolStripMenuItem, "checkUpdatesToolStripMenuItem");
+            this.checkUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkUpdatesToolStripMenuItem_Click);
+
+            // 
+            // statsToolStripMenuItem
+            // 
+            this.statsToolStripMenuItem.Name = "statsToolStripMenuItem";
+            resources.ApplyResources(this.statsToolStripMenuItem, "statsToolStripMenuItem");
+            this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -2060,6 +2077,11 @@ namespace XmlNotepad {
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void checkUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.updater.CheckNow();
         }
 
         protected virtual void TabControlViews_Selected(object sender, NoBorderTabControlEventArgs e) {
@@ -3222,9 +3244,9 @@ namespace XmlNotepad {
             }
         }
 
-        string GetXmlDiffHeader()
+        string GetEmbeddedString(string name)
         {
-            using (Stream stream = typeof(XmlNotepad.FormMain).Assembly.GetManifestResourceStream("XmlNotepad.Resources.XmlDiffHeader.html"))
+            using (Stream stream = typeof(XmlNotepad.FormMain).Assembly.GetManifestResourceStream(name))
             {
                 StreamReader sr = new StreamReader(stream);
                 return sr.ReadToEnd();
@@ -3241,14 +3263,22 @@ namespace XmlNotepad {
             string sourceXmlFile,
             string changedXmlFile,
             TextWriter resultHtml) {
+
             // this initializes the html
-            resultHtml.WriteLine(GetXmlDiffHeader());
+            resultHtml.WriteLine("<html><head>");
+            resultHtml.WriteLine("<style TYPE='text/css'>");
+            resultHtml.WriteLine(GetEmbeddedString("XmlNotepad.Resources.XmlReportStyles.css"));
+            resultHtml.WriteLine("</style>");
+            resultHtml.WriteLine("</head>");
+            resultHtml.WriteLine(GetEmbeddedString("XmlNotepad.Resources.XmlDiffHeader.html"));
+
             resultHtml.WriteLine(string.Format(SR.XmlDiffBody,
                     System.IO.Path.GetDirectoryName(sourceXmlFile),
                     System.IO.Path.GetFileName(sourceXmlFile),
                     System.IO.Path.GetDirectoryName(changedXmlFile),
                     System.IO.Path.GetFileName(changedXmlFile)
             ));
+
         }
 
         void CleanupTempFiles() {
@@ -3306,6 +3336,7 @@ namespace XmlNotepad {
                 using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8)) {
                     SideBySideXmlNotepadHeader(this.model.FileName, changed, htmlWriter);
                     diffView.GetHtml(htmlWriter);
+                    htmlWriter.WriteLine("</body></html>");
                 }
             }
 
@@ -3506,6 +3537,37 @@ namespace XmlNotepad {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Element);
         }
 
+        private void statsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.xmlTreeView1.Commit();
+            this.SaveIfDirty(false);
+            XmlStats xs = new XmlStats();
+
+            string tempFile = Path.Combine(Path.GetTempPath(),
+                Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + ".htm");
+            tempFiles.AddFile(tempFile, false);
+
+            using (TextWriter resultHtml = new StreamWriter(tempFile, false, Encoding.UTF8))
+            {
+                resultHtml.WriteLine("<html><head>");
+                resultHtml.WriteLine("<style TYPE='text/css'>");
+                resultHtml.WriteLine(GetEmbeddedString("XmlNotepad.Resources.XmlReportStyles.css"));
+                resultHtml.WriteLine("</style>");
+                resultHtml.WriteLine("</head>");
+                resultHtml.WriteLine(@"        
+    <div id='header'>        
+        <h2>XML Statistics: " + this.model.FileName + @"</h2>
+    </div>
+    <div id='main'><div class='code'><xmp>");
+
+                xs.ProcessFiles(new string[1] { this.model.FileName }, true, resultHtml, "\n");
+
+                resultHtml.WriteLine("</xmp></div></body></html>");
+            }
+
+
+            Utilities.OpenUrl(this.Handle, tempFile);
+        }
 
     }
 

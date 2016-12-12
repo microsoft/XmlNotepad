@@ -305,6 +305,7 @@ namespace Microsoft.XmlDiffPatch
 
         internal void DrawLineNumber(XmlWriter writer) {
             writer.WriteStartElement("td");
+            writer.WriteAttributeString("class", "code");
 
             if (this.operationId != XmlDiffView.LastVisitedOpId)
             {
@@ -344,7 +345,9 @@ namespace Microsoft.XmlDiffPatch
         public void DrawEndLineNumber(XmlWriter writer)
         {
             writer.WriteStartElement("td");
+            writer.WriteAttributeString("class", "code");
             writer.WriteRaw(this.EndLine.ToString());
+            writer.WriteEndElement();
         }
 
         /// <summary>

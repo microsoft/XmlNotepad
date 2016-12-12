@@ -7,6 +7,9 @@
     <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.7.1.12">
+    <feature>Add XML stats under View menu.</feature>
+  </version>
   <version number="2.7.1.8">
     <feature>Add line numbers on the XML diff output.</feature>
     <bug>Fix navigation of differences</bug>

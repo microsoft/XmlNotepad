@@ -117,33 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="changeToElementContextMenuItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="changeToElementContextMenuItem.ShowShortcutKeys" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="changeToElementContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 22</value>
-  </data>
-  <data name="changeToElementContextMenuItem.Text" xml:space="preserve">
-    <value>&amp;Element</value>
-  </data>
-  <data name="changeToElementContextMenuItem.ToolTipText" xml:space="preserve">
-    <value>Change the selected node into an XML element</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="statusBar1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="statusBar1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 502</value>
   </data>
   <data name="statusBarPanelMessage.Name" xml:space="preserve">
     <value>statusBarPanelMessage</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="statusBarPanelMessage.Width" type="System.Int32, mscorlib">
     <value>619</value>
   </data>
@@ -308,6 +293,21 @@
   </data>
   <data name="duplicateToolStripMenuItem1.Text" xml:space="preserve">
     <value>Du&amp;plicate</value>
+  </data>
+  <metadata name="changeToElementContextMenuItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="changeToElementContextMenuItem.ShowShortcutKeys" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="changeToElementContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 22</value>
+  </data>
+  <data name="changeToElementContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Element</value>
+  </data>
+  <data name="changeToElementContextMenuItem.ToolTipText" xml:space="preserve">
+    <value>Change the selected node into an XML element</value>
   </data>
   <data name="changeToAttributeContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
@@ -1015,6 +1015,9 @@
   <data name="changeToToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>changeToToolStripMenuItem</value>
   </data>
+  <data name="changeToElementToolStripMenuItem1.AccessibleName" xml:space="preserve">
+    <value>changeToElementToolStripMenuItem1</value>
+  </data>
   <data name="changeToElementToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
@@ -1023,9 +1026,6 @@
   </data>
   <data name="changeToElementToolStripMenuItem1.ToolTipText" xml:space="preserve">
     <value>Change the selected node into an XML element</value>
-  </data>
-  <data name="changeToElementToolStripMenuItem1.AccessibleName" xml:space="preserve">
-    <value>changeToElementToolStripMenuItem1</value>
   </data>
   <data name="changeToAttributeToolStripMenuItem1.AccessibleName" xml:space="preserve">
     <value>changeToAttributeToolStripMenuItem1</value>
@@ -1305,6 +1305,18 @@
   </data>
   <data name="schemasToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Bring up the Schema dialog to provide XSD schemas used for validation.</value>
+  </data>
+  <data name="statsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>185, 22</value>
+  </data>
+  <data name="statsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Statistics...</value>
+  </data>
+  <data name="checkUpdatesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>185, 22</value>
+  </data>
+  <data name="checkUpdatesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Check for updates...</value>
   </data>
   <data name="fileAssociationsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>185, 22</value>
@@ -2092,7 +2104,7 @@
     <value>xmlTreeView1</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Type" xml:space="preserve">
-    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Parent" xml:space="preserve">
     <value>tabPageTreeView</value>
@@ -2119,7 +2131,7 @@
     <value>tabPageTreeView</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2155,7 +2167,7 @@
     <value>xsltViewer</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Parent" xml:space="preserve">
     <value>tabPageHtmlView</value>
@@ -2182,7 +2194,7 @@
     <value>tabPageHtmlView</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2209,7 +2221,7 @@
     <value>tabControlViews</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Parent" xml:space="preserve">
     <value>$this</value>
@@ -2236,7 +2248,7 @@
     <value>resizer</value>
   </data>
   <data name="&gt;&gt;resizer.Type" xml:space="preserve">
-    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="&gt;&gt;resizer.Parent" xml:space="preserve">
     <value>$this</value>
@@ -2260,7 +2272,7 @@
     <value>tabPageTaskList</value>
   </data>
   <data name="&gt;&gt;tabPageTaskList.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="tabPageDynamicHelp.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2278,7 +2290,7 @@
     <value>tabPageDynamicHelp</value>
   </data>
   <data name="&gt;&gt;tabPageDynamicHelp.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="taskList.AccessibleName" xml:space="preserve">
     <value>taskList</value>
@@ -2305,7 +2317,7 @@
     <value>taskList</value>
   </data>
   <data name="&gt;&gt;taskList.Type" xml:space="preserve">
-    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <data name="dynamicHelpViewer.AccessibleName" xml:space="preserve">
     <value>dynamicHelpViewer</value>
@@ -2326,7 +2338,7 @@
     <value>dynamicHelpViewer</value>
   </data>
   <data name="&gt;&gt;dynamicHelpViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.6.0.2, Culture=neutral, PublicKeyToken=f2a27fd04bbf756e</value>
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.7.1.9, Culture=neutral, PublicKeyToken=e171c0919ddb5572</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -2840,20 +2852,11 @@
         AACAAAAAgAAAAIAAAACAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADgAAAA+qsAAA==
 </value>
   </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="$this.ShowHelp" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>XML Notepad</value>
-  </data>
-  <data name="&gt;&gt;changeToElementContextMenuItem.Name" xml:space="preserve">
-    <value>changeToElementContextMenuItem</value>
-  </data>
-  <data name="&gt;&gt;changeToElementContextMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;statusBarPanelMessage.Name" xml:space="preserve">
     <value>statusBarPanelMessage</value>
@@ -2919,6 +2922,12 @@
     <value>changeToContextMenuItem</value>
   </data>
   <data name="&gt;&gt;changeToContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;changeToElementContextMenuItem.Name" xml:space="preserve">
+    <value>changeToElementContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;changeToElementContextMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;changeToAttributeContextMenuItem.Name" xml:space="preserve">
@@ -3279,6 +3288,12 @@
     <value>changeToToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;changeToToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;changeToElementToolStripMenuItem1.Name" xml:space="preserve">
+    <value>changeToElementToolStripMenuItem1</value>
+  </data>
+  <data name="&gt;&gt;changeToElementToolStripMenuItem1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;changeToAttributeToolStripMenuItem1.Name" xml:space="preserve">
@@ -3767,12 +3782,19 @@
   <data name="&gt;&gt;helpProvider1.Type" xml:space="preserve">
     <value>System.Windows.Forms.HelpProvider, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;changeToElementToolStripMenuItem1.Name" xml:space="preserve">
-    <value>changeToElementToolStripMenuItem1</value>
+  <data name="&gt;&gt;statsToolStripMenuItem.Name" xml:space="preserve">
+    <value>statsToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;changeToElementToolStripMenuItem1.Type" xml:space="preserve">
+  <data name="&gt;&gt;statsToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;checkUpdatesToolStripMenuItem.Name" xml:space="preserve">
+    <value>checkUpdatesToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;checkUpdatesToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>FormMain</value>
   </data>

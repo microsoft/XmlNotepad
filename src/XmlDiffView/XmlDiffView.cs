@@ -599,6 +599,7 @@ namespace Microsoft.XmlDiffPatch
         internal static void HtmlStartCell(XmlWriter writer, int indent)
         {
             writer.WriteStartElement("td");
+            writer.WriteAttributeString("class", "code");
             writer.WriteAttributeString("style", "padding-left: " + indent.ToString() + "pt;");
         }
 
