@@ -186,7 +186,7 @@ namespace XmlNotepad {
                         this.loaded = DateTime.Now;
                         settings.EnableScript = (trusted.ContainsKey(resolved));
                         XmlReaderSettings rs = new XmlReaderSettings();
-                        rs.ProhibitDtd = false;
+                        rs.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
                         rs.XmlResolver = resolver;
                         using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs)) {
                             xslt.Load(r, settings, resolver);
@@ -198,7 +198,7 @@ namespace XmlNotepad {
                     StringWriter writer = new StringWriter();
                     XmlReaderSettings settings = new XmlReaderSettings();
                     settings.XmlResolver = new XmlProxyResolver(this.site);
-                    settings.ProhibitDtd = false;
+                    settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
                     transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
                     this.xsltUri = resolved;                       
                     Display(writer.ToString());

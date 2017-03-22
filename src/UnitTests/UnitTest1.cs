@@ -2333,7 +2333,7 @@ Prefix 'user' is not defined. ");
             XmlDocument doc = new XmlDocument();
             doc.Load(test);
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Prohibit;
             foreach (XmlElement e in doc.SelectNodes("test/case")) {
                 Uri input = new Uri(baseUri, e.GetAttribute("input"));
                 Uri output = new Uri(baseUri, e.GetAttribute("results"));

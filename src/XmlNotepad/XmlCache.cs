@@ -234,7 +234,7 @@ namespace XmlNotepad
 
         internal XmlReaderSettings GetReaderSettings() {
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
             settings.CheckCharacters = false;
             settings.XmlResolver = new XmlProxyResolver(this.site);
             return settings;
@@ -244,7 +244,7 @@ namespace XmlNotepad
             if (this.Document != null) {
                 this.dirty = true;
                 XmlReaderSettings s = new XmlReaderSettings();
-                s.ProhibitDtd = false;
+                s.DtdProcessing = GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
                 s.XmlResolver = new XmlProxyResolver(this.site);
                 using (XmlReader r = XmlIncludeReader.CreateIncludeReader(this.Document, s, this.FileName)) {
                     this.Document = loader.Load(r);
@@ -630,6 +630,23 @@ namespace XmlNotepad
             GC.SuppressFinalize(this);
         }
 
+        public bool GetSettingBoolean(string settingName)
+        {
+            if (this.site != null)
+            {
+                Settings settings = (Settings)this.site.GetService(typeof(Settings));
+                if (settings != null)
+                {
+                    object settingValue = settings[settingName];
+                    if (settingValue is bool)
+                    {
+                        return (bool)settingValue;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 
     public enum ModelChangeType
