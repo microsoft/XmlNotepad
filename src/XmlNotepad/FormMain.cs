@@ -315,6 +315,7 @@ namespace XmlNotepad {
             this.settings["AppRegistered"] = false;
             this.settings["MaximumLineLength"] = 10000;
             this.settings["AutoFormatLongLines"] = false;
+            this.settings["IgnoreDTD"] = false;
 
             this.settings.Changed += new SettingsEventHandler(settings_Changed);
 

@@ -603,6 +603,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Avoid DTD validations.
+        /// </summary>
+        internal static string IgnoreDTDDescription {
+            get {
+                return ResourceManager.GetString("IgnoreDTDDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore DTD.
+        /// </summary>
+        internal static string IgnoreDTDProperty {
+            get {
+                return ResourceManager.GetString("IgnoreDTDProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Illegal surrogate character pair 0x{0}, 0x{1} at position {2} in this text node..
         /// </summary>
         internal static string IllegalSurrogatePair {
