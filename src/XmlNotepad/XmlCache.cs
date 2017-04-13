@@ -234,7 +234,7 @@ namespace XmlNotepad
 
         internal XmlReaderSettings GetReaderSettings() {
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Parse;
             settings.CheckCharacters = false;
             settings.XmlResolver = new XmlProxyResolver(this.site);
             return settings;
@@ -244,7 +244,7 @@ namespace XmlNotepad
             if (this.Document != null) {
                 this.dirty = true;
                 XmlReaderSettings s = new XmlReaderSettings();
-                s.ProhibitDtd = false;
+                s.DtdProcessing = DtdProcessing.Parse;
                 s.XmlResolver = new XmlProxyResolver(this.site);
                 using (XmlReader r = XmlIncludeReader.CreateIncludeReader(this.Document, s, this.FileName)) {
                     this.Document = loader.Load(r);

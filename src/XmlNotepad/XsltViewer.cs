@@ -198,7 +198,7 @@ namespace XmlNotepad {
                     StringWriter writer = new StringWriter();
                     XmlReaderSettings settings = new XmlReaderSettings();
                     settings.XmlResolver = new XmlProxyResolver(this.site);
-                    settings.ProhibitDtd = false;
+                    settings.DtdProcessing = DtdProcessing.Parse;
                     transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
                     this.xsltUri = resolved;                       
                     Display(writer.ToString());

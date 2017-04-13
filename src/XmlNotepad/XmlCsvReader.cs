@@ -108,9 +108,15 @@ namespace Microsoft.Xml {
         /// Specifies the base URI to use for resolving the Href property.
         /// This is optional.
         /// </summary>
-        public string BaseUri {
+        public override string BaseURI
+        {
             get { return _baseUri == null ? "" : _baseUri.AbsoluteUri; }
-            set { _baseUri = new Uri(value); }
+        }
+
+
+        public void SetBaseUri(string uri)
+        {
+            _baseUri = new Uri(uri);
         }
         
         /// <summary>
@@ -332,12 +338,6 @@ namespace Microsoft.Xml {
                         return 3;
                 }       
                 return 0;
-            }
-        }
-
-        public override string BaseURI { 
-            get {
-                return _baseUri.AbsolutePath;
             }
         }
 

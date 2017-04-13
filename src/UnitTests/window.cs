@@ -118,35 +118,57 @@ namespace UnitTests
 
         public Window WaitForPopup()
         {
+            return WaitForPopup(IntPtr.Zero);
+        }
+
+        public Window WaitForPopup(IntPtr excludingThisWindow)
+        {
+            Sleep(100);
+            Window found = null;
             IntPtr h = this.Handle;
             int retries = 10;
-            while (retries-- > 0)
+            while (retries-- > 0 && found == null)
             {
                 try
                 {
                     IntPtr popup = GetLastActivePopup(h);
-                    if (popup != h && popup != IntPtr.Zero)
+                    if (popup != h && popup != excludingThisWindow && popup != IntPtr.Zero)
                     {
-                        Trace.WriteLine("Popup is visible:" + GetWindowText(popup));
-                        Sleep(500); // give it time to get keystrokes!
-
-                        return new Window(this, popup);
-
+                        found = new Window(this, popup);
                     }
-                    IntPtr hwnd = GetForegroundWindow();
-                    if (hwnd != h)
+                    else
                     {
-                        Trace.WriteLine("WindowChanged:" + GetForegroundWindowText());
-                        Sleep(500); // give it time to get keystrokes!
-
-                        return new Window(this, hwnd);
+                        IntPtr hwnd = GetForegroundWindow();
+                        if (hwnd != h && popup != excludingThisWindow)
+                        {
+                            found = new Window(this, hwnd);
+                        }
+                    }
+                    if (found != null)
+                    {
+                        Sleep(100);
+                        var bounds = found.GetWindowBounds();
+                        if (bounds.Width == 0 && bounds.Height == 0)
+                        {
+                            // can't be it!
+                            found = null;
+                        }
                     }
                 }
                 catch
                 {
                     // unrecognized window, perhaps a temp window...
                 }
-                Sleep(1000);
+                if (found == null)
+                {
+                    Sleep(1000);
+                }
+            }
+            if (found != null)
+            {
+                Sleep(100); // give it time to get ready to receive keystrokes.
+                Trace.WriteLine("WaitForPopup found: '" + found.GetWindowText() + "', at:" + found.GetWindowBounds().ToString());
+                return found;
             }
             throw new ApplicationException("Window is not appearing!");
         }
@@ -470,6 +492,13 @@ namespace UnitTests
             return Rectangle.Empty;
         }
 
+        public Rectangle GetWindowBounds()
+        {
+            RECT r;
+            GetWindowRect(this.handle, out r);
+            return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
+        }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -515,6 +544,9 @@ namespace UnitTests
 
         [DllImport("User32", CharSet = CharSet.Unicode)]
         static extern int GetWindowText(IntPtr hWnd, IntPtr lpString, int nMaxCount);
+
+        [DllImport("User32", CharSet = CharSet.Unicode)]
+        static extern int GetWindowRect(IntPtr hWnd, out RECT rect);
 
         [DllImport("User32", CharSet = CharSet.Unicode)]
         static extern IntPtr GetWindow(IntPtr hWnd, GetWindowOptions uCmd);

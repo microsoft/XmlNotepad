@@ -458,7 +458,7 @@ namespace UnitTests {
             Sleep(500);
             w.SendKeystrokes("{ENTER}"); // activate drop down.
             Rectangle bounds = GetXmlBuilderBounds();
-            Window popup = ClickXmlBuilder();
+            Window popup = ClickXmlBuilder();            
             popup.SendKeystrokes("{DOWN}{LEFT} {ENTER}");
 
             Trace.WriteLine("test MouseDown on NodeTextView editor");
@@ -610,7 +610,7 @@ namespace UnitTests {
             Rectangle bounds = NodeTextViewCompletionSet.Bounds;
             Sleep(1000);
             Mouse.MouseClick(new Point(bounds.Left + 15, bounds.Top + 10), MouseButtons.Left);
-            return this.window.WaitForPopup();
+            return this.window.WaitForPopup(NodeTextViewCompletionSet.Hwnd);
         }
 
 
@@ -634,7 +634,7 @@ namespace UnitTests {
 
             openDialog = w.WaitForPopup();            
             openDialog.SendKeystrokes(TestDir + "UnitTests\\test5.xml{ENTER}");
-            Window browser = openDialog.WaitForPopup();
+            Window browser = w.WaitForPopup(openDialog.Handle);
             text = browser.GetWindowText();
             browser.DismissPopUp("%{F4}");
 
@@ -1907,62 +1907,7 @@ Prefix 'user' is not defined. ");
             Sleep(1000);
             source = acc.Bounds;
             return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
-        }
-
-        [TestMethod]
-        public void TestInternetExplorerDragDrop() {
-            Trace.WriteLine("TestInternetExplorerDragDrop==========================================================");
-
-            Window w = this.LaunchNotepad();
-
-            Trace.WriteLine("Launching IE");
-
-            using (Window ieWindow = LaunchIE("http://www.bing.com/news?format=RSS"))
-            {
-                Sleep(5000); // give it plenty of time to settle down!.
-                Screen screen = Screen.FromHandle(ieWindow.Handle);
-                ieWindow.SetWindowSize(screen.Bounds.Width / 2, (int)(screen.Bounds.Height * 0.8));
-
-                AutomationWrapper ieframe = ieWindow.AccessibleObject;
-                AutomationWrapper pane = ieframe.GetChild(1);
-                AutomationWrapper addressBar = pane.FindChild("Address Bar");
-                AutomationWrapper combo = addressBar.FindChild("Address Combo Control");
-                AutomationWrapper dragsite = combo.FindChild("Drag to taskbar to pin site");
-
-                Rectangle treeBounds = this.TreeView.Bounds;
-                Point dropPoint = GetDropSpot(ieWindow, treeBounds);
-                Sleep(500);
-                Rectangle bounds = dragsite.Bounds;
-                Point dragPoint = new Point(bounds.Left + 10, bounds.Top + 10);
-
-                Trace.WriteLine("Dragging from: " + dragPoint.ToString());
-                Trace.WriteLine("Drop spot: " + dropPoint.ToString());
-                Sleep(500);
-                Mouse.MouseDragDrop(dragPoint, dropPoint, 10, MouseButtons.Left);
-                Sleep(500);
-
-                // get the IE window out of the way.
-                ieWindow.Close(); 
-                Sleep(1000);
-                w.Activate();
-                Sleep(1000); 
-                Trace.WriteLine("Wait for rss to be loaded");
-                this.WaitForText("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-                w.SendKeystrokes("^Irss");
-                this.CheckNodeName("rss");
-
-                string outFile = Save("out.xml");
-                Sleep(1000);
-
-                XmlDocument doc = new XmlDocument();
-                doc.Load(outFile);
-                if (doc.DocumentElement.LocalName != "rss") {
-                    throw new ApplicationException("Expected rss in UnitTests\\out.xml");
-                }
-            }
-
-            return;
-        }
+        }        
 
         [TestMethod]
         public void TestAccessibility() {
@@ -2332,8 +2277,9 @@ Prefix 'user' is not defined. ");
             Uri baseUri = new Uri(test);
             XmlDocument doc = new XmlDocument();
             doc.Load(test);
+
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Parse;
             foreach (XmlElement e in doc.SelectNodes("test/case")) {
                 Uri input = new Uri(baseUri, e.GetAttribute("input"));
                 Uri output = new Uri(baseUri, e.GetAttribute("results"));
