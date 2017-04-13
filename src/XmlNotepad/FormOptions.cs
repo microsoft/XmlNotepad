@@ -186,6 +186,7 @@ namespace XmlNotepad
         string language;
         int maximumLineLength;
         bool autoFormatLongLines;
+        bool ignoreDTD;
 
         public UserSettings(Settings s) {            
             this.settings = s;
@@ -210,6 +211,7 @@ namespace XmlNotepad
             language = (string)this.settings["Language"];
             maximumLineLength = (int)this.settings["MaximumLineLength"];
             autoFormatLongLines = (bool)this.settings["AutoFormatLongLines"];
+            ignoreDTD = (bool)this.settings["IgnoreDTD"];
         }
 
         public static string Escape(string nl) {
@@ -243,6 +245,7 @@ namespace XmlNotepad
             this.settings["Language"] = ("" + this.language).Trim();
             this.settings["MaximumLineLength"] = this.maximumLineLength;
             this.settings["AutoFormatLongLines"] = this.autoFormatLongLines;
+            this.settings["IgnoreDTD"] = this.ignoreDTD;
 
             this.settings.OnChanged("Colors");
 
@@ -266,6 +269,7 @@ namespace XmlNotepad
             newLineChars = Escape("\r\n");
             language = "";
             this.maximumLineLength = 10000;
+            ignoreDTD = false;
         }
 
         [SRCategoryAttribute("ColorCategory")]
@@ -486,6 +490,21 @@ namespace XmlNotepad
             set
             {
                 this.autoFormatLongLines = value;
+            }
+        }
+
+        [SRCategoryAttribute("Validation")]
+        [LocDisplayName("IgnoreDTDProperty")]
+        [SRDescriptionAttribute("IgnoreDTDDescription")]
+        public bool IgnoreDTD
+        {
+            get
+            {
+                return this.ignoreDTD;
+            }
+            set
+            {
+                this.ignoreDTD = value;
             }
         }
     }

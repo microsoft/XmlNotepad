@@ -718,4 +718,12 @@ Do you want to visit the web page that describes this update?</value>
     <value>XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|All files (*.*)|*.*</value>
     <comment>Open file dialog filter.</comment>
   </data>
+  <data name="IgnoreDTDDescription" xml:space="preserve">
+    <value>Avoid DTD validations</value>
+    <comment>Property Grid Description</comment>
+  </data>
+  <data name="IgnoreDTDProperty" xml:space="preserve">
+    <value>Ignore DTD</value>
+    <comment>Property Grid Property Name</comment>
+  </data>
 </root>
