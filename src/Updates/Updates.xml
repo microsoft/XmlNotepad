@@ -8,7 +8,7 @@
         <frequency>1.00:00:00</frequency>
     </application>
     <version number="2.7.1.16">
-        <feature>Thanks to Steve Romanow for fixing some old codeplex URL references.</feature>
+        <bug>Thanks to Steve Romanow for fixing some old codeplex URL references.</bug>
     </version>
     <version number="2.7.1.12">
         <feature>Add XML stats under View menu.</feature>
