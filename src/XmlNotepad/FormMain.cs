@@ -258,6 +258,7 @@ namespace XmlNotepad {
 
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DynamicHelp.xslt";
             this.dynamicHelpViewer.ShowFileStrip = false;
+            this.dynamicHelpViewer.DisableOutputFile = true;
 
             model.FileChanged += new EventHandler(OnFileChanged);
             model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);

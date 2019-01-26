@@ -32,14 +32,14 @@
     <UpdatePeriodically>true</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.lovettsoftware.com/downloads/xmlnotepad/</InstallUrl>
+    <InstallUrl>http://lovettsoftware.com/downloads/xmlnotepad/</InstallUrl>
     <SupportUrl>https://github.com/Microsoft/XmlNotepad</SupportUrl>
     <ProductName>XML Notepad</ProductName>
     <PublisherName>Chris Lovett</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>17</ApplicationRevision>
+    <ApplicationRevision>18</ApplicationRevision>
     <ApplicationVersion>2.7.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

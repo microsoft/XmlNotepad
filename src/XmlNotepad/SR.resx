@@ -726,4 +726,8 @@ Do you want to visit the web page that describes this update?</value>
     <value>Ignore DTD</value>
     <comment>Property Grid Property Name</comment>
   </data>
+  <data name="XslOutputFileNameTooltip" xml:space="preserve">
+    <value>Please enter the filename for storing the the XSLT output</value>
+    <comment>Tooltip</comment>
+  </data>
 </root>
