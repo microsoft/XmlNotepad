@@ -69,7 +69,7 @@ namespace XmlNotepad {
         public event EventHandler<TextEditorEventArgs> CommitEdit;
         public event EventHandler<TextEditorLayoutEventArgs> LayoutEditor;
 
-        public TextEditorOverlay(Control parent) {
+        public TextEditorOverlay(Control parent, int maxLength = short.MaxValue) {
             this.parent = parent;
             this.textEditor = new TextBox();
             string name = parent.Name + "Editor"; 
@@ -82,6 +82,7 @@ namespace XmlNotepad {
             this.textEditor.Multiline = true; // this fixes layout problems in single line case also.
             this.textEditor.Margin = new Padding(1, 0, 0, 0);
             this.textEditor.HideSelection = false;
+            this.textEditor.MaxLength = maxLength;
             parent.Controls.Add(this.textEditor);
             this.textEditor.KeyDown += new KeyEventHandler(editor_KeyDown);
             this.textEditor.LostFocus += new EventHandler(editor_LostFocus);

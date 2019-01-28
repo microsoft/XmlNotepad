@@ -228,7 +228,7 @@ Would you like to reformat the text into multiple lines?</value>
     <comment>Message box prompt</comment>
   </data>
   <data name="MainFormTitle" xml:space="preserve">
-    <value>XML Notepad</value>
+    <value>XML Notepad MaxLength Extended</value>
     <comment>Window title</comment>
   </data>
   <data name="MoveErrorCaption" xml:space="preserve">
@@ -704,6 +704,14 @@ Do you want to visit the web page that describes this update?</value>
   </data>
   <data name="MaximumLineLengthProperty" xml:space="preserve">
     <value>Maximum Line Length</value>
+    <comment>Property Grid property name</comment>
+  </data>
+  <data name="MaximumValueLengthDescription" xml:space="preserve">
+    <value>What is the maximum length for the textbox</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="MaximumValueLengthProperty" xml:space="preserve">
+    <value>Maximum Value Length</value>
     <comment>Property Grid property name</comment>
   </data>
   <data name="NoByteOrderMark" xml:space="preserve">

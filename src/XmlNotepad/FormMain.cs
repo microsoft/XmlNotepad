@@ -324,6 +324,7 @@ namespace XmlNotepad {
 
             this.settings["AppRegistered"] = false;
             this.settings["MaximumLineLength"] = 10000;
+            this.settings["MaximumValueLength"] = short.MaxValue;
             this.settings["AutoFormatLongLines"] = false;
             this.settings["IgnoreDTD"] = false;
 
