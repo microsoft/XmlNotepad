@@ -29,13 +29,13 @@ namespace XmlNotepad {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.SourceFileName = new System.Windows.Forms.TextBox();
-            this.TransformButton = new System.Windows.Forms.Button();
             this.BrowseButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.TransformButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.OutputFileName = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -72,13 +72,6 @@ namespace XmlNotepad {
             resources.ApplyResources(this.SourceFileName, "SourceFileName");
             this.SourceFileName.Name = "SourceFileName";
             // 
-            // TransformButton
-            // 
-            resources.ApplyResources(this.TransformButton, "TransformButton");
-            this.TransformButton.Name = "TransformButton";
-            this.TransformButton.UseVisualStyleBackColor = true;
-            this.TransformButton.Click += new System.EventHandler(this.TransformButton_Click);
-            // 
             // BrowseButton
             // 
             resources.ApplyResources(this.BrowseButton, "BrowseButton");
@@ -91,10 +84,12 @@ namespace XmlNotepad {
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.TabStop = false;
             // 
-            // WebBrowser1
+            // TransformButton
             // 
-            resources.ApplyResources(this.WebBrowser1, "WebBrowser1");
-            this.WebBrowser1.Name = "WebBrowser1";
+            resources.ApplyResources(this.TransformButton, "TransformButton");
+            this.TransformButton.Name = "TransformButton";
+            this.TransformButton.UseVisualStyleBackColor = true;
+            this.TransformButton.Click += new System.EventHandler(this.TransformButton_Click);
             // 
             // label2
             // 
@@ -105,6 +100,11 @@ namespace XmlNotepad {
             // 
             resources.ApplyResources(this.OutputFileName, "OutputFileName");
             this.OutputFileName.Name = "OutputFileName";
+            // 
+            // WebBrowser1
+            // 
+            resources.ApplyResources(this.WebBrowser1, "WebBrowser1");
+            this.WebBrowser1.Name = "WebBrowser1";
             // 
             // XsltViewer
             // 

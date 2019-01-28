@@ -254,6 +254,8 @@ namespace XmlNotepad {
            
             this.ResumeLayout();
 
+            this.menuStrip1.SizeChanged += OnMenuStripSizeChanged;
+
             InitializeHelp(this.helpProvider1);
 
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DynamicHelp.xslt";
@@ -274,7 +276,14 @@ namespace XmlNotepad {
 
             // populate default settings and provide type info.
             Font f = new Font("Courier New", 10, FontStyle.Regular);
-            this.Font = f;
+            try
+            {
+                this.Font = f;
+            }
+            catch
+            {
+                // this throws if user has changed system text font size.
+            }
             this.settings["Font"] = f;
             System.Collections.Hashtable colors = new System.Collections.Hashtable();
             colors["Element"] = Color.FromArgb(0, 64, 128);
@@ -556,6 +565,11 @@ namespace XmlNotepad {
             }
         }
 
+        private void OnMenuStripSizeChanged(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
         protected override void OnLayout(LayoutEventArgs levent) {
             Size s = this.ClientSize;
             int w = s.Width;
@@ -569,6 +583,7 @@ namespace XmlNotepad {
                 this.statusBar1.Size = new Size(w, sbHeight);
             }
             this.tabControlViews.Location = new Point(0, top);
+            this.comboBoxLocation.Location = new Point(this.comboBoxLocation.Location.X, this.menuStrip1.Height);
             this.tabControlViews.Size = new Size(w, h - top - sbHeight - this.tabControlLists.Height - this.resizer.Height);
             //this.tabControlViews.Padding = new Point(0, 0);
             //this.xmlTreeView1.Location = new Point(0, top);

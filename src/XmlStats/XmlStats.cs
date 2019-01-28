@@ -174,8 +174,15 @@ namespace Microsoft.Xml
 
         public void Process(string path)
         {
-            XmlTextReader r = new XmlTextReader(path);
-            Process(r);
+            try
+            {
+                XmlTextReader r = new XmlTextReader(path);
+                Process(r);
+            }
+            catch (Exception)
+            {
+                // ok to ignore bad xml here
+            }
         }
 
         public void Process(XmlTextReader r)

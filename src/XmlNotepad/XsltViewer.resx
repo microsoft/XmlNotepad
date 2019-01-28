@@ -131,15 +131,21 @@
   <data name="tableLayoutPanel1.ColumnCount" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
+  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left</value>
+  </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>32, 8</value>
   </data>
   <data name="label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 8, 0, 5</value>
+    <value>3, 3, 0, 3</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 13</value>
@@ -169,16 +175,16 @@
     <value>SourceFileName</value>
   </data>
   <data name="SourceFileName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="SourceFileName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>113, 5</value>
+    <value>113, 3</value>
   </data>
   <data name="SourceFileName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 5, 3, 3</value>
+    <value>0, 3, 3, 3</value>
   </data>
   <data name="SourceFileName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>206, 20</value>
+    <value>207, 20</value>
   </data>
   <data name="SourceFileName.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -197,6 +203,12 @@
   </data>
   <data name="BrowseButton.AccessibleName" xml:space="preserve">
     <value>BrowseButton</value>
+  </data>
+  <data name="BrowseButton.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
+  </data>
+  <data name="BrowseButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="BrowseButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>325, 3</value>
@@ -245,6 +257,9 @@
         33Wl8lXOZax8oOhW606ulG96tKCH6XqjMz3KBaL/tZ/3fytB+BPsBL56Bm3rXgAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="pictureBox1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>5, 3</value>
   </data>
@@ -275,8 +290,11 @@
   <data name="TransformButton.AccessibleName" xml:space="preserve">
     <value>TransformButton</value>
   </data>
+  <data name="TransformButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="TransformButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>622, 3</value>
+    <value>621, 3</value>
   </data>
   <data name="TransformButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -299,17 +317,23 @@
   <data name="&gt;&gt;TransformButton.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left</value>
+  </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>365, 8</value>
+    <value>366, 3</value>
   </data>
   <data name="label2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 8, 3, 0</value>
+    <value>3, 3, 0, 3</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>42, 13</value>
+    <value>42, 23</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -333,16 +357,16 @@
     <value>5</value>
   </data>
   <data name="OutputFileName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="OutputFileName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>410, 5</value>
+    <value>408, 3</value>
   </data>
   <data name="OutputFileName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 5, 3, 3</value>
+    <value>0, 3, 3, 3</value>
   </data>
   <data name="OutputFileName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>206, 20</value>
+    <value>207, 20</value>
   </data>
   <data name="OutputFileName.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -369,7 +393,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>700, 29</value>
+    <value>699, 29</value>
   </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>

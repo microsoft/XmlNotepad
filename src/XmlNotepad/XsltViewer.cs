@@ -55,7 +55,23 @@ namespace XmlNotepad {
             this.OutputFileName.KeyDown += new KeyEventHandler(OnOutputFileNameKeyDown);
 
             this.WebBrowser1.ScriptErrorsSuppressed = true;
-            this.WebBrowser1.WebBrowserShortcutsEnabled = true;            
+            this.WebBrowser1.WebBrowserShortcutsEnabled = true;
+
+            TransformButton.SizeChanged += TransformButton_SizeChanged;
+        }
+
+        private void TransformButton_SizeChanged(object sender, EventArgs e)
+        {
+            CenterInputBoxes();
+        }
+
+        private void CenterInputBoxes()
+        {
+            // TextBoxes don't stretch when you set Anchor Top + Bottom, so we center the
+            // Text Boxes manually so they look ok.
+            int center = (tableLayoutPanel1.Height - SourceFileName.Height) / 2;
+            SourceFileName.Margin = new Padding(0, center, 3, 3);
+            OutputFileName.Margin = new Padding(0, center, 3, 3);
         }
 
         public string DefaultStylesheetResource {
@@ -244,7 +260,7 @@ namespace XmlNotepad {
                         outpath = new Uri(baseUri, outpath).LocalPath;
                     }
                 }
-                else
+                else if (!string.IsNullOrEmpty(outpath))
                 {
                     outpath = new Uri(baseUri, outpath).LocalPath;
                 }
