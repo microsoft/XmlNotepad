@@ -41,7 +41,7 @@ namespace XmlNotepad {
             InitializeComponent();
 
             this.SuspendLayout();
-            this.editor = new TextEditorOverlay(this, (int)settings["MaximumLineLength"]);
+            this.editor = new TextEditorOverlay(this);
             this.editor.MultiLine = true;
             this.editor.CommitEdit += new EventHandler<TextEditorEventArgs>(OnCommitEdit);
             this.editor.LayoutEditor += new EventHandler<TextEditorLayoutEventArgs>(OnLayoutEditor);
@@ -154,12 +154,28 @@ namespace XmlNotepad {
             // change the colors.
             Invalidate();
             if (this.settings != null) {
-                System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings["Colors"];
-                if (colors != null) {
-                    object color = colors["ContainerBackground"];
-                    if (color != null) {
-                        this.containerBackground = (Color)color;
-                    }
+                switch (name)
+                {
+                    case "Colors":
+                        System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings["Colors"];
+                        if (colors != null)
+                        {
+                            object color = colors["ContainerBackground"];
+                            if (color != null)
+                            {
+                                this.containerBackground = (Color)color;
+                            }
+                        }
+                        break;
+                    case "MaximumValueLength":
+                        // text editor maximum length.
+                        var max = (int)settings["MaximumValueLength"];
+                        if (max == 0)
+                        {
+                            max = short.MaxValue;
+                        }
+                        this.editor.MaximumLineLength = max;
+                        break;
                 }
             }
         }

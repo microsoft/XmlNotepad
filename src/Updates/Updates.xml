@@ -7,6 +7,15 @@
         <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
         <frequency>1.00:00:00</frequency>
     </application>
+    <version number="2.7.1.19">
+        <feature>Merge change by Vincent Lepape which adds a new MaximumValueLength setting.</feature>
+    </version>
+    <version number="2.7.1.18">
+        <bug>Fix some layout bugs that happen when system font size is increased beyond 100%.</bug>
+    </version>
+    <version number="2.7.1.17">
+        <feature>Add output file field to XSL Output tab which fixes problems with relative links in the XSLT output.</feature>
+    </version>
     <version number="2.7.1.16">
         <bug>Thanks to Steve Romanow for fixing some old codeplex URL references.</bug>
     </version>
