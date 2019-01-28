@@ -805,7 +805,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XML Notepad.
+        ///   Looks up a localized string similar to XML Notepad MaxLength Extended.
         /// </summary>
         internal static string MainFormTitle {
             get {
@@ -828,6 +828,24 @@ namespace XmlNotepad {
         internal static string MaximumLineLengthProperty {
             get {
                 return ResourceManager.GetString("MaximumLineLengthProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the maximum length for the textbox.
+        /// </summary>
+        internal static string MaximumValueLengthDescription {
+            get {
+                return ResourceManager.GetString("MaximumValueLengthDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum Value Length.
+        /// </summary>
+        internal static string MaximumValueLengthProperty {
+            get {
+                return ResourceManager.GetString("MaximumValueLengthProperty", resourceCulture);
             }
         }
         
