@@ -199,10 +199,13 @@
     <value>BrowseButton</value>
   </data>
   <data name="BrowseButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>325, 3</value>
+    <value>325, 4</value>
+  </data>
+  <data name="BrowseButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 4, 3, 3</value>
   </data>
   <data name="BrowseButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>34, 23</value>
+    <value>34, 20</value>
   </data>
   <data name="BrowseButton.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -246,10 +249,10 @@
 </value>
   </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>5, 3</value>
+    <value>5, 4</value>
   </data>
   <data name="pictureBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 3, 0, 0</value>
+    <value>5, 4, 0, 0</value>
   </data>
   <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -276,10 +279,13 @@
     <value>TransformButton</value>
   </data>
   <data name="TransformButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>622, 3</value>
+    <value>622, 4</value>
+  </data>
+  <data name="TransformButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 4, 3, 3</value>
   </data>
   <data name="TransformButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+    <value>75, 20</value>
   </data>
   <data name="TransformButton.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -369,7 +375,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>700, 29</value>
+    <value>700, 28</value>
   </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
