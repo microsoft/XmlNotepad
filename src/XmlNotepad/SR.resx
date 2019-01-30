@@ -228,7 +228,7 @@ Would you like to reformat the text into multiple lines?</value>
     <comment>Message box prompt</comment>
   </data>
   <data name="MainFormTitle" xml:space="preserve">
-    <value>XML Notepad MaxLength Extended</value>
+    <value>XML Notepad</value>
     <comment>Window title</comment>
   </data>
   <data name="MoveErrorCaption" xml:space="preserve">
