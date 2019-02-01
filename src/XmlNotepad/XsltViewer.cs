@@ -244,7 +244,7 @@ namespace XmlNotepad {
                     {
                         // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
                         // XslCompiledTransform doesn't give us that so we need to get it outselves.
-                        var method = GetOutputMethod(resolved.LocalPath);
+                        var method = GetOutputMethod(resolved);
                         string ext = ".xml";
                         if (method.ToLower() == "html")
                         {
@@ -305,9 +305,9 @@ namespace XmlNotepad {
             }
         }
 
-        string GetOutputMethod(string xslFile)
+        string GetOutputMethod(Uri xslFile)
         {
-            XDocument temp = XDocument.Load(xslFile);
+            XDocument temp = XDocument.Load(xslFile.OriginalString);
             var ns = temp.Root.Name.Namespace;
             string method = "xml";
             foreach (var oe in temp.Root.Elements(ns + "output"))
