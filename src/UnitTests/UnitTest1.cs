@@ -363,6 +363,11 @@ namespace UnitTests {
         /// </summary>
         void CheckNodeValue(string expected, StringComparison comparison)
         {
+            if (!Window.GetForegroundWindowText().StartsWith("XML Notepad"))
+            {
+                this.window.Activate(); 
+                Sleep(500);
+            }
             // must not be a leaf node then...
             Sleep(100);
             SendKeys.SendWait("{ENTER}");
@@ -1234,8 +1239,8 @@ namespace UnitTests {
             Rectangle bounds = comboBoxLocation.Bounds;
             Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
 
-            Trace.WriteLine("Load RSS from http");
-            w.SendKeystrokes("{END}+{HOME}http://www.bing.com/news?format=RSS{ENTER}");
+            Trace.WriteLine("Load RSS from disk");
+            w.SendKeystrokes("{END}+{HOME}" + TestDir + "Samples\\rss.xml" + "{ENTER}");
 
             Trace.WriteLine("Wait for rss to be loaded");
             WaitForText("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -1244,10 +1249,10 @@ namespace UnitTests {
             //this.CheckOuterXml("<?xml-stylesheet type='text/xsl' href='rsspretty.xsl' version='1.0'?>");
 
             Trace.WriteLine("Show XSLT");
-            AutomationWrapper tab = w.FindDescendant("tabPageHtmlView");
-            bounds = tab.Bounds;
+            AutomationWrapper tabControl = w.FindDescendant("tabControlViews");
+            bounds = tabControl.Bounds;
             Trace.WriteLine("Select tabPageHtmlView ");
-            Mouse.MouseClick(new Point(bounds.Left + 20 + 70, bounds.Top - 15), MouseButtons.Left);
+            Mouse.MouseClick(new Point(bounds.Left + 20 + 70, bounds.Top + 5), MouseButtons.Left);
             Sleep(1000);
 
             Trace.WriteLine("Enter custom XSL with script code.");
@@ -1273,8 +1278,7 @@ namespace UnitTests {
 Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Back to tree view");
-            tab = w.FindDescendant("tabPageTreeView");
-            Mouse.MouseClick(new Point(bounds.Left + 20, bounds.Top - 15), MouseButtons.Left);
+            Mouse.MouseClick(new Point(bounds.Left + 20, bounds.Top + 5), MouseButtons.Left);
 
             Sleep(1000);
             Save("out.xml");
@@ -1840,12 +1844,12 @@ Prefix 'user' is not defined. ");
             Mouse.MouseUp(titleBar, MouseButtons.Left);            
 
             // code coverage on expand/collapse.
-            w.SendKeystrokes("^IOffice");
+            w.SendKeystrokes("^ICountry");
             node.Invoke();
             Sleep(500);
-            w.SendKeystrokes("{LEFT}");
-            Sleep(500);
             w.SendKeystrokes("{RIGHT}");
+            Sleep(500);
+            w.SendKeystrokes("{LEFT}");
 
             Sleep(1000);
             Trace.WriteLine("Test task list resizers");

@@ -1599,7 +1599,7 @@ public class XmlDiff
 		if ( _bIgnoreXmlDecl )       options += XmlDiffOptions.IgnoreXmlDecl.ToString() + " ";
         if ( _bIgnoreDtd     )       options += XmlDiffOptions.IgnoreDtd.ToString() + " ";
         if ( options == string.Empty )      options = XmlDiffOptions.None.ToString();
-		options.Trim();
+        options = options.Trim();
 
 		return options;
 	}

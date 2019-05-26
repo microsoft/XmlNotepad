@@ -221,9 +221,11 @@ namespace XmlNotepad {
         private string redoLabel;
 
 
-        public FormMain() {
-
+        public FormMain()
+        {
             this.settings = new Settings();
+            SetDefaultSettings();
+
             this.model = (XmlCache)GetService(typeof(XmlCache));
             this.ip = (XmlIntellisenseProvider)GetService(typeof(XmlIntellisenseProvider));
             //this.model = new XmlCache((ISynchronizeInvoke)this);
@@ -242,22 +244,25 @@ namespace XmlNotepad {
 
             this.xmlTreeView1.Dock = System.Windows.Forms.DockStyle.None;
             this.xmlTreeView1.Size = this.tabPageTreeView.ClientSize;
-            this.xmlTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;            
+            this.xmlTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
 
             this.undoLabel = this.undoToolStripMenuItem.Text;
             this.redoLabel = this.redoToolStripMenuItem.Text;
-            
+
             this.xsltViewer.SetSite(this);
             this.dynamicHelpViewer.SetSite(this);
 
             CreateTabControl();
-           
+
             this.ResumeLayout();
+
+            this.menuStrip1.SizeChanged += OnMenuStripSizeChanged;
 
             InitializeHelp(this.helpProvider1);
 
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DynamicHelp.xslt";
             this.dynamicHelpViewer.ShowFileStrip = false;
+            this.dynamicHelpViewer.DisableOutputFile = true;
 
             model.FileChanged += new EventHandler(OnFileChanged);
             model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
@@ -270,52 +275,6 @@ namespace XmlNotepad {
             this.resizer.Pane2 = this.tabControlLists;
             this.Controls.SetChildIndex(this.resizer, 0);
             this.taskList.Site = this;
-
-            // populate default settings and provide type info.
-            Font f = new Font("Courier New", 10, FontStyle.Regular);
-            this.Font = f;
-            this.settings["Font"] = f;
-            System.Collections.Hashtable colors = new System.Collections.Hashtable();
-            colors["Element"] = Color.FromArgb(0, 64, 128);
-            colors["Attribute"] = Color.Maroon;
-            colors["Text"] = Color.Black;
-            colors["Comment"] = Color.Green;
-            colors["PI"] = Color.Purple;
-            colors["CDATA"] = Color.Gray;
-            colors["Background"] = Color.White;
-            colors["ContainerBackground"] = Color.AliceBlue;
-
-            this.settings["Colors"] = colors;
-            this.settings["FileName"] = new Uri("/",UriKind.RelativeOrAbsolute);
-            this.settings["WindowBounds"] = new Rectangle(0,0,0,0);
-            this.settings["TaskListSize"] = 0;
-            this.settings["TreeViewSize"] = 0;
-            this.settings["RecentFiles"] = new Uri[0];
-            this.settings["SchemaCache"] = this.model.SchemaCache;
-            this.settings["SearchWindowLocation"] = new Point(0, 0);
-            this.settings["SearchSize"] = new Size(0, 0);
-            this.settings["FindMode"] = false;
-            this.settings["SearchXPath"] = false;
-            this.settings["SearchWholeWord"] = false;
-            this.settings["SearchRegex"] = false;
-            this.settings["SearchMatchCase"] = false;
-
-            this.settings["LastUpdateCheck"] = DateTime.Now;
-            this.settings["UpdateFrequency"] = TimeSpan.FromDays(20);
-            this.settings["UpdateLocation"] = "http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
-            this.settings["UpdateEnabled"] = true;
-
-            this.settings["AutoFormatOnSave"] = true;
-            this.settings["IndentLevel"] = 2;
-            this.settings["IndentChar"] = IndentChar.Space;
-            this.settings["NewLineChars"] = UserSettings.Escape("\r\n");
-            this.settings["Language"] = "";
-            this.settings["NoByteOrderMark"] = false;
-
-            this.settings["AppRegistered"] = false;
-            this.settings["MaximumLineLength"] = 10000;
-            this.settings["AutoFormatLongLines"] = false;
-            this.settings["IgnoreDTD"] = false;
 
             this.settings.Changed += new SettingsEventHandler(settings_Changed);
 
@@ -359,16 +318,58 @@ namespace XmlNotepad {
             this.toolStripMenuItemUpdate.Visible = false;
             this.toolStripMenuItemUpdate.Click += new EventHandler(toolStripMenuItemUpdate_Click);
 
-            // now set in virtual InitializeHelp()
-            // 
-            // helpProvider1
-            // 
-            //this.helpProvider1.HelpNamespace = Application.StartupPath + "\\Help.chm";
-            //this.helpProvider1.Site = this;
-
-            this.ContextMenuStrip = this.contextMenu1;            
+            this.ContextMenuStrip = this.contextMenu1;
             New();
 
+            this.settings["SchemaCache"] = this.model.SchemaCache;
+        }
+
+        private void SetDefaultSettings()
+        {
+            // populate default settings and provide type info.
+            Font f = new Font("Courier New", 10, FontStyle.Regular);
+            this.settings["Font"] = f;
+            System.Collections.Hashtable colors = new System.Collections.Hashtable();
+            colors["Element"] = Color.FromArgb(0, 64, 128);
+            colors["Attribute"] = Color.Maroon;
+            colors["Text"] = Color.Black;
+            colors["Comment"] = Color.Green;
+            colors["PI"] = Color.Purple;
+            colors["CDATA"] = Color.Gray;
+            colors["Background"] = Color.White;
+            colors["ContainerBackground"] = Color.AliceBlue;
+
+            this.settings["Colors"] = colors;
+            this.settings["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
+            this.settings["WindowBounds"] = new Rectangle(0, 0, 0, 0);
+            this.settings["TaskListSize"] = 0;
+            this.settings["TreeViewSize"] = 0;
+            this.settings["RecentFiles"] = new Uri[0];
+            this.settings["SearchWindowLocation"] = new Point(0, 0);
+            this.settings["SearchSize"] = new Size(0, 0);
+            this.settings["FindMode"] = false;
+            this.settings["SearchXPath"] = false;
+            this.settings["SearchWholeWord"] = false;
+            this.settings["SearchRegex"] = false;
+            this.settings["SearchMatchCase"] = false;
+
+            this.settings["LastUpdateCheck"] = DateTime.Now;
+            this.settings["UpdateFrequency"] = TimeSpan.FromDays(20);
+            this.settings["UpdateLocation"] = "http://lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
+            this.settings["UpdateEnabled"] = true;
+
+            this.settings["AutoFormatOnSave"] = true;
+            this.settings["IndentLevel"] = 2;
+            this.settings["IndentChar"] = IndentChar.Space;
+            this.settings["NewLineChars"] = UserSettings.Escape("\r\n");
+            this.settings["Language"] = "";
+            this.settings["NoByteOrderMark"] = false;
+
+            this.settings["AppRegistered"] = false;
+            this.settings["MaximumLineLength"] = 10000;
+            this.settings["MaximumValueLength"] = (int)short.MaxValue;
+            this.settings["AutoFormatLongLines"] = false;
+            this.settings["IgnoreDTD"] = false;
         }
 
         public FormMain(string[] args)
@@ -555,6 +556,11 @@ namespace XmlNotepad {
             }
         }
 
+        private void OnMenuStripSizeChanged(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
         protected override void OnLayout(LayoutEventArgs levent) {
             Size s = this.ClientSize;
             int w = s.Width;
@@ -568,6 +574,7 @@ namespace XmlNotepad {
                 this.statusBar1.Size = new Size(w, sbHeight);
             }
             this.tabControlViews.Location = new Point(0, top);
+            this.comboBoxLocation.Location = new Point(this.comboBoxLocation.Location.X, this.menuStrip1.Height);
             this.tabControlViews.Size = new Size(w, h - top - sbHeight - this.tabControlLists.Height - this.resizer.Height);
             //this.tabControlViews.Padding = new Point(0, 0);
             //this.xmlTreeView1.Location = new Point(0, top);
@@ -2444,7 +2451,6 @@ namespace XmlNotepad {
             } else {
                 if (File.Exists(this.ConfigFile)) {
                     settings.Load(this.ConfigFile);
-
 
                     string newLines = (string)this.settings["NewLineChars"];
 

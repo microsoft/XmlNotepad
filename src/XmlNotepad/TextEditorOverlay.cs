@@ -103,6 +103,12 @@ namespace XmlNotepad {
             set { site = this.cset.Site = value; }
         }
 
+        public int MaximumLineLength
+        {
+            get { return this.textEditor.MaxLength;  }
+            set { this.textEditor.MaxLength = value; }
+        }
+
         public bool AutoSize {
             get { return this.autoSize; }
             set { this.autoSize = value; }

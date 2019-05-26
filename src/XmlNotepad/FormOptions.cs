@@ -185,6 +185,7 @@ namespace XmlNotepad
         string newLineChars;
         string language;
         int maximumLineLength;
+        int maximumValueLength;
         bool autoFormatLongLines;
         bool ignoreDTD;
 
@@ -244,6 +245,7 @@ namespace XmlNotepad
 
             this.settings["Language"] = ("" + this.language).Trim();
             this.settings["MaximumLineLength"] = this.maximumLineLength;
+            this.settings["MaximumValueLength"] = this.maximumValueLength;
             this.settings["AutoFormatLongLines"] = this.autoFormatLongLines;
             this.settings["IgnoreDTD"] = this.ignoreDTD;
 
@@ -269,6 +271,7 @@ namespace XmlNotepad
             newLineChars = Escape("\r\n");
             language = "";
             this.maximumLineLength = 10000;
+            this.maximumValueLength = short.MaxValue;
             ignoreDTD = false;
         }
 
@@ -475,6 +478,21 @@ namespace XmlNotepad
             set
             {
                 this.maximumLineLength = value;
+            }
+        }
+
+        [SRCategoryAttribute("LongLineCategory")]
+        [LocDisplayName("MaximumValueLengthProperty")]
+        [SRDescriptionAttribute("MaximumValueLengthDescription")]
+        public int MaximumValueLength
+        {
+            get
+            {
+                return this.maximumValueLength;
+            }
+            set
+            {
+                this.maximumValueLength = value;
             }
         }
 

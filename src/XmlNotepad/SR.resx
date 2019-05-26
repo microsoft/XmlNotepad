@@ -706,6 +706,14 @@ Do you want to visit the web page that describes this update?</value>
     <value>Maximum Line Length</value>
     <comment>Property Grid property name</comment>
   </data>
+  <data name="MaximumValueLengthDescription" xml:space="preserve">
+    <value>What is the maximum length for the textbox</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="MaximumValueLengthProperty" xml:space="preserve">
+    <value>Maximum Value Length</value>
+    <comment>Property Grid property name</comment>
+  </data>
   <data name="NoByteOrderMark" xml:space="preserve">
     <value>No byte order mark on save</value>
     <comment>Property grid property name</comment>
@@ -725,5 +733,9 @@ Do you want to visit the web page that describes this update?</value>
   <data name="IgnoreDTDProperty" xml:space="preserve">
     <value>Ignore DTD</value>
     <comment>Property Grid Property Name</comment>
+  </data>
+  <data name="XslOutputFileNameTooltip" xml:space="preserve">
+    <value>Please enter the filename for storing the the XSLT output</value>
+    <comment>Tooltip</comment>
   </data>
 </root>

@@ -10,6 +10,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+using System.Linq;
+using System.Xml.Linq;
 using System.Net;
 
 namespace XmlNotepad {
@@ -46,18 +48,38 @@ namespace XmlNotepad {
             toolTip1.SetToolTip(this.BrowseButton, SR.BrowseButtonTooltip);
             toolTip1.SetToolTip(this.SourceFileName, SR.XslFileNameTooltip);
             toolTip1.SetToolTip(this.TransformButton, SR.TransformButtonTooltip);
+            toolTip1.SetToolTip(this.OutputFileName, SR.XslOutputFileNameTooltip);
 
             BrowseButton.Click += new EventHandler(BrowseButton_Click);
             this.SourceFileName.KeyDown += new KeyEventHandler(OnSourceFileNameKeyDown);
+            this.OutputFileName.KeyDown += new KeyEventHandler(OnOutputFileNameKeyDown);
 
             this.WebBrowser1.ScriptErrorsSuppressed = true;
-            this.WebBrowser1.WebBrowserShortcutsEnabled = true;            
+            this.WebBrowser1.WebBrowserShortcutsEnabled = true;
+
+            TransformButton.SizeChanged += TransformButton_SizeChanged;
+        }
+
+        private void TransformButton_SizeChanged(object sender, EventArgs e)
+        {
+            CenterInputBoxes();
+        }
+
+        private void CenterInputBoxes()
+        {
+            // TextBoxes don't stretch when you set Anchor Top + Bottom, so we center the
+            // Text Boxes manually so they look ok.
+            int center = (tableLayoutPanel1.Height - SourceFileName.Height) / 2;
+            SourceFileName.Margin = new Padding(0, center, 3, 3);
+            OutputFileName.Margin = new Padding(0, center, 3, 3);
         }
 
         public string DefaultStylesheetResource {
             get { return this.defaultSSResource; }
             set { this.defaultSSResource = value; }
         }
+
+        public bool DisableOutputFile { get; set; }
 
         public bool ShowFileStrip {
             get { return this.showFileStrip; }
@@ -82,15 +104,26 @@ namespace XmlNotepad {
                     this.TransformButton.Visible = value;
                     this.BrowseButton.Visible = value;
                     this.SourceFileName.Visible = value;
+                    this.OutputFileName.Visible = value;
                 }
             }
         }
 
         void OnSourceFileNameKeyDown(object sender, KeyEventArgs e) {
+            this.OutputFileName.Text = ""; // need to recompute this then...
             if (e.KeyCode == Keys.Enter) {
                 this.DisplayXsltResults();
             }
         }
+
+        private void OnOutputFileNameKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.DisplayXsltResults();
+            }
+        }
+
 
         XslCompiledTransform GetDefaultStylesheet() {
             if (defaultss != null) {
@@ -137,7 +170,12 @@ namespace XmlNotepad {
             this.doc = model.Document;
             try {
                 if (!string.IsNullOrEmpty(model.FileName)) {
-                    this.baseUri = new Uri(model.FileName);
+                    var uri = new Uri(model.FileName);
+                    if (uri != this.baseUri)
+                    {
+                        this.baseUri = uri;
+                        this.OutputFileName.Text = ""; // reset it since the file type might need to change...
+                    }
                 }
                 this.SourceFileName.Text = model.XsltFileName;
             } catch (Exception) {
@@ -178,6 +216,11 @@ namespace XmlNotepad {
                 if (this.showFileStrip) {
                     path = this.SourceFileName.Text.Trim();
                 }
+                string outpath = null;
+                if (this.showFileStrip)
+                {
+                    outpath = this.OutputFileName.Text.Trim();
+                }
                 if (string.IsNullOrEmpty(path)) {
                     transform = GetDefaultStylesheet();
                 } else {
@@ -192,16 +235,59 @@ namespace XmlNotepad {
                             xslt.Load(r, settings, resolver);
                         }
                     }
+
                     transform = xslt;
                 }
+                if (string.IsNullOrEmpty(outpath) && !DisableOutputFile)
+                {
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
+                        // XslCompiledTransform doesn't give us that so we need to get it outselves.
+                        var method = GetOutputMethod(resolved);
+                        string ext = ".xml";
+                        if (method.ToLower() == "html")
+                        {
+                            ext = ".htm";
+                        }
+                        else if (method.ToLower() == "text")
+                        {
+                            ext = ".txt";
+                        }
+                        outpath = Path.GetFileNameWithoutExtension(path) + "_output" + ext;
+
+                        this.OutputFileName.Text = outpath;
+                        outpath = new Uri(baseUri, outpath).LocalPath;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(outpath))
+                {
+                    outpath = new Uri(baseUri, outpath).LocalPath;
+                }
+
                 if (null != transform) {
-                    StringWriter writer = new StringWriter();
-                    XmlReaderSettings settings = new XmlReaderSettings();
-                    settings.XmlResolver = new XmlProxyResolver(this.site);
-                    settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                    transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
-                    this.xsltUri = resolved;                       
-                    Display(writer.ToString());
+                    if (DisableOutputFile || string.IsNullOrEmpty(path))
+                    {
+                        StringWriter writer = new StringWriter();
+                        XmlReaderSettings settings = new XmlReaderSettings();
+                        settings.XmlResolver = new XmlProxyResolver(this.site);
+                        settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                        transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
+                        this.xsltUri = resolved;
+                        Display(writer.ToString());
+                    }
+                    else
+                    {
+                        using (FileStream writer = new FileStream(outpath, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            XmlReaderSettings settings = new XmlReaderSettings();
+                            settings.XmlResolver = new XmlProxyResolver(this.site);
+                            settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                            transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
+                            this.xsltUri = resolved;
+                        }
+                        DisplayFile(outpath);
+                    }
                 }
             } catch (System.Xml.Xsl.XsltException x) {
                 if (x.Message.Contains("XsltSettings")) {
@@ -217,6 +303,41 @@ namespace XmlNotepad {
             } catch (Exception x) {
                 WriteError(x);
             }
+        }
+
+        string GetOutputMethod(Uri xslFile)
+        {
+            XDocument temp = XDocument.Load(xslFile.OriginalString);
+            var ns = temp.Root.Name.Namespace;
+            string method = "xml";
+            foreach (var oe in temp.Root.Elements(ns + "output"))
+            {
+                method = (string)oe.Attribute("method");
+                if (!string.IsNullOrEmpty(method))
+                {
+                    return method;
+                }
+            }
+            // then we need to figure out the default method which is xml unless there's an html element here
+            foreach(XElement child in temp.Root.Elements())
+            {
+                if (child.Name.Namespace == "" && string.Compare(child.Name.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    return "html";
+                }
+                else
+                {
+                    // might be an <xsl:template> so look inside these too...
+                    foreach (XElement grandchild in child.Elements())
+                    {
+                        if (grandchild.Name.Namespace == "" && string.Compare(grandchild.Name.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            return "html";
+                        }
+                    }
+                }
+            }
+            return method;
         }
 
         bool IsModified() {
@@ -247,6 +368,12 @@ namespace XmlNotepad {
             }
         }
 
+        private void DisplayFile(string filename)
+        {
+            this.html = null;
+            this.WebBrowser1.Url = new Uri(filename);
+        }
+
         private void BrowseButton_Click(object sender, EventArgs e) {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = SR.XSLFileFilter;
@@ -256,6 +383,7 @@ namespace XmlNotepad {
         }
 
         private void TransformButton_Click(object sender, EventArgs e) {
+            this.html = null; // force update of html
             this.DisplayXsltResults();
         }
 

@@ -74,7 +74,9 @@
     </Content>
     <Content Include="test2.xml" />
     <Content Include="test3.xml" />
-    <Content Include="test4.xml" />
+    <Content Include="D:\Temp\test4.xml">
+      <Link>test4.xml</Link>
+    </Content>
     <Content Include="test5.xml" />
     <Content Include="test6.xml" />
     <Content Include="test7.xml" />
