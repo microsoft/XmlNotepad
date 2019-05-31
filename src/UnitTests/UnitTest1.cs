@@ -536,6 +536,7 @@ namespace UnitTests {
             Sleep(1000);
             Trace.WriteLine("Navigate to next error");
             NavigateNextError();
+            Sleep(100);
             CheckNodeName("woops");
             Trace.WriteLine("Move to Basket element"); 
             w.SendKeystrokes("{LEFT}"); 
