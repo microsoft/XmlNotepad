@@ -3,7 +3,7 @@ XML Notepad provides a simple intuitive User Interface for browsing and editing 
 2. [Standalone downloadable installer](http://www.lovettsoftware.com/downloads/xmlnotepad/xmlnotepadsetup.zip) if you need something that works offline.
 Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run xmlnotepadsetup.msi.
 
-![image](images/help.png)
+[![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
 XML Notpead provides the following useful features:
 - XML Schema aware Intellisense
