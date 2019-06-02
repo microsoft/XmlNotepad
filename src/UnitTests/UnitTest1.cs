@@ -369,7 +369,7 @@ namespace UnitTests {
                 Sleep(500);
             }
             // must not be a leaf node then...
-            Sleep(100);
+            Sleep(300);
             SendKeys.SendWait("{ENTER}");
             Sleep(300);
             SendKeys.SendWait("^c");
@@ -518,14 +518,23 @@ namespace UnitTests {
             Trace.WriteLine("Test edit of PI name");
             w.InvokeMenuItem("PIAfterToolStripMenuItem");
             Sleep(200);
-            w.SendKeystrokes("test{ENTER}{ESC}{LEFT}");
+            w.SendKeystrokes("test{ENTER}");
+            Sleep(100);
+            w.SendKeystrokes("{ENTER}");
             Sleep(200);
-            w.SendKeystrokes("{ENTER}pi{ENTER}");
+            w.SendKeystrokes("{LEFT}");
+            Sleep(200);
+            w.SendKeystrokes("{ENTER}pi");
+            Sleep(200);
+            // bugbug: app is sometimes receiging the ENTER before the end of the text "pi"
+            // which seems like a regression in windows accessibility if you ask me.
+            w.SendKeystrokes("{ENTER}");
             Sleep(200);
             UndoRedo();
 
             Trace.WriteLine("Test validation error and elementBefore command!");
             w.InvokeMenuItem("elementBeforeToolStripMenuItem");
+            Sleep(100);
             w.SendKeystrokes("woops{ENTER}");
             Sleep(500);//just so I can see it
 
