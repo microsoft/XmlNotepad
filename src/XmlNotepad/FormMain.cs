@@ -370,6 +370,16 @@ namespace XmlNotepad {
             this.settings["MaximumValueLength"] = (int)short.MaxValue;
             this.settings["AutoFormatLongLines"] = false;
             this.settings["IgnoreDTD"] = false;
+
+            // XmlDiff options
+            this.settings["XmlDiffIgnoreChildOrder"] = false;
+            this.settings["XmlDiffIgnoreComments"] = false;
+            this.settings["XmlDiffIgnorePI"] = false;
+            this.settings["XmlDiffIgnoreWhitespace"] = false;
+            this.settings["XmlDiffIgnoreNamespaces"] = false;
+            this.settings["XmlDiffIgnorePrefixes"] = false;
+            this.settings["XmlDiffIgnoreXmlDecl"] = false;
+            this.settings["XmlDiffIgnoreDtd"] = false;
         }
 
         public FormMain(string[] args)
@@ -3299,6 +3309,42 @@ namespace XmlNotepad {
             CleanupTempFiles();
 
             // todo: add UI for setting XmlDiffOptions.
+
+            XmlDiffOptions options = XmlDiffOptions.None;
+
+            if ((bool)this.settings["XmlDiffIgnoreChildOrder"])
+            {
+                options |= XmlDiffOptions.IgnoreChildOrder;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreComments"])
+            {
+                options |= XmlDiffOptions.IgnoreComments;
+            }
+            if ((bool)this.settings["XmlDiffIgnorePI"])
+            {
+                options |= XmlDiffOptions.IgnorePI;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreWhitespace"])
+            {
+                options |= XmlDiffOptions.IgnoreWhitespace;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreNamespaces"])
+            {
+                options |= XmlDiffOptions.IgnoreNamespaces;
+            }
+            if ((bool)this.settings["XmlDiffIgnorePrefixes"])
+            {
+                options |= XmlDiffOptions.IgnorePrefixes;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreXmlDecl"])
+            {
+                options |= XmlDiffOptions.IgnoreXmlDecl;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreDtd"])
+            {
+                options |= XmlDiffOptions.IgnoreDtd;
+            }
+
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
             string filename = this.model.FileName;
@@ -3320,10 +3366,10 @@ namespace XmlNotepad {
             bool isEqual = false;
             XmlTextWriter diffWriter = new XmlTextWriter(diffFile, Encoding.UTF8);
             diffWriter.Formatting = Formatting.Indented;
-            using (diffWriter) {
-                XmlDiff diff = new XmlDiff();
+            using (diffWriter)
+            {
+                XmlDiff diff = new XmlDiff(options);
                 isEqual = diff.Compare(original, doc, diffWriter);
-                diff.Options = XmlDiffOptions.None;
             }
 
             if (isEqual) {

@@ -738,4 +738,52 @@ Do you want to visit the web page that describes this update?</value>
     <value>Please enter the filename for storing the the XSLT output</value>
     <comment>Tooltip</comment>
   </data>
+  <data name="XmlDiffIgnoreChildOrderDescription" xml:space="preserve">
+    <value>Ignore differences in the order of child elements</value>
+  </data>
+  <data name="XmlDiffIgnoreChildOrderProperty" xml:space="preserve">
+    <value>Ignore child order</value>
+  </data>
+  <data name="XmlDiffIgnoreCommentsDescription" xml:space="preserve">
+    <value>Ignore differences in comments</value>
+  </data>
+  <data name="XmlDiffIgnoreCommentsProperty" xml:space="preserve">
+    <value>Ignore comments</value>
+  </data>
+  <data name="XmlDiffIgnoreDtdDescription" xml:space="preserve">
+    <value>Ignore differences in DTD elements</value>
+  </data>
+  <data name="XmlDiffIgnoreDtdProperty" xml:space="preserve">
+    <value>Ignore DTD</value>
+  </data>
+  <data name="XmlDiffIgnoreNamespacesDescription" xml:space="preserve">
+    <value>Ignore differences in namespaces</value>
+  </data>
+  <data name="XmlDiffIgnoreNamespacesProperty" xml:space="preserve">
+    <value>Ignore namespaces</value>
+  </data>
+  <data name="XmlDiffIgnorePIDescription" xml:space="preserve">
+    <value>Ignore differences in processing instructions</value>
+  </data>
+  <data name="XmlDiffIgnorePIProperty" xml:space="preserve">
+    <value>Ignore processing instructions</value>
+  </data>
+  <data name="XmlDiffIgnorePrefixesDescription" xml:space="preserve">
+    <value>Ignore differences in namespace prefixes</value>
+  </data>
+  <data name="XmlDiffIgnorePrefixesProperty" xml:space="preserve">
+    <value>Ignore prefixes</value>
+  </data>
+  <data name="XmlDiffIgnoreWhitespaceDescription" xml:space="preserve">
+    <value>Ignore differences in insignificant whitespace between elements</value>
+  </data>
+  <data name="XmlDiffIgnoreWhitespaceProperty" xml:space="preserve">
+    <value>Ignore whitespace</value>
+  </data>
+  <data name="XmlDiffIgnoreXmlDeclDescription" xml:space="preserve">
+    <value>Ignore differences in XML declarations</value>
+  </data>
+  <data name="XmlDiffIgnoreXmlDeclProperty" xml:space="preserve">
+    <value>Ignore XML declarations</value>
+  </data>
 </root>
