@@ -218,6 +218,7 @@ namespace XmlNotepad {
         private ToolStripMenuItem fileAssociationsToolStripMenuItem;
         private ToolStripMenuItem statsToolStripMenuItem;
         private ToolStripMenuItem checkUpdatesToolStripMenuItem;
+        private ToolStripMenuItem sampleToolStripMenuItem;
         private string redoLabel;
 
 
@@ -873,6 +874,7 @@ namespace XmlNotepad {
             this.dynamicHelpViewer = new XmlNotepad.XsltViewer();
             this.statsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sampleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).BeginInit();
             this.contextMenu1.SuspendLayout();
@@ -883,7 +885,7 @@ namespace XmlNotepad {
             this.tabPageHtmlView.SuspendLayout();
             this.SuspendLayout();
             // 
-            // statusBar1
+             // statusBar1
             // 
             resources.ApplyResources(this.statusBar1, "statusBar1");
             this.statusBar1.Name = "statusBar1";
@@ -985,7 +987,7 @@ namespace XmlNotepad {
             this.changeToProcessingInstructionContextMenuItem});
             this.changeToContextMenuItem.Name = "changeToContextMenuItem";
             resources.ApplyResources(this.changeToContextMenuItem, "changeToContextMenuItem");
-            // 
+            //  
             // changeToElementContextMenuItem
             // 
             this.changeToElementContextMenuItem.Name = "changeToElementContextMenuItem";
@@ -1813,6 +1815,7 @@ namespace XmlNotepad {
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
             this.indexToolStripMenuItem,
+            this.sampleToolStripMenuItem,
             this.checkUpdatesToolStripMenuItem,
             this.toolStripMenuItem10,
             this.aboutXMLNotepadToolStripMenuItem});
@@ -2070,6 +2073,12 @@ namespace XmlNotepad {
             resources.ApplyResources(this.statsToolStripMenuItem, "statsToolStripMenuItem");
             this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
             // 
+            // sampleToolStripMenuItem
+            // 
+            this.sampleToolStripMenuItem.Name = "sampleToolStripMenuItem";
+            resources.ApplyResources(this.sampleToolStripMenuItem, "sampleToolStripMenuItem");
+            this.sampleToolStripMenuItem.Click += new System.EventHandler(this.sampleToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
@@ -2185,7 +2194,7 @@ namespace XmlNotepad {
             get { return this.od; }
         }
 
-        public virtual void Open() {
+        public virtual void OpenDialog(string dir = null) {
             SelectTreeView();
             if (!SaveIfDirty(true))
                 return;
@@ -2195,6 +2204,10 @@ namespace XmlNotepad {
                 if (uri.Scheme == "file"){
                     od.FileName = model.FileName;
                 }
+            }
+            if (!string.IsNullOrEmpty(dir))
+            {
+                od.InitialDirectory = dir;
             }
             string filter = SR.OpenFileFilter;
             od.Filter = filter;
@@ -2804,7 +2817,7 @@ namespace XmlNotepad {
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e) {
             this.xmlTreeView1.CancelEdit();
-            Open();
+            OpenDialog();
         }
 
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -3045,7 +3058,7 @@ namespace XmlNotepad {
 
         private void toolStripButtonOpen_Click(object sender, EventArgs e) {
             this.xmlTreeView1.CancelEdit();
-            this.Open();
+            this.OpenDialog();
         }
 
         private void toolStripButtonSave_Click(object sender, EventArgs e) {
@@ -3622,6 +3635,27 @@ namespace XmlNotepad {
             Utilities.OpenUrl(this.Handle, tempFile);
         }
 
+        private void sampleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = typeof(XmlNotepad.FormMain).Assembly.Location;
+            string dir = System.IO.Path.GetDirectoryName(path);
+            while (!string.IsNullOrEmpty(dir))
+            {
+                string samples = System.IO.Path.Combine(dir, "Samples");
+                if (Directory.Exists(samples))
+                {
+                    OpenDialog(samples);
+                    return;
+                }
+                if (System.IO.Path.GetFileName(dir) == "xmln..tion_ab3ea86545595e2b_0002.0008_ab0a31dd50b50bdb")
+                {
+                    // don't venture outside our clickonce sandbox.
+                    break;
+                }
+                dir = System.IO.Path.GetDirectoryName(dir);
+            }
+            MessageBox.Show(this, SR.SamplesNotFound);
+        }
     }
 
 }

@@ -8,9 +8,9 @@ echo TargetDir=%TargetDir%
 REM remove double quotes
 set RawTarget=%TargetDir:"=%
 
-xcopy  /y "Updates\*" "%RawTarget%""
+xcopy  /y "Updates\*" "%RawTarget%"
 xcopy  /y "Updates\*" "drop"
 if not exist drop\Help mkdir drop\Help
 xcopy  /s /y "Application\Help" "drop\Help"
-xcopy  /y "Samples\*.*" "drop\samples"
+xcopy  /y "Application\Samples\*.*" "drop\samples"
 xcopy  /y "%RawTarget%*.*" "drop"

@@ -1111,6 +1111,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Samples folder not found.
+        /// </summary>
+        internal static string SamplesNotFound {
+            get {
+                return ResourceManager.GetString("SamplesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|All files (*.*)|*.*.
         /// </summary>
         internal static string SaveAsFilter {

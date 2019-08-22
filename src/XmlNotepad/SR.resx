@@ -786,4 +786,7 @@ Do you want to visit the web page that describes this update?</value>
   <data name="XmlDiffIgnoreXmlDeclProperty" xml:space="preserve">
     <value>Ignore XML declarations</value>
   </data>
+  <data name="SamplesNotFound" xml:space="preserve">
+    <value>Samples folder not found</value>
+  </data>
 </root>
