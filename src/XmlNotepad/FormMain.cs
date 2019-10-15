@@ -205,6 +205,7 @@ namespace XmlNotepad {
         private ToolStripMenuItem changeToCDATAContextMenuItem;
         private ToolStripMenuItem changeToCommentContextMenuItem;
         private ToolStripMenuItem changeToProcessingInstructionContextMenuItem;
+        private ToolStripMenuItem changeToElementContextMenuItem;
         private ToolStripMenuItem incrementalSearchToolStripMenuItem;
         private ToolStripMenuItem deleteToolStripMenuItem1;
         private ToolStripMenuItem renameToolStripMenuItem;
@@ -217,26 +218,9 @@ namespace XmlNotepad {
         private ToolStripMenuItem fileAssociationsToolStripMenuItem;
         private ToolStripMenuItem statsToolStripMenuItem;
         private ToolStripMenuItem checkUpdatesToolStripMenuItem;
-        private ToolStripMenuItem compareDiffOptionsToolStripMenuItem;
-        private ToolStripMenuItem icoOpt;
-        private ToolStripMenuItem ipiOpt;
-        private ToolStripMenuItem icOpt;
-        private ToolStripMenuItem ixdOpt;
-        private ToolStripMenuItem iwsOpt;
-        private ToolStripMenuItem idtdOpt;
-        private ToolStripMenuItem inOpt;
-        private ToolStripMenuItem ipOpt;
-        private ToolStripMenuItem algOptions;
-        private ToolStripMenuItem algAuto;
-        private ToolStripMenuItem algPrecise;
-        private ToolStripMenuItem algFast;
-        private ToolStripMenuItem changeToElementContextMenuItem;
+        private ToolStripMenuItem sampleToolStripMenuItem;
         private string redoLabel;
 
-        private XmlDiffOptions diffOptions = new XmlDiffOptions();
-        private XmlDiffAlgorithm diffAlgo = new XmlDiffAlgorithm();
-        private ToolStripDropDown diffOptionsControl;
-        private ToolStripDropDown algoOptionsControl;
 
         public FormMain()
         {
@@ -293,52 +277,6 @@ namespace XmlNotepad {
             this.Controls.SetChildIndex(this.resizer, 0);
             this.taskList.Site = this;
 
-            // populate default settings and provide type info.
-            Font f = new Font("Courier New", 10, FontStyle.Regular);
-            this.Font = f;
-            this.settings["Font"] = f;
-            System.Collections.Hashtable colors = new System.Collections.Hashtable();
-            colors["Element"] = Color.FromArgb(0, 64, 128);
-            colors["Attribute"] = Color.Maroon;
-            colors["Text"] = Color.Black;
-            colors["Comment"] = Color.Green;
-            colors["PI"] = Color.Purple;
-            colors["CDATA"] = Color.Gray;
-            colors["Background"] = Color.White;
-            colors["ContainerBackground"] = Color.AliceBlue;
-
-            this.settings["Colors"] = colors;
-            this.settings["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
-            this.settings["WindowBounds"] = new Rectangle(0, 0, 0, 0);
-            this.settings["TaskListSize"] = 0;
-            this.settings["TreeViewSize"] = 0;
-            this.settings["RecentFiles"] = new Uri[0];
-            this.settings["SchemaCache"] = this.model.SchemaCache;
-            this.settings["SearchWindowLocation"] = new Point(0, 0);
-            this.settings["SearchSize"] = new Size(0, 0);
-            this.settings["FindMode"] = false;
-            this.settings["SearchXPath"] = false;
-            this.settings["SearchWholeWord"] = false;
-            this.settings["SearchRegex"] = false;
-            this.settings["SearchMatchCase"] = false;
-
-            this.settings["LastUpdateCheck"] = DateTime.Now;
-            this.settings["UpdateFrequency"] = TimeSpan.FromDays(20);
-            this.settings["UpdateLocation"] = "http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
-            this.settings["UpdateEnabled"] = true;
-
-            this.settings["AutoFormatOnSave"] = true;
-            this.settings["IndentLevel"] = 2;
-            this.settings["IndentChar"] = IndentChar.Space;
-            this.settings["NewLineChars"] = UserSettings.Escape("\r\n");
-            this.settings["Language"] = "";
-            this.settings["NoByteOrderMark"] = false;
-
-            this.settings["AppRegistered"] = false;
-            this.settings["MaximumLineLength"] = 10000;
-            this.settings["AutoFormatLongLines"] = false;
-            this.settings["IgnoreDTD"] = false;
-
             this.settings.Changed += new SettingsEventHandler(settings_Changed);
 
             // now that we have a font, override the tabControlViews font setting.
@@ -382,33 +320,6 @@ namespace XmlNotepad {
             this.toolStripMenuItemUpdate.Click += new EventHandler(toolStripMenuItemUpdate_Click);
 
             this.ContextMenuStrip = this.contextMenu1;
-
-            //Get Dropdown controls to manage auto-close to keep dopdown open.
-            //Reset auto-close whden dropdowns lose focus.
-            diffOptionsControl = compareDiffOptionsToolStripMenuItem.DropDown;
-            diffOptionsControl.Name = "diffOptionsControl";
-            diffOptionsControl.MouseEnter += new System.EventHandler(DiffOptionsOpened);
-            diffOptionsControl.MouseLeave += new System.EventHandler(resetAutoCloseStatus);
-
-            algoOptionsControl = algOptions.DropDown;
-            algoOptionsControl.Name = "algoOptionsControl";
-            algoOptionsControl.MouseEnter += new System.EventHandler(algoOptionsOpened);
-            algoOptionsControl.MouseLeave += new System.EventHandler(algoOptionsClosed);
-
-            //Set DiffOptions & DiffAlgo from Registry
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\LovettSoftware\XmlNotepad");
-            if(key != null)
-            {
-                Int32 val = (Int32)key.GetValue("DiffOptions", 0);
-                if(val != null)
-                    diffOptions = (XmlDiffOptions)val;
-                val = (Int32)key.GetValue("DiffAlgorithm", 0);
-                if (val != null)
-                    diffAlgo = (XmlDiffAlgorithm)val;
-
-                SetGUIFromDiffOptions();
-            }
-
             New();
 
             this.settings["SchemaCache"] = this.model.SchemaCache;
@@ -460,6 +371,16 @@ namespace XmlNotepad {
             this.settings["MaximumValueLength"] = (int)short.MaxValue;
             this.settings["AutoFormatLongLines"] = false;
             this.settings["IgnoreDTD"] = false;
+
+            // XmlDiff options
+            this.settings["XmlDiffIgnoreChildOrder"] = false;
+            this.settings["XmlDiffIgnoreComments"] = false;
+            this.settings["XmlDiffIgnorePI"] = false;
+            this.settings["XmlDiffIgnoreWhitespace"] = false;
+            this.settings["XmlDiffIgnoreNamespaces"] = false;
+            this.settings["XmlDiffIgnorePrefixes"] = false;
+            this.settings["XmlDiffIgnoreXmlDecl"] = false;
+            this.settings["XmlDiffIgnoreDtd"] = false;
         }
 
         public FormMain(string[] args)
@@ -794,8 +715,8 @@ namespace XmlNotepad {
             this.insertToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeToElementContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeToContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeToAttributeContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeToTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeToCDATAContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -885,24 +806,10 @@ namespace XmlNotepad {
             this.sourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.schemasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileAssociationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
             this.nextErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.compareDiffOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.icoOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.ipiOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.icOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.ixdOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.iwsOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.idtdOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.inOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.ipOpt = new System.Windows.Forms.ToolStripMenuItem();
-            this.algOptions = new System.Windows.Forms.ToolStripMenuItem();
-            this.algAuto = new System.Windows.Forms.ToolStripMenuItem();
-            this.algPrecise = new System.Windows.Forms.ToolStripMenuItem();
-            this.algFast = new System.Windows.Forms.ToolStripMenuItem();
             this.compareXMLFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.elementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -934,7 +841,6 @@ namespace XmlNotepad {
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutXMLNotepadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemUpdate = new System.Windows.Forms.ToolStripMenuItem();
@@ -966,6 +872,9 @@ namespace XmlNotepad {
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
             this.taskList = new XmlNotepad.TaskList();
             this.dynamicHelpViewer = new XmlNotepad.XsltViewer();
+            this.statsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sampleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).BeginInit();
             this.contextMenu1.SuspendLayout();
@@ -976,7 +885,7 @@ namespace XmlNotepad {
             this.tabPageHtmlView.SuspendLayout();
             this.SuspendLayout();
             // 
-            // statusBar1
+             // statusBar1
             // 
             resources.ApplyResources(this.statusBar1, "statusBar1");
             this.statusBar1.Name = "statusBar1";
@@ -1022,7 +931,6 @@ namespace XmlNotepad {
             this.contextMenu1.Name = "contextMenuStrip1";
             this.helpProvider1.SetShowHelp(this.contextMenu1, ((bool)(resources.GetObject("contextMenu1.ShowHelp"))));
             resources.ApplyResources(this.contextMenu1, "contextMenu1");
-            this.contextMenu1.Opening += new System.ComponentModel.CancelEventHandler(this.resetAutoCloseStatus);
             // 
             // ctxcutToolStripMenuItem
             // 
@@ -1079,11 +987,11 @@ namespace XmlNotepad {
             this.changeToProcessingInstructionContextMenuItem});
             this.changeToContextMenuItem.Name = "changeToContextMenuItem";
             resources.ApplyResources(this.changeToContextMenuItem, "changeToContextMenuItem");
-            // 
+            //  
             // changeToElementContextMenuItem
             // 
             this.changeToElementContextMenuItem.Name = "changeToElementContextMenuItem";
-            resources.ApplyResources(this.changeToElementContextMenuItem, "changeToElementContextMenuItem");
+            resources.ApplyResources(changeToElementContextMenuItem, "changeToElementContextMenuItem");
             this.changeToElementContextMenuItem.Click += new System.EventHandler(this.changeToElementContextMenuItem_Click);
             // 
             // changeToAttributeContextMenuItem
@@ -1322,7 +1230,6 @@ namespace XmlNotepad {
             resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             this.helpProvider1.SetShowHelp(this.menuStrip1, ((bool)(resources.GetObject("menuStrip1.ShowHelp"))));
-            this.menuStrip1.Leave += new System.EventHandler(this.resetAutoCloseStatus);
             // 
             // fileToolStripMenuItem
             // 
@@ -1340,7 +1247,6 @@ namespace XmlNotepad {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             resources.ApplyResources(this.fileToolStripMenuItem, "fileToolStripMenuItem");
-            this.fileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.resetAutoCloseStatus);
             // 
             // newToolStripMenuItem
             // 
@@ -1430,7 +1336,6 @@ namespace XmlNotepad {
             this.incrementalSearchToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             resources.ApplyResources(this.editToolStripMenuItem, "editToolStripMenuItem");
-            this.editToolStripMenuItem.DropDownOpening += new System.EventHandler(this.resetAutoCloseStatus);
             // 
             // undoToolStripMenuItem
             // 
@@ -1510,8 +1415,8 @@ namespace XmlNotepad {
             // 
             // changeToElementToolStripMenuItem1
             // 
-            resources.ApplyResources(this.changeToElementToolStripMenuItem1, "changeToElementToolStripMenuItem1");
             this.changeToElementToolStripMenuItem1.Name = "changeToElementToolStripMenuItem1";
+            resources.ApplyResources(this.changeToElementToolStripMenuItem1, "changeToElementToolStripMenuItem1");
             this.changeToElementToolStripMenuItem1.Click += new System.EventHandler(this.elementToolStripMenuItem1_Click);
             // 
             // changeToAttributeToolStripMenuItem1
@@ -1639,12 +1544,9 @@ namespace XmlNotepad {
             this.toolStripMenuItem11,
             this.nextErrorToolStripMenuItem,
             this.toolStripSeparator2,
-            this.compareDiffOptionsToolStripMenuItem,
             this.compareXMLFilesToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             resources.ApplyResources(this.viewToolStripMenuItem, "viewToolStripMenuItem");
-            this.viewToolStripMenuItem.DropDownOpening += new System.EventHandler(this.resetAutoCloseStatus);
-            this.viewToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.resetAutoCloseStatus);
             // 
             // expandAllToolStripMenuItem
             // 
@@ -1692,12 +1594,6 @@ namespace XmlNotepad {
             this.schemasToolStripMenuItem.Name = "schemasToolStripMenuItem";
             this.schemasToolStripMenuItem.Click += new System.EventHandler(this.schemasToolStripMenuItem_Click);
             // 
-            // statsToolStripMenuItem
-            // 
-            this.statsToolStripMenuItem.Name = "statsToolStripMenuItem";
-            resources.ApplyResources(this.statsToolStripMenuItem, "statsToolStripMenuItem");
-            this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
-            // 
             // fileAssociationsToolStripMenuItem
             // 
             this.fileAssociationsToolStripMenuItem.Name = "fileAssociationsToolStripMenuItem";
@@ -1720,125 +1616,6 @@ namespace XmlNotepad {
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
             // 
-            // compareDiffOptionsToolStripMenuItem
-            // 
-            this.compareDiffOptionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.icoOpt,
-            this.ipiOpt,
-            this.icOpt,
-            this.ixdOpt,
-            this.iwsOpt,
-            this.idtdOpt,
-            this.inOpt,
-            this.ipOpt,
-            this.algOptions});
-            this.compareDiffOptionsToolStripMenuItem.Name = "compareDiffOptionsToolStripMenuItem";
-            resources.ApplyResources(this.compareDiffOptionsToolStripMenuItem, "compareDiffOptionsToolStripMenuItem");
-            // 
-            // icoOpt
-            // 
-            this.icoOpt.Checked = true;
-            this.icoOpt.CheckOnClick = true;
-            this.icoOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.icoOpt.Name = "icoOpt";
-            resources.ApplyResources(this.icoOpt, "icoOpt");
-            this.icoOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // ipiOpt
-            // 
-            this.ipiOpt.Checked = true;
-            this.ipiOpt.CheckOnClick = true;
-            this.ipiOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ipiOpt.Name = "ipiOpt";
-            resources.ApplyResources(this.ipiOpt, "ipiOpt");
-            this.ipiOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // icOpt
-            // 
-            this.icOpt.Checked = true;
-            this.icOpt.CheckOnClick = true;
-            this.icOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.icOpt.Name = "icOpt";
-            resources.ApplyResources(this.icOpt, "icOpt");
-            this.icOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // ixdOpt
-            // 
-            this.ixdOpt.Checked = true;
-            this.ixdOpt.CheckOnClick = true;
-            this.ixdOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ixdOpt.Name = "ixdOpt";
-            resources.ApplyResources(this.ixdOpt, "ixdOpt");
-            this.ixdOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // iwsOpt
-            // 
-            this.iwsOpt.Checked = true;
-            this.iwsOpt.CheckOnClick = true;
-            this.iwsOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.iwsOpt.Name = "iwsOpt";
-            resources.ApplyResources(this.iwsOpt, "iwsOpt");
-            this.iwsOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // idtdOpt
-            // 
-            this.idtdOpt.Checked = true;
-            this.idtdOpt.CheckOnClick = true;
-            this.idtdOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.idtdOpt.Name = "idtdOpt";
-            resources.ApplyResources(this.idtdOpt, "idtdOpt");
-            this.idtdOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // inOpt
-            // 
-            this.inOpt.Checked = true;
-            this.inOpt.CheckOnClick = true;
-            this.inOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.inOpt.Name = "inOpt";
-            resources.ApplyResources(this.inOpt, "inOpt");
-            this.inOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // ipOpt
-            // 
-            this.ipOpt.Checked = true;
-            this.ipOpt.CheckOnClick = true;
-            this.ipOpt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ipOpt.Name = "ipOpt";
-            resources.ApplyResources(this.ipOpt, "ipOpt");
-            this.ipOpt.Click += new System.EventHandler(this.diffOptions_Click);
-            // 
-            // algOptions
-            // 
-            this.algOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.algAuto,
-            this.algPrecise,
-            this.algFast});
-            this.algOptions.Name = "algOptions";
-            resources.ApplyResources(this.algOptions, "algOptions");
-            // 
-            // algAuto
-            // 
-            this.algAuto.Checked = true;
-            this.algAuto.CheckOnClick = true;
-            this.algAuto.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.algAuto.Name = "algAuto";
-            resources.ApplyResources(this.algAuto, "algAuto");
-            this.algAuto.Click += new System.EventHandler(this.algOptions_Click);
-            // 
-            // algPrecise
-            // 
-            this.algPrecise.CheckOnClick = true;
-            this.algPrecise.Name = "algPrecise";
-            resources.ApplyResources(this.algPrecise, "algPrecise");
-            this.algPrecise.Click += new System.EventHandler(this.algOptions_Click);
-            // 
-            // algFast
-            // 
-            this.algFast.CheckOnClick = true;
-            this.algFast.Name = "algFast";
-            resources.ApplyResources(this.algFast, "algFast");
-            this.algFast.Click += new System.EventHandler(this.algOptions_Click);
-            // 
             // compareXMLFilesToolStripMenuItem
             // 
             resources.ApplyResources(this.compareXMLFilesToolStripMenuItem, "compareXMLFilesToolStripMenuItem");
@@ -1856,7 +1633,6 @@ namespace XmlNotepad {
             this.CDATAToolStripMenuItem,
             this.PIToolStripMenuItem});
             this.insertToolStripMenuItem.Name = "insertToolStripMenuItem";
-            this.insertToolStripMenuItem.DropDownOpening += new System.EventHandler(this.resetAutoCloseStatus);
             // 
             // elementToolStripMenuItem
             // 
@@ -2026,7 +1802,6 @@ namespace XmlNotepad {
             this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWindowToolStripMenuItem});
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            this.windowToolStripMenuItem.DropDownOpening += new System.EventHandler(this.resetAutoCloseStatus);
             // 
             // newWindowToolStripMenuItem
             // 
@@ -2040,11 +1815,11 @@ namespace XmlNotepad {
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
             this.indexToolStripMenuItem,
+            this.sampleToolStripMenuItem,
             this.checkUpdatesToolStripMenuItem,
             this.toolStripMenuItem10,
             this.aboutXMLNotepadToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.DropDownOpening += new System.EventHandler(this.resetAutoCloseStatus);
             // 
             // contentsToolStripMenuItem
             // 
@@ -2057,12 +1832,6 @@ namespace XmlNotepad {
             resources.ApplyResources(this.indexToolStripMenuItem, "indexToolStripMenuItem");
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
             this.indexToolStripMenuItem.Click += new System.EventHandler(this.indexToolStripMenuItem_Click);
-            // 
-            // checkUpdatesToolStripMenuItem
-            // 
-            this.checkUpdatesToolStripMenuItem.Name = "checkUpdatesToolStripMenuItem";
-            resources.ApplyResources(this.checkUpdatesToolStripMenuItem, "checkUpdatesToolStripMenuItem");
-            this.checkUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkUpdatesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem10
             // 
@@ -2236,7 +2005,6 @@ namespace XmlNotepad {
             this.xmlTreeView1.BackColor = System.Drawing.SystemColors.Window;
             this.xmlTreeView1.Name = "xmlTreeView1";
             this.xmlTreeView1.ResizerPosition = 200;
-            this.xmlTreeView1.ScrollPosition = new System.Drawing.Point(0, 0);
             this.xmlTreeView1.SelectedNode = null;
             this.helpProvider1.SetShowHelp(this.xmlTreeView1, ((bool)(resources.GetObject("xmlTreeView1.ShowHelp"))));
             // 
@@ -2292,6 +2060,25 @@ namespace XmlNotepad {
             this.dynamicHelpViewer.ShowFileStrip = true;
             this.helpProvider1.SetShowHelp(this.dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
             //
+            // checkUpdatesToolStripMenuItem
+            //
+            this.checkUpdatesToolStripMenuItem.Name = "checkUpdatesToolStripMenuItem";
+            resources.ApplyResources(this.checkUpdatesToolStripMenuItem, "checkUpdatesToolStripMenuItem");
+            this.checkUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkUpdatesToolStripMenuItem_Click);
+
+            // 
+            // statsToolStripMenuItem
+            // 
+            this.statsToolStripMenuItem.Name = "statsToolStripMenuItem";
+            resources.ApplyResources(this.statsToolStripMenuItem, "statsToolStripMenuItem");
+            this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
+            // 
+            // sampleToolStripMenuItem
+            // 
+            this.sampleToolStripMenuItem.Name = "sampleToolStripMenuItem";
+            resources.ApplyResources(this.sampleToolStripMenuItem, "sampleToolStripMenuItem");
+            this.sampleToolStripMenuItem.Click += new System.EventHandler(this.sampleToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
@@ -2304,7 +2091,6 @@ namespace XmlNotepad {
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
             this.helpProvider1.SetShowHelp(this, ((bool)(resources.GetObject("$this.ShowHelp"))));
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).EndInit();
             this.contextMenu1.ResumeLayout(false);
@@ -2408,7 +2194,7 @@ namespace XmlNotepad {
             get { return this.od; }
         }
 
-        public virtual void Open() {
+        public virtual void OpenDialog(string dir = null) {
             SelectTreeView();
             if (!SaveIfDirty(true))
                 return;
@@ -2418,6 +2204,10 @@ namespace XmlNotepad {
                 if (uri.Scheme == "file"){
                     od.FileName = model.FileName;
                 }
+            }
+            if (!string.IsNullOrEmpty(dir))
+            {
+                od.InitialDirectory = dir;
             }
             string filter = SR.OpenFileFilter;
             od.Filter = filter;
@@ -3027,7 +2817,7 @@ namespace XmlNotepad {
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e) {
             this.xmlTreeView1.CancelEdit();
-            Open();
+            OpenDialog();
         }
 
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -3268,7 +3058,7 @@ namespace XmlNotepad {
 
         private void toolStripButtonOpen_Click(object sender, EventArgs e) {
             this.xmlTreeView1.CancelEdit();
-            this.Open();
+            this.OpenDialog();
         }
 
         private void toolStripButtonSave_Click(object sender, EventArgs e) {
@@ -3532,6 +3322,42 @@ namespace XmlNotepad {
             CleanupTempFiles();
 
             // todo: add UI for setting XmlDiffOptions.
+
+            XmlDiffOptions options = XmlDiffOptions.None;
+
+            if ((bool)this.settings["XmlDiffIgnoreChildOrder"])
+            {
+                options |= XmlDiffOptions.IgnoreChildOrder;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreComments"])
+            {
+                options |= XmlDiffOptions.IgnoreComments;
+            }
+            if ((bool)this.settings["XmlDiffIgnorePI"])
+            {
+                options |= XmlDiffOptions.IgnorePI;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreWhitespace"])
+            {
+                options |= XmlDiffOptions.IgnoreWhitespace;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreNamespaces"])
+            {
+                options |= XmlDiffOptions.IgnoreNamespaces;
+            }
+            if ((bool)this.settings["XmlDiffIgnorePrefixes"])
+            {
+                options |= XmlDiffOptions.IgnorePrefixes;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreXmlDecl"])
+            {
+                options |= XmlDiffOptions.IgnoreXmlDecl;
+            }
+            if ((bool)this.settings["XmlDiffIgnoreDtd"])
+            {
+                options |= XmlDiffOptions.IgnoreDtd;
+            }
+
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
             string filename = this.model.FileName;
@@ -3553,12 +3379,10 @@ namespace XmlNotepad {
             bool isEqual = false;
             XmlTextWriter diffWriter = new XmlTextWriter(diffFile, Encoding.UTF8);
             diffWriter.Formatting = Formatting.Indented;
-            using (diffWriter) {
-                XmlDiff diff = new XmlDiff();
-                diff.Options = diffOptions;
-                diff.Algorithm = diffAlgo;
+            using (diffWriter)
+            {
+                XmlDiff diff = new XmlDiff(options);
                 isEqual = diff.Compare(original, doc, diffWriter);
-                diff.Options = XmlDiffOptions.None;
             }
 
             if (isEqual) {
@@ -3707,7 +3531,6 @@ namespace XmlNotepad {
         }
 
         private void changeToCommentContextMenuItem_Click(object sender, EventArgs e) {
-            resetAutoCloseStatus(sender, e);
             this.xmlTreeView1.ChangeTo(XmlNodeType.Comment);
         }
 
@@ -3741,7 +3564,6 @@ namespace XmlNotepad {
 
         private void fileAssociationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            resetAutoCloseStatus(sender, e);
             bool registered = (bool)this.settings["AppRegistered"];
             if (!registered)
             {
@@ -3813,190 +3635,26 @@ namespace XmlNotepad {
             Utilities.OpenUrl(this.Handle, tempFile);
         }
 
-        /// <summary>
-        /// This method set the diff options on the menu in the GUI 
-        /// according to the XmlDiffOptions object.
-        /// </summary>
-        private void SetGUIFromDiffOptions()
+        private void sampleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if ((diffOptions & XmlDiffOptions.IgnorePI) > 0)
-                ipiOpt.Checked = true;
-            else
-                ipiOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnoreChildOrder) > 0)
-                icoOpt.Checked = true;
-            else
-                icoOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnoreComments) > 0)
-                icOpt.Checked = true;
-            else
-                icOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnoreDtd) > 0)
-                idtdOpt.Checked = true;
-            else
-                idtdOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnoreNamespaces) > 0)
-                inOpt.Checked = true;
-            else
-                inOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnorePrefixes) > 0)
-                ipOpt.Checked = true;
-            else
-                ipOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnoreWhitespace) > 0)
-                iwsOpt.Checked = true;
-            else
-                iwsOpt.Checked = false;
-
-            if ((diffOptions & XmlDiffOptions.IgnoreXmlDecl) > 0)
-                ixdOpt.Checked = true;
-            else
-                ixdOpt.Checked = false;
-
-            if (diffAlgo == XmlDiffAlgorithm.Fast)
+            string path = typeof(XmlNotepad.FormMain).Assembly.Location;
+            string dir = System.IO.Path.GetDirectoryName(path);
+            while (!string.IsNullOrEmpty(dir))
             {
-                algFast.Checked = true;
-                algPrecise.Checked = false;
-                algAuto.Checked = false;
-                algOptions.Text = "Algorithm (Fast)";
+                string samples = System.IO.Path.Combine(dir, "Samples");
+                if (Directory.Exists(samples))
+                {
+                    OpenDialog(samples);
+                    return;
+                }
+                if (System.IO.Path.GetFileName(dir) == "xmln..tion_ab3ea86545595e2b_0002.0008_ab0a31dd50b50bdb")
+                {
+                    // don't venture outside our clickonce sandbox.
+                    break;
+                }
+                dir = System.IO.Path.GetDirectoryName(dir);
             }
-            else if (diffAlgo == XmlDiffAlgorithm.Precise)
-            {
-                algFast.Checked = false;
-                algPrecise.Checked = true;
-                algAuto.Checked = false;
-                algOptions.Text = "Algorithm (Greedy)";
-            }
-            else
-            {
-                algFast.Checked = false;
-                algPrecise.Checked = false;
-                algAuto.Checked = true;
-                algOptions.Text = "Algorithm (Auto)";
-            }
-        }
-
-        /// <summary>
-        /// This method reads the diff options set on the 
-        /// menu and configures the XmlDiffOptions object.
-        /// </summary>
-        private void SetDiffOptionsFromGUI()
-        {
-            //Reset to None and refresh the options from the menuoptions
-            //else eventually all options may get set and the menu changes will
-            // not be reflected.
-            diffOptions = XmlDiffOptions.None;
-
-
-            //Read the options settings and OR the XmlDiffOptions enumeration.
-            if (ipiOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnorePI;
-
-            if (icoOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnoreChildOrder;
-
-            if (icOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnoreComments;
-
-            if (idtdOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnoreDtd;
-
-            if (inOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnoreNamespaces;
-
-            if (ipOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnorePrefixes;
-
-            if (iwsOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnoreWhitespace;
-
-            if (ixdOpt.Checked)
-                diffOptions = diffOptions | XmlDiffOptions.IgnoreXmlDecl;
-
-            //Default algorithm is Auto.
-            diffAlgo = XmlDiffAlgorithm.Auto;
-
-            if (algFast.Checked)
-                diffAlgo = XmlDiffAlgorithm.Fast;
-
-            if (algPrecise.Checked)
-                diffAlgo = XmlDiffAlgorithm.Precise;
-        }
-
-        private void diffOptions_Click(object sender, EventArgs e)
-        {
-            SetDiffOptionsFromGUI();
-        }
-
-        private void algOptions_Click(object sender, EventArgs e)
-        {
-            ToolStripItemCollection items = algOptions.DropDownItems;
-            foreach (ToolStripMenuItem i in items)
-                i.Checked = false;
-            ToolStripMenuItem item = (ToolStripMenuItem)sender;
-            item.Checked = true;
-            algOptions.Text = String.Format("Algorithm ({0})", item.Text);
-            SetDiffOptionsFromGUI();
-        }
-
-        private void DiffOptionsOpened(object sender, EventArgs e)
-        {
-            viewToolStripMenuItem.DropDown.AutoClose = false;
-            compareDiffOptionsToolStripMenuItem.DropDown.AutoClose = false;
-#if DEBUG
-            if(sender is ToolStripDropDown)
-                Trace.WriteLine(String.Format("{0}: DiffOptions AutoClose OFF...", ((Control)sender).Name));
-            else
-                Trace.WriteLine(String.Format("{0}: DiffOptions AutoClose OFF...", ((ToolStripMenuItem)sender).Name));
-#endif
-        }
-
-        private void resetAutoCloseStatus(object sender, EventArgs e)
-        {
-            viewToolStripMenuItem.DropDown.AutoClose = true;
-            compareDiffOptionsToolStripMenuItem.DropDown.AutoClose = true;
-#if DEBUG
-            if (sender is ToolStripDropDown)
-                Trace.WriteLine(String.Format("{0}: DiffOptions AutoClose ON...", ((Control)sender).Name));
-            else
-                Trace.WriteLine(String.Format("{0}: DiffOptions AutoClose ON...", ((ToolStripMenuItem)sender).Name));
-#endif
-        }
-
-        private void algoOptionsOpened(object sender, EventArgs e)
-        {
-            algOptions.DropDown.AutoClose = false;
-#if DEBUG
-            if (sender is ToolStripDropDown)
-                Trace.WriteLine(String.Format("{0}: AlgoOptions AutoClose OFF...", ((Control)sender).Name));
-            else
-                Trace.WriteLine(String.Format("{0}: AlgoOptions AutoClose OFF...", ((ToolStripMenuItem)sender).Name));
-#endif
-        }
-
-        private void algoOptionsClosed(object sender, EventArgs e)
-        {
-            algOptions.DropDown.AutoClose = true;
-#if DEBUG
-            if (sender is ToolStripDropDown)
-                Trace.WriteLine(String.Format("{0}: AlgoOptions AutoClose ON...", ((Control)sender).Name));
-            else
-                Trace.WriteLine(String.Format("{0}: AlgoOptions AutoClose ON...", ((ToolStripMenuItem)sender).Name));
-#endif
-        }
-
-        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\LovettSoftware\XmlNotepad");
-          
-            key.SetValue("DiffOptions", Convert.ToInt32((Byte)diffOptions));
-            key.SetValue("DiffAlgorithm", Convert.ToInt32((Byte)diffAlgo));
+            MessageBox.Show(this, SR.SamplesNotFound);
         }
     }
 

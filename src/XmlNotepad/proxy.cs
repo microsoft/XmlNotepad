@@ -24,7 +24,8 @@ namespace XmlNotepad {
             if (absoluteUri == null) {
                 throw new ArgumentNullException("absoluteUri");
             }
-            if (absoluteUri.Scheme == "http" && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream))) {
+            if ((absoluteUri.Scheme == "http" || absoluteUri.Scheme == "https" )
+                && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream))) {
                 try {
                     return GetResponse(absoluteUri);
                 } catch (Exception e) {

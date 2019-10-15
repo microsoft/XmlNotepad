@@ -7,6 +7,9 @@
         <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
         <frequency>1.00:00:00</frequency>
     </application>
+    <version number="2.8.0.0">
+        <feature>Merge fixes from shadolight and add options that control how XmlDiff behaves.</feature>
+    </version>
     <version number="2.7.1.21">
         <feature>Merge change by Vincent Lepape which adds a new MaximumValueLength setting.</feature>
     </version>

@@ -13,6 +13,8 @@ using System.Xml.Xsl;
 using System.Linq;
 using System.Xml.Linq;
 using System.Net;
+using System.Security;
+using System.Security.Permissions;
 
 namespace XmlNotepad {
     public partial class XsltViewer : UserControl {
@@ -256,8 +258,16 @@ namespace XmlNotepad {
                         }
                         outpath = Path.GetFileNameWithoutExtension(path) + "_output" + ext;
 
-                        this.OutputFileName.Text = outpath;
-                        outpath = new Uri(baseUri, outpath).LocalPath;
+                        var safeUri = GetWritableBaseUri(outpath);
+                        if (safeUri != this.baseUri)
+                        {
+                            this.OutputFileName.Text = new Uri(safeUri, outpath).LocalPath;
+                        }
+                        else
+                        {
+                            this.OutputFileName.Text = outpath;
+                        }
+                        outpath = new Uri(safeUri, outpath).LocalPath;
                     }
                 }
                 else if (!string.IsNullOrEmpty(outpath))
@@ -303,6 +313,31 @@ namespace XmlNotepad {
             } catch (Exception x) {
                 WriteError(x);
             }
+        }
+
+        private Uri GetWritableBaseUri(string fileName)
+        {
+            if (this.baseUri.Scheme != "file")
+            {
+                return new Uri(Path.GetTempPath());
+            }
+
+            string testPath = new Uri(this.baseUri, fileName).LocalPath;
+
+            try
+            {
+                using (FileStream fs = new FileStream(testPath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                {
+                    fs.Write(new byte[] { 0 }, 0, 1);
+                }
+                // we created the file then!
+            }
+            catch
+            {
+                // We don't have write permissions
+                return new Uri(Path.GetTempPath());
+            }
+            return this.baseUri;
         }
 
         string GetOutputMethod(Uri xslFile)
