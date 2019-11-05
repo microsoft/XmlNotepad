@@ -5,7 +5,7 @@ Just download the zip file, copy it to the machine you want to install it on, un
 
 [![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
-XML Notpead provides the following useful features:
+XML Notepad provides the following useful features:
 - XML Schema aware Intellisense
 - Find dialog that supports XPath
 - Support for XInclude
@@ -15,7 +15,7 @@ XML Notpead provides the following useful features:
 - XML diff to compare 2 similar XML documents
 - Vibrant community with many [updates and bug fixes](http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml).
 
-See [XML Notepad Design ](XmlNotepadDesign.pdf) for information about how this application is built.
+See [XML Notepad Design ](docs/XmlNotepadDesign.md) for information about how this application is built.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
