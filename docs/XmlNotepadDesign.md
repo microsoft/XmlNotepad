@@ -1,7 +1,6 @@
 # XML Notepad Design
 
-Chris Lovett
-Microsoft
+[Chris Lovett](http://lovettsoftware.com/), Microsoft
 
 I finally got around to fulfilling a promise I made to a friend at MSDN. Back in 1998, we shipped the first XML Notepad,
 written by Murray Low in C++. Later on it fell behind in support for XML standards and, because we didn't have time
