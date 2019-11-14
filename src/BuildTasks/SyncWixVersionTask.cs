@@ -21,6 +21,9 @@ namespace XmlNotepadBuildTasks
         [Required]
         public string UpdatesFile { get; set; }
 
+        [Required]
+        public string ReadmeFile { get; set; }
+
         public override bool Execute()
         {
             if (!System.IO.File.Exists(this.VersionFile))
@@ -60,6 +63,7 @@ namespace XmlNotepadBuildTasks
                 bool result = UpdateWixVersion(v);
                 result &= UpdateHelpFile(v);
                 result &= CheckUpdatesFile(v);
+                result &= UpdateReadmeFile(v);
                 return result;
             }
         }
@@ -148,6 +152,40 @@ namespace XmlNotepadBuildTasks
             catch (Exception ex)
             {
                 Log.LogError("WIX file edit failed: " + ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        private bool UpdateReadmeFile(Version v)
+        {
+            if (!System.IO.File.Exists(this.ReadmeFile))
+            {
+                Log.LogError("ReadmeFile not found: " + this.ReadmeFile);
+                return false;
+            }
+
+            try
+            {
+                XDocument doc = XDocument.Load(this.ReadmeFile);
+                XNamespace ns = XNamespace.Get("http://www.w3.org/1999/xhtml");
+                foreach (var span in doc.Root.Descendants(ns + "span"))
+                {
+                    if ((string)span.Attribute("class") == "version")
+                    {
+                        string newValue = "Version " + v.ToString();
+                        if (newValue != (string)span.Value)
+                        {
+                            span.Value = newValue;
+                            doc.Save(this.ReadmeFile);
+                            Log.LogMessage(MessageImportance.High, "Updated version number in : " + this.ReadmeFile + " to match Version.cs version " + v.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("ReadmeFile file edit failed: " + ex.Message);
                 return false;
             }
             return true;
