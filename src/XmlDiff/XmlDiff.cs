@@ -389,39 +389,28 @@ public class XmlDiff
     private void OpenFragments( String sourceFile, String changedFile, 
                                 ref XmlReader sourceReader, ref XmlReader changedReader )
     {
-        FileStream sourceStream = null;
-        FileStream changedStream = null;
-
-        try
+        XmlNameTable nameTable = new NameTable();
+        XmlParserContext sourceParserContext = new XmlParserContext( nameTable,
+                                                                    new XmlNamespaceManager( nameTable ), 
+                                                                    string.Empty, 
+                                                                    System.Xml.XmlSpace.Default );
+        XmlParserContext changedParserContext = new XmlParserContext( nameTable,
+                                                                    new XmlNamespaceManager( nameTable ), 
+                                                                    string.Empty, 
+                                                                    System.Xml.XmlSpace.Default );
+        using (var sourceStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read))
         {
-            XmlNameTable nameTable = new NameTable();
-            XmlParserContext sourceParserContext = new XmlParserContext( nameTable,
-                                                                        new XmlNamespaceManager( nameTable ), 
-                                                                        string.Empty, 
-                                                                        System.Xml.XmlSpace.Default );
-            XmlParserContext changedParserContext = new XmlParserContext( nameTable,
-                                                                        new XmlNamespaceManager( nameTable ), 
-                                                                        string.Empty, 
-                                                                        System.Xml.XmlSpace.Default );
-            sourceStream = new FileStream( sourceFile, FileMode.Open, FileAccess.Read );
-            changedStream = new FileStream( changedFile, FileMode.Open, FileAccess.Read );
+            using (var changedStream = new FileStream(changedFile, FileMode.Open, FileAccess.Read))
+            {
+                XmlTextReader tr = new XmlTextReader(sourceStream, XmlNodeType.Element, sourceParserContext);
+                tr.XmlResolver = null;
+                sourceReader = tr;
 
-            XmlTextReader tr = new XmlTextReader( sourceStream, XmlNodeType.Element, sourceParserContext );
-            tr.XmlResolver = null;
-            sourceReader = tr;
-
-            tr = new XmlTextReader( changedStream, XmlNodeType.Element, changedParserContext ); 
-            tr.XmlResolver = null;
-            changedReader = tr;
-        }
-        catch 
-        {
-            if ( sourceStream != null )
-                sourceStream.Close();
-            if ( changedStream != null )
-                changedStream.Close();
-            throw;
-        }
+                tr = new XmlTextReader(changedStream, XmlNodeType.Element, changedParserContext);
+                tr.XmlResolver = null;
+                changedReader = tr;
+            }
+        }       
     }
 
     /// <include file='doc\XmlDiff.uex' path='docs/doc[@for="XmlDiff.Compare3"]/*' />

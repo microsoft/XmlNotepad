@@ -3398,11 +3398,15 @@ namespace XmlNotepad {
             
             using (XmlReader diffGram = XmlReader.Create(diffFile, settings)) {
                 XmlDiffView diffView = new XmlDiffView();
-                diffView.Load(new XmlTextReader(filename), diffGram);
-                using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8)) {
-                    SideBySideXmlNotepadHeader(this.model.FileName, changed, htmlWriter);
-                    diffView.GetHtml(htmlWriter);
-                    htmlWriter.WriteLine("</body></html>");
+                using (var reader = new XmlTextReader(filename))
+                { 
+                    diffView.Load(reader, diffGram);
+                    using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8))
+                    {
+                        SideBySideXmlNotepadHeader(this.model.FileName, changed, htmlWriter);
+                        diffView.GetHtml(htmlWriter);
+                        htmlWriter.WriteLine("</body></html>");
+                    }
                 }
             }
 

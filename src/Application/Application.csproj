@@ -40,7 +40,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>2.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -357,11 +357,7 @@
     <PreBuildEvent>copy "$(SolutionDir)\FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="SyncVersionTarget">
-    <SyncWixVersion VersionFile="$(SolutionDir)Version\Version.cs"
-                    WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs"
-                    HelpFile="$(ProjectDir)Help\Help.htm"
-                    UpdatesFile="$(SolutionDir)Updates\Updates.xml"
-                    ReadmeFile="$(SolutionDir)Updates\Readme.htm"/>
+    <SyncWixVersion VersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" HelpFile="$(ProjectDir)Help\Help.htm" UpdatesFile="$(SolutionDir)Updates\Updates.xml" ReadmeFile="$(SolutionDir)Updates\Readme.htm" />
   </Target>
   <PropertyGroup>
     <PreBuildEventDependsOn>$(PreBuildEventDependsOn);SyncVersionTarget</PreBuildEventDependsOn>

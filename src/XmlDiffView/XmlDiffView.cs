@@ -25,10 +25,10 @@ namespace Microsoft.XmlDiffPatch
     using Microsoft.XmlDiffPatch;
 
     #endregion
-    
+
     #region Library Enums section
-       
-   
+
+
     /// <summary>
     /// Enumerator values for types of differences
     /// (Match indicates no difference) 
@@ -92,7 +92,7 @@ namespace Microsoft.XmlDiffPatch
         /// Operation settings to control writing to 
         /// the baseline and actual "panes" of the html.
         /// </summary>
-        internal static readonly bool[,] HtmlWriteToPane = 
+        internal static readonly bool[,] HtmlWriteToPane =
         {
             // Match    = 0
             {
@@ -127,7 +127,7 @@ namespace Microsoft.XmlDiffPatch
             // Change   = 6,
             {
                 true,  true
-            },  
+            },
         };
 
         /// <summary>
@@ -141,17 +141,17 @@ namespace Microsoft.XmlDiffPatch
         /// Declares a view document to hold the merged data.
         /// </summary>
         private XmlDiffViewDocument viewDocument = null;
-        
+
         /// <summary>
         /// Creates a hash table of change short descriptions.
         /// </summary>
         private Hashtable descriptors = new Hashtable();
-        
+
         /// <summary>
         /// Declares a memory stream to hold the diffgram.
         /// </summary>
         private MemoryStream diffgram = null;
-        
+
         /// <summary>
         /// Declares a TextWriter object to hold the output data.
         /// </summary>
@@ -168,37 +168,37 @@ namespace Microsoft.XmlDiffPatch
         /// Initializes the child order option
         /// </summary>
         private bool ignoreChildOrder = false;
-        
+
         /// <summary>
         /// Initializes the comments option
         /// </summary>
         private bool ignoreComments = false;
-        
+
         /// <summary>
         /// Initializes the programming instructions node type option
         /// </summary>
         private bool ignorePI = false;
-        
+
         /// <summary>
         /// Initializes the white space option
         /// </summary>
         private bool ignoreWhitespace = false;
-        
+
         /// <summary>
         /// Initializes the namespaces node type option
         /// </summary>
         private bool ignoreNamespaces = false;
-        
+
         /// <summary>
         /// Initializes the xml prefixes option
         /// </summary>
         private bool ignorePrefixes = false;
-        
+
         /// <summary>
         /// Initializes the declaration node type option
         /// </summary>
         private bool ignoreXmlDecl = false;
-        
+
         /// <summary>
         /// Initializes the DTD node type option
         /// </summary>
@@ -244,11 +244,13 @@ namespace Microsoft.XmlDiffPatch
 
         #region Public non-static methods section
 
-        public static int NextOperationId {
+        public static int NextOperationId
+        {
             get { return nextOperationId++; }
         }
 
-        public static int LastOperationId {
+        public static int LastOperationId
+        {
             get { return nextOperationId; }
         }
 
@@ -326,14 +328,20 @@ namespace Microsoft.XmlDiffPatch
                 FileAccess.Write));
 
             bool identicalData;
-            identicalData = this.GetDifferencesAsFormattedText(
-                sourceXmlFile,
-                changedXmlFile,
-                fragment,
-                options);
+            try
+            {
+                identicalData = this.GetDifferencesAsFormattedText(
+                    sourceXmlFile,
+                    changedXmlFile,
+                    fragment,
+                    options);
 
-            // close the output stream to release the file.
-            this.outputData.Close();
+            }
+            finally
+            {
+                // close the output stream to release the file.
+                this.outputData.Close();
+            }
 
             return identicalData;
         }
@@ -389,16 +397,22 @@ namespace Microsoft.XmlDiffPatch
                 data,
                 System.Text.Encoding.Unicode);
 
-            bool identicalData;
-            identicalData = this.GetDifferencesAsFormattedText(
-                sourceXmlFile,
-                changedXmlFile,
-                fragment,
-                options);
+            bool identicalData = false;
+            try
+            {
+                identicalData = this.GetDifferencesAsFormattedText(
+                    sourceXmlFile,
+                    changedXmlFile,
+                    fragment,
+                    options);
 
-            // Move the data to the memory stream
-            this.outputData.Flush();
-
+            }
+            finally
+            {
+                // Move the data to the memory stream
+                this.outputData.Flush();
+                this.outputData.Close();
+            }
             this.finalOutput = new XmlDiffViewResults(data, identicalData);
 
             // return result of comparison
@@ -500,39 +514,40 @@ namespace Microsoft.XmlDiffPatch
             XmlDiffOptions options)
         {
             MemoryStream data = new MemoryStream();
+            
+            this.outputData = new StreamWriter(
+                data,
+                System.Text.Encoding.Unicode);
+
+            bool identicalData = false;
             try
             {
-                this.outputData = new StreamWriter(
-                    data,
-                    System.Text.Encoding.Unicode);
-
-                bool identicalData = this.DifferencesSideBySideAsHtml(
+                identicalData = this.DifferencesSideBySideAsHtml(
                     sourceXmlFile,
                     changedXmlFile,
                     fragment,
                     options,
                     this.outputData);
 
-                // Move the data to the memory stream
-                this.outputData.Flush();
-
-                // Generate the final output using the returned values
-                // from the differences comparison.
-                this.finalOutput = new XmlDiffViewResults(data, identicalData);
             }
             finally
             {
-                if (null != data)
-                {
-                    data.Close();
-                }
-            }            // return result of comparison
+                // Move the data to the memory stream
+                this.outputData.Flush();
+                this.outputData.Close();
+            }
+
+            // Generate the final output using the returned values
+            // from the differences comparison.
+            this.finalOutput = new XmlDiffViewResults(data, identicalData);
+            
+            // return result of comparison
             return this.finalOutput;
         }
 
         internal static int LastVisitedOpId = 0;
 
-        
+
 
         /// <summary>
         /// Converts a copy of the xml data in the 
@@ -700,7 +715,7 @@ namespace Microsoft.XmlDiffPatch
             int i = 0;
             int j = 0;
 
-            for (;;)
+            for (; ; )
             {
                 while (j < chars.Length && IsWhitespace(text[j]))
                 {
@@ -802,21 +817,29 @@ namespace Microsoft.XmlDiffPatch
 
                     switch (opt)
                     {
-                        case "IgnoreChildOrder": optionsEnum |= XmlDiffOptions.IgnoreChildOrder; 
+                        case "IgnoreChildOrder":
+                            optionsEnum |= XmlDiffOptions.IgnoreChildOrder;
                             break;
-                        case "IgnoreComments": optionsEnum |= XmlDiffOptions.IgnoreComments; 
+                        case "IgnoreComments":
+                            optionsEnum |= XmlDiffOptions.IgnoreComments;
                             break;
-                        case "IgnoreNamespaces": optionsEnum |= XmlDiffOptions.IgnoreNamespaces; 
+                        case "IgnoreNamespaces":
+                            optionsEnum |= XmlDiffOptions.IgnoreNamespaces;
                             break;
-                        case "IgnorePI": optionsEnum |= XmlDiffOptions.IgnorePI; 
+                        case "IgnorePI":
+                            optionsEnum |= XmlDiffOptions.IgnorePI;
                             break;
-                        case "IgnorePrefixes": optionsEnum |= XmlDiffOptions.IgnorePrefixes; 
+                        case "IgnorePrefixes":
+                            optionsEnum |= XmlDiffOptions.IgnorePrefixes;
                             break;
-                        case "IgnoreWhitespace": optionsEnum |= XmlDiffOptions.IgnoreWhitespace; 
+                        case "IgnoreWhitespace":
+                            optionsEnum |= XmlDiffOptions.IgnoreWhitespace;
                             break;
-                        case "IgnoreXmlDecl": optionsEnum |= XmlDiffOptions.IgnoreXmlDecl; 
+                        case "IgnoreXmlDecl":
+                            optionsEnum |= XmlDiffOptions.IgnoreXmlDecl;
                             break;
-                        case "IgnoreDtd": optionsEnum |= XmlDiffOptions.IgnoreDtd; 
+                        case "IgnoreDtd":
+                            optionsEnum |= XmlDiffOptions.IgnoreDtd;
                             break;
                         default:
                             throw new ArgumentException("options");
@@ -884,13 +907,13 @@ namespace Microsoft.XmlDiffPatch
                 fragment,
                 options);
 
-            
-                this.SideBySideHtmlHeader(
-                    sourceXmlFile,
-                    changedXmlFile,
-                    identicalData,
-                    resultHtml);
-            
+
+            this.SideBySideHtmlHeader(
+                sourceXmlFile,
+                changedXmlFile,
+                identicalData,
+                resultHtml);
+
             this.GetHtml(resultHtml);
 
             this.SideBySideHtmlFooter(resultHtml);
@@ -926,14 +949,19 @@ namespace Microsoft.XmlDiffPatch
             return identicalData;
         }
 
-        private int ParseOpId(string value) {
+        private int ParseOpId(string value)
+        {
             int opid = 0;
-            if (string.IsNullOrEmpty(value)) {
+            if (string.IsNullOrEmpty(value))
+            {
                 opid = NextOperationId;
-            } else {
+            }
+            else
+            {
                 opid = int.Parse(value);
             }
-            if (XmlDiffView.nextOperationId <= opid) {
+            if (XmlDiffView.nextOperationId <= opid)
+            {
                 XmlDiffView.nextOperationId = opid + 1;
             }
             return opid;
@@ -993,7 +1021,7 @@ namespace Microsoft.XmlDiffPatch
                                 OperationDescriptor.Type.Move;
                             break;
                         case "prefix change":
-                            type = 
+                            type =
                                 OperationDescriptor.Type.PrefixChange;
                             break;
                         case "namespace change":
@@ -1034,7 +1062,7 @@ namespace Microsoft.XmlDiffPatch
             {
                 XmlDiffViewAttribute attr;
                 if (reader.Prefix == "xmlns" ||
-                    (reader.Prefix == string.Empty && 
+                    (reader.Prefix == string.Empty &&
                     reader.LocalName == "xmlns"))
                 {
                     // create new DiffView attribute
@@ -1070,7 +1098,7 @@ namespace Microsoft.XmlDiffPatch
             {
                 goto End;
             }
-            
+
             // load children
             while (reader.Read())
             {
@@ -1106,7 +1134,7 @@ namespace Microsoft.XmlDiffPatch
                         break;
                     case XmlNodeType.EntityReference:
                         Debug.Assert(false, "XmlDiffViewER was thought to be dead code");
-                        
+
                         // child = new XmlDiffViewER(reader.Name);
                         break;
                     case XmlNodeType.Comment:
@@ -1189,7 +1217,7 @@ namespace Microsoft.XmlDiffPatch
             sourceParent.CreateSourceNodesIndex();
             XmlDiffViewNode currentPosition = null;
 
-            IEnumerator diffgramChildren = 
+            IEnumerator diffgramChildren =
                 diffgramParent.ChildNodes.GetEnumerator();
             while (diffgramChildren.MoveNext())
             {
@@ -1198,7 +1226,7 @@ namespace Microsoft.XmlDiffPatch
                 {
                     continue;
                 }
-                XmlElement diffgramElement = 
+                XmlElement diffgramElement =
                     diffgramChildren.Current as XmlElement;
                 if (diffgramElement == null)
                 {
@@ -1311,13 +1339,17 @@ namespace Microsoft.XmlDiffPatch
             OperationDescriptor operationDesc = null;
 
             string opidAttr = diffgramElement.GetAttribute("opid");
-            if (opidAttr != string.Empty) {
+            if (opidAttr != string.Empty)
+            {
                 operationId = int.Parse(opidAttr);
                 operationDesc = this.GetDescriptor(operationId);
-                if (operationDesc.OperationType == OperationDescriptor.Type.Move) {
+                if (operationDesc.OperationType == OperationDescriptor.Type.Move)
+                {
                     operation = XmlDiffViewOperation.MoveFrom;
                 }
-            } else {
+            }
+            else
+            {
                 operationId = NextOperationId;
             }
 
@@ -1341,7 +1373,7 @@ namespace Microsoft.XmlDiffPatch
                 {
                     operationDesc.NodeList.AddNode(node);
                 }
-                
+
                 // recurse
                 this.ApplyDiffgram(diffgramElement, (XmlDiffViewParentNode)node);
             }
@@ -1378,14 +1410,14 @@ namespace Microsoft.XmlDiffPatch
             {
                 throw new Exception("Missing opid attribute.");
             }
-            
+
             // opid & descriptor
             int opid = ParseOpId(opidAttr);
             OperationDescriptor operationDesc = this.GetDescriptor(opid);
 
             string subtreeAttr = diffgramElement.GetAttribute("subtree");
             bool subtree = (subtreeAttr != "no");
-            
+
             // move single node without subtree
             if (!subtree)
             {
@@ -1395,7 +1427,7 @@ namespace Microsoft.XmlDiffPatch
                         "element must select a single node when the 'subtree' " +
                         "attribute is specified.");
                 }
-                
+
                 // clone node
                 matchNodes.MoveNext();
                 XmlDiffViewNode newNode = matchNodes.Current.Clone(false);
@@ -1544,7 +1576,7 @@ namespace Microsoft.XmlDiffPatch
             ref XmlDiffViewNode currentPosition)
         {
             int opid = NextOperationId;
-            IEnumerator childNodes = 
+            IEnumerator childNodes =
                 diffgramElement.ChildNodes.GetEnumerator();
             while (childNodes.MoveNext())
             {
@@ -1581,7 +1613,7 @@ namespace Microsoft.XmlDiffPatch
                         el.Prefix,
                         el.NamespaceURI,
                         this.ignorePrefixes);
-                    
+
                     // attributes
                     IEnumerator attributes = node.Attributes.GetEnumerator();
                     XmlDiffViewAttribute lastNewAttr = null;
@@ -1750,9 +1782,12 @@ namespace Microsoft.XmlDiffPatch
             node.Operation = XmlDiffViewOperation.Change;
 
             string opidAttr = diffgramElement.GetAttribute("opid");
-            if (opidAttr != string.Empty) {
+            if (opidAttr != string.Empty)
+            {
                 node.OperationId = int.Parse(opidAttr);
-            } else {
+            }
+            else
+            {
                 node.OperationId = NextOperationId;
             }
 
@@ -1833,10 +1868,10 @@ namespace Microsoft.XmlDiffPatch
                 Difference.Tag + Difference.NodeDifferences +
                 " fromFile='" + baselineFile + "' toFile='" +
                 actualFile + "'" + Tags.XmlOpenEnd + this.outputData.NewLine);
-            
+
             // flag the output object is open for cleanup later.
             this.viewDocument.DrawText(this.outputData, Indent.InitialSize);
-            
+
             // end differences node
             this.outputData.Write(Tags.XmlCloseBegin +
                 Difference.Tag + Difference.NodeDifferences +
@@ -1884,7 +1919,7 @@ namespace Microsoft.XmlDiffPatch
             }
             Trace.WriteLine("Files compared " +
                 (identicalData ? "identical." : "different."));
-            
+
             return identicalData;
         }
 
@@ -1958,6 +1993,7 @@ namespace Microsoft.XmlDiffPatch
 
             // Populate an xml reader with the baseline data.
             this.diffgram.Seek(0, SeekOrigin.Begin);
+            FileStream file = null;
             XmlTextReader sourceReader;
             if (fragment)
             {
@@ -1965,11 +2001,12 @@ namespace Microsoft.XmlDiffPatch
                 ////Todo: break up the following overly
                 ////      complex statement to avoid StyleCop
                 ////      complaints.
-                sourceReader = new XmlTextReader(
-                    new FileStream(
+                file = new FileStream(
                         sourceXmlFile,
                         FileMode.Open,
-                        FileAccess.Read),
+                        FileAccess.Read);
+                sourceReader = new XmlTextReader(
+                    file,
                     XmlNodeType.Element,
                     new XmlParserContext(
                         nt,
@@ -1986,6 +2023,11 @@ namespace Microsoft.XmlDiffPatch
             this.Load(
                 sourceReader,
                 new XmlTextReader(this.diffgram));
+
+            if (file != null)
+            {
+                file.Close();
+            }
         }
 
         /// <summary>
@@ -2015,7 +2057,7 @@ namespace Microsoft.XmlDiffPatch
             /// Declares a reference to the last child node processed
             /// </summary>
             private XmlDiffViewNode lastChild;
-            
+
             /// <summary>
             /// Declares a reference to the last attribute processed
             /// </summary>
@@ -2034,7 +2076,7 @@ namespace Microsoft.XmlDiffPatch
                 {
                     return this.lastChild;
                 }
-                
+
                 set
                 {
                     this.lastChild = value;
