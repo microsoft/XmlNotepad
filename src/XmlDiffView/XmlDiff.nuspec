@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>XmlDiff</id>
+    <version>1.0</version>
+    <authors>Microsoft</authors>
+    <description>A library that compares and merges XML files.</description>
+    <projectUrl>https://github.com/microsoft/XmlNotepad/</projectUrl>
+    <repository type="git" url="https://github.com/microsoft/XmlNotepad/"/>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <icon>icon.png</icon>
+    <tags>xml;xmldiff</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6" />
+      <group targetFramework=".NETFramework4.7" />
+      <group targetFramework=".NETFramework4.8" />
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET Standard 2.0 -->
+    <file src=".\bin\Release\netstandard2.0\*.dll" target="lib\netstandard2.0" />
+    <file src=".\bin\Release\netstandard2.0\*.mdb" target="lib\netstandard2.0" />
+    <file src=".\bin\Release\netstandard2.0\*.xml" target="lib\netstandard2.0" />
+    <!-- .NET Framework 4.8 -->
+    <file src=".\bin\Release\net48\*.dll" target="lib\net48" />
+    <file src=".\bin\Release\net48\*.mdb" target="lib\net48" />
+    <file src=".\bin\Release\net48\*.xml" target="lib\net48" />
+    <file src=".\bin\Release\net48\*.exe" target="lib\net48" />
+    <file src=".\bin\Release\net48\*.exe.config" target="lib\net48" />
+    <!-- .NET Framework 4.7 -->
+    <file src=".\bin\Release\net47\*.dll" target="lib\net47" />
+    <file src=".\bin\Release\net47\*.mdb" target="lib\net47" />
+    <file src=".\bin\Release\net47\*.xml" target="lib\net47" />
+    <file src=".\bin\Release\net47\*.exe" target="lib\net47" />
+    <file src=".\bin\Release\net47\*.exe.config" target="lib\net47" />
+    <!-- .NET Framework 4.6 -->
+    <file src=".\bin\Release\net46\*.dll" target="lib\net46" />
+    <file src=".\bin\Release\net46\*.mdb" target="lib\net46" />
+    <file src=".\bin\Release\net46\*.xml" target="lib\net46" />
+    <file src=".\bin\Release\net46\*.exe" target="lib\net46" />
+    <file src=".\bin\Release\net46\*.exe.config" target="lib\net46" />
+    <!-- Assets -->
+    <file src="icon.png"/>
+  </files>
+</package>
