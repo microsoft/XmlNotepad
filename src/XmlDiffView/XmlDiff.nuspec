@@ -13,6 +13,8 @@
     <icon>icon.png</icon>
     <tags>xml;xmldiff</tags>
     <dependencies>
+      <group targetFramework=".NETFramework4" />
+      <group targetFramework=".NETFramework4.5.2" />
       <group targetFramework=".NETFramework4.6" />
       <group targetFramework=".NETFramework4.7" />
       <group targetFramework=".NETFramework4.8" />
@@ -42,6 +44,18 @@
     <file src=".\bin\Release\net46\*.xml" target="lib\net46" />
     <file src=".\bin\Release\net46\*.exe" target="lib\net46" />
     <file src=".\bin\Release\net46\*.exe.config" target="lib\net46" />
+    <!-- .NET Framework 4.5.2 -->
+    <file src=".\bin\Release\net452\*.dll" target="lib\net452" />
+    <file src=".\bin\Release\net452\*.mdb" target="lib\net452" />
+    <file src=".\bin\Release\net452\*.xml" target="lib\net452" />
+    <file src=".\bin\Release\net452\*.exe" target="lib\net452" />
+    <file src=".\bin\Release\net452\*.exe.config" target="lib\net452" />
+    <!-- .NET Framework 4 -->
+    <file src=".\bin\Release\net4\*.dll" target="lib\net4" />
+    <file src=".\bin\Release\net4\*.mdb" target="lib\net4" />
+    <file src=".\bin\Release\net4\*.xml" target="lib\net4" />
+    <file src=".\bin\Release\net4\*.exe" target="lib\net4" />
+    <file src=".\bin\Release\net4\*.exe.config" target="lib\net4" />
     <!-- Assets -->
     <file src="icon.png"/>
   </files>
