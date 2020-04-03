@@ -5,7 +5,7 @@ Just download the zip file, copy it to the machine you want to install it on, un
 
 [![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
-XML Notepad provides the following useful features:
+[XML Notepad](http://microsoft.github.io/XmlNotepad) provides the following useful features:
 - XML Schema aware Intellisense
 - Find dialog that supports XPath
 - Support for XInclude
@@ -15,14 +15,12 @@ XML Notepad provides the following useful features:
 - XML diff to compare 2 similar XML documents
 - Vibrant community with many [updates and bug fixes](http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml).
 
-See [XML Notepad Design ](docs/XmlNotepadDesign.md) for information about how this application is built.
+See [XML Notepad Design ](http://microsoft.github.io/XmlNotepad/design) for information about how this application is built.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Troubleshooting
+## Help
 
-If you have trouble installing the ClickOnce installer package, try a Microsoft Web Browser.  Chrome sometimes does the wrong thing.  Do not attempt to download
-the setup.exe from http://www.lovettsoftware.com/downloads/xmlnotepad/setup.exe.
-ClickOnce only works when you "click" the link in the web browser.  This is actually a security feature.  ClickOnce is verifying the that package it is installing actually came from http://www.lovettsoftware.com/downloads/xmlnotepad/setup.exe and no where else.  This ensures the package has not been tampered with.
+See [Help Pages](http://microsoft.github.io/XmlNotepad).
