@@ -1,3 +1,10 @@
+---
+layout: default
+title: Home
+section: home
+permalink: /design
+---
+
 # XML Notepad Design
 
 [Chris Lovett](http://lovettsoftware.com/), Microsoft

@@ -1,0 +1,13 @@
+- name: Install
+  link:  /install
+  section: install
+- name: Help
+  link:  /help/overview
+  section: learn
+- name: About
+  link:  /XmlNotepadDesign
+  section: about
+- name: GitHub
+  link: https://github.com/microsoft/XmlNotepad/
+  external: true
+  section: github
