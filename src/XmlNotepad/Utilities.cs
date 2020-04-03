@@ -34,6 +34,72 @@ namespace XmlNotepad
             }
         }
 
+        public static string DefaultHelp
+        {
+            get
+            {
+                if (OnlineHelpAvailable)
+                {
+                    return "http://microsoft.github.io/XmlNotepad/help/overview";
+                }
+                else 
+                { 
+                    return Application.StartupPath + "\\Help\\Help.htm";
+                }
+            }
+        }
+
+        public static string OptionsHelp
+        {
+            get
+            {
+                if (OnlineHelpAvailable)
+                {
+                    return "http://microsoft.github.io/XmlNotepad/help/options";
+                }
+                else
+                {
+                    return Application.StartupPath + "\\Help\\Options.htm";
+                }
+            }
+        }
+
+        public static string SchemaHelp
+        {
+            get
+            {
+                if (OnlineHelpAvailable)
+                {
+                    return "http://microsoft.github.io/XmlNotepad/help/schemas";
+                }
+                else
+                {
+                    return Application.StartupPath + "\\Help\\Schemas.htm";
+                }
+            }
+        }
+        
+
+        public static string FindHelp
+        {
+            get
+            {
+                if (OnlineHelpAvailable)
+                {
+                    return Application.StartupPath + "\\Help\\FindReplace.htm";
+                }
+                else
+                {
+                    return "http://microsoft.github.io/XmlNotepad/help/find";
+                }
+            }
+        }
+
+        public static bool OnlineHelpAvailable { get; set; }
+
+        public static bool DynamicHelpEnabled { get; set; }
+
+
         public static void WriteFileWithoutBOM(MemoryStream ms, string filename)
         {
             using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))

@@ -39,13 +39,24 @@ namespace XmlNotepad
             base.OnLoad(e);
         
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null) {
-                hp.SetHelpKeyword(this, "Options");
-                hp.SetHelpNavigator(this, HelpNavigator.KeywordIndex);
+            if (hp != null && Utilities.DynamicHelpEnabled)
+            {
+                hp.HelpNamespace = Utilities.OptionsHelp;
             }
 
             // now let the user resize it.
             this.AutoSize = false; 
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
+            if (hp != null && Utilities.DynamicHelpEnabled)
+            {
+                hp.HelpNamespace = Utilities.DefaultHelp;
+            }
+
+            base.OnClosing(e);
         }
 
         protected override bool ProcessDialogKey(Keys keyData) {

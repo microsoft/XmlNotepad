@@ -303,9 +303,9 @@ namespace XmlNotepad {
 
         public virtual void OnSiteChanged() {
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null) {
-                hp.SetHelpKeyword(this, "Find");
-                hp.SetHelpNavigator(this, HelpNavigator.KeywordIndex);
+            if (hp != null && Utilities.DynamicHelpEnabled)
+            {
+                hp.HelpNamespace = Utilities.FindHelp;
             }
 
             this.SuspendLayout();
@@ -382,7 +382,14 @@ namespace XmlNotepad {
             this.settings["SearchXPath"] = this.checkBoxXPath.Checked;
             this.settings["SearchWholeWord"] = this.checkBoxWholeWord.Checked;
             this.settings["SearchRegex"] = this.checkBoxRegex.Checked;
-            this.settings["SearchMatchCase"] = this.checkBoxMatchCase.Checked;
+            this.settings["SearchMatchCase"] = this.checkBoxMatchCase.Checked; 
+            
+            HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
+            if (hp != null && Utilities.DynamicHelpEnabled)
+            {
+                hp.HelpNamespace = Utilities.DefaultHelp;
+            }
+
             base.OnClosing(e);
         }
 

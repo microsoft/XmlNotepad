@@ -23,15 +23,15 @@ namespace XmlNotepad {
     /// Summary description for Form1.
     /// </summary>
     public class FormMain : System.Windows.Forms.Form, ISite {
-        
+
         UndoManager undoManager;
         Settings settings;
         string[] args;
         DataFormats.Format urlFormat;
-        private System.Windows.Forms.StatusBar statusBar1;       
+        private System.Windows.Forms.StatusBar statusBar1;
         private System.Windows.Forms.StatusBarPanel statusBarPanelMessage;
         private System.Windows.Forms.StatusBarPanel statusBarPanelBusy;
-        RecentFilesMenu recentFiles;        
+        RecentFilesMenu recentFiles;
         TaskList taskList;
         XsltViewer dynamicHelpViewer;
         bool loading;
@@ -199,7 +199,7 @@ namespace XmlNotepad {
         private ToolStripMenuItem changeToProcessingInstructionToolStripMenuItem;
         private ToolStripSeparator toolStripMenuItem12;
         // ChangeTo Context menu...
-        private ToolStripMenuItem changeToContextMenuItem; 
+        private ToolStripMenuItem changeToContextMenuItem;
         private ToolStripMenuItem changeToAttributeContextMenuItem;
         private ToolStripMenuItem changeToTextContextMenuItem;
         private ToolStripMenuItem changeToCDATAContextMenuItem;
@@ -323,6 +323,35 @@ namespace XmlNotepad {
             New();
 
             this.settings["SchemaCache"] = this.model.SchemaCache;
+
+            System.Threading.Tasks.Task.Run(CheckNetwork);
+        }
+
+        private void CheckNetwork()
+        {
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                System.Net.WebClient client = new System.Net.WebClient();
+                client.UseDefaultCredentials = true;
+                try
+                {
+                    string html = client.DownloadString("http://microsoft.github.io/XmlNotepad/");
+                    if (html.Contains("XML Notepad"))
+                    {
+                        this.BeginInvoke(new Action(FoundOnlineHelp));
+                    }
+                }
+                catch (Exception)
+                {
+                    // online help is not reachable
+                }
+            }
+        }
+
+        private void FoundOnlineHelp()
+        {
+            Utilities.OnlineHelpAvailable = true;
+            InitializeHelp(this.helpProvider1);
         }
 
         private void SetDefaultSettings()
@@ -444,10 +473,10 @@ namespace XmlNotepad {
             hp.SetHelpNavigator(this, HelpNavigator.TableOfContents);
             hp.Site = this;
             // in case subclass has already set HelpNamespace
-            if (string.IsNullOrEmpty(hp.HelpNamespace))
+            if (string.IsNullOrEmpty(hp.HelpNamespace) || Utilities.DynamicHelpEnabled)
             {
-                string path = Application.StartupPath + "\\Help\\Help.htm";
-                hp.HelpNamespace = path;
+                hp.HelpNamespace = Utilities.DefaultHelp;
+                Utilities.DynamicHelpEnabled = true;
             }
         }
 
