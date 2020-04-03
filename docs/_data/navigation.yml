@@ -5,7 +5,7 @@
   link:  /help/overview
   section: learn
 - name: About
-  link:  /XmlNotepadDesign
+  link:  /design
   section: about
 - name: GitHub
   link: https://github.com/microsoft/XmlNotepad/
