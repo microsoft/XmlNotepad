@@ -7,7 +7,7 @@ permalink: /help/ui
 
 The interface consists of the following components:
 
-![Screen](/XmlNotepad/assets/images/Screen.png)
+![Screen](/XmlNotepad/assets/images/screen.png)
 
 See also [Keyboard](/XmlNotepad/help/keyboard) Interface.
 

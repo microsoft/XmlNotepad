@@ -13,7 +13,7 @@ When you Drag/Drop nodes across programs, it uses the same text format as [Cut/C
 
 When dragging the selected element a shadow node will appear in the tree that moves with the cursor showing you where the node will be moved to.  In the example below, the "Street" element is being dragged to a new location after the "First" element and before the "Middle" element:
 
-![DragDrop](/XmlNotepad/assets/images/DragDrop.jpg)
+![DragDrop](/XmlNotepad/assets/images/dragdrop.jpg)
 
 When you hover the mouse over a collapsed node it is automatically expanded just in case you are trying to drop the node inside that collapsed container and conversely, when you hover over an expanded node it is automatically collapsed so that you can easily find nodes above or below that container.
 
