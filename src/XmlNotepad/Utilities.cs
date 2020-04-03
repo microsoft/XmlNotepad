@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace XmlNotepad
 {
@@ -32,7 +33,66 @@ namespace XmlNotepad
                 }
             }
         }
-        
+
+        public static void WriteFileWithoutBOM(MemoryStream ms, string filename)
+        {
+            using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                byte[] bytes = new byte[16000];
+                int len = ms.Read(bytes, 0, bytes.Length);
+
+                int start = 0;
+                Encoding sniff = SniffByteOrderMark(bytes, len);
+                if (sniff != null)
+                {
+                    if (sniff == Encoding.UTF8)
+                    {
+                        start = 3;
+                    }
+                    else if (sniff == Encoding.GetEncoding(12001) || sniff == Encoding.UTF32)  // UTF-32.
+                    {
+                        start = 4;
+                    }
+                    else if (sniff == Encoding.Unicode || sniff == Encoding.BigEndianUnicode)  // UTF-16.
+                    {
+                        start = 2;
+                    }
+                }
+
+                while (len > 0)
+                {
+                    fs.Write(bytes, start, len - start);
+                    len = ms.Read(bytes, 0, bytes.Length);
+                    start = 0;
+                }
+            }
+        }
+
+        internal static Encoding SniffByteOrderMark(byte[] bytes, int len)
+        {
+            if (len >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf)
+            {
+                return Encoding.UTF8;
+            }
+            else if (len >= 4 && ((bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0xfe && bytes[3] == 0xff) || (bytes[0] == 0xfe && bytes[1] == 0xff && bytes[2] == 0xfe && bytes[3] == 0xff)))
+            {
+                return Encoding.GetEncoding(12001); // big endian UTF-32.
+            }
+            else if (len >= 4 && ((bytes[0] == 0xff && bytes[1] == 0xfe && bytes[2] == 0x00 && bytes[3] == 0x00) || (bytes[0] == 0xff && bytes[1] == 0xfe && bytes[2] == 0xff && bytes[3] == 0xfe)))
+            {
+                return Encoding.UTF32; // skip UTF-32 little endian BOM
+            }
+            else if (len >= 2 && bytes[0] == 0xff && bytes[1] == 0xfe)
+            {
+                return Encoding.Unicode; // skip UTF-16 little endian BOM
+            }
+            else if (len >= 2 && bytes[0] == 0xf2 && bytes[1] == 0xff)
+            {
+                return Encoding.BigEndianUnicode; // skip UTF-16 big endian BOM
+            }
+            return null;
+        }
+
         // Lighten up the given baseColor so it is easy to read on the system Highlight color background.
         public static Brush HighlightTextBrush(Color baseColor) {
             SolidBrush ht = SystemBrushes.Highlight as SolidBrush;

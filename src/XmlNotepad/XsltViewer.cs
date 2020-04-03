@@ -28,6 +28,7 @@ namespace XmlNotepad {
         ISite site;
         XmlCache model;
         XmlDocument doc;
+        XmlDocument xsltdoc;
         bool showFileStrip = true;
         string defaultSSResource = "XmlNotepad.DefaultSS.xslt";
         IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
@@ -138,6 +139,10 @@ namespace XmlNotepad {
                         t.Load(reader);
                         defaultss = t;
                     }
+                    // the XSLT DOM is also handy to have around for GetOutputMethod
+                    stream.Seek(0, SeekOrigin.Begin);
+                    this.xsltdoc = new XmlDocument();
+                    this.xsltdoc.Load(stream);
                 }
             }
             return defaultss;
@@ -236,17 +241,24 @@ namespace XmlNotepad {
                         using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs)) {
                             xslt.Load(r, settings, resolver);
                         }
+
+                        // the XSLT DOM is also handy to have around for GetOutputMethod
+                        this.xsltdoc = new XmlDocument();
+                        this.xsltdoc.Load(resolved.AbsoluteUri);
                     }
 
                     transform = xslt;
                 }
+
+                var method = GetOutputMethod(this.xsltdoc);
+
                 if (string.IsNullOrEmpty(outpath) && !DisableOutputFile)
                 {
                     if (!string.IsNullOrEmpty(path))
                     {
                         // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
                         // XslCompiledTransform doesn't give us that so we need to get it outselves.
-                        var method = GetOutputMethod(resolved);
+                        
                         string ext = ".xml";
                         if (method.ToLower() == "html")
                         {
@@ -275,27 +287,45 @@ namespace XmlNotepad {
                     outpath = new Uri(baseUri, outpath).LocalPath;
                 }
 
-                if (null != transform) {
-                    if (DisableOutputFile || string.IsNullOrEmpty(path))
+                if (null != transform)
+                {
+                    XmlReaderSettings settings = new XmlReaderSettings();
+                    settings.XmlResolver = new XmlProxyResolver(this.site);
+                    settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                    var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri);
+                    if (DisableOutputFile || string.IsNullOrEmpty(outpath))
                     {
                         StringWriter writer = new StringWriter();
-                        XmlReaderSettings settings = new XmlReaderSettings();
-                        settings.XmlResolver = new XmlProxyResolver(this.site);
-                        settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                        transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
+                        transform.Transform(xmlReader, null, writer);
                         this.xsltUri = resolved;
                         Display(writer.ToString());
                     }
                     else
                     {
-                        using (FileStream writer = new FileStream(outpath, FileMode.OpenOrCreate, FileAccess.Write))
+                        bool noBom = false;
+                        Settings appSettings = (Settings)this.site.GetService(typeof(Settings));
+                        if (appSettings != null)
                         {
-                            XmlReaderSettings settings = new XmlReaderSettings();
-                            settings.XmlResolver = new XmlProxyResolver(this.site);
-                            settings.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                            transform.Transform(XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri), null, writer);
-                            this.xsltUri = resolved;
+                            noBom = (bool)appSettings["NoByteOrderMark"];
                         }
+                        if (noBom)
+                        {
+                            // cache to an inmemory stream so we can strip the BOM.
+                            MemoryStream ms = new MemoryStream();
+                            transform.Transform(xmlReader, null, ms);
+
+                            ms.Seek(0, SeekOrigin.Begin);
+                            Utilities.WriteFileWithoutBOM(ms, outpath);
+                        }
+                        else
+                        {
+                            using (FileStream writer = new FileStream(outpath, FileMode.OpenOrCreate, FileAccess.Write))
+                            {
+                                transform.Transform(xmlReader, null, writer);
+                                this.xsltUri = resolved;
+                            }
+                        }
+
                         DisplayFile(outpath);
                     }
                 }
@@ -340,34 +370,43 @@ namespace XmlNotepad {
             return this.baseUri;
         }
 
-        string GetOutputMethod(Uri xslFile)
+        string GetOutputMethod(XmlDocument xsltdoc)
         {
-            XDocument temp = XDocument.Load(xslFile.OriginalString);
-            var ns = temp.Root.Name.Namespace;
-            string method = "xml";
-            foreach (var oe in temp.Root.Elements(ns + "output"))
+            var ns = xsltdoc.DocumentElement.NamespaceURI;
+            string method = "xml"; // the default.
+            var mgr = new XmlNamespaceManager(xsltdoc.NameTable);
+            mgr.AddNamespace("xsl", ns);
+            XmlElement e = (XmlElement)xsltdoc.SelectSingleNode("//xsl:ouput", mgr);
+            if (e != null)
             {
-                method = (string)oe.Attribute("method");
-                if (!string.IsNullOrEmpty(method))
+                var specifiedMethod = e.GetAttribute("method");
+                if (!string.IsNullOrEmpty(specifiedMethod))
                 {
-                    return method;
+                    return specifiedMethod;
                 }
             }
+
             // then we need to figure out the default method which is xml unless there's an html element here
-            foreach(XElement child in temp.Root.Elements())
+            foreach(XmlNode node in xsltdoc.DocumentElement.ChildNodes)
             {
-                if (child.Name.Namespace == "" && string.Compare(child.Name.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
+                if (node is XmlElement child)
                 {
-                    return "html";
-                }
-                else
-                {
-                    // might be an <xsl:template> so look inside these too...
-                    foreach (XElement grandchild in child.Elements())
+                    if (string.IsNullOrEmpty(child.NamespaceURI) && string.Compare(child.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
                     {
-                        if (grandchild.Name.Namespace == "" && string.Compare(grandchild.Name.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
+                        return "html";
+                    }
+                    else
+                    {
+                        // might be an <xsl:template> so look inside these too...
+                        foreach (XmlNode subnode in child.ChildNodes)
                         {
-                            return "html";
+                            if (subnode is XmlElement grandchild)
+                            {
+                                if (string.IsNullOrEmpty(grandchild.NamespaceURI) && string.Compare(grandchild.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
+                                {
+                                    return "html";
+                                }
+                            }
                         }
                     }
                 }
@@ -423,6 +462,7 @@ namespace XmlNotepad {
         }
 
         private Guid cmdGuid = new Guid("ED016940-BD5B-11CF-BA4E-00C04FD70816");
+
         private enum OLECMDEXECOPT {
             OLECMDEXECOPT_DODEFAULT         = 0,
             OLECMDEXECOPT_PROMPTUSER        = 1,
