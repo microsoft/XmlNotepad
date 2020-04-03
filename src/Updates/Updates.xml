@@ -7,8 +7,9 @@
     <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
     <frequency>1.00:00:00</frequency>
   </application>
-  <version number="2.8.0.8">
-    <bug>Fix locked file bug after doing xml comparison (github issue# 44)</bug>
+  <version number="2.8.0.9">
+    <bug>Fix locked file bug after doing xml comparison (github issue# 44).</bug>
+    <bug>Fix BOM option so it is honored on XSLT output files also (github issue# 46).</bug>
   </version>
   <version number="2.8.0.7">
     <bug>Fix problem with TLS 1.2 by upgrading to .NET Framework 4.7.2</bug>
