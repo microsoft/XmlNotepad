@@ -135,7 +135,7 @@ should not lose. If you do, then code coverage also will not work.
 
 ## Conclusion
 
-hope you enjoy the all new XML Notepad. Feedback and suggestions are welcome,
+I hope you enjoy the all new XML Notepad. Feedback and suggestions are welcome,
 just use the github issues list.  Pull requests are also welcome, in fact,
 a number of good pull requests have already been merged.  Thanks to
 all who are helping to make XML notepad a great tool!
