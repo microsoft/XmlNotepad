@@ -7,7 +7,7 @@ permalink: /
 
 # XML Notepad
 
-XML Notepad provides a simple intuitive User Interface for browsing and editing XML documents.
+XML Notepad provides a simple intuitive [User Interface](/XmlNotepad/help/ui) for browsing and editing XML documents.
 
 [![image](assets/images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
@@ -21,7 +21,9 @@ XML Notepad provides the following useful features:
 - XML diff to compare 2 similar XML documents
 - Vibrant community with many [updates and bug fixes](http://www.lovettsoftware.com/downloads/XmlNotepad/Updates.xml).
 
-See [XML Notepad Design ](XmlNotepadDesign) for information about how this application is built.
+See [Online Help](/XmlNotepad/help/overview).
+
+See [XML Notepad Design ](design) for information about how this application is built.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 

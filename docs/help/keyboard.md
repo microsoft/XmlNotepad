@@ -24,8 +24,8 @@ Handy Keyboard short cuts include:
 | ALT+INSERT	   | Insert a child attribute.|
 | ENTER	           | Enter and exit edit mode on a node name and/or node value. You can also enter edit mode by just typing in some non-navigational keystrokes and what you type will replace what was selected.|
 | CTRL+D	      |  Duplicate the current node, so you can quickly create similar fragments of XML and then just edit the values. |
-| CTRL+F	      |  Brings up the Find dialog. |
-| CTRL+H	      |  Brings up the Find/Replace dialog. |
+| CTRL+F	      |  Brings up the [Find dialog](/XmlNotepad/help/find). |
+| CTRL+H	      |  Brings up the [Find/Replace dialog](/XmlNotepad/help/find). |
 | CTRL+I	      |  Incremental search - as you type a sequence of letters, this search mode will match the next node that starts with  that sequence. The more letters you type the more precise the match becomes. In a large document this is a convenient way to navigate around.  |
 | CTRL+C, CTRL+V, CTRL+X  | Cut/Copy/Paste - see [Clipboard support](/XmlNotepad/help/clipboard). |
 | F2	                      |  Edit the current node name or value. |
@@ -33,7 +33,7 @@ Handy Keyboard short cuts include:
 | F6	                      |  Move focus to next panel (cycles between tree view, value view and error list).  SHIFT+F6 cycles in the reverse order. |
 | F4	                      |  Move to the next error. |
 | SHIFT+ENTER	              |  Add a new line to a multi-line node value |
-| CTRL+DRAG-DROP	          |  Normally drag/drop is a move operation. If you hold down the Control key then it becomes a Copy operation. |
+| CTRL+DRAG-DROP	          |  Normally [drag/drop](/XmlNotepad/help/dragdrop) is a move operation. If you hold down the Control key then it becomes a Copy operation. |
 | Multiply                    |  (* on number pad)	Expand all nodes under the selected node. |
 | Add (+ on number pad)	      |  Expand the selected node. |
 | Subtract (- on number pad)  |  Collapse the selected node. |

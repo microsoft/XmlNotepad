@@ -5,13 +5,13 @@ section: home
 permalink: /help/version
 ---
 
-## XML Notepad Version
+## Microsoft XML Notepad Version
 
 Microsoft XML Notepad
 
-Version 2.8.0.9
+Version 2.8.0.10
 
-Copyright © 2016 Microsoft Corporation. All Rights Reserved.
+Copyright © 2020 Microsoft Corporation. All Rights Reserved.
 
 Built using C# on .NET Framework 4.6.
 

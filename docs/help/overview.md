@@ -7,14 +7,14 @@ permalink: /help/overview
 
 ## Overview
 
-Microsoft XML Notepad provides a simple intuitive [User Interface](/XmlNotepad/help/ui) for browsing and editing XML documents.
+XML Notepad provides a simple intuitive [User Interface](/XmlNotepad/help/ui) for browsing and editing XML documents.
 
 Handy features include:
 
 - Tree View synchronized with Node Text View for quick editing of node names and values.
 - Incremental search (Ctrl+I) in both tree and text views, so as you type it navigates to matching nodes.
 - [Cut/copy/paste](/XmlNotepad/help/clipboard) with full namespace support.
-- [Drag/drop support](/XmlNotepad/help/dragdrop) for easy manipulation of the tree, even across different instances of Microsoft XML Notepad and from the file system.
+- [Drag/drop support](/XmlNotepad/help/dragdrop) for easy manipulation of the tree, even across different instances of XML Notepad and from the file system.
 - Infinite undo/redo for all edit operations.
 - In place popup multi-line editing of large text node values.
 - Configurable fonts and colors via the [options dialog](/XmlNotepad/help/options).

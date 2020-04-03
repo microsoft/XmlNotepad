@@ -7,11 +7,11 @@ permalink: /help/find
 
 ## Find/Replace
 
-The "Find..." item under the Edit Menu (CTRL+F) brings up the following dialog:
+The "Find..." item under the [Edit Menu](/XmlNotepad/help/menus) (CTRL+F) brings up the following dialog:
 
 ![Find](/XmlNotepad/assets/images/find.jpg)
 
-The "Replace..." item under the Edit Menu (CTRL+H) changes this dialog to show the extra replace fields:
+The "Replace..." item under the [Edit Menu](/XmlNotepad/help/menus) (CTRL+H) changes this dialog to show the extra replace fields:
 
 ![Find](/XmlNotepad/assets/images/replace.jpg)
 

@@ -6,7 +6,7 @@ permalink: /help/menus
 ---
 
 ## Menus
-Microsoft XML Notepad provides the following menu commands.
+XML Notepad provides the following menu commands.
 
 ### File
 The file menu contains the following commands:
@@ -17,7 +17,7 @@ The file menu contains the following commands:
 - **Save As** Save the current document to a different file name on disk.
 - **Export Errors** Save the contents of the Error List in an XML format.
 - **Recent Files** This menu provides quick access to the last 10 XML documents you've edited.
-- **Exit** Closes Microsoft XML Notepad.
+- **Exit** Closes XML Notepad.
 
 ### Edit
 The edit menu contains the following commands:
@@ -30,7 +30,7 @@ The edit menu contains the following commands:
 - **Insert** Insert a new node of the same type (element, attribute, processing instruction, comment, etc) as the currently selected node.  This makes it easy to build a list of nodes that have the same type.
 - **Duplicate** Clone the selected node (and its children) and insert the clone as the next sibling.
 - **Change To** Changes the selected node to the specified node type.
-- **Goto Definition** Open the selected XInclude or open the XML Schema that defines the selected node in a new instance of Microsoft XML Notepad.
+- **Goto Definition** Open the selected XInclude or open the XML Schema that defines the selected node in a new instance of XML Notepad.
 - **Expand XIncludes** Expand all XInlcude elements with the contents of the XML documents they point to.
 - **Nudge** Moves the selected node:
     - **Up**     Before the previous sibling, or before the parent if there are no previous siblings.
