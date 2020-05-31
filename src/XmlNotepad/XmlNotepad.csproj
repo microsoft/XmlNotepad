@@ -301,16 +301,14 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="XmlDiffPatch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.0\lib\net47\XmlDiffPatch.dll</HintPath>
+    </Reference>
+    <Reference Include="XmlDiffPatch.View, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.0\lib\net47\XmlDiffPatch.View.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XmlDiffView\XmlDiffView8.csproj">
-      <Project>{694d8b35-e80f-4daf-b454-6bb992630eca}</Project>
-      <Name>XmlDiffView8</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XmlDiff\XmlDiffPatch8.csproj">
-      <Project>{8ba90da5-e8eb-4dec-9d41-951d012b90ce}</Project>
-      <Name>XmlDiffPatch8</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XmlStats\XmlStats.csproj">
       <Project>{ba2aed71-4942-4f51-959e-963cef7d0895}</Project>
       <Name>XmlStats</Name>
@@ -339,6 +337,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

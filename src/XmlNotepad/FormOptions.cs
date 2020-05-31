@@ -4,6 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Collections.Generic;
 
 namespace XmlNotepad
 {
@@ -173,6 +174,12 @@ namespace XmlNotepad
 
 	}
 
+    public enum ColorTheme
+    {
+        Light,
+        Dark
+    }
+
     // This class keeps s a local snapshot of the settings until the user clicks the Ok button,
     // then the Apply() method is called to propagate the new settings to the underlying Settings object.
     // It also provides localizable strings for the property grid.
@@ -180,6 +187,9 @@ namespace XmlNotepad
         Settings settings;
         Font font;
         string fontName;
+        ColorTheme theme;
+        Hashtable lightColors;
+        Hashtable darkColors;
         Color elementColor;
         Color commentColor;
         Color attributeColor;
@@ -187,6 +197,7 @@ namespace XmlNotepad
         Color textColor;
         Color cdataColor;
         Color backgroundColor;
+        Color containerBackgroundColor;
         string updateLocation;
         bool enableUpdate;
         bool noByteOrderMark;
@@ -213,14 +224,10 @@ namespace XmlNotepad
 
             this.font = (Font)this.settings["Font"];
             this.fontName = font.Name + " " + font.SizeInPoints + " " + font.Style.ToString();
-            Hashtable colors = (Hashtable)this.settings["Colors"];
-            elementColor = (Color)colors["Element"];
-            commentColor = (Color)colors["Comment"];
-            attributeColor = (Color)colors["Attribute"];
-            piColor = (Color)colors["PI"];
-            textColor = (Color)colors["Text"];
-            cdataColor = (Color)colors["CDATA"];
-            backgroundColor = (Color)colors["Background"];
+            this.theme = (ColorTheme)this.settings["Theme"];
+            lightColors = (Hashtable)this.settings["LightColors"];
+            darkColors = (Hashtable)this.settings["DarkColors"];
+            LoadColors();
             updateLocation = (string)this.settings["UpdateLocation"];
             enableUpdate = (bool)this.settings["UpdateEnabled"];
             autoFormatOnSave = (bool)this.settings["AutoFormatOnSave"];
@@ -243,6 +250,61 @@ namespace XmlNotepad
             this.xmlDiffIgnoreDtd = (bool)this.settings["XmlDiffIgnoreDtd"];
         }
 
+        private void LoadColors()
+        {
+            Hashtable colors = this.theme == ColorTheme.Light ? lightColors : darkColors;
+            elementColor = (Color)colors["Element"];
+            commentColor = (Color)colors["Comment"];
+            attributeColor = (Color)colors["Attribute"];
+            piColor = (Color)colors["PI"];
+            textColor = (Color)colors["Text"];
+            cdataColor = (Color)colors["CDATA"];
+            backgroundColor = (Color)colors["Background"];
+            containerBackgroundColor = (Color)colors["ContainerBackground"];
+        }
+
+        internal static Hashtable GetDefaultColors(ColorTheme theme)
+        {
+            if (theme == ColorTheme.Light)
+            {
+                System.Collections.Hashtable light = new System.Collections.Hashtable();
+                light["Element"] = Color.FromArgb(0, 64, 128);
+                light["Attribute"] = Color.Maroon;
+                light["Text"] = Color.Black;
+                light["Comment"] = Color.Green;
+                light["PI"] = Color.Purple;
+                light["CDATA"] = Color.Gray;
+                light["Background"] = Color.White;
+                light["ContainerBackground"] = Color.AliceBlue;
+                return light;
+            }
+            else
+            {
+                System.Collections.Hashtable dark = new System.Collections.Hashtable();
+                dark["Element"] = Color.FromArgb(0x35, 0x7D, 0xCE);
+                dark["Attribute"] = Color.FromArgb(0x92, 0xCA, 0xF3);
+                dark["Text"] = Color.FromArgb(0x94, 0xB7, 0xC8);
+                dark["Comment"] = Color.FromArgb(0x45, 0x62, 0x23);
+                dark["PI"] = Color.FromArgb(0xAC, 0x91, 0x6A);
+                dark["CDATA"] = Color.FromArgb(0xC2, 0xCB, 0x85);
+                dark["Background"] = Color.FromArgb(0x1e, 0x1e, 0x1e);
+                dark["ContainerBackground"] = Color.FromArgb(0x25, 0x25, 0x26);
+                return dark;
+            }
+        }
+
+        internal void SaveColors()
+        {
+            Hashtable colors = this.theme == ColorTheme.Light ? this.lightColors : this.darkColors;
+            colors["Element"] = this.elementColor;
+            colors["Comment"] = this.commentColor;
+            colors["CDATA"] = this.cdataColor;
+            colors["Attribute"] = this.attributeColor;
+            colors["PI"] = this.piColor;
+            colors["Text"] = this.textColor;
+            colors["Background"] = this.backgroundColor;
+        }
+
         public static string Escape(string nl) {
             return nl.Replace("\r", "\\r").Replace("\n", "\\n");
         }
@@ -253,15 +315,10 @@ namespace XmlNotepad
         public void Apply() {
             this.settings["Font"] = this.font;
 
-            Hashtable colors = (Hashtable)this.settings["Colors"];
-            colors["Element"] = this.elementColor;
-            colors["Comment"] = this.commentColor;
-            colors["CDATA"] = this.cdataColor;
-            colors["Attribute"] = this.attributeColor;
-            colors["PI"] = this.piColor;
-            colors["Text"] = this.textColor;
-            colors["Background"] = this.backgroundColor;
-            
+            this.settings["Theme"] = this.theme;
+            this.settings["LightColors"] = this.lightColors;
+            this.settings["DarkColors"] = this.darkColors;
+
             this.settings["UpdateEnabled"] = this.enableUpdate;
             this.settings["UpdateLocation"] = this.updateLocation;
 
@@ -292,13 +349,11 @@ namespace XmlNotepad
 
         public void Reset() {
             this.font = new Font("Courier New", 10, FontStyle.Regular);
-            elementColor = Color.FromArgb(0, 64, 128); 
-            commentColor = Color.Green;
-            attributeColor = Color.Maroon;
-            piColor = Color.Purple;
-            textColor = Color.Black;
-            cdataColor = Color.Gray;
-            backgroundColor = Color.White;
+
+            this.theme = ColorTheme.Light;
+            this.lightColors = GetDefaultColors(ColorTheme.Light);
+            this.darkColors = GetDefaultColors(ColorTheme.Dark);
+            this.LoadColors();
             updateLocation = "http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
             enableUpdate = true;
             autoFormatOnSave = true;
@@ -310,6 +365,26 @@ namespace XmlNotepad
             this.maximumLineLength = 10000;
             this.maximumValueLength = short.MaxValue;
             ignoreDTD = false;
+        }
+
+        [SRCategoryAttribute("ThemeCategory")]
+        [LocDisplayName("Theme")]
+        [SRDescriptionAttribute("ThemeDescription")]
+        public ColorTheme Theme
+        {
+            get
+            {
+                return this.theme;
+            }
+            set
+            {
+                if (this.theme != value)
+                {
+                    SaveColors();
+                    this.theme = value;
+                    LoadColors();
+                }
+            }
         }
 
         [SRCategoryAttribute("ColorCategory")]
@@ -391,6 +466,22 @@ namespace XmlNotepad
                 this.backgroundColor = value;
             }
         }
+
+        [SRCategoryAttribute("ColorCategory")]
+        [LocDisplayName("ContainerBackgroundColor")]
+        [SRDescriptionAttribute("ContainerBackgroundColorDescription")]
+        public Color ContainerBackgroundColor
+        {
+            get
+            {
+                return this.containerBackgroundColor;
+            }
+            set
+            {
+                this.containerBackgroundColor = value;
+            }
+        }
+
 
         [SRCategoryAttribute("FontCategory")]
         [LocDisplayName("FontPropertyName")]

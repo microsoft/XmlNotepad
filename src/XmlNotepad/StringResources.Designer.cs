@@ -261,6 +261,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Container background.
+        /// </summary>
+        internal static string ContainerBackgroundColor {
+            get {
+                return ResourceManager.GetString("ContainerBackgroundColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The background color for non text nodes.
+        /// </summary>
+        internal static string ContainerBackgroundColorDescription {
+            get {
+                return ResourceManager.GetString("ContainerBackgroundColorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File &apos;{0}&apos; does not exist. Do you need to create the file?.
         /// </summary>
         internal static string CreateFile {
@@ -1244,6 +1262,33 @@ namespace XmlNotepad {
         internal static string TextNotFoundPrompt {
             get {
                 return ResourceManager.GetString("TextNotFoundPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color Theme.
+        /// </summary>
+        internal static string ThemeCategory {
+            get {
+                return ResourceManager.GetString("ThemeCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the default color theme and theme to edit.
+        /// </summary>
+        internal static string ThemeDescription {
+            get {
+                return ResourceManager.GetString("ThemeDescription", resourceCulture);
             }
         }
         

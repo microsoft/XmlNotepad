@@ -122,16 +122,24 @@ namespace XmlNotepad {
         public void SetSite(ISite site) {
             // Overriding the Site property directly breaks the WinForms designer.
             this.Site = site;
-            this.settings = (Settings)site.GetService(typeof(Settings));
-            if (this.settings != null) {
-                this.settings.Changed += new SettingsEventHandler(settings_Changed);
-            }
-            settings_Changed(this, "");
             this.editor.Site = site;
 
             XmlCache model = (XmlCache)site.GetService(typeof(XmlCache));
             model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
         }
+
+        internal void OnLoaded()
+        {
+            this.settings = (Settings)this.Site.GetService(typeof(Settings));
+            if (this.settings != null)
+            {
+                this.settings.Changed -= new SettingsEventHandler(settings_Changed);
+                this.settings.Changed += new SettingsEventHandler(settings_Changed);
+            }
+            settings_Changed(this, "Colors");
+            settings_Changed(this, "MaximumValueLength");
+        }
+
 
         void OnModelChanged(object sender, ModelChangedEventArgs e) {
             ClearCache();
@@ -157,7 +165,9 @@ namespace XmlNotepad {
                 switch (name)
                 {
                     case "Colors":
-                        System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings["Colors"];
+                        var theme = (ColorTheme)this.settings["Theme"];
+                        string colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
+                        System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings[colorSetName];
                         if (colors != null)
                         {
                             object color = colors["ContainerBackground"];
@@ -709,7 +719,6 @@ namespace XmlNotepad {
             return null;
         }
 
-        
         public Rectangle GetTextBounds(TreeNode n) {
             Rectangle r = new Rectangle(0, n.LabelBounds.Top, this.Width, n.LabelBounds.Height);
             return r;

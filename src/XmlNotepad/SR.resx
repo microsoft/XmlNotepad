@@ -789,4 +789,24 @@ Do you want to visit the web page that describes this update?</value>
   <data name="SamplesNotFound" xml:space="preserve">
     <value>Samples folder not found</value>
   </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Name</value>
+    <comment>Property Name</comment>
+  </data>
+  <data name="ThemeCategory" xml:space="preserve">
+    <value>Color Theme</value>
+    <comment>Property Window Category</comment>
+  </data>
+  <data name="ThemeDescription" xml:space="preserve">
+    <value>Select the default color theme and theme to edit</value>
+    <comment>Property Description</comment>
+  </data>
+  <data name="ContainerBackgroundColor" xml:space="preserve">
+    <value>Container background</value>
+    <comment>Property Name</comment>
+  </data>
+  <data name="ContainerBackgroundColorDescription" xml:space="preserve">
+    <value>The background color for non text nodes</value>
+    <comment>Property description</comment>
+  </data>
 </root>

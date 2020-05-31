@@ -9,9 +9,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("XmlStats")]
 [assembly: AssemblyDescription("Reports statistics about about the elements, attributes and text in XML files.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
 [assembly: AssemblyProduct("XmlStats")]
-[assembly: AssemblyCopyright("Copyright 2002, Microsoft Corporation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -25,8 +23,6 @@ using System.Runtime.CompilerServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-
-[assembly: AssemblyVersion("1.0.3.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

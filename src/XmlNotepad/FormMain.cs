@@ -359,17 +359,9 @@ namespace XmlNotepad {
             // populate default settings and provide type info.
             Font f = new Font("Courier New", 10, FontStyle.Regular);
             this.settings["Font"] = f;
-            System.Collections.Hashtable colors = new System.Collections.Hashtable();
-            colors["Element"] = Color.FromArgb(0, 64, 128);
-            colors["Attribute"] = Color.Maroon;
-            colors["Text"] = Color.Black;
-            colors["Comment"] = Color.Green;
-            colors["PI"] = Color.Purple;
-            colors["CDATA"] = Color.Gray;
-            colors["Background"] = Color.White;
-            colors["ContainerBackground"] = Color.AliceBlue;
-
-            this.settings["Colors"] = colors;
+            this.settings["Theme"] = ColorTheme.Light;
+            this.settings["LightColors"] = UserSettings.GetDefaultColors(ColorTheme.Light);
+            this.settings["DarkColors"] = UserSettings.GetDefaultColors(ColorTheme.Dark);
             this.settings["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
             this.settings["WindowBounds"] = new Rectangle(0, 0, 0, 0);
             this.settings["TaskListSize"] = 0;
@@ -549,6 +541,7 @@ namespace XmlNotepad {
             this.updater.Title = this.Caption;
             this.updater.UpdateRequired += new EventHandler(OnUpdateRequired);
             LoadConfig();
+            this.xmlTreeView1.OnLoaded();
             base.OnLoad(e);
         }
 
