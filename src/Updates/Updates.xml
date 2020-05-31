@@ -7,6 +7,10 @@
     <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.11">
+    <feature>Add support for "Dark" theme colors and a way to easily switch between light and dark theme.</feature>
+    <feature>Add transparent icons that look good on dark backgrounds</feature>
+  </version>
   <version number="2.8.0.10">
     <bug>Fix F1 help.</bug>
   </version>
