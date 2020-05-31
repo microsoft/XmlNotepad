@@ -9,10 +9,10 @@
   <Identity
     Name="5632ff08-aa93-439a-b09f-677eb3664250"
     Publisher="CN=Chris Lovett, O=Chris Lovett, STREET=18606 201st Ave NE, L=Woodinville, S=WA, PostalCode=98077, C=US"
-    Version="2.8.0.11" />
+    Version="2.8.0.12" />
 
   <Properties>
-    <DisplayName>XmlNotepadPackage</DisplayName>
+    <DisplayName>XML Notepad</DisplayName>
     <PublisherDisplayName>Chris Lovett</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="XmlNotepadPackage"
+        DisplayName="XML Notepad"
         Description="XML Notepad is a lightweight and fast tool for editing XML documents. XML has proliferated the planet and XML Notepad has been downloaded over a million times!"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
