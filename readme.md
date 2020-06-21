@@ -6,6 +6,8 @@ Just download the zip file, copy it to the machine you want to install it on, un
 
 [![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
+You can also install XML Notepad using WinGet: `winget install xmlnotepad`
+
 [XML Notepad](http://microsoft.github.io/XmlNotepad) provides the following useful features:
 - XML Schema aware Intellisense
 - Find dialog that supports XPath
