@@ -464,10 +464,12 @@ namespace XmlNotepad {
         private Guid cmdGuid = new Guid("ED016940-BD5B-11CF-BA4E-00C04FD70816");
 
         private enum OLECMDEXECOPT {
+#pragma warning disable CA1712 // Do not prefix enum values with type name
             OLECMDEXECOPT_DODEFAULT         = 0,
             OLECMDEXECOPT_PROMPTUSER        = 1,
             OLECMDEXECOPT_DONTPROMPTUSER    = 2,
             OLECMDEXECOPT_SHOWHELP          = 3
+#pragma warning restore CA1712 // Do not prefix enum values with type name
         }
 
         private enum MiscCommandTarget {

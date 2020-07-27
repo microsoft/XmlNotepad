@@ -40,7 +40,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>2.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -72,7 +72,7 @@
     <ManifestCertificateThumbprint>AFFF93C9E6AD77B2519D1778A820B789F9F1E31D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestTimestampUrl>http://timestamp.comodoca.com?td=sha256</ManifestTimestampUrl>
+    <ManifestTimestampUrl>http://timestamp.comodoca.com</ManifestTimestampUrl>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>

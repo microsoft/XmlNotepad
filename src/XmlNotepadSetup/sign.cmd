@@ -13,5 +13,7 @@ REM  XmlNotepadSetup.msi
 REM 
 REM and post to ftp://www.lovettsoftware.com/LovettSoftware/Downloads/XmlNotepad/
 REM 
+set signtool=%~dp0..\..\tools\signtool.exe
 set dll=%~dp0bin\Release\XmlNotepadSetup.msi
-d:\tools\signcode.exe -i http://xmlnotepad.codeplex.com -t http://timestamp.comodoca.com/authenticode -cn "CN=Chris Lovett"  %dll
+echo %signtool% sign /v /debug /i "COMODO RSA Code Signing CA"  /t http://timestamp.comodoca.com/authenticode /fd sha256 %dll%
+%signtool% sign /v /debug /i "COMODO RSA Code Signing CA"  /t http://timestamp.comodoca.com/authenticode /fd sha256 %dll%

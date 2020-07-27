@@ -2632,7 +2632,7 @@ namespace XmlNotepad {
         void OnRecentFileSelected(object sender, RecentFileEventArgs e) {
             if (!this.SaveIfDirty(true))
                 return;                                       
-            string fileName = e.FileName;
+            string fileName = e.FileName.OriginalString;
             Open(fileName);
         }
 
@@ -2861,10 +2861,6 @@ namespace XmlNotepad {
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
             this.xmlTreeView1.Commit();
             SaveAs();
-        }
-
-        private void menuItemRecentFiles_Click(object sender, EventArgs e) {
-
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
