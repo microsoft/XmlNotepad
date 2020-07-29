@@ -154,10 +154,10 @@ namespace XmlNotepad {
             output = input;
 
             if (!string.IsNullOrEmpty(input)) {
-                fd.FileName = GetAbsolute(input);
+                this.fd.FileName = GetAbsolute(input);
             }            
-            if (fd.ShowDialog(owner) == DialogResult.OK) {
-                output = GetRelative(fd.FileName);
+            if (this.fd.ShowDialog(owner) == DialogResult.OK) {
+                output = GetRelative(this.fd.FileName);
                 return true;
             } else {
                 return false;
