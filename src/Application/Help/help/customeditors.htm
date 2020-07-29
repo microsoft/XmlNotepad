@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="XML Notepad - a simple XML editor." />
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous" />
+
+<link rel="stylesheet" href="../assets/css/styles.css" />
+
+<script src=""></script>
+
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top mb-0">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" id="open_nav" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" style="color:#ff6633; margin-left:0px;" href="../index.html" title="Homepage"></a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <a href="" class="closebtn" data-toggle="collapse" data-target="#navbar">×</a>
+        <a class="navbar-brand-menu" href="../index.html" title="Homepage"></a>
+        <ul class="nav navbar-nav navbar-right">
+          
+          
+          <li class=" ">
+            <a href="../install.htm">Install</a>
+          </li>
+          
+          <li class=" ">
+            <a href="overview.htm">Help</a>
+          </li>
+          
+          <li class=" ">
+            <a href="../design.htm">About</a>
+          </li>
+          
+          <li class=" ">
+            <a target="_blank" href="https://github.com/microsoft/XmlNotepad/">GitHub</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrapper">
+  <section class="section-main">
+    <div class="container-fluid ">
+      <article class="ml-20">
+        <h2 id="custom-editors">Custom Editors</h2>
+
+<p>If an XML schema is provided for validation then that schema can also define custom editors on specific <code class="highlighter-rouge">&lt;xsd:simpleType&gt;</code> tags.</p>
+
+<p>A default custom editor is provided for the simpleTypes xsd:date xsd:dateTime and xsd:time. Any element or attribute of this type will be edited using the WinForms DateTimePicker, configured for the current system locale, for example:</p>
+
+<p><img src="../assets/images/datetime.jpg" alt="datetime" /></p>
+
+<h2 id="custom-builders">Custom Builders</h2>
+
+<p>Custom Builders provide a button that appears at the top of the intellisense list, when the user clicks on that button it invokes the builder to edit the value, which usually pops up a modal dialog.</p>
+
+<p>A custom builder for editing file names is provided and is automatically associated with the xsd:anyURI data type. You can associate this builder manually using the <code class="highlighter-rouge">vs:builder="XmlNotepad.UriBuilder"&gt;</code> attribute. When you edit an element of this type a button will appear titled “Browse…” at the top of the intellisense list and when you click on this button the WinForms OpenFileDialog will appear.</p>
+
+<p>A custom builder for editing colors is provided. But since there is no standard color type defined in XSD, you must specify the vs:builder attribute as shown in the following example:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;xsd:simpleType</span>  <span class="na">name=</span><span class="s">"color"</span> <span class="na">vs:builder=</span><span class="s">"XmlNotepad.ColorBuilder"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+<p>Where the “vs” prefix is bound to the following namespace: <code class="highlighter-rouge">xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense"</code>.</p>
+
+<p>If you build your own custom editors you will also need to specify the <code class="highlighter-rouge">vs:assembly="FontBuilder, Version=1.0.0.0, Culture=neutral, PublicKeyToken=007b972e7cff2ded, processorArchitecture=MSIL"</code> attribute to point to your assembly. XML Notepad will then load your assembly so it can find the specified types.</p>
+
+<p><img src="../assets/images/colors.jpg" alt="Colors" /></p>
+
+<p>When you edit an element of this type a button will appear titled “Color Picker” at the top of the intellisense list and when you click on this button the WinForms ColorDialog will appear. The resulting color will then be serialized back to the XML string using the <code class="highlighter-rouge">ColorConverter</code>.</p>
+
+<p>You can implement your own builders by implementing <code class="highlighter-rouge">IXmlBuilder </code>and specifying your full class name in the <code class="highlighter-rouge">vs:builder</code> attribute.</p>
+
+<p>See also <a href="schemas.htm">Schemas Dialog</a>.</p>
+
+      </article>
+    </div>
+  </section>
+  
+<footer>
+<section class="footer-dark pt-20">
+  <div class="container-fluid">
+    <div class="row footnote pt-20 pb-20">
+      <div class="col-sm-6">
+        <ul class="list-unstyled list-inline footnote-legal">
+            XML Notepad
+        </ul>
+      </div>
+      <div class="col-sm-6 text-right footnote-copy">
+        <ul class="list-unstyled list-inline">
+          <li><a href="https://www.microsoft.com/" target="_blank"><img class="img-responsive" src="../assets/images/microsoft-logo.svg?v=3" alt="Microsoft" /></a></li>
+          <li>© 2020 Microsoft</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</footer>
+
+
+  <script src="" crossorigin="anonymous"></script>
+<script src="../assets/js/main.js"></script>
+
+<script type="text/javascript"><![CDATA[
+    $(document).ready(function () {
+      $('table').each(function () {
+        $(this).addClass("table");
+        $(this).addClass("table-bordered");
+        $(this).addClass("table-striped");
+        $(this).addClass("table-condensed");
+      });
+
+    });
+]]></script>
+
+</main></body>
+</html>

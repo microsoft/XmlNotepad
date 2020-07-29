@@ -29,3 +29,4 @@ Handy features include:
 - Support for XInclude.
 - Dynamic help from XSD annotations.
 - Goto definition to navigate includes and XSD schema information.
+- Automatic [updates](/XmlNotepad/help/updates)

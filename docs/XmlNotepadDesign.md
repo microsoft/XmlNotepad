@@ -27,7 +27,7 @@ Thanks to everyone who tried it out.
 For those who know the original version, the interface should look familiar: a tree view on the left synchronized with
 a node text view on the right and handy nudge toolbar buttons for quick movement of nodes up and down the tree:
 
-![screen](screen.png)
+![screen](assets/images/screen.png)
 
 Because it's been so long since the first version, I couldn't resist leveraging the cool stuff in System.Xml and so I added
 some bells and whistles that the original version didn't have, including:
@@ -58,7 +58,7 @@ The following DGML diagram shows the relationships between the main UI classes. 
 elements from the TaskList to the main XmlTreeView with Resizers in between; it's the launching point for the dialogs
 such as FormSearch, FormSchemas, FormOption, and FormAbout.
 
-![ui](ui.png)
+![ui](assets/images/ui.png)
 
 The main tab control contains the XmlTreeView and the XsltViewer for showing XSL output. The XmlTreeView
 contains a TreeView on the left and a NodeTextView on the right and coordinates scrolling between these two views.
@@ -66,7 +66,7 @@ Both the TreeView and NodeTextView provide the same IntelliSense editing functio
 component. The XmlTreeView implements IFindTarget, which is used by the Find dialog (FormSearch) to implement
 find/replace functionality.
 
-![find](find.png)
+![find](assets/images/find.png)
 
 The Find dialog supports full text, regex, or XPath expressions and can filter by names or values. Here you see the
 XPath search, which also provides a table for entering namespace prefix mappings used in the query.
@@ -77,7 +77,7 @@ The biggest new feature is IntelliSense, which is driven by XML Schema informati
 For example, if your element or attribute is defined by an XSD simpleType and this simpleType contains a list of
 enumeration facets, then you will get a drop-down like this:
 
-![intellisense](intellisense.png)
+![intellisense](assets/images/intellisense.png)
 
 The way this works is that the Checker runs after each edit operation to validate the document and report errors in
 the TaskList. This process also puts System.Xml.Schema.XmlSchemaType information on each element and attribute
@@ -87,7 +87,7 @@ simpleType enumeration facets. For element name IntelliSense in the tree view, t
 the Checker again, captures GetExpectedParticles and GetExpectedAttributes on the
 System.Xml.Schema.XmlSchemaValidator, and uses that to provide IntelliSense.
 
-![plugins](plugins.png)
+![plugins](assets/images/plugins.png)
 
 The TextEditorOverlay also supports custom editors like the DateTimeEditor or the UriBuilder or ColorBuilder. There
 are two types of custom editors: IXmlEditors, which are inline editors that replace the default TextBox, and
@@ -103,7 +103,7 @@ The UndoManager collects these in a list. Then the state of the UndoManager cont
 the Undo/Redo MenuItems. When the user selects the Undo menu item, the Undo method is called on the active
 command, and that command is pushed onto the Redo stack.
 
-![undo.png](undo.png)
+![undo.png](assets/images/undo.png)
 
 Some operations in the editor cause many edits in the tree including the replace-all operation and editing the value
 of a namespace attribute. (When you change the value of a namespace attribute. every XmlNode bound to that
@@ -113,7 +113,7 @@ a list of smaller edit commands, and this CompoundCommand is put into the UndoMa
 
 Other simpler command objects include the following, which all operate on XmlTreeNode and XmlNode objects:
 
-![commands.png](commands.png)
+![commands.png](assets/images/commands.png)
 
 The PasteCommand is special because it takes random XML text off the clipboard and parses it in context of the
 currently selected element in the tree, inheriting the namespaces in scope. The helper class TreeData uses the special

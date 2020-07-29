@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="XML Notepad - a simple XML editor." />
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous" />
+
+<link rel="stylesheet" href="../assets/css/styles.css" />
+
+<script src=""></script>
+
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top mb-0">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" id="open_nav" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" style="color:#ff6633; margin-left:0px;" href="../index.html" title="Homepage"></a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <a href="" class="closebtn" data-toggle="collapse" data-target="#navbar">×</a>
+        <a class="navbar-brand-menu" href="../index.html" title="Homepage"></a>
+        <ul class="nav navbar-nav navbar-right">
+          
+          
+          <li class=" ">
+            <a href="../install.htm">Install</a>
+          </li>
+          
+          <li class=" ">
+            <a href="overview.htm">Help</a>
+          </li>
+          
+          <li class=" ">
+            <a href="../design.htm">About</a>
+          </li>
+          
+          <li class=" ">
+            <a target="_blank" href="https://github.com/microsoft/XmlNotepad/">GitHub</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrapper">
+  <section class="section-main">
+    <div class="container-fluid ">
+      <article class="ml-20">
+        <h2 id="dragdrop-support">Drag/Drop Support</h2>
+
+<p>You can drag and drop nodes from the tree view to move them around inside the document or across documents using multiple instances of XML Notepad. (Note: You can easily create a new instance of XML Notepad by selecting the Window/New Window menu item). You can also drag an XML file from Windows Explorer onto XML Notepad as a quick way to open that file.</p>
+
+<p>When you Drag/Drop nodes across programs, it uses the same text format as <a href="clipboard.htm">Cut/Copy/Paste</a>.</p>
+
+<p>When dragging the selected element a shadow node will appear in the tree that moves with the cursor showing you where the node will be moved to.  In the example below, the “Street” element is being dragged to a new location after the “First” element and before the “Middle” element:</p>
+
+<p><img src="../assets/images/dragdrop.jpg" alt="DragDrop" /></p>
+
+<p>When you hover the mouse over a collapsed node it is automatically expanded just in case you are trying to drop the node inside that collapsed container and conversely, when you hover over an expanded node it is automatically collapsed so that you can easily find nodes above or below that container.</p>
+
+<p>Dragging is a move operation by default, even across XML Notepad instances, which means if you drag a node from one XML Notepad instance to another it will be removed from the first instance.  If you want to perform a copy operation, hold down the CONTROL key.</p>
+
+<p>See <a href="keyboard.htm">Keyboard</a> for more information.</p>
+
+      </article>
+    </div>
+  </section>
+  
+<footer>
+<section class="footer-dark pt-20">
+  <div class="container-fluid">
+    <div class="row footnote pt-20 pb-20">
+      <div class="col-sm-6">
+        <ul class="list-unstyled list-inline footnote-legal">
+            XML Notepad
+        </ul>
+      </div>
+      <div class="col-sm-6 text-right footnote-copy">
+        <ul class="list-unstyled list-inline">
+          <li><a href="https://www.microsoft.com/" target="_blank"><img class="img-responsive" src="../assets/images/microsoft-logo.svg?v=3" alt="Microsoft" /></a></li>
+          <li>© 2020 Microsoft</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</footer>
+
+
+  <script src="" crossorigin="anonymous"></script>
+<script src="../assets/js/main.js"></script>
+
+<script type="text/javascript"><![CDATA[
+    $(document).ready(function () {
+      $('table').each(function () {
+        $(this).addClass("table");
+        $(this).addClass("table-bordered");
+        $(this).addClass("table-striped");
+        $(this).addClass("table-condensed");
+      });
+
+    });
+]]></script>
+
+</main></body>
+</html>

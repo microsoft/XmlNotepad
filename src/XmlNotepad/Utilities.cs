@@ -34,13 +34,21 @@ namespace XmlNotepad
             }
         }
 
+        public static string HelpBaseUri
+        {
+            get
+            {
+                return "https://microsoft.github.io/XmlNotepad/";
+            }
+        }
+
         public static string DefaultHelp
         {
             get
             {
                 if (OnlineHelpAvailable)
                 {
-                    return "http://microsoft.github.io/XmlNotepad/help/overview";
+                    return HelpBaseUri + "help/overview";
                 }
                 else 
                 { 
@@ -55,7 +63,7 @@ namespace XmlNotepad
             {
                 if (OnlineHelpAvailable)
                 {
-                    return "http://microsoft.github.io/XmlNotepad/help/options";
+                    return HelpBaseUri + "help/options";
                 }
                 else
                 {
@@ -70,7 +78,7 @@ namespace XmlNotepad
             {
                 if (OnlineHelpAvailable)
                 {
-                    return "http://microsoft.github.io/XmlNotepad/help/schemas";
+                    return HelpBaseUri + "help/schemas";
                 }
                 else
                 {
@@ -90,7 +98,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return "http://microsoft.github.io/XmlNotepad/help/find";
+                    return HelpBaseUri + "help/find";
                 }
             }
         }

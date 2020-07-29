@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="XML Notepad - a simple XML editor." />
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous" />
+
+<link rel="stylesheet" href="../assets/css/styles.css" />
+
+<script src=""></script>
+
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top mb-0">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" id="open_nav" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" style="color:#ff6633; margin-left:0px;" href="../index.html" title="Homepage"></a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <a href="" class="closebtn" data-toggle="collapse" data-target="#navbar">×</a>
+        <a class="navbar-brand-menu" href="../index.html" title="Homepage"></a>
+        <ul class="nav navbar-nav navbar-right">
+          
+          
+          <li class=" ">
+            <a href="../install.htm">Install</a>
+          </li>
+          
+          <li class=" ">
+            <a href="overview.htm">Help</a>
+          </li>
+          
+          <li class=" ">
+            <a href="../design.htm">About</a>
+          </li>
+          
+          <li class=" ">
+            <a target="_blank" href="https://github.com/microsoft/XmlNotepad/">GitHub</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrapper">
+  <section class="section-main">
+    <div class="container-fluid ">
+      <article class="ml-20">
+        <h2 id="menus">Menus</h2>
+<p>XML Notepad provides the following menu commands.</p>
+
+<h3 id="file">File</h3>
+<p>The file menu contains the following commands:</p>
+<ul>
+  <li><strong>New</strong> Start a new XML document.</li>
+  <li><strong>Open</strong> Open an XML document for editing.</li>
+  <li><strong>Reload</strong> Discard any edits you’ve made and reload the file as it exists on disk.</li>
+  <li><strong>Save</strong> Save any edits you’ve made to the file disk.</li>
+  <li><strong>Save As</strong> Save the current document to a different file name on disk.</li>
+  <li><strong>Export Errors</strong> Save the contents of the Error List in an XML format.</li>
+  <li><strong>Recent Files</strong> This menu provides quick access to the last 10 XML documents you’ve edited.</li>
+  <li><strong>Exit</strong> Closes XML Notepad.</li>
+</ul>
+
+<h3 id="edit">Edit</h3>
+<p>The edit menu contains the following commands:</p>
+<ul>
+  <li><strong>Undo</strong> Undo the previous edit operation.</li>
+  <li><strong>Redo</strong> Reverses the last undo operation.</li>
+  <li><strong>Cut</strong> Copy the selected node to the clipboard (and its children) and remove that node from the tree. See <a href="clipboard.htm">Clipboard support</a>.</li>
+  <li><strong>Copy</strong> Copy the selected node to the clipboard (and its children).</li>
+  <li><strong>Paste</strong> Parse the XML in the clipboard and create new nodes in the tree under the selected node.</li>
+  <li><strong>Delete</strong> Delete the selected node.</li>
+  <li><strong>Insert</strong> Insert a new node of the same type (element, attribute, processing instruction, comment, etc) as the currently selected node.  This makes it easy to build a list of nodes that have the same type.</li>
+  <li><strong>Duplicate</strong> Clone the selected node (and its children) and insert the clone as the next sibling.</li>
+  <li><strong>Change To</strong> Changes the selected node to the specified node type.</li>
+  <li><strong>Goto Definition</strong> Open the selected XInclude or open the XML Schema that defines the selected node in a new instance of XML Notepad.</li>
+  <li><strong>Expand XIncludes</strong> Expand all XInlcude elements with the contents of the XML documents they point to.</li>
+  <li><strong>Nudge</strong> Moves the selected node:
+    <ul>
+      <li><strong>Up</strong>     Before the previous sibling, or before the parent if there are no previous siblings.</li>
+      <li><strong>Down</strong>     After the next sibling, or after the parent if there is no next sibling.</li>
+      <li><strong>Left</strong>     Before the parent if this is the first child, otherwise after the parent.</li>
+      <li><strong>Right</strong> so it becomes the last child of the previous sibling.</li>
+    </ul>
+  </li>
+  <li><strong>Find…</strong> Brings up the <a href="find.htm">find dialog</a>.</li>
+  <li><strong>Replace…</strong> Brings up the <a href="find.htm">replace dialog</a>.</li>
+  <li><strong>Incremental Search…</strong> Allows you to instantly find what you type.</li>
+</ul>
+
+<h3 id="view">View</h3>
+<ul>
+  <li><strong>Expand All</strong> Expand all collapsed nodes in the entire tree. See “Expand” item on the context menu if you just want to expand the selected node.</li>
+  <li><strong>Collapse all</strong> Collapse all expanded nodes in the entire tree (except the root node). See “Collapse” item on the context menu if you just want to collapse the selected node.</li>
+  <li><strong>Status Bar</strong> Toggle the visibility of the status bar.</li>
+  <li><strong>Source</strong> Show the current XML document in text form using “Notepad”.</li>
+  <li><strong>Options…</strong> Display the <a href="options.htm">Options Dialog</a>.</li>
+  <li><strong>Schemas…</strong> Display the <a href="schemas.htm">Schemas Dialog</a>.</li>
+  <li><strong>Next Error</strong> Navigate to the next error in the list of errors.</li>
+  <li><strong>Compare XML Files…</strong> Launches XML Diff which compares the current document you are editing with another document on disk and displays the results.</li>
+</ul>
+
+<h3 id="insert">Insert</h3>
+<p>Contains commands for inserting various node types. You can insert before, after or as a child of the currently selected node. Only those insert operations that result in well formed document will be enabled.</p>
+
+<h3 id="window">Window</h3>
+<p>Provides a “New window” command for launching another instance of XML Notepad.</p>
+
+<h3 id="help">Help</h3>
+<p>Bring up the help contents and index as well as the About Dialog.</p>
+
+      </article>
+    </div>
+  </section>
+  
+<footer>
+<section class="footer-dark pt-20">
+  <div class="container-fluid">
+    <div class="row footnote pt-20 pb-20">
+      <div class="col-sm-6">
+        <ul class="list-unstyled list-inline footnote-legal">
+            XML Notepad
+        </ul>
+      </div>
+      <div class="col-sm-6 text-right footnote-copy">
+        <ul class="list-unstyled list-inline">
+          <li><a href="https://www.microsoft.com/" target="_blank"><img class="img-responsive" src="../assets/images/microsoft-logo.svg?v=3" alt="Microsoft" /></a></li>
+          <li>© 2020 Microsoft</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</footer>
+
+
+  <script src="" crossorigin="anonymous"></script>
+<script src="../assets/js/main.js"></script>
+
+<script type="text/javascript"><![CDATA[
+    $(document).ready(function () {
+      $('table').each(function () {
+        $(this).addClass("table");
+        $(this).addClass("table-bordered");
+        $(this).addClass("table-striped");
+        $(this).addClass("table-condensed");
+      });
+
+    });
+]]></script>
+
+</main></body>
+</html>

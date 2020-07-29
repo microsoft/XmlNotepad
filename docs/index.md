@@ -23,7 +23,7 @@ XML Notepad provides the following useful features:
 
 See [Online Help](/XmlNotepad/help/overview).
 
-See [XML Notepad Design ](design) for information about how this application is built.
+See [XML Notepad Design ](/XmlNotepad/design) for information about how this application is built.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 

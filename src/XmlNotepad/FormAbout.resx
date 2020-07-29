@@ -371,7 +371,7 @@
     <value>10</value>
   </data>
   <data name="labelURL.Text" xml:space="preserve">
-    <value>http://microsoft.github.io/XmlNotepad/</value>
+    <value>https://microsoft.github.io/XmlNotepad/</value>
   </data>
   <data name="labelURL.Visible" type="System.Boolean, mscorlib">
     <value>False</value>

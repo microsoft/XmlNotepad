@@ -335,7 +335,7 @@ namespace XmlNotepad {
                 client.UseDefaultCredentials = true;
                 try
                 {
-                    string html = client.DownloadString("http://microsoft.github.io/XmlNotepad/");
+                    string html = client.DownloadString(Utilities.HelpBaseUri);
                     if (html.Contains("XML Notepad"))
                     {
                         this.BeginInvoke(new Action(FoundOnlineHelp));
