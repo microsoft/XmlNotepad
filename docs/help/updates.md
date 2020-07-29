@@ -2,7 +2,7 @@
 layout: default
 title: Overview
 section: home
-permalink: /help/options
+permalink: /help/updates
 ---
 
 ## Updates

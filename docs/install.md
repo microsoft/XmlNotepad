@@ -7,7 +7,7 @@ permalink: /install
 
 ## Install XML Notepad
 
-There are two ways to install XML Notepad:
+There are trhee ways to install XML Notepad:
 
 <div>
 <a href="http://www.lovettsoftware.com/downloads/XmlNotepad/setup.exe" class="btn btn-primary mt-20 mr-30" target="_blank">ClickOnce® installer</a>
@@ -27,7 +27,19 @@ then use the standalone installer:
 <br/>
 </div>
 
-Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run `xmlnotepadsetup.msi`.
+Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run `XmlNotepadSetup.msi`.
+
+<a href="https://docs.microsoft.com/en-us/windows/package-manager/winget/" class="btn btn-primary mt-20 mr-30" target="_blank">winget installer</a>
+
+And you can also use `winget` to install XML Notepad using this command line:
+
+<code>
+winget install XmlNotepad
+</code>
+<br/>
+<br/>
+</div>
+
 
 ### Troubleshooting
 
