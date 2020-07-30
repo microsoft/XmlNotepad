@@ -48,11 +48,11 @@ namespace XmlNotepad
             {
                 if (OnlineHelpAvailable)
                 {
-                    return HelpBaseUri + "help/overview";
+                    return HelpBaseUri + "index.html";
                 }
                 else 
                 { 
-                    return Application.StartupPath + "\\Help\\Help.htm";
+                    return Application.StartupPath + "\\Help\\index.html";
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return Application.StartupPath + "\\Help\\Options.htm";
+                    return Application.StartupPath + "\\Help\\help\\options.htm";
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return Application.StartupPath + "\\Help\\Schemas.htm";
+                    return Application.StartupPath + "\\Help\\help\\schemas.htm";
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace XmlNotepad
             {
                 if (OnlineHelpAvailable)
                 {
-                    return Application.StartupPath + "\\Help\\FindReplace.htm";
+                    return Application.StartupPath + "\\Help\\help\\find.htm";
                 }
                 else
                 {

@@ -346,6 +346,12 @@ namespace XmlNotepad {
                     // online help is not reachable
                 }
             }
+
+            if (!Directory.Exists(Path.Combine(Application.StartupPath, "Help")))
+            {
+                // Must use online help in this case since we have no offline help
+                Utilities.OnlineHelpAvailable = true;
+            }
         }
 
         private void FoundOnlineHelp()

@@ -1,12 +1,12 @@
-XML Notepad provides a simple intuitive User Interface for browsing and editing XML documents. There are two ways to install it:
+XML Notepad provides a simple intuitive User Interface for browsing and editing XML documents. There are four ways to install it:
 1. [ClickOnce® installer](http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm) - this is the most convenient, install it directly from the web browser.
 2. [Standalone downloadable installer](http://www.lovettsoftware.com/downloads/xmlnotepad/xmlnotepadsetup.zip) if you need something that works offline.
 Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run xmlnotepadsetup.msi.
 3. [Windows MSIX installer](http://www.lovettsoftware.com/downloads/XmlNotepad.Net/index.html) if you need a trusted Windows installer.
+4. You can also use WinGet as follows: `winget install XmlNotepad`
 
 [![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
-You can also install XML Notepad using WinGet: `winget install xmlnotepad`
 
 [XML Notepad](http://microsoft.github.io/XmlNotepad) provides the following useful features:
 - XML Schema aware Intellisense

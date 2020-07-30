@@ -9,7 +9,7 @@
   <Identity
     Name="5632ff08-aa93-439a-b09f-677eb3664250"
     Publisher="CN=Chris Lovett, O=Chris Lovett, STREET=18606 201st Ave NE, L=Woodinville, S=WA, PostalCode=98077, C=US"
-    Version="2.8.0.12" />
+    Version="2.8.0.13" />
 
   <Properties>
     <DisplayName>XML Notepad</DisplayName>

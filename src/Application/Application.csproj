@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
-  <UsingTask TaskName="XmlNotepadBuildTasks.SyncWixVersion" AssemblyFile="$(SolutionDir)BuildTasks\XmlNotepadBuildTasks.dll" />
+  <UsingTask TaskName="XmlNotepadBuildTasks.SyncWix" AssemblyFile="$(SolutionDir)BuildTasks\XmlNotepadBuildTasks.dll" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -40,7 +40,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>2.8.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -134,91 +134,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Help\Clipboard.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Contact.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\CustomEditors.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\DragDrop.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\FindReplace.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Help.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\colors.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\datetime.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\dragdrop.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\find.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\findxpath.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\intellisense.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\intellisense2.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\options.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\replace.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\schemas.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\screen.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\images\xmlicon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Intellisense.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Keyboard.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Menus.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Options.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Overview.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\XmlNote.ico" />
-    <Content Include="Help\Schemas.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Styles.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\UI.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\updates.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Help\Validation.htm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Samples\basket.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -356,10 +272,10 @@
   <PropertyGroup>
     <PreBuildEvent>copy "$(SolutionDir)\FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
   </PropertyGroup>
-  <Target Name="SyncVersionTarget">
-    <SyncWixVersion VersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" HelpFile="$(ProjectDir)Help\Help.htm" UpdatesFile="$(SolutionDir)Updates\Updates.xml" ReadmeFile="$(SolutionDir)Updates\Readme.htm" />
+  <Target Name="SyncWixTarget">
+    <SyncWix VersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" ReadmeFile="$(SolutionDir)Updates\Readme.htm" />
   </Target>
   <PropertyGroup>
-    <PreBuildEventDependsOn>$(PreBuildEventDependsOn);SyncVersionTarget</PreBuildEventDependsOn>
+    <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncWixTarget</CoreBuildDependsOn>
   </PropertyGroup>
 </Project>
