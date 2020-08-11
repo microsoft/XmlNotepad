@@ -7,6 +7,9 @@
     <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.14">
+    <feature>Fix bug in current file address combobox.  Start implementing stylecop code cleanups.</feature>
+  </version>
   <version number="2.8.0.13">
     <feature>Sync offline help so it matches the online help, fix some typos and add more info to options dialog help text.</feature>
   </version>

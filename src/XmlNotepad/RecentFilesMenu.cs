@@ -43,7 +43,6 @@ namespace XmlNotepad {
             this.location = location;
             this.location.SelectedIndexChanged += new EventHandler(OnSelectedIndexChanged);
             this.location.KeyDown += new KeyEventHandler(OnLocationKeyDown);
-            this.location.DropDownClosed += OnLocationDropDownClosed;
             this.location.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             this.location.AutoCompleteSource = AutoCompleteSource.CustomSource;
         }
@@ -176,8 +175,11 @@ namespace XmlNotepad {
                 // user has entered something new?
                 e.Handled = true;
                 e.SuppressKeyPress = true;
-                ComboFileItem item = this.location.SelectedItem as ComboFileItem;
-                if (item != null)
+                if (!string.IsNullOrEmpty(this.location.Text))
+                {
+                    this.RecentFileSelected(sender, new RecentFileEventArgs(new Uri(this.location.Text)));
+                }
+                else if (this.location.SelectedItem is ComboFileItem item && item != null)
                 {
                     this.RecentFileSelected(sender, new RecentFileEventArgs(item.Location));
                 }
@@ -188,17 +190,9 @@ namespace XmlNotepad {
             }
         }
 
-        private void OnLocationDropDownClosed(object sender, EventArgs e)
-        {
-            // clear the type to find filter and resync dropdown items.
-            SyncRecentFilesUI();
-        }
-
-
         string RemoveQuotes(string s)
         {
             return s.Trim().Trim('"');
         }
-
     }
 }
