@@ -45,9 +45,6 @@
       <Component Id="FontBuilder.dll" Guid="0F3EDCEC-529C-489F-9717-A0D3A06A33A9">
         <File Id="FontBuilder.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="XmlNotepadRegistration.exe" Guid="465CABE8-8BCE-4661-AC91-EF9E767B1410">
-        <File Id="XmlNotepadRegistration.exe" KeyPath="yes" Checksum="yes" Source="$(var.XmlNotepadRegistration.TargetDir)" />
-      </Component>
     </DirectoryRef>
     <DirectoryRef Id="Help" FileSource="$(var.SolutionDir)\drop\Help">
       <Component Id="design.htm" Guid="045549c7-34e5-4e8a-aa8c-a49a678e3ed4">
@@ -228,7 +225,6 @@
       <ComponentRef Id="XmlDiffPatch.dll" />
       <ComponentRef Id="XmlDiffPatch.View.dll" />
       <ComponentRef Id="FontBuilder.dll" />
-      <ComponentRef Id="XmlNotepadRegistration.exe" />
       <ComponentRef Id="design.htm" />
       <ComponentRef Id="index.html" />
       <ComponentRef Id="install.htm" />

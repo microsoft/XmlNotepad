@@ -683,9 +683,6 @@ Do you want to visit the web page that describes this update?</value>
     <value>XmlNotepad</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="XmlNotepadRegistration" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\XmlNotepadRegistration\bin\XmlNotepadRegistration.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="AutoFormatLongLinesDescriptions" xml:space="preserve">
     <value>Autoformat long lines instead of prompting</value>
     <comment>Property Grid description</comment>

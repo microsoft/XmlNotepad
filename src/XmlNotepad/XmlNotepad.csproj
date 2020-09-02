@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="DomLoader.cs" />
     <Compile Include="EditableView.cs" />
+    <Compile Include="FileAssociation.cs" />
     <Compile Include="FormCsvImport.cs">
       <SubType>Form</SubType>
     </Compile>

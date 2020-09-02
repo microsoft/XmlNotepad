@@ -3592,38 +3592,16 @@ namespace XmlNotepad {
 
         private void fileAssociationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            bool registered = (bool)this.settings["AppRegistered"];
-            if (!registered)
-            {
-                this.settings["AppRegistered"] = true;
-
-                byte[] file = SR.XmlNotepadRegistration;
-
-                string path = Path.Combine(Path.GetTempPath(), "XmlNotepadRegistration.exe");
-                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
-                {
-                    fs.Write(file, 0, file.Length);
-                }
-
-                Process p = Process.Start(path, string.Format("\"{0}\" \"{1}\" \"{2}\"", Application.ExecutablePath, SR.AppProgId, SR.AppDescription));
-                p.WaitForExit();
-            }
-
-            var assocUI = new ApplicationAssociationRegistrationUI();
             try
             {
-                assocUI.LaunchAdvancedAssociationUI(SR.AppProgId);
-            }
-            catch
+                FileAssociation.AddXmlProgids();
+            } 
+            catch (Exception)
             {
-                var message = string.Format("Could not display the file association manager. Please repair {0} and try again.", this.Text);
-                MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            finally
-            {
-                Marshal.ReleaseComObject(assocUI);
             }
 
+            var message = string.Format("Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.", this.Text);
+            MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void elementToolStripMenuItem1_Click(object sender, EventArgs e)

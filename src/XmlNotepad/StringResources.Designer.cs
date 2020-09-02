@@ -1602,16 +1602,6 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] XmlNotepadRegistration {
-            get {
-                object obj = ResourceManager.GetObject("XmlNotepadRegistration", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to XSLT files (*.xslt;*.xsl)|*.xslt;*.xsl|All files (*.*)|*.*.
         /// </summary>
         internal static string XSLFileFilter {
