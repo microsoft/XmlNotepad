@@ -9,7 +9,7 @@
   <Identity
     Name="5632ff08-aa93-439a-b09f-677eb3664250"
     Publisher="CN=Chris Lovett, O=Chris Lovett, STREET=18606 201st Ave NE, L=Woodinville, S=WA, PostalCode=98077, C=US"
-    Version="2.8.0.16" />
+    Version="2.8.0.17" />
 
   <Properties>
     <DisplayName>XML Notepad</DisplayName>
@@ -36,9 +36,21 @@
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
         Square44x44Logo="Images\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png"  Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation" >
+          <uap:FileTypeAssociation Name="xmlnotepad.xmlfile">
+            <uap:SupportedFileTypes>
+              <uap:FileType ContentType="text/xml">.xml</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>XML Files</uap:DisplayName>
+            <uap:Logo>Images\Square150x150Logo.png</uap:Logo>
+            <uap:EditFlags OpenIsSafe="true"/>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 
