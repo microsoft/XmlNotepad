@@ -1,9 +1,9 @@
 XML Notepad provides a simple intuitive User Interface for browsing and editing XML documents. There are four ways to install it:
-1. [ClickOnce® installer](http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm) - this is the most convenient, install it directly from the web browser.
+1. [ClickOnce® installer](http://www.lovettsoftware.com/downloads/xmlnotepad/XmlNotepad.application) - this is the most convenient, install it directly from the web browser.
 2. [Standalone downloadable installer](http://www.lovettsoftware.com/downloads/xmlnotepad/xmlnotepadsetup.zip) if you need something that works offline.
-Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run xmlnotepadsetup.msi.
+Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run `XmlNotepadSetup.msi`.
 3. [Windows MSIX installer](http://www.lovettsoftware.com/downloads/XmlNotepad.Net/index.html) if you need a trusted Windows installer.
-4. You can also use WinGet as follows: `winget install XmlNotepad`
+4. You can also use [WinGet](https://winget.run/pkg/Microsoft/XMLNotepad) as follows: `winget install XmlNotepad`
 
 [![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
@@ -22,6 +22,10 @@ See [XML Notepad Design ](http://microsoft.github.io/XmlNotepad/design) for info
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Change History
+
+See [Change History](http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml) for list of new features and bug fixes.
 
 ## Help
 
