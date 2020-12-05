@@ -1,9 +1,3 @@
----
-layout: default
-title: Home
-section: home
-permalink: /help/version
----
 
 ## Microsoft XML Notepad Version
 

@@ -1,10 +1,3 @@
----
-layout: default
-title: Home
-section: home
-permalink: /install
----
-
 ## Install XML Notepad
 
 There are thee ways to install XML Notepad:
@@ -14,6 +7,7 @@ There are thee ways to install XML Notepad:
 <br/>
 <br/>
 </div>
+
 
 This is the most convenient, install it directly from the web browser.  If the browser downloads this file, click
 "Open file" to install it.

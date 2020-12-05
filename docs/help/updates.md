@@ -1,9 +1,3 @@
----
-layout: default
-title: Overview
-section: home
-permalink: /help/updates
----
 
 ## Updates
 

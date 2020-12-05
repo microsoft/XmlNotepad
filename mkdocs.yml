@@ -1,0 +1,63 @@
+
+site_name: XmlNotepad
+
+site_url: https://microsoft.github.io/XmlNotepad/
+
+theme:
+    name: null
+    custom_dir: windmill_dark
+    # default from mkdocs_theme.yml
+    static_templates:
+        - 404.html
+    include_search_page: true
+    search_index_only: true
+    history_buttons: true
+    article_nav_top: true
+    article_nav_bottom: true
+    highlightjs: true
+    features:
+    - search.highlight
+
+markdown_extensions:
+    - smarty
+
+extra_css:
+    - css/main.css
+    - css/syntax.css
+
+extra_javascript:
+    - https://www.googletagmanager.com/gtag/js?id=UA-89203408-1
+    - https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js
+    - assets/js/cookies.js
+    - assets/js/main.js
+
+plugins:
+  - search
+  - macros:
+      include_dir: docs/include
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/microsoft/coyote
+
+extra:
+  generator: false
+
+nav:
+  - Home: index.md
+  - Install: install.md
+  - About: about.md
+  - Help:
+    - Overview:  help/ui.md
+    - Keyboard:  help/keyboard.md
+    - Menus:  help/menus.md
+    - Find:  help/find.md
+    - Options:  help/options.md
+    - Intellisense:  help/intellisense.md
+    - Schemas:  help/schemas.md
+    - Validation:  help/validation.md
+    - Custom Editors:  help/customeditors.md
+    - Clipboard:  help/clipboard.md
+    - Updates:  help/updates.md
+    - Version:  help/version.md

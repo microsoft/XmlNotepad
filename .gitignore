@@ -239,6 +239,4 @@ drop/
 /src/UnitTests/out.xml
 /src/UnitTests/out2.xml
 
-_site/
-.jekyll-cache/
-.jekyll-metadata
+site/
