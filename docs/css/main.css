@@ -176,6 +176,7 @@ footer {
   margin-top: 50px;
   grid-row-start: 2;
   grid-row-end: 3;
+  max-width: unset !important;
 }
 
 .footer-content {

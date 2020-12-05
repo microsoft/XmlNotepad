@@ -112,8 +112,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
 {# Code for the main template for all content pages. #}
 
-<div class="wrapper">
-  <div class="container-fluid wm-page-content">
+<div class="wrapper wm-page-content">
+  <div class="container-fluid">
     <a name="_top"></a>
     {%- if config.extra.article_nav_top != False %}
       {% include "article-nav.html" %}
@@ -139,7 +139,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
   </div>
 </div>
 
-<footer>
+<footer class="wm-page-content">
 {%- block footer %}
   {%- block repo %}
     {%- if page and page.edit_url %}
