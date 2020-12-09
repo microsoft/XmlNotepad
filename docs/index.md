@@ -15,7 +15,7 @@ XML Notepad provides the following useful features:
 - XML diff to compare 2 similar XML documents
 - Vibrant community with many [updates and bug fixes](http://www.lovettsoftware.com/downloads/XmlNotepad/Updates.xml).
 
-See [Online Help](help/overview/).
+See [Online Help](help/overview.md).
 
 See [XML Notepad Design ](about/) for information about how this application is built.
 

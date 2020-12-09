@@ -129,7 +129,7 @@ function updateTocButtonState() {
 function updateContentHeight() {
   if (isSmallScreen()) {
     $('.wm-content-pane').height(iframeWindow.document.body.offsetHeight + 20);
-    $('.wm-article').attr('scrolling', 'no');
+    $('.wm-article').attr('scrolling', 'auto');
   } else {
     $('.wm-content-pane').height('');
     $('.wm-article').attr('scrolling', 'auto');

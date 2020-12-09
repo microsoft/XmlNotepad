@@ -469,7 +469,7 @@ hr {
 
 pre, .rst-content tt {
   max-width: 100%;
-  background: #282b2e;
+  background: #1E1E1E;
   border: solid 1px black;
   /*color: orangered;*/
   overflow-x: auto;
