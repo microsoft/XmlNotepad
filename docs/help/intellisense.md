@@ -11,6 +11,6 @@ Similarly, if your schema defines a simpleType with a list of `<xsd:enumeration>
 
 Then as you type the item matching the letters you have typed so far will be automatically selected in the drop down list and when you type ENTER the selected item is copied to your edit field and the intellisense selection is finished which saves you from having to type the whole string in manually. This can result in much more efficient editing of XML documents.
 
-XML Notepad also supports special [custom editors](../customeditors/) for well known data types like date, time and color.
+XML Notepad also supports special [custom editors](customeditors.md) for well known data types like date, time and color.
 
-See also [Schemas Dialog](../schemas/)
+See also [Schemas Dialog](schemas.md)

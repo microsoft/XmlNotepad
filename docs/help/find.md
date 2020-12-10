@@ -1,11 +1,11 @@
 
 ## Find/Replace
 
-The "Find..." item under the [Edit Menu](../menus/) (CTRL+F) brings up the following dialog:
+The "Find..." item under the [Edit Menu](menus.md) (CTRL+F) brings up the following dialog:
 
-![Find](../../assets/images/find.jpg)
+![Find](../assets/images/find.jpg)
 
-The "Replace..." item under the [Edit Menu](../menus/) (CTRL+H) changes this dialog to show the extra replace fields:
+The "Replace..." item under the [Edit Menu](menus.md) (CTRL+H) changes this dialog to show the extra replace fields:
 
 ![Find](../../assets/images/replace.jpg)
 

@@ -29,4 +29,4 @@ When you edit an element of this type a button will appear titled "Color Picker"
 
 You can implement your own builders by implementing `IXmlBuilder `and specifying your full class name in the `vs:builder` attribute.
 
-See also [Schemas Dialog](../schemas/).
+See also [Schemas Dialog](schemas.md).

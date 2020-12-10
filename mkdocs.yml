@@ -40,16 +40,18 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/microsoft/coyote
-
-extra:
   generator: false
+
+markdown_extensions:
+    - toc:
+        permalink: "#"
 
 nav:
   - Home: index.md
   - Install: install.md
   - About: about.md
   - Help:
-    - Overview:  help/ui.md
+    - Overview:  help/overview.md
     - Keyboard:  help/keyboard.md
     - Menus:  help/menus.md
     - Find:  help/find.md

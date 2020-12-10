@@ -1,32 +1,41 @@
----
-layout: default
-title: Overview
-section: home
-permalink: /help/overview
----
 
-## Overview
+### User Interface
 
-XML Notepad provides a simple intuitive [User Interface](../ui/) for browsing and editing XML documents.
+The interface consists of the following components:
 
-Handy features include:
+![Screen](../../assets/images/screen.png)
 
-- Tree View synchronized with Node Text View for quick editing of node names and values.
-- Incremental search (Ctrl+I) in both tree and text views, so as you type it navigates to matching nodes.
-- [Cut/copy/paste](../clipboard/) with full namespace support.
-- [Drag/drop support](../dragdrop/) for easy manipulation of the tree, even across different instances of XML Notepad and from the file system.
-- Infinite undo/redo for all edit operations.
-- In place popup multi-line editing of large text node values.
-- Configurable fonts and colors via the [options dialog](../options/).
-- Full [find/replace dialog](../find/) with support for regex and XPath.
-- Good performance on large XML documents, loading a 3mb document in about one second.
-- Instant [XML schema validation](../validation/) while you edit with errors and warnings shown in the task list window.
-- [Intellisense](../intellisense/) based on expected elements and attributes and enumerated simple type values.
-- Support for [custom editors](../customeditors/) for date, dateTime and time datatypes and other types like color.
-- Handy nudge tool bar buttons for quick movement of nodes up and down the tree.
-- Inplace HTML viewer for processing `<?xml-stylesheets` instructions.
-- Built-in XML Diff tool.
-- Support for XInclude.
-- Dynamic help from XSD annotations.
-- Goto definition to navigate includes and XSD schema information.
-- Automatic [updates](../updates/)
+See also [Keyboard](keyboard.md) Interface.
+
+### Menubar
+See [Menus](menus.md) for description of each menu.
+
+### Toolbar
+The toolbar provides some shortcuts for commonly used menu commands, hover over the toolbar buttons to see a popup showing the menu command they invoke.
+
+### Address
+The current file being edited. This is also a convenient place to enter an HTTP address for editing an online XML file.
+
+### XSL Output Tab
+This tab contains a web browser rendered view of the HTML output from an associated XSLT transformation. XSLT transforms are defined when your XML documents contains an `xml-stylesheet` processing instruction.
+
+### Node Values
+The view on the right shows the text value of the adjacent node in the tree view. For element nodes that have children it shows a light blue band because the text is in the child nodes.
+
+### Node Names
+The TreeView on the left shows the XML document hierarchy in a tree showing element, attribute and processing instructions names as well as standard names for comment, text, CDATA, whitespace, and significant-whitespace nodes.
+
+### Intellisense
+When you have an associated XSD schema, [intellisense](intellisense.md) popups will prompt with expected node names and enumerated node values.
+
+### XSD Annotations
+When you have an associated XSD schema, the xsd:documentation associated with the current node is displayed in a tooltip popup and in the "Dynamic Help" tab.
+
+### Validation Errors
+The Error List at the bottom shows [validation](validation.md) errors and warnings.
+
+### Status Bar
+The status bar at the bottom shows various messages indicating the state of the program.
+
+### Resizers
+You can move the resizers to change the ratio of space allocated to each of the main three panels.

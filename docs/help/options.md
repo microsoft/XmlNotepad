@@ -1,7 +1,7 @@
 
 ## Options
 
-The options dialog is available from the "Options..." item under the [View Menu](../menus/).
+The options dialog is available from the "Options..." item under the [View Menu](menus.md).
 
 ![Options](../../assets/images/options.jpg)
 
@@ -20,7 +20,7 @@ How to deal with editing of long lines.
 ### Updates
 
 You can also configure the auto-update mechanism associated with
-the ClickOnce installer. If the "Enable updates" field is true, then XML Notepad will ping the specified "Update Location" for an "Updates.xml" file to see if a new version of XML Notepad is available. See [Updates](../updates/) for more information on how this works.
+the ClickOnce installer. If the "Enable updates" field is true, then XML Notepad will ping the specified "Update Location" for an "Updates.xml" file to see if a new version of XML Notepad is available. See [Updates](updates.md) for more information on how this works.
 
 ### Validation
 You can turn off DTD validation.

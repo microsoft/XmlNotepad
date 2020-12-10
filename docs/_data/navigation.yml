@@ -1,9 +1,6 @@
 - name: Install
   link:  /install
   section: install
-- name: Help
-  link:  /help/overview
-  section: learn
 - name: About
   link:  /design
   section: about
