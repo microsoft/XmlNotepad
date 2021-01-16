@@ -42,6 +42,20 @@ namespace XmlNotepad
             }
         }
 
+        public static string ValidPath(string path)
+        {
+            Uri uri = new Uri(path);
+            if (uri.Scheme == "file")
+            {
+                if (!File.Exists(uri.LocalPath))
+                {
+                    // help file not installed?
+                    return "";
+                }
+            }
+            return path;
+        }
+
         public static string DefaultHelp
         {
             get
@@ -51,8 +65,8 @@ namespace XmlNotepad
                     return HelpBaseUri + "index.html";
                 }
                 else 
-                { 
-                    return Application.StartupPath + "\\Help\\index.html";
+                {
+                    return ValidPath(Application.StartupPath + "\\Help\\index.html");
                 }
             }
         }
@@ -67,7 +81,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return Application.StartupPath + "\\Help\\help\\options.htm";
+                    return ValidPath(Application.StartupPath + "\\Help\\help\\options.htm");
                 }
             }
         }
@@ -82,7 +96,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return Application.StartupPath + "\\Help\\help\\schemas.htm";
+                    return ValidPath(Application.StartupPath + "\\Help\\help\\schemas.htm");
                 }
             }
         }
@@ -94,11 +108,11 @@ namespace XmlNotepad
             {
                 if (OnlineHelpAvailable)
                 {
-                    return Application.StartupPath + "\\Help\\help\\find.htm";
+                    return HelpBaseUri + "help/find";
                 }
                 else
                 {
-                    return HelpBaseUri + "help/find";
+                    return ValidPath(Application.StartupPath + "\\Help\\help\\find.htm");
                 }
             }
         }
