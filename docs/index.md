@@ -30,6 +30,7 @@ Handy features include:
 
 See [XML Notepad Design ](about.md) for information about how this application is built.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+This source code is available
+The source code is available at [https://github.com/microsoft/XmlNotepad](https://github.com/microsoft/XmlNotepad) and it has  adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
