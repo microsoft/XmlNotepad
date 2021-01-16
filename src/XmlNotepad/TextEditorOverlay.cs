@@ -98,6 +98,12 @@ namespace XmlNotepad {
             Dispose(false);
         }
 
+        public Color EditorBackgroundColor
+        {
+            get { return this.textEditor.BackColor; }
+            set { this.textEditor.BackColor = value; }
+        }
+
         public ISite Site {
             get { return site; }
             set { site = this.cset.Site = value; }

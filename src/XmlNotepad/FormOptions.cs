@@ -198,6 +198,7 @@ namespace XmlNotepad
         Color cdataColor;
         Color backgroundColor;
         Color containerBackgroundColor;
+        Color editorBackgroundColor;
         string updateLocation;
         bool enableUpdate;
         bool noByteOrderMark;
@@ -261,6 +262,7 @@ namespace XmlNotepad
             cdataColor = (Color)colors["CDATA"];
             backgroundColor = (Color)colors["Background"];
             containerBackgroundColor = (Color)colors["ContainerBackground"];
+            editorBackgroundColor = (Color)colors["EditorBackground"];
         }
 
         internal static Hashtable GetDefaultColors(ColorTheme theme)
@@ -276,6 +278,7 @@ namespace XmlNotepad
                 light["CDATA"] = Color.Gray;
                 light["Background"] = Color.White;
                 light["ContainerBackground"] = Color.AliceBlue;
+                light["EditorBackground"] = Color.LightSteelBlue;
                 return light;
             }
             else
@@ -289,7 +292,28 @@ namespace XmlNotepad
                 dark["CDATA"] = Color.FromArgb(0xC2, 0xCB, 0x85);
                 dark["Background"] = Color.FromArgb(0x1e, 0x1e, 0x1e);
                 dark["ContainerBackground"] = Color.FromArgb(0x25, 0x25, 0x26);
+                dark["EditorBackground"] = Color.FromArgb(24, 24, 44);
                 return dark;
+            }
+        }
+
+        internal static void AddDefaultColors(Settings settings, string name, ColorTheme theme)
+        {
+            Hashtable table = (Hashtable)settings[name];
+            if (table == null)
+            {
+                table = new Hashtable();
+                settings[name] = table;
+            }
+
+            Hashtable defaults = GetDefaultColors(theme);
+            // Merge any undefined colors.
+            foreach (string key in defaults.Keys)
+            {
+                if (!table.ContainsKey(key))
+                {
+                    table.Add(key, defaults[key]);
+                }
             }
         }
 
@@ -303,6 +327,8 @@ namespace XmlNotepad
             colors["PI"] = this.piColor;
             colors["Text"] = this.textColor;
             colors["Background"] = this.backgroundColor;
+            colors["ContainerBackground"] = this.containerBackgroundColor;
+            colors["EditorBackground"] = this.editorBackgroundColor;
         }
 
         public static string Escape(string nl) {
@@ -316,6 +342,8 @@ namespace XmlNotepad
             this.settings["Font"] = this.font;
 
             this.settings["Theme"] = this.theme;
+            
+            SaveColors();
             this.settings["LightColors"] = this.lightColors;
             this.settings["DarkColors"] = this.darkColors;
 
@@ -479,6 +507,21 @@ namespace XmlNotepad
             set
             {
                 this.containerBackgroundColor = value;
+            }
+        }
+
+        [SRCategoryAttribute("ColorCategory")]
+        [LocDisplayName("EditorBackgroundColor")]
+        [SRDescriptionAttribute("EditorBackgroundColorDescription")]
+        public Color EditorBackgroundColor
+        {
+            get
+            {
+                return this.editorBackgroundColor;
+            }
+            set
+            {
+                this.editorBackgroundColor = value;
             }
         }
 
@@ -725,5 +768,6 @@ namespace XmlNotepad
             get { return this.xmlDiffIgnoreDtd; }
             set { this.xmlDiffIgnoreDtd = value; }
         }
+
     }
 }

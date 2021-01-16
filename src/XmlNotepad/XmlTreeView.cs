@@ -205,22 +205,49 @@ namespace XmlNotepad
             return new XmlTreeNode(this, parent, node);
         }
 
+        /// <summary>
+        /// Find the given node in the tree by expanding the minimum amount of stuff to get there.
+        /// </summary>
+        /// <param name="node">The XmlNode to find</param>
+        /// <returns>The XmlTreeNode representing this XmlNode or null if the XmlNode is disconnected from the current document.</returns>
         public XmlTreeNode FindNode(XmlNode node)
         {
-            return FindNode(this.myTreeView.Nodes, node);
+            if (node is XmlDocument)
+            {
+                // there is no XmlTreeNode for the document.
+                return null;
+            }
+
+            if (node == null || node.ParentNode == null)
+            {
+                // then we have a node that is disconnected
+                return null;
+            }
+
+            if (node.OwnerDocument != this.model.Document)
+            {
+                return null;
+            }
+
+            XmlTreeNode parent = FindNode(node.ParentNode);
+            if (parent == null) 
+            {
+                // then the node is a root node.
+                return FindChild(this.myTreeView.Nodes, node);
+            }
+            else
+            {
+                return FindChild(parent.Nodes, node);
+            }
         }
 
-        XmlTreeNode FindNode(TreeNodeCollection nodes, XmlNode node)
+        XmlTreeNode FindChild(TreeNodeCollection nodes, XmlNode node)
         {
             foreach (XmlTreeNode xn in nodes)
             {
-                if (xn.Node == node) return xn;
-                if (xn.Nodes != null)
-                {
-                    XmlTreeNode child = FindNode(xn.Nodes, node);
-                    if (child != null) return child;
-                }
+                if (xn.Node == node) return xn;                
             }
+
             return null;
         }
 
@@ -525,7 +552,7 @@ namespace XmlNotepad
             // but when document is saved it may add nodes (like xml declaration) and so 
             // we check for this here and add corresponding nodes in the tree view when necessary.
             XmlNode node = e.Node;
-            if (null == FindNode(node) && !IsEditing && saving && node != null)
+            if (!IsEditing && saving && node != null && null == FindNode(node))
             {
                 if (e.ModelChangeType == ModelChangeType.NodeInserted)
                 {

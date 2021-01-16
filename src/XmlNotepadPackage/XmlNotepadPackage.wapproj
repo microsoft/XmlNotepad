@@ -58,7 +58,7 @@
     <PackageCertificateThumbprint>AFFF93C9E6AD77B2519D1778A820B789F9F1E31D</PackageCertificateThumbprint>
     <EntryPointProjectUniqueName>..\Application\Application.csproj</EntryPointProjectUniqueName>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
-    <AppxPackageSigningTimestampServerUrl>http://timestamp.comodoca.com/authenticode</AppxPackageSigningTimestampServerUrl>
+    <AppxPackageSigningTimestampServerUrl>http://timestamp.sectigo.com</AppxPackageSigningTimestampServerUrl>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>

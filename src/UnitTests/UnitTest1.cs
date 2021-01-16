@@ -1250,7 +1250,7 @@ namespace UnitTests {
             Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
 
             Trace.WriteLine("Load RSS from disk");
-            w.SendKeystrokes("{END}+{HOME}" + TestDir + "Samples\\rss.xml" + "{ENTER}");
+            w.SendKeystrokes("{END}+{HOME}" + TestDir + "Application\\Samples\\rss.xml" + "{ENTER}");
 
             Trace.WriteLine("Wait for rss to be loaded");
             WaitForText("<?xml version=\"1.0\" encoding=\"utf-8\"?>");

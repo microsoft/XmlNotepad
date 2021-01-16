@@ -682,7 +682,6 @@ Do you want to visit the web page that describes this update?</value>
   <data name="AppProgId" xml:space="preserve">
     <value>XmlNotepad</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AutoFormatLongLinesDescriptions" xml:space="preserve">
     <value>Autoformat long lines instead of prompting</value>
     <comment>Property Grid description</comment>
@@ -805,5 +804,13 @@ Do you want to visit the web page that describes this update?</value>
   <data name="ContainerBackgroundColorDescription" xml:space="preserve">
     <value>The background color for non text nodes</value>
     <comment>Property description</comment>
+  </data>
+  <data name="EditorBackgroundColor" xml:space="preserve">
+    <value>Editor background</value>
+    <comment>Property Name</comment>
+  </data>
+  <data name="EditorBackgroundColorDescription" xml:space="preserve">
+    <value>Background color for text editor control</value>
+    <comment>Property Description</comment>
   </data>
 </root>

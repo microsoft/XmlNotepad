@@ -441,6 +441,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editor background.
+        /// </summary>
+        internal static string EditorBackgroundColor {
+            get {
+                return ResourceManager.GetString("EditorBackgroundColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background color for text editor control.
+        /// </summary>
+        internal static string EditorBackgroundColorDescription {
+            get {
+                return ResourceManager.GetString("EditorBackgroundColorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         internal static string EditSchemaCommand {
