@@ -25,6 +25,7 @@ jQuery(document).ready(function ($) {
     $(this).siblings('.panel-heading').removeClass('active');
   });
 
-
+  var year = (new Date()).getFullYear();
+  $("#copyright").append("&copy; " + year + " Microsoft");
 
 });
