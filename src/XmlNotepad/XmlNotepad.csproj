@@ -98,6 +98,7 @@
     <Compile Include="..\Version\Version.cs">
       <Link>Version.cs</Link>
     </Compile>
+    <Compile Include="Analytics.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -108,6 +109,9 @@
     <Compile Include="DomLoader.cs" />
     <Compile Include="EditableView.cs" />
     <Compile Include="FileAssociation.cs" />
+    <Compile Include="FormAnalytics.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormCsvImport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,6 +201,10 @@
     <Compile Include="XsltViewer.Designer.cs">
       <DependentUpon>XsltViewer.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormAnalytics.resx">
+      <DependentUpon>FormAnalytics.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormCsvImport.resx">
       <DependentUpon>FormCsvImport.cs</DependentUpon>
     </EmbeddedResource>
@@ -254,6 +262,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DefaultSS.xslt" />
     <EmbeddedResource Include="DynamicHelp.xslt" />
+    <EmbeddedResource Include="..\XmlStats\bin\$(Configuration)\XmlStats.exe">
+      <Link>Resources\XmlStats.exe</Link>
+    </EmbeddedResource>
     <Content Include="placeholder.xslt" />
     <Content Include="Resources\BlueBall.gif" />
     <Content Include="Resources\cdata.ico" />
@@ -295,6 +306,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
+    <Reference Include="SimpleGoogleAnalytics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleGoogleAnalytics.1.0.1\lib\netstandard2.0\SimpleGoogleAnalytics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -308,12 +322,6 @@
     <Reference Include="XmlDiffPatch.View, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
       <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.0\lib\net47\XmlDiffPatch.View.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XmlStats\XmlStats.csproj">
-      <Project>{ba2aed71-4942-4f51-959e-963cef7d0895}</Project>
-      <Name>XmlStats</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -70,6 +70,33 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow analytics.
+        /// </summary>
+        internal static string AllowAnalytics {
+            get {
+                return ResourceManager.GetString("AllowAnalytics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow anonymous analytics to be collected.
+        /// </summary>
+        internal static string AllowAnalyticsDescription {
+            get {
+                return ResourceManager.GetString("AllowAnalyticsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analytics.
+        /// </summary>
+        internal static string AnalyticsCategory {
+            get {
+                return ResourceManager.GetString("AnalyticsCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A simple XML editor with XSD intellisense and XSLTpreview.
         /// </summary>
         internal static string AppDescription {

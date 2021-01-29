@@ -1,13 +1,5 @@
-/*
-* 
-* An XmlReader implementation for loading comma delimited files (.csv files)
-*
-* Copyright (c) 2001-2005 Microsoft Corporation. All rights reserved.
-*
-* Chris Lovett
-* 
-*/
-
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 using System;
 using System.Xml;
 using System.IO;
@@ -32,7 +24,7 @@ namespace Microsoft.Xml {
 
 
     /// <summary>
-    /// Summary description for XmlCsvReader.
+    /// An XmlReader implementation for loading comma delimited files (.csv files)
     /// </summary>
     public class XmlCsvReader : XmlReader {
         CsvReader _csvReader;

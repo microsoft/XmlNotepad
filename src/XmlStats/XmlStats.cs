@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -30,36 +31,51 @@ namespace Microsoft.Xml
 
         public static void PrintUsage()
         {
-            Console.WriteLine("*** usage: XmlStats [options] <filenames>");
+            Console.WriteLine("usage: XmlStats [options] <filenames>");
             Console.WriteLine("    reports statistics about elements, attributes and text found");
             Console.WriteLine("    in the specified XML files (URLs or local file names).");
             Console.WriteLine("    filenames: wildcards in local filenames allowed");
             Console.WriteLine("               (for reporting on all files in a directory)");
-            Console.WriteLine("*** options:");
-            Console.WriteLine("-v         Generates individual reports for all specified files (default is summary only).");
-            Console.WriteLine("-nologo    Removes logo from the report");
-            Console.WriteLine("-w[a|s|n]  XML whitespace handling: -wa=All (default), -ws=Significant, -wn=None");
+            Console.WriteLine("options:");
+            Console.WriteLine("  -f filename Reports stats on files names found in the given file (one per line).");
+            Console.WriteLine("  -v          Generates individual reports for all specified files (default is summary only).");
+            Console.WriteLine("  -nologo     Removes logo from the report");
+            Console.WriteLine("  -w[a|s|n]   XML whitespace handling: -wa=All (default), -ws=Significant, -wn=None");
         }
 
         [STAThread]
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             bool summary = true;
             bool logo = true;
             XmlStats xs = new XmlStats();
-            ArrayList files = new ArrayList();
+            List<string> files = new List<string>();
 
-            foreach (string arg in args)
+            for (int i = 0; i < args.Length; i++)
             {
-                if (arg.Length > 1 && (arg[0] == '-' || arg[0] == '/'))
+                var arg = args[i];
+                if (arg.Length > 1 && arg[0] == '-')
                 {
-                    string larg = arg.Substring(1).ToLower(CultureInfo.CurrentCulture);
+                    string larg = arg.Trim('-').ToLower(CultureInfo.CurrentCulture);
                     switch (larg)
                     {
                         case "?":
                         case "h":
+                        case "help":
                             PrintUsage();
-                            return;
+                            return 1;
+                        case "f":
+                            if (i + 1 == args.Length)
+                            {
+                                Console.WriteLine("missing file name after '-f' argument");
+                                PrintUsage();
+                                return 1;
+                            }
+                            else
+                            {
+                                files = ReadFileNames(args[++i]);
+                            }
+                            break;
                         case "v":
                             summary = false;
                             break;
@@ -76,8 +92,9 @@ namespace Microsoft.Xml
                             logo = false;
                             break;
                         default: // invalid opt
-                            Console.WriteLine("+++ invalid option ignored '" + arg + "'");
-                            break;
+                            Console.WriteLine("invalid option '" + arg + "'");
+                            PrintUsage();
+                            return 1;
                     }
                 }
                 else if (arg.IndexOf("://", StringComparison.InvariantCulture) > 0)
@@ -104,17 +121,38 @@ namespace Microsoft.Xml
                 }
             }
 
+            if (files.Count == 0)
+            {
+                PrintUsage();
+                return 1;
+            }
+
             if (logo)
             {
-                Console.WriteLine("*** XmlStats V1.09 (March 2003)");
-                Console.WriteLine("    (by Chris Lovett and andreas lang,");
-                Console.WriteLine("     http://www.lovettsoftware.com/tools/xmlstats/readme.htm)");
+                Console.WriteLine("*** XmlStats " + typeof(XmlStats).Assembly.GetName().Version.ToString() + " by Chris Lovett and andreas lang");
                 Console.WriteLine();
             }
 
-            xs.ProcessFiles((string[])files.ToArray(typeof(string)), summary, Console.Out, "\n");
+            xs.ProcessFiles(files.ToArray(), summary, Console.Out, "\n");
 
-            Console.WriteLine("*** XmlStats ended.");
+            if (files.Count > 1)
+            {
+                Console.WriteLine("*** XmlStats ended.");
+            }
+            return 0;
+        }
+
+        private static List<string> ReadFileNames(string fileName)
+        {
+            List<string> files = new List<string>();
+            using (var reader = new StreamReader(fileName, true))
+            {                
+                while (!reader.EndOfStream)
+                {
+                    files.Add(reader.ReadLine());
+                }
+            }
+            return files;
         }
 
         public void ProcessFiles(string[] files, bool summary, TextWriter output, string newLineChar)
@@ -166,6 +204,12 @@ namespace Microsoft.Xml
 
         public void Process(string path)
         {
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("*** file not found: " + path);
+                return;
+            }
+
             try
             {
                 using (XmlTextReader r = new XmlTextReader(path))
@@ -173,9 +217,10 @@ namespace Microsoft.Xml
                     this.Process(r);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ok to ignore bad xml here
+                Console.WriteLine("*** xml error in file: " + path);
+                Console.WriteLine(ex.Message);
             }
         }
 

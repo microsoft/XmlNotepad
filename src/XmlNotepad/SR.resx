@@ -591,6 +591,18 @@ Do you want to visit the web page that describes this update?</value>
     <value>Whether to check for updates periodically</value>
     <comment>Property Grid description</comment>
   </data>
+  <data name="AnalyticsCategory" xml:space="preserve">
+    <value>Analytics</value>
+    <comment>Property Grid category</comment>
+  </data>
+  <data name="AllowAnalytics" xml:space="preserve">
+    <value>Allow analytics</value>
+    <comment>Property Grid property name</comment>
+  </data>
+  <data name="AllowAnalyticsDescription" xml:space="preserve">
+    <value>Allow anonymous analytics to be collected</value>
+    <comment>Property Grid description</comment>
+  </data>
   <data name="FontPropertyName" xml:space="preserve">
     <value>Font</value>
     <comment>Property Grid property name</comment>

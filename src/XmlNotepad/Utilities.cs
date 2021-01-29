@@ -13,6 +13,25 @@ namespace XmlNotepad
     {
         private Utilities() { }
 
+        public static bool ExtractEmbeddedResourceAsFile(string name, string path)
+        {
+            using (Stream s = typeof(Utilities).Assembly.GetManifestResourceStream(name))
+            {
+                if (s == null)
+                {
+                    return false;
+                }
+
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    s.CopyTo(fs);
+                }
+            }
+            return true;
+        }
+
+
         public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp) {
             settings.CheckCharacters = false;
             settings.Indent = true;

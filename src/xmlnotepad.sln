@@ -11,6 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlNotepad", "XmlNotepad\XmlNotepad.csproj", "{E401BDD0-8862-4818-98BD-83E457607E16}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BA2AED71-4942-4F51-959E-963CEF7D0895} = {BA2AED71-4942-4F51-959E-963CEF7D0895}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{07661035-BFE2-4169-ADEF-364839871457}"
 	ProjectSection(ProjectDependencies) = postProject

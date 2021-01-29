@@ -218,6 +218,7 @@ namespace XmlNotepad
         bool xmlDiffIgnorePrefixes;
         bool xmlDiffIgnoreXmlDecl;
         bool xmlDiffIgnoreDtd;
+        bool allowAnalytics;
 
         public UserSettings(Settings s) {            
             this.settings = s;
@@ -248,6 +249,7 @@ namespace XmlNotepad
             this.xmlDiffIgnorePrefixes = (bool)this.settings["XmlDiffIgnorePrefixes"];
             this.xmlDiffIgnoreXmlDecl = (bool)this.settings["XmlDiffIgnoreXmlDecl"];
             this.xmlDiffIgnoreDtd = (bool)this.settings["XmlDiffIgnoreDtd"];
+            this.allowAnalytics = (bool)this.settings["AllowAnalytics"];
         }
 
         private void LoadColors()
@@ -343,6 +345,8 @@ namespace XmlNotepad
             this.settings["XmlDiffIgnoreXmlDecl"] = this.xmlDiffIgnoreXmlDecl;
             this.settings["XmlDiffIgnoreDtd"] = this.xmlDiffIgnoreDtd;
 
+            this.settings["AllowAnalytics"] = this.allowAnalytics;
+
             this.settings.OnChanged("Colors");
 
         }
@@ -365,6 +369,7 @@ namespace XmlNotepad
             this.maximumLineLength = 10000;
             this.maximumValueLength = short.MaxValue;
             ignoreDTD = false;
+            this.allowAnalytics = false;
         }
 
         [SRCategoryAttribute("ThemeCategory")]
@@ -510,6 +515,21 @@ namespace XmlNotepad
             }
         }
 
+        [SRCategoryAttribute("AnalyticsCategory")]
+        [LocDisplayName("AllowAnalytics")]
+        [SRDescriptionAttribute("AllowAnalyticsDescription")]
+        public bool AllowAnalytics
+        {
+            get
+            {
+                return this.allowAnalytics;
+            }
+            set
+            {
+                this.allowAnalytics = value;
+            }
+        }
+
         [SRCategoryAttribute("UpdateCategory")]
         [LocDisplayName("EnableUpdate")]
         [SRDescriptionAttribute("EnableUpdateDescription")]
@@ -521,6 +541,7 @@ namespace XmlNotepad
                 this.enableUpdate = value;
             }
         }
+
         [SRCategoryAttribute("UpdateCategory")]
         [LocDisplayName("UpdateLocation")]
         [SRDescriptionAttribute("UpdateLocationDescription")]

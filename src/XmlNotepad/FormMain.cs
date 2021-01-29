@@ -43,6 +43,7 @@ namespace XmlNotepad {
         int batch;
         bool includesExpanded;
         bool helpAvailableHint = true;
+        Analytics analytics;
         Updater updater;
         System.CodeDom.Compiler.TempFileCollection tempFiles = new System.CodeDom.Compiler.TempFileCollection();
         private ContextMenuStrip contextMenu1;
@@ -360,7 +361,7 @@ namespace XmlNotepad {
             InitializeHelp(this.helpProvider1);
         }
 
-        private void SetDefaultSettings()
+        protected virtual void SetDefaultSettings()
         {
             // populate default settings and provide type info.
             Font f = new Font("Courier New", 10, FontStyle.Regular);
@@ -408,6 +409,10 @@ namespace XmlNotepad {
             this.settings["XmlDiffIgnorePrefixes"] = false;
             this.settings["XmlDiffIgnoreXmlDecl"] = false;
             this.settings["XmlDiffIgnoreDtd"] = false;
+
+            // analytics question has been answered...
+            this.Settings["AllowAnalytics"] = false;
+            this.Settings["AnalyticsClientId"] = "";
         }
 
         public FormMain(string[] args)
@@ -415,6 +420,7 @@ namespace XmlNotepad {
             this.args = args;
         }
 
+        public Settings Settings => settings;
 
         public XmlCache Model {
             get { return model; }
@@ -2156,6 +2162,7 @@ namespace XmlNotepad {
 
         public virtual void DisplayXsltResults() {
             this.xsltViewer.DisplayXsltResults();
+            this.analytics.RecordXsltView();
         }
 
         void SelectTreeView() {
@@ -2306,7 +2313,9 @@ namespace XmlNotepad {
                     EnableFileMenu();
                     this.recentFiles.AddRecentFile(this.model.Location);
                     SelectTreeView();
-                }   
+                }
+
+                this.analytics.RecordCsvImport();
             }
         }
 
@@ -2521,6 +2530,30 @@ namespace XmlNotepad {
                 }
             }            
             this.loading = false;
+
+            CheckAnalytics();
+        }
+
+        private void CheckAnalytics()
+        {
+            if ((string)this.Settings["AnalyticsClientId"] == "")
+            {
+                // have not yet asked for permission!                
+                this.Settings["AnalyticsClientId"] = Guid.NewGuid().ToString();
+                FormAnalytics fa = new FormAnalytics();
+                var rc = fa.ShowDialog();
+                if (rc == DialogResult.Yes)
+                {
+                    this.Settings["AllowAnalytics"] = true;
+                }
+                else
+                {
+                    this.Settings["AllowAnalytics"] = false;
+                }
+            }
+
+            analytics = new Analytics((string)this.Settings["AnalyticsClientId"], (bool)this.Settings["AllowAnalytics"]);
+            analytics.RecordAppLaunched();
         }
 
         public virtual void SaveConfig() {
@@ -2994,6 +3027,7 @@ namespace XmlNotepad {
             if (search == null || !search.Visible) {
                 search = new FormSearch(search, (ISite)this);
                 search.Owner = this;
+                this.analytics.RecordFormSearch();
             } else {
                 search.Activate();
             }
@@ -3059,6 +3093,7 @@ namespace XmlNotepad {
             if (options.ShowDialog(this) == DialogResult.OK) {
                 this.updater.OnUserChange(oldLocation);
             }
+            analytics.RecordFormOptions();
         }
 
 
@@ -3278,6 +3313,7 @@ namespace XmlNotepad {
             if (frm.ShowDialog(this) == DialogResult.OK) {
                 OnModelChanged();
             }
+            this.analytics.RecordFormSchemas();
         }
 
         private void nextErrorToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -3613,32 +3649,41 @@ namespace XmlNotepad {
         {
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
-            XmlStats xs = new XmlStats();
+            
+            var temp = Path.GetTempPath();
+            var scratch = Path.Combine(temp, "XmlNotepad");
+            Directory.CreateDirectory(scratch);
 
-            string tempFile = Path.Combine(Path.GetTempPath(),
-                Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + ".htm");
-            tempFiles.AddFile(tempFile, false);
+            string exePath = Path.Combine(scratch, "XmlStats.exe");
 
-            using (TextWriter resultHtml = new StreamWriter(tempFile, false, Encoding.UTF8))
+            if (!Utilities.ExtractEmbeddedResourceAsFile("XmlNotepad.Resources.XmlStats.exe", exePath))
             {
-                resultHtml.WriteLine("<html><head>");
-                resultHtml.WriteLine("<style TYPE='text/css'>");
-                resultHtml.WriteLine(GetEmbeddedString("XmlNotepad.Resources.XmlReportStyles.css"));
-                resultHtml.WriteLine("</style>");
-                resultHtml.WriteLine("</head>");
-                resultHtml.WriteLine(@"        
-    <div id='header'>        
-        <h2>XML Statistics: " + this.model.FileName + @"</h2>
-    </div>
-    <div id='main'><div class='code'><xmp>");
-
-                xs.ProcessFiles(new string[1] { this.model.FileName }, true, resultHtml, "\n");
-
-                resultHtml.WriteLine("</xmp></div></body></html>");
+                return;
             }
 
+            string fileNameFile = Path.Combine(scratch, "names.txt");
 
-            Utilities.OpenUrl(this.Handle, tempFile);
+            // need proper utf-8 encoding of the file name which can't be done with "cmd /k" command line.
+            using (TextWriter cmdFile = new StreamWriter(fileNameFile, false, Encoding.UTF8))
+            {               
+                cmdFile.WriteLine(this.model.FileName);
+            }
+
+            // now we can use "xmlstats -f names.txt" to generate the stats in a console window, this
+            // way the user learns they can use xmlstats from the command line.
+            string tempFile = Path.Combine(scratch, "stats.cmd");
+            using (TextWriter cmdFile = new StreamWriter(tempFile, false, Encoding.UTF8))
+            {
+                cmdFile.WriteLine("echo on");
+                cmdFile.WriteLine("xmlstats -f \"{0}\"", fileNameFile);
+            }
+
+            string cmd = Path.Combine(Environment.GetEnvironmentVariable("WINDIR"), "System32", "cmd.exe");
+
+            ProcessStartInfo pi = new ProcessStartInfo(cmd, "/K " + tempFile);
+            pi.UseShellExecute = true;
+            pi.WorkingDirectory = scratch;
+            Process.Start(pi);
         }
 
         private void sampleToolStripMenuItem_Click(object sender, EventArgs e)

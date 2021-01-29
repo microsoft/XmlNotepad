@@ -22,7 +22,7 @@
     <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MYKEYFILE)</AssemblyOriginatorKeyFile>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.Xml</RootNamespace>
     <StartupObject />
     <FileUpgradeFlags>
