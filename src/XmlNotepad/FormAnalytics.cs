@@ -157,7 +157,7 @@ namespace XmlNotepad {
         private System.Windows.Forms.Button buttonOK;
 
         private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e) {
-            string url = "http://microsoft.github.io/xmlnotepad/help/analytics";
+            string url = "https://microsoft.github.io/XmlNotepad/#help/analytics/";
             Utilities.OpenUrl(this.Handle, url);
         }
     }

@@ -1,15 +1,10 @@
----
-layout: default
-title: Overview
-section: home
-permalink: /help/menus
----
 
 ## Menus
 XML Notepad provides the following menu commands.
 
 ### File
 The file menu contains the following commands:
+
 - **New** Start a new XML document.
 - **Open** Open an XML document for editing.
 - **Reload** Discard any edits you've made and reload the file as it exists on disk.
@@ -21,9 +16,10 @@ The file menu contains the following commands:
 
 ### Edit
 The edit menu contains the following commands:
+
 - **Undo** Undo the previous edit operation.
 - **Redo** Reverses the last undo operation.
-- **Cut** Copy the selected node to the clipboard (and its children) and remove that node from the tree. See [Clipboard support](/XmlNotepad/help/clipboard).
+- **Cut** Copy the selected node to the clipboard (and its children) and remove that node from the tree. See [Clipboard support](clipboard.md).
 - **Copy** Copy the selected node to the clipboard (and its children).
 - **Paste** Parse the XML in the clipboard and create new nodes in the tree under the selected node.
 - **Delete** Delete the selected node.
@@ -37,17 +33,18 @@ The edit menu contains the following commands:
     - **Down**     After the next sibling, or after the parent if there is no next sibling.
     - **Left**     Before the parent if this is the first child, otherwise after the parent.
     - **Right** so it becomes the last child of the previous sibling.
-- **Find...** Brings up the [find dialog](/XmlNotepad/help/find).
-- **Replace...** Brings up the [replace dialog](/XmlNotepad/help/find).
+- **Find...** Brings up the [find dialog](find.md).
+- **Replace...** Brings up the [replace dialog](find.md).
 - **Incremental Search...** Allows you to instantly find what you type.
 
 ### View
+
 - **Expand All** Expand all collapsed nodes in the entire tree. See "Expand" item on the context menu if you just want to expand the selected node.
 - **Collapse all** Collapse all expanded nodes in the entire tree (except the root node). See "Collapse" item on the context menu if you just want to collapse the selected node.
 - **Status Bar** Toggle the visibility of the status bar.
 - **Source** Show the current XML document in text form using "Notepad".
-- **Options...** Display the [Options Dialog](/XmlNotepad/help/options).
-- **Schemas...** Display the [Schemas Dialog](/XmlNotepad/help/schemas).
+- **Options...** Display the [Options Dialog](options.md).
+- **Schemas...** Display the [Schemas Dialog](schemas.md).
 - **Next Error** Navigate to the next error in the list of errors.
 - **Compare XML Files...** Launches XML Diff which compares the current document you are editing with another document on disk and displays the results.
 

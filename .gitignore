@@ -236,9 +236,10 @@ _Pvt_Extensions
 .fake/
 drop/
 /src/AppX/XmlNotepad
-/src/UnitTests/out.xml
-/src/UnitTests/out2.xml
+out.xml
+out2.xml
 
-_site/
+site/
+/publish.cmd
 .jekyll-cache/
-.jekyll-metadata
+_site/

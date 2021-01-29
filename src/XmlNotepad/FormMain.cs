@@ -2512,6 +2512,9 @@ namespace XmlNotepad {
                 if (File.Exists(this.ConfigFile)) {
                     settings.Load(this.ConfigFile);
 
+                    UserSettings.AddDefaultColors(settings, "LightColors", ColorTheme.Light);
+                    UserSettings.AddDefaultColors(settings, "DarkColors", ColorTheme.Dark);
+
                     string newLines = (string)this.settings["NewLineChars"];
 
                     Uri location = (Uri)this.settings["FileName"];

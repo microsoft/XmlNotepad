@@ -170,10 +170,13 @@ namespace XmlNotepad {
                         System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings[colorSetName];
                         if (colors != null)
                         {
-                            object color = colors["ContainerBackground"];
-                            if (color != null)
+                            if (colors["ContainerBackground"] is Color color)
                             {
-                                this.containerBackground = (Color)color;
+                                this.containerBackground = color;
+                            }
+                            if (colors["EditorBackground"] is Color eback)
+                            {
+                                this.editor.EditorBackgroundColor = eback;
                             }
                         }
                         break;

@@ -10,6 +10,10 @@
   <version number="2.8.0.19">
     <feature>Add optional google analytics so we can get an idea of usage.</feature>
   </version>
+  <version number="2.8.0.18">
+    <bug>Fix Dark Theme options editing and add new color for text editor background.</bug>
+    <bug>Fix performance bug to do with expanding too many nodes on save and on find.</bug>
+  </version>
   <version number="2.8.0.14">
     <feature>Fix bug in current file address combobox.  Start implementing stylecop code cleanups.</feature>
   </version>
