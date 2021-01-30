@@ -9,13 +9,16 @@ using System.Diagnostics;
 
 namespace XmlNotepadBuildTasks
 {
-    public class SyncWix : Task
+    public class SyncVersions : Task
     {
         [Required]
         public string VersionFile { get; set; }
 
         [Required]
         public string WixFile { get; set; }
+
+        [Required]
+        public string AppManifestFile { get; set; }
 
         [Required]
         public string DropDir { get; set; }
@@ -63,10 +66,48 @@ namespace XmlNotepadBuildTasks
                 }
 
                 bool result = UpdateWixDoc(v);
+                result &= UpdatePackageManifest(v);
                 result &= CheckUpdatesFile(v);
                 result &= UpdateReadmeFile(v);
                 return result;
             }
+        }
+
+        private bool UpdatePackageManifest(Version v)
+        {
+            if (!System.IO.File.Exists(this.AppManifestFile))
+            {
+                Log.LogError("AppManifest file not found: " + this.AppManifestFile);
+                return false;
+            }
+
+            try
+            {
+                string newVersion = v.ToString();
+                bool changed = false;
+                XDocument doc = XDocument.Load(this.AppManifestFile);
+                var ns = doc.Root.Name.Namespace;
+                foreach (var e in doc.Root.Elements(ns + "Identity"))
+                {
+                    var s = (string)e.Attribute("Version");
+                    if (s != newVersion)
+                    {
+                        changed = true;
+                        e.SetAttributeValue("Version", newVersion);
+                    }
+                }
+                
+                if (changed)
+                {
+                    doc.Save(this.AppManifestFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("AppManifest file edit failed: " + ex.Message);
+                return false;
+            }
+            return true;
         }
 
         private bool UpdateWixDoc(Version v)
@@ -83,7 +124,7 @@ namespace XmlNotepadBuildTasks
                 bool result = UpdateWixVersion(doc, v);
                 result &= UpdateDropFiles(doc, v);
                 result &= UpdateFeature(doc);
-                if (result) 
+                if (result)
                 {
                     doc.Save(this.WixFile);
                 }
@@ -112,7 +153,7 @@ namespace XmlNotepadBuildTasks
             }
 
             List<string> existing = new List<string>();
-            foreach(var cref in feature.Elements(ns + "ComponentRef"))
+            foreach (var cref in feature.Elements(ns + "ComponentRef"))
             {
                 existing.Add((string)cref.Attribute("Id"));
             }
@@ -122,12 +163,12 @@ namespace XmlNotepadBuildTasks
             if (!hashFound.SetEquals(hashExisting))
             {
                 Debug.WriteLine("Rewriting component references...");
-                foreach(var child in feature.Nodes().ToArray())
+                foreach (var child in feature.Nodes().ToArray())
                 {
                     child.Remove();
                 }
 
-                foreach(var id in components)
+                foreach (var id in components)
                 {
                     feature.Add(new XElement(ns + "ComponentRef",
                         new XAttribute("Id", id)));
@@ -143,7 +184,7 @@ namespace XmlNotepadBuildTasks
             XElement product = wixdoc.Root.Element(ns + "Product");
             if (v.ToString() != (string)product.Attribute("Version"))
             {
-                product.SetAttributeValue("Version", v.ToString());                
+                product.SetAttributeValue("Version", v.ToString());
                 Log.LogMessage(MessageImportance.High, "Updated version number in : " + this.WixFile + " to match Version.cs version " + v.ToString());
             }
             return true;
@@ -163,7 +204,7 @@ namespace XmlNotepadBuildTasks
                 XNamespace ns = wixdoc.Root.Name.Namespace;
                 XElement product = wixdoc.Root.Element(ns + "Product");
 
-                foreach (string subdir in new string[] { "Help", "samples"})
+                foreach (string subdir in new string[] { "Help", "samples" })
                 {
                     GetOrCreateDirRef(wixdoc, Path.Combine(this.DropDir, subdir));
                 }
@@ -294,7 +335,7 @@ namespace XmlNotepadBuildTasks
             }
 
             // remove deleted files
-            foreach(var pair in existing)
+            foreach (var pair in existing)
             {
                 if (!found.Contains(pair.Key))
                 {
@@ -369,7 +410,7 @@ namespace XmlNotepadBuildTasks
     {
         public static void Main()
         {
-            SyncWix wix = new SyncWix()
+            SyncVersions wix = new SyncVersions()
             {
                 DropDir = @"d:\git\lovettchris\XmlNotepad\src\drop",
                 VersionFile = @"d:\git\lovettchris\XmlNotepad\src\Version\Version.cs",

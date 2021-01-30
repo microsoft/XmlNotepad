@@ -731,7 +731,7 @@ Do you want to visit the web page that describes this update?</value>
     <comment>Property Grid description</comment>
   </data>
   <data name="OpenFileFilter" xml:space="preserve">
-    <value>XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|All files (*.*)|*.*</value>
+    <value>XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|HTML files (*.htm;*.html)|*.htm;*.html|All files (*.*)|*.*</value>
     <comment>Open file dialog filter.</comment>
   </data>
   <data name="IgnoreDTDDescription" xml:space="preserve">

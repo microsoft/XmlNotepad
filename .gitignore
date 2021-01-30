@@ -243,3 +243,5 @@ site/
 /publish.cmd
 .jekyll-cache/
 _site/
+/src/XmlNotepad/XmlNotepad.GeneratedMSBuildEditorConfig.editorconfig
+/src/XmlStats/XmlStats.GeneratedMSBuildEditorConfig.editorconfig

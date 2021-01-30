@@ -17,6 +17,7 @@ using TopLevelMenuItemBaseType = System.Windows.Forms.MenuItem;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using Microsoft.Xml;
+using Sgml;
 
 namespace XmlNotepad {
     /// <summary>
@@ -2268,13 +2269,18 @@ namespace XmlNotepad {
             try {
                 // Make sure you've called SaveIfDirty before calling this method.
                 string ext = System.IO.Path.GetExtension(filename).ToLowerInvariant();
-                if (ext == ".csv")
+                switch (ext)
                 {
-                    ImportCsv(filename);
-                }
-                else
-                {
-                    InternalOpen(filename);
+                    case ".csv":
+                        ImportCsv(filename);
+                        break;
+                    case ".htm":
+                    case ".html":
+                        ImportHtml(filename);
+                        break;
+                    default:
+                        InternalOpen(filename);
+                        break;
                 }
             } catch (Exception e){
                 if (MessageBox.Show(this,
@@ -2283,6 +2289,34 @@ namespace XmlNotepad {
                     OpenNotepad(filename);
                 }
             }
+        }
+
+        private void ImportHtml(string filename)
+        {
+            includesExpanded = false;
+            DateTime start = DateTime.Now;
+
+            using (var html = new StreamReader(filename, true))
+            {
+                using (var reader = new SgmlReader())
+                {
+                    reader.DocType = "HTML";
+                    reader.CaseFolding = CaseFolding.ToLower;
+                    reader.InputStream = html;
+                    reader.WhitespaceHandling = WhitespaceHandling.Significant;
+                    this.model.Load(reader, filename);
+                }
+            }
+
+            DateTime finish = DateTime.Now;
+            TimeSpan diff = finish - start;
+            string s = diff.ToString();
+            this.settings["FileName"] = this.model.Location;
+            this.UpdateCaption();
+            ShowStatus(string.Format(SR.LoadedTimeStatus, s));
+            EnableFileMenu();
+            this.recentFiles.AddRecentFile(this.model.Location);
+            SelectTreeView();
         }
 
         private void ImportCsv(string filename)

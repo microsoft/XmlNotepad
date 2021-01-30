@@ -5,6 +5,9 @@ The options dialog is available from the "Options..." item under the [View Menu]
 
 ![Options](../../assets/images/options.jpg)
 
+### Analytics
+Options that enable or disable the collection of analymous app usage information.  See [Analytics](analytics.md).
+
 ### Color Theme, Colors and Fonts
 The options dialog allows you to select a color theme, light or dark, or configure the specific colors used in each type of node as well as the font used and the background color. A drop down arrow on each color lets you pick from different color palettes. You can also customize the font that is used in the XML Notepad tree view.
 
@@ -28,6 +31,3 @@ You can turn off DTD validation.
 ### XmlDiff
 Options that control how the XmlDiff works when you compare XML
 documents.
-
-### Analytics
-Options that enable or disable the collection of analymous app usage information.

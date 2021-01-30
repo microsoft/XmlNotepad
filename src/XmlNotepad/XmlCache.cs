@@ -179,10 +179,6 @@ namespace XmlNotepad
         /// <returns></returns>
         public void Load(string file)
         {
-            this.Clear();
-            loader = new DomLoader(this.site);
-            StopFileWatch();
-
             Uri uri = new Uri(file, UriKind.RelativeOrAbsolute);
             if (!uri.IsAbsoluteUri) {
                 Uri resolved = new Uri(new Uri(Directory.GetCurrentDirectory() + "\\"), uri);
@@ -190,20 +186,12 @@ namespace XmlNotepad
                 uri = resolved;
             }
 
-            this.filename = file;
-            this.lastModified = this.LastModTime;
-            this.dirty = false;
-            StartFileWatch();
-            
             XmlReaderSettings settings = GetReaderSettings();
             settings.ValidationEventHandler += new ValidationEventHandler(OnValidationEvent);
-            using (XmlReader reader = XmlReader.Create(file, settings)) {
-                this.Document = loader.Load(reader);
+            using (XmlReader reader = XmlReader.Create(file, settings))
+            {
+                this.Load(reader, file);
             }
-            this.xsltFilename = this.loader.XsltFileName;
-
-            // calling this event will cause the XmlTreeView to populate
-            FireModelChanged(ModelChangeType.Reloaded, this.doc);
         }
 
         public void Load(XmlReader reader, string fileName)

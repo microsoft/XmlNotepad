@@ -5,8 +5,22 @@ XML Notepad provides a simple intuitive [User Interface](help/overview.md) for b
 
 [![image](assets/images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
-Handy features include:
+XML Notepad is the result of a promise Chris Lovett made to a friend at Microsoft. The original XML Notepad shipped in
+back in 1998, written by Murray Low in C++. Later on it fell behind in support for XML standards and, because we didn't
+have time to fix it, we pulled the downloader. But Murray apparently did such a nice job that MSDN was inundated with
+requests to put the notepad back up, so they asked for a replacement.
 
+Chris was working on System.Xml in C# in 1999, so he figured he could crank out a replacement using the .NET Framework
+pretty quickly. Well, the problem was it was one of those side projects on my "one-day" list — you know how that goes!
+Fortunately, another good friend, Michael Corning, took interest in it, helped hold his feet to the fire, and also added
+some cool features himself. Dan Doris also took pity on me and helped identify some great bugs. So here we are, a nifty
+tool that should be useful to those who want a quick way to view and edit XML documents.
+
+There have been over 3 million downloads since then - so thanks to everyone who tried it out!  
+
+### Handy features include:
+
+- Ability to load .csv and .htm files converting them to XML.
 - Tree View synchronized with Node Text View for quick editing of node names and values.
 - Incremental search (Ctrl+I) in both tree and text views, so as you type it navigates to matching nodes.
 - [Cut/copy/paste](help/clipboard.md) with full namespace support.
@@ -23,14 +37,17 @@ Handy features include:
 - Inplace HTML viewer for processing `<?xml-stylesheets` instructions.
 - Built-in XML Diff tool.
 - Support for XInclude.
+- Handy "XML statistics" tool to summarize info about your XML documents.
 - Dynamic help from XSD annotations.
 - Goto definition to navigate includes and XSD schema information.
-- Vibrant community with many [updates and bug fixes](http://www.lovettsoftware.com/downloads/XmlNotepad/Updates.xml).
+- Vibrant community with many [updates and bug fixes](help/updates.md).
 
-
-See [XML Notepad Design ](about.md) for information about how this application is built.
 
 This source code is available
-The source code is available at [https://github.com/microsoft/XmlNotepad](https://github.com/microsoft/XmlNotepad) and it has  adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+The source code is available at [https://github.com/microsoft/XmlNotepad](https://github.com/microsoft/XmlNotepad).
+
+Please provide feedback or any issues you have using the [XML Notepad Github issues](https://github.com/microsoft/XmlNotepad/issues) list.
+
+See [development](dev.md) information on how to build XML Notepad from source.
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

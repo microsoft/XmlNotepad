@@ -11,6 +11,10 @@ using System.Xml;
 
 namespace Microsoft.Xml
 {
+    /// <summary>
+    /// XmlStats class provides a command line tool that reports various statistics about the structure of 
+    /// a given XML file, like total number of element and attributes and so on.
+    /// </summary>
     public class XmlStats
     {
         Hashtable elements = new Hashtable();
@@ -29,7 +33,7 @@ namespace Microsoft.Xml
         WhitespaceHandling whiteSpace = WhitespaceHandling.All;
         Stopwatch watch = new Stopwatch();
 
-        public static void PrintUsage()
+        private static void PrintUsage()
         {
             Console.WriteLine("usage: XmlStats [options] <filenames>");
             Console.WriteLine("    reports statistics about elements, attributes and text found");
@@ -44,7 +48,7 @@ namespace Microsoft.Xml
         }
 
         [STAThread]
-        public static int Main(string[] args)
+        private static int Main(string[] args)
         {
             bool summary = true;
             bool logo = true;
@@ -155,27 +159,28 @@ namespace Microsoft.Xml
             return files;
         }
 
+        /// <summary>
+        /// Process the given files adding to the current XmlStats.
+        /// </summary>
+        /// <param name="files">The list of files to process.</param>
+        /// <param name="summary">Whether to print the report.</param>
+        /// <param name="output">The output to write the report to.</param>
+        /// <param name="newLineChar">What kind of newline character to use in the reporting.</param>
         public void ProcessFiles(string[] files, bool summary, TextWriter output, string newLineChar)
         {
             this.newLine = newLineChar;
 
-            this.Reset();
             int count = 0;
 
             foreach (string file in files)
             {
-                if (!summary)
-                {
-                    this.Reset();
-                }
-
                 try
                 {
                     this.Process(file);
                     count++;
                     if (!summary)
                     {
-                        this.Report(file, output);
+                        this.WriteReport(file, output);
                     }
                 }
                 catch (Exception e)
@@ -189,19 +194,24 @@ namespace Microsoft.Xml
 
             if (summary && count > 0)
             {
-                this.Report("XmlStats", output);
+                this.WriteReport("XmlStats", output);
             }
         }
 
+        /// <summary>
+        /// Add stats from the given xml content to the current XmlStats.
+        /// </summary>
         public void Process(TextReader input)
         {
-            this.Reset();
             using (XmlTextReader r = new XmlTextReader(input))
             {
                 this.Process(r);
             }
         }
 
+        /// <summary>
+        /// Add stats from given xml file to the current XmlStats.
+        /// </summary>
         public void Process(string path)
         {
             if (!File.Exists(path))
@@ -224,6 +234,9 @@ namespace Microsoft.Xml
             }
         }
 
+        /// <summary>
+        /// Add stats from the given xml reader to the current XmlStats.
+        /// </summary>
         public void Process(XmlTextReader r)
         {
             if (r == null)
@@ -324,16 +337,22 @@ namespace Microsoft.Xml
             r.Close();
         }
 
+        /// <summary>
+        /// Get the summary report as a string.
+        /// </summary>
         public string GetReport()
         {
             using (StringWriter sw = new StringWriter())
             {
-                this.Report("Summary", sw);
+                this.WriteReport("Summary", sw);
                 return sw.ToString();
             }
         }
 
-        public void Report(string path, TextWriter output)
+        /// <summary>
+        /// Get the summary report written to the given output.
+        /// </summary>
+        public void WriteReport(string path, TextWriter output)
         {
             output.Write("*** " + path);                     // filename or "Summary"
 
@@ -431,7 +450,10 @@ namespace Microsoft.Xml
             output.Write(this.newLine);
         }
 
-        internal void Reset()
+        /// <summary>
+        /// Reset all the current stats to zero.
+        /// </summary>
+        public void Reset()
         {
             this.elements = new Hashtable();
             this.elemCount = 0;

@@ -1,47 +1,6 @@
 # XML Notepad Design
 
-[Chris Lovett](http://lovettsoftware.com/), Microsoft
-
-I finally got around to fulfilling a promise I made to a friend at MSDN. Back in 1998, we shipped the first XML Notepad,
-written by Murray Low in C++. Later on it fell behind in support for XML standards and, because we didn't have time
-to fix it, we pulled it off MSDN. But Murray apparently did such a nice job that MSDN was inundated with requests to
-put the notepad back up, so MSDN asked me for a replacement.
-
-I was working on System.Xml in C# in 1999, so I figured I could crank out a replacement using the .NET
-Framework pretty quickly. Well, the problem was it was one of those side projects on my "one-day" list — you know
-how that goes! Fortunately, a good friend of mine, Michael Corning, took interest in it, helped hold my feet to the
-fire, and also added some cool features himself. Dan Doris also took pity on me and helped identify some great bugs.
-So here we are, finally, with something that should be useful to those who want a quick way to view and edit XML
-documents.
-
-We've had over 3 million downloads since then so I'm happy I made the effort.
-Thanks to everyone who tried it out.
-
-For those who know the original version, the interface should look familiar: a tree view on the left synchronized with
-a node text view on the right and handy nudge toolbar buttons for quick movement of nodes up and down the tree:
-
-![screen](assets/images/screen.png)
-
-Because it's been so long since the first version, I couldn't resist leveraging the cool stuff in System.Xml and so I added
-some bells and whistles that the original version didn't have, including:
-
-- Incremental search (CTRL+I) in both tree and text views, so that as you type it navigates to the most matched
-node.
-- Cut/copy/paste with full namespace support in a simple interoperable XML format.
-- Drag/drop support for easy manipulation of the tree, even across different instances of XML Notepad and
-from the file system.
-- Infinite undo/redo for all edit operations.
-- In-place, pop-up, multi-line editing of large text node values and IntelliSense based on expected elements
-and attributes.
-- Configurable fonts and colors via the options dialog.
-- Full find/replace dialog with support for regex and XPath expressions.
-- Good performance on large XML documents (loading a 3 MB document in about one second).
-- Instant XML schema validation while you edit with errors and warnings shown in the task list window.
-- Support for custom editors for date, dateTime, time, and color datatypes.
-- HTML viewer for displaying XSLT transformation results.
-- Built-in XML Diff tool.
-
-## Design and Implementation
+By [Chris Lovett](http://lovettsoftware.com/), Microsoft
 
 In the github repo you'll find the core `XmlNotepad` dll project, an `Application` project that builds
 XmlNotepad.exe, the `XmlDiff` library projects used in the XML diff feature, a `XmlNotepadSetup` project for building the .msi

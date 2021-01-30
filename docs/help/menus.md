@@ -6,7 +6,7 @@ XML Notepad provides the following menu commands.
 The file menu contains the following commands:
 
 - **New** Start a new XML document.
-- **Open** Open an XML document for editing.
+- **Open** Open an XML document for editing.  Can also open .csv and .htm files converting them to XML.
 - **Reload** Discard any edits you've made and reload the file as it exists on disk.
 - **Save** Save any edits you've made to the file disk.
 - **Save As** Save the current document to a different file name on disk.
