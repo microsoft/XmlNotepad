@@ -47,7 +47,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Install: install.md
-  - About: about.md
+  - Development: dev.md
   - Help:
     - Overview:  help/overview.md
     - Keyboard:  help/keyboard.md
@@ -61,3 +61,4 @@ nav:
     - Clipboard:  help/clipboard.md
     - Updates:  help/updates.md
     - Analytics:  help/analytics.md
+    - Design:  help/design.md

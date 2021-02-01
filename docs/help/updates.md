@@ -11,8 +11,8 @@ The Options Dialog can be used to configure how auto-update works in XML Notepad
     <frequency>1.00:00:00</frequency>
   </application>
   <version number="2.8.0.9">
-    <bug>Fix locked file bug after doing xml comparison (github issue# 44).</bug>
-    <bug>Fix BOM option so it is honored on XSLT output files also (github issue# 46).</bug>
+    <bug>Fix locked file bug after doing xml comparison (GitHub issue# 44).</bug>
+    <bug>Fix BOM option so it is honored on XSLT output files also (GitHub issue# 46).</bug>
   </version>
   ...
 ```
