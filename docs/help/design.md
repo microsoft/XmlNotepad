@@ -3,7 +3,7 @@
 By [Chris Lovett](http://lovettsoftware.com/), Microsoft
 
 In the github repo you'll find the core `XmlNotepad` dll project, an `Application` project that builds
-XmlNotepad.exe, the `XmlDiff` library projects used in the XML diff feature, a `XmlNotepadSetup` project for building the .msi
+XmlNotepad.exe, and some setup projects like `XmlNotepadSetup` which builds the .msi
 installer, and the `UnitTests` project for testing XML Notepad.
 
 The following DGML diagram shows the relationships between the main UI classes. The main form contains all the UI
@@ -18,10 +18,9 @@ Both the TreeView and NodeTextView provide the same IntelliSense editing functio
 component. The XmlTreeView implements IFindTarget, which is used by the Find dialog (FormSearch) to implement
 find/replace functionality.
 
-![find](../assets/images/find.png)
+![find](../assets/images/ifindtarget.png)
 
-The Find dialog supports full text, regex, or XPath expressions and can filter by names or values. Here you see the
-XPath search, which also provides a table for entering namespace prefix mappings used in the query.
+The Find dialog supports full text, regex, or XPath expressions and can filter by names or values.
 
 ## Validation, IntelliSense, and Custom Editors
 
