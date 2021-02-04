@@ -327,6 +327,7 @@ namespace XmlNotepad {
             this.settings["SchemaCache"] = this.model.SchemaCache;
 
             System.Threading.Tasks.Task.Run(CheckNetwork);
+            System.Threading.Tasks.Task.Run((Action)CheckNetwork);
         }
 
         private void CheckNetwork()
