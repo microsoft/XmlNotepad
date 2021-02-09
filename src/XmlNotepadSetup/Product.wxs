@@ -45,6 +45,12 @@
       <Component Id="FontBuilder.dll" Guid="0F3EDCEC-529C-489F-9717-A0D3A06A33A9">
         <File Id="FontBuilder.dll" KeyPath="yes" Checksum="yes" />
       </Component>
+      <Component Id="SimpleGoogleAnalytics.dll" Guid="5ada2db2-67f9-486b-b7f3-e5dc851b6ff2">
+        <File Id="SimpleGoogleAnalytics.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="SgmlReaderDll.dll" Guid="70c0cd62-a6e5-4da4-9336-3fcef1bfb0d1">
+        <File Id="SgmlReaderDll.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
     </DirectoryRef>
     <DirectoryRef Id="Help" FileSource="$(var.SolutionDir)\drop\Help">
       <Component Id="design.htm" Guid="045549c7-34e5-4e8a-aa8c-a49a678e3ed4">
@@ -225,6 +231,8 @@
       <ComponentRef Id="XmlDiffPatch.dll" />
       <ComponentRef Id="XmlDiffPatch.View.dll" />
       <ComponentRef Id="FontBuilder.dll" />
+      <ComponentRef Id="SimpleGoogleAnalytics.dll" />
+      <ComponentRef Id="SgmlReaderDll.dll" />
       <ComponentRef Id="design.htm" />
       <ComponentRef Id="index.html" />
       <ComponentRef Id="install.htm" />
