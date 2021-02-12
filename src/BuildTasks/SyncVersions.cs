@@ -21,13 +21,13 @@ namespace XmlNotepadBuildTasks
         public string AppManifestFile { get; set; }
 
         [Required]
+        public string AppXProjectFile { get; set; }
+
+        [Required]
         public string DropDir { get; set; }
 
         [Required]
         public string UpdatesFile { get; set; }
-
-        [Required]
-        public string ReadmeFile { get; set; }
 
         public override bool Execute()
         {
@@ -65,10 +65,12 @@ namespace XmlNotepadBuildTasks
                     return false;
                 }
 
+                Log.LogMessage(MessageImportance.High, "SyncVersions to " + v.ToString());
+
                 bool result = UpdateWixDoc(v);
                 result &= UpdatePackageManifest(v);
+                result &= UpdateAppXProject(v);
                 result &= CheckUpdatesFile(v);
-                result &= UpdateReadmeFile(v);
                 return result;
             }
         }
@@ -99,12 +101,55 @@ namespace XmlNotepadBuildTasks
                 
                 if (changed)
                 {
+                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.AppManifestFile);
                     doc.Save(this.AppManifestFile);
                 }
             }
             catch (Exception ex)
             {
                 Log.LogError("AppManifest file edit failed: " + ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        private bool UpdateAppXProject(Version v)
+        {
+            if (!System.IO.File.Exists(this.AppXProjectFile))
+            {
+                Log.LogError("AppXProjectFile file not found: " + this.AppXProjectFile);
+                return false;
+            }
+
+            try
+            {
+                string newVersion = v.ToString();
+                bool changed = false;
+                XDocument doc = XDocument.Load(this.AppXProjectFile);
+                var ns = doc.Root.Name.Namespace;
+                foreach (var e in doc.Root.Descendants(ns + "AppInstallerUri"))
+                {
+                    var s = e.Value.Trim('/');
+                    var name = Path.GetFileName(s);
+                    s = s.Substring(0, s.Length - name.Length);
+                    
+                    if (name != newVersion)
+                    {
+                        changed = true;
+                        s += newVersion + "/";
+                        e.Value = s;
+                    }
+                }
+
+                if (changed)
+                {
+                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.AppXProjectFile);
+                    doc.Save(this.AppXProjectFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("AppXProjectFile file edit failed: " + ex.Message);
                 return false;
             }
             return true;
@@ -126,6 +171,7 @@ namespace XmlNotepadBuildTasks
                 result &= UpdateFeature(doc);
                 if (result)
                 {
+                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.WixFile);
                     doc.Save(this.WixFile);
                 }
             }
@@ -185,7 +231,6 @@ namespace XmlNotepadBuildTasks
             if (v.ToString() != (string)product.Attribute("Version"))
             {
                 product.SetAttributeValue("Version", v.ToString());
-                Log.LogMessage(MessageImportance.High, "Updated version number in : " + this.WixFile + " to match Version.cs version " + v.ToString());
             }
             return true;
         }
@@ -370,53 +415,24 @@ namespace XmlNotepadBuildTasks
             }
             return true;
         }
-
-        private bool UpdateReadmeFile(Version v)
-        {
-            if (!System.IO.File.Exists(this.ReadmeFile))
-            {
-                Log.LogError("ReadmeFile not found: " + this.ReadmeFile);
-                return false;
-            }
-
-            try
-            {
-                XDocument doc = XDocument.Load(this.ReadmeFile);
-                XNamespace ns = XNamespace.Get("http://www.w3.org/1999/xhtml");
-                foreach (var span in doc.Root.Descendants(ns + "span"))
-                {
-                    if ((string)span.Attribute("class") == "version")
-                    {
-                        string newValue = "Version " + v.ToString();
-                        if (newValue != (string)span.Value)
-                        {
-                            span.Value = newValue;
-                            doc.Save(this.ReadmeFile);
-                            Log.LogMessage(MessageImportance.High, "Updated version number in : " + this.ReadmeFile + " to match Version.cs version " + v.ToString());
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.LogError("ReadmeFile file edit failed: " + ex.Message);
-                return false;
-            }
-            return true;
-        }
     }
 
     class Program
     {
         public static void Main()
         {
+            var location = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            // find root of XmlNotepad repo.
+            location = new Uri(new Uri("file:///" + location), "../../..").LocalPath;
+
             SyncVersions wix = new SyncVersions()
             {
-                DropDir = @"d:\git\lovettchris\XmlNotepad\src\drop",
-                VersionFile = @"d:\git\lovettchris\XmlNotepad\src\Version\Version.cs",
-                WixFile = @"d:\git\lovettchris\XmlNotepad\src\XmlNotepadSetup\Product.wxs",
-                UpdatesFile = @"d:\git\lovettchris\XmlNotepad\src\Updates\Updates.xml",
-                ReadmeFile = @"d:\git\lovettchris\XmlNotepad\src\Updates\Readme.htm"
+                DropDir = Path.Combine(location, @"src\drop"),
+                VersionFile = Path.Combine(location, @"src\Version\Version.cs"),
+                WixFile = Path.Combine(location, @"src\XmlNotepadSetup\Product.wxs"),
+                UpdatesFile = Path.Combine(location, @"src\Updates\Updates.xml"),
+                AppManifestFile = Path.Combine(location, @"src\XmlNotepadPackage\Package.appxmanifest"),
+                AppXProjectFile = Path.Combine(location, @"src\XmlNotepadPackage\XmlNotepadPackage.wapproj"),
             };
 
             wix.Execute();

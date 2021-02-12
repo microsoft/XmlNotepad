@@ -3359,15 +3359,31 @@ namespace XmlNotepad {
         }
 
         private void compareXMLFilesToolStripMenuItem_Click(object sender, EventArgs e) {
+            if (string.IsNullOrEmpty(this.model.FileName))
+            {
+                MessageBox.Show(this, SR.XmlDiffEmptyPrompt, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             SelectTreeView();
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = SR.SaveAsFilter;
-            if (ofd.ShowDialog(this) == DialogResult.OK) {
+            while (ofd.ShowDialog(this) == DialogResult.OK) {
                 string secondFile = ofd.FileName;
-                try {
-                    DoCompare(secondFile);
-                } catch (Exception ex) {
-                    MessageBox.Show(this, ex.Message, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (secondFile.ToUpperInvariant() == this.model.FileName.ToUpperInvariant())
+                {
+                    MessageBox.Show(this, SR.XmlDiffSameFilePrompt, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    try
+                    {
+                        DoCompare(secondFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, ex.Message, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

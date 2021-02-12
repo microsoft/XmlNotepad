@@ -825,4 +825,12 @@ Do you want to visit the web page that describes this update?</value>
     <value>Background color for text editor control</value>
     <comment>Property Description</comment>
   </data>
+  <data name="XmlDiffEmptyPrompt" xml:space="preserve">
+    <value>There is no file loaded to diff against.</value>
+    <comment>Message box prompt</comment>
+  </data>
+  <data name="XmlDiffSameFilePrompt" xml:space="preserve">
+    <value>You selected the same file, please select a different file.</value>
+    <comment>Message box prompt</comment>
+  </data>
 </root>

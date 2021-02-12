@@ -1476,6 +1476,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no file loaded to diff against..
+        /// </summary>
+        internal static string XmlDiffEmptyPrompt {
+            get {
+                return ResourceManager.GetString("XmlDiffEmptyPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to XML Diff Error.
         /// </summary>
         internal static string XmlDiffErrorCaption {
@@ -1625,6 +1634,15 @@ namespace XmlNotepad {
         internal static string XmlDiffIgnoreXmlDeclProperty {
             get {
                 return ResourceManager.GetString("XmlDiffIgnoreXmlDeclProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You selected the same file, please select a different file..
+        /// </summary>
+        internal static string XmlDiffSameFilePrompt {
+            get {
+                return ResourceManager.GetString("XmlDiffSameFilePrompt", resourceCulture);
             }
         }
         
