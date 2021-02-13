@@ -117,33 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="changeToElementContextMenuItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="changeToElementContextMenuItem.ShowShortcutKeys" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="changeToElementContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 22</value>
-  </data>
-  <data name="changeToElementContextMenuItem.Text" xml:space="preserve">
-    <value>&amp;Element</value>
-  </data>
-  <data name="changeToElementContextMenuItem.ToolTipText" xml:space="preserve">
-    <value>Change the selected node into an XML element</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="statusBar1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="statusBar1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 502</value>
   </data>
   <data name="statusBarPanelMessage.Name" xml:space="preserve">
     <value>statusBarPanelMessage</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="statusBarPanelMessage.Width" type="System.Int32, mscorlib">
     <value>619</value>
   </data>
@@ -180,6 +165,18 @@
   <metadata name="contextMenu1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>231, 17</value>
   </metadata>
+  <data name="contextMenu1.ShowHelp" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="contextMenu1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 402</value>
+  </data>
+  <data name="&gt;&gt;contextMenu1.Name" xml:space="preserve">
+    <value>contextMenu1</value>
+  </data>
+  <data name="&gt;&gt;contextMenu1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="ctxcutToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -301,13 +298,37 @@
     <value>&amp;Rename</value>
   </data>
   <data name="duplicateToolStripMenuItem1.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+D</value>
+    <value>Control+D</value>
   </data>
   <data name="duplicateToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
   <data name="duplicateToolStripMenuItem1.Text" xml:space="preserve">
     <value>Du&amp;plicate</value>
+  </data>
+  <metadata name="changeToElementContextMenuItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="changeToContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 22</value>
+  </data>
+  <data name="changeToContextMenuItem.Text" xml:space="preserve">
+    <value>C&amp;hange To</value>
+  </data>
+  <metadata name="changeToElementContextMenuItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="changeToElementContextMenuItem.ShowShortcutKeys" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="changeToElementContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 22</value>
+  </data>
+  <data name="changeToElementContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Element</value>
+  </data>
+  <data name="changeToElementContextMenuItem.ToolTipText" xml:space="preserve">
+    <value>Change the selected node into an XML element</value>
   </data>
   <data name="changeToAttributeContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
@@ -354,12 +375,6 @@
   <data name="changeToProcessingInstructionContextMenuItem.ToolTipText" xml:space="preserve">
     <value>Change the selected node into an XML processing instruction</value>
   </data>
-  <data name="changeToContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 22</value>
-  </data>
-  <data name="changeToContextMenuItem.Text" xml:space="preserve">
-    <value>C&amp;hange To</value>
-  </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
     <value>188, 6</value>
   </data>
@@ -374,6 +389,12 @@
   </data>
   <data name="ctxMenuItem20.Size" type="System.Drawing.Size, System.Drawing">
     <value>188, 6</value>
+  </data>
+  <data name="ctxElementToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 22</value>
+  </data>
+  <data name="ctxElementToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Element</value>
   </data>
   <data name="ctxElementBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>ctxElementBeforeToolStripMenuItem</value>
@@ -397,7 +418,7 @@
     <value>ctxElementChildToolStripMenuItem</value>
   </data>
   <data name="ctxElementChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Ins</value>
+    <value>Control+Insert</value>
   </data>
   <data name="ctxElementChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>151, 22</value>
@@ -405,11 +426,11 @@
   <data name="ctxElementChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="ctxElementToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="ctxAttributeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="ctxElementToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Element</value>
+  <data name="ctxAttributeToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Attribute</value>
   </data>
   <data name="ctxAttributeBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>ctxAttributeBeforeToolStripMenuItem</value>
@@ -433,7 +454,7 @@
     <value>ctxAttributeChildToolStripMenuItem</value>
   </data>
   <data name="ctxAttributeChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+Ins</value>
+    <value>Alt+Insert</value>
   </data>
   <data name="ctxAttributeChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>147, 22</value>
@@ -441,11 +462,11 @@
   <data name="ctxAttributeChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="ctxAttributeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="ctxTextToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="ctxAttributeToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Attribute</value>
+  <data name="ctxTextToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Text</value>
   </data>
   <data name="ctxTextBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>ctxTextBeforeToolStripMenuItem</value>
@@ -474,11 +495,11 @@
   <data name="ctxTextChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="ctxTextToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="ctxCommentToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="ctxTextToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Text</value>
+  <data name="ctxCommentToolStripMenuItem.Text" xml:space="preserve">
+    <value>Co&amp;mment</value>
   </data>
   <data name="ctxCommentBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>ctxCommentBeforeToolStripMenuItem</value>
@@ -507,11 +528,11 @@
   <data name="ctxCommentChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="ctxCommentToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="ctxCdataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="ctxCommentToolStripMenuItem.Text" xml:space="preserve">
-    <value>Co&amp;mment</value>
+  <data name="ctxCdataToolStripMenuItem.Text" xml:space="preserve">
+    <value>C&amp;DATA</value>
   </data>
   <data name="ctxCdataBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>ctxCdataBeforeToolStripMenuItem</value>
@@ -540,11 +561,11 @@
   <data name="ctxCdataChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="ctxCdataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="ctxPIToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="ctxCdataToolStripMenuItem.Text" xml:space="preserve">
-    <value>C&amp;DATA</value>
+  <data name="ctxPIToolStripMenuItem.Text" xml:space="preserve">
+    <value>Pr&amp;ocessing Instruction</value>
   </data>
   <data name="ctxPIBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>ctxPIBeforeToolStripMenuItem</value>
@@ -573,12 +594,6 @@
   <data name="ctxPIChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="ctxPIToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 22</value>
-  </data>
-  <data name="ctxPIToolStripMenuItem.Text" xml:space="preserve">
-    <value>Pr&amp;ocessing Instruction</value>
-  </data>
   <data name="ctxMenuItem23.Size" type="System.Drawing.Size, System.Drawing">
     <value>188, 6</value>
   </data>
@@ -593,18 +608,6 @@
   </data>
   <data name="ctxMenuItemCollapse.Text" xml:space="preserve">
     <value>Collap&amp;se</value>
-  </data>
-  <data name="contextMenu1.ShowHelp" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="contextMenu1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>192, 402</value>
-  </data>
-  <data name="&gt;&gt;contextMenu1.Name" xml:space="preserve">
-    <value>contextMenu1</value>
-  </data>
-  <data name="&gt;&gt;contextMenu1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>0, 0</value>
@@ -627,10 +630,10 @@
     <value>Fuchsia</value>
   </data>
   <data name="newToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+N</value>
+    <value>Control+N</value>
   </data>
   <data name="newToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="newToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;New</value>
@@ -661,10 +664,10 @@
     <value>Fuchsia</value>
   </data>
   <data name="openToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+O</value>
+    <value>Control+O</value>
   </data>
   <data name="openToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="openToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Open</value>
@@ -676,7 +679,7 @@
     <value>reloadToolStripMenuItem</value>
   </data>
   <data name="reloadToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="reloadToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Reload</value>
@@ -685,7 +688,7 @@
     <value>Discard any edits you've made and reload the file as it exists on disk.</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="saveToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>saveToolStripMenuItem</value>
@@ -710,10 +713,10 @@
     <value>Fuchsia</value>
   </data>
   <data name="saveToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+S</value>
+    <value>Control+S</value>
   </data>
   <data name="saveToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="saveToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Save</value>
@@ -725,10 +728,10 @@
     <value>saveAsToolStripMenuItem</value>
   </data>
   <data name="saveAsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+A</value>
+    <value>Control+A</value>
   </data>
   <data name="saveAsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="saveAsToolStripMenuItem.Text" xml:space="preserve">
     <value>Save &amp;As...</value>
@@ -740,7 +743,7 @@
     <value>exportErrorsToolStripMenuItem</value>
   </data>
   <data name="exportErrorsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="exportErrorsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Export Errors...</value>
@@ -749,7 +752,7 @@
     <value>Save the errors in the Error List to an XML file.</value>
   </data>
   <data name="toolStripMenuItem2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="recentFilesToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>recentFilesToolStripMenuItem</value>
@@ -758,7 +761,7 @@
     <value>False</value>
   </data>
   <data name="recentFilesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="recentFilesToolStripMenuItem.Text" xml:space="preserve">
     <value>Recent &amp;Files</value>
@@ -767,13 +770,13 @@
     <value>This menu provides quick access to the last 10 XML documents you've edited.</value>
   </data>
   <data name="toolStripMenuItem3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="exitToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>exitToolStripMenuItem</value>
   </data>
   <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>E&amp;xit</value>
@@ -786,6 +789,87 @@
   </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;File</value>
+  </data>
+  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>39, 20</value>
+  </data>
+  <data name="editToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Edit</value>
+  </data>
+  <data name="viewToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F12</value>
+  </data>
+  <data name="viewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 20</value>
+  </data>
+  <data name="viewToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;View</value>
+  </data>
+  <data name="insertToolStripMenuItem.AccessibleName" xml:space="preserve">
+    <value>insertToolStripMenuItem</value>
+  </data>
+  <data name="insertToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 20</value>
+  </data>
+  <data name="insertToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Insert</value>
+  </data>
+  <data name="windowToolStripMenuItem.AccessibleName" xml:space="preserve">
+    <value>windowToolStripMenuItem</value>
+  </data>
+  <data name="windowToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 20</value>
+  </data>
+  <data name="windowToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Window</value>
+  </data>
+  <data name="helpToolStripMenuItem.AccessibleName" xml:space="preserve">
+    <value>helpToolStripMenuItem</value>
+  </data>
+  <data name="helpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 20</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Help</value>
+  </data>
+  <data name="toolStripMenuItemUpdate.AccessibleName" xml:space="preserve">
+    <value>toolStripMenuItemUpdate</value>
+  </data>
+  <data name="toolStripMenuItemUpdate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 20</value>
+  </data>
+  <data name="toolStripMenuItemUpdate.Text" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="toolStripMenuItemUpdate.ToolTipText" xml:space="preserve">
+    <value>Click here to read message about software update.</value>
+  </data>
+  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="menuStrip1.ShowHelp" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>736, 24</value>
+  </data>
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="menuStrip1.Text" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
   <data name="undoToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>undoToolStripMenuItem</value>
@@ -806,7 +890,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="undoToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Z</value>
+    <value>Control+Z</value>
   </data>
   <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -836,7 +920,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="redoToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Y</value>
+    <value>Control+Y</value>
   </data>
   <data name="redoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1001,7 +1085,7 @@
     <value>duplicateToolStripMenuItem</value>
   </data>
   <data name="duplicateToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+D</value>
+    <value>Control+D</value>
   </data>
   <data name="duplicateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1014,6 +1098,12 @@
   </data>
   <data name="changeToToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>changeToToolStripMenuItem</value>
+  </data>
+  <data name="changeToToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 22</value>
+  </data>
+  <data name="changeToToolStripMenuItem.Text" xml:space="preserve">
+    <value>C&amp;hange To</value>
   </data>
   <data name="changeToElementToolStripMenuItem1.AccessibleName" xml:space="preserve">
     <value>changeToElementToolStripMenuItem1</value>
@@ -1087,12 +1177,6 @@
   <data name="changeToProcessingInstructionToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Change the selected node into an XML processing instruction</value>
   </data>
-  <data name="changeToToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>212, 22</value>
-  </data>
-  <data name="changeToToolStripMenuItem.Text" xml:space="preserve">
-    <value>C&amp;hange To</value>
-  </data>
   <data name="toolStripMenuItem12.Size" type="System.Drawing.Size, System.Drawing">
     <value>209, 6</value>
   </data>
@@ -1122,6 +1206,12 @@
   </data>
   <data name="toolStripMenuItem6.Size" type="System.Drawing.Size, System.Drawing">
     <value>209, 6</value>
+  </data>
+  <data name="nudgeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 22</value>
+  </data>
+  <data name="nudgeToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Nudge</value>
   </data>
   <data name="upToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>upToolStripMenuItem</value>
@@ -1171,12 +1261,6 @@
   <data name="rightToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Move the selected node so it becomes the last child of the previous sibling.</value>
   </data>
-  <data name="nudgeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>212, 22</value>
-  </data>
-  <data name="nudgeToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Nudge</value>
-  </data>
   <data name="toolStripMenuItem7.Size" type="System.Drawing.Size, System.Drawing">
     <value>209, 6</value>
   </data>
@@ -1184,7 +1268,7 @@
     <value>findToolStripMenuItem</value>
   </data>
   <data name="findToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+F</value>
+    <value>Control+F</value>
   </data>
   <data name="findToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1193,13 +1277,13 @@
     <value>&amp;Find...</value>
   </data>
   <data name="findToolStripMenuItem.ToolTipText" xml:space="preserve">
-    <value>Find text in the current document. Use Ctrl+I to do incremental search without the find dialog.</value>
+    <value>Find text in the current document. Use Control+I to do incremental search without the find dialog.</value>
   </data>
   <data name="replaceToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>replaceToolStripMenuItem</value>
   </data>
   <data name="replaceToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+H</value>
+    <value>Control+H</value>
   </data>
   <data name="replaceToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1214,19 +1298,13 @@
     <value>incrementalSearchToolStripMenuItem</value>
   </data>
   <data name="incrementalSearchToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+I</value>
+    <value>Control+I</value>
   </data>
   <data name="incrementalSearchToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
   </data>
   <data name="incrementalSearchToolStripMenuItem.Text" xml:space="preserve">
     <value>Incremental Search</value>
-  </data>
-  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>39, 20</value>
-  </data>
-  <data name="editToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Edit</value>
   </data>
   <data name="expandAllToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>expandAllToolStripMenuItem</value>
@@ -1351,17 +1429,11 @@
   <data name="compareXMLFilesToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Compare the current document with another document on disk and display the differences.</value>
   </data>
-  <data name="viewToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>F12</value>
+  <data name="elementToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 22</value>
   </data>
-  <data name="viewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 20</value>
-  </data>
-  <data name="viewToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;View</value>
-  </data>
-  <data name="insertToolStripMenuItem.AccessibleName" xml:space="preserve">
-    <value>insertToolStripMenuItem</value>
+  <data name="elementToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Element</value>
   </data>
   <data name="elementBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>elementBeforeToolStripMenuItem</value>
@@ -1385,7 +1457,7 @@
     <value>elementChildToolStripMenuItem</value>
   </data>
   <data name="elementChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Ins</value>
+    <value>Control+Insert</value>
   </data>
   <data name="elementChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>151, 22</value>
@@ -1393,11 +1465,11 @@
   <data name="elementChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="elementToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="attributeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="elementToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Element</value>
+  <data name="attributeToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Attribute</value>
   </data>
   <data name="attributeBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>attributeBeforeToolStripMenuItem</value>
@@ -1421,7 +1493,7 @@
     <value>attributeChildToolStripMenuItem</value>
   </data>
   <data name="attributeChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+Ins</value>
+    <value>Alt+Insert</value>
   </data>
   <data name="attributeChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>147, 22</value>
@@ -1429,11 +1501,11 @@
   <data name="attributeChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="attributeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="textToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="attributeToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Attribute</value>
+  <data name="textToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Text</value>
   </data>
   <data name="textBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>textBeforeToolStripMenuItem</value>
@@ -1462,14 +1534,14 @@
   <data name="textChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="textToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 22</value>
-  </data>
-  <data name="textToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Text</value>
-  </data>
   <data name="commentToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>commentToolStripMenuItem</value>
+  </data>
+  <data name="commentToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 22</value>
+  </data>
+  <data name="commentToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Comment</value>
   </data>
   <data name="commentBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>commentBeforeToolStripMenuItem</value>
@@ -1498,11 +1570,11 @@
   <data name="commentChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="commentToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="CDATAToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="commentToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Comment</value>
+  <data name="CDATAToolStripMenuItem.Text" xml:space="preserve">
+    <value>C&amp;DATA</value>
   </data>
   <data name="cdataBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>cdataBeforeToolStripMenuItem</value>
@@ -1531,11 +1603,11 @@
   <data name="cdataChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="CDATAToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="PIToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
   </data>
-  <data name="CDATAToolStripMenuItem.Text" xml:space="preserve">
-    <value>C&amp;DATA</value>
+  <data name="PIToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Processing Instruction</value>
   </data>
   <data name="PIBeforeToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>PIBeforeToolStripMenuItem</value>
@@ -1564,21 +1636,6 @@
   <data name="PIChildToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Child</value>
   </data>
-  <data name="PIToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 22</value>
-  </data>
-  <data name="PIToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Processing Instruction</value>
-  </data>
-  <data name="insertToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 20</value>
-  </data>
-  <data name="insertToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Insert</value>
-  </data>
-  <data name="windowToolStripMenuItem.AccessibleName" xml:space="preserve">
-    <value>windowToolStripMenuItem</value>
-  </data>
   <data name="newWindowToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>newWindowToolStripMenuItem</value>
   </data>
@@ -1590,15 +1647,6 @@
   </data>
   <data name="newWindowToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Launch another instance of XML notepad</value>
-  </data>
-  <data name="windowToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>63, 20</value>
-  </data>
-  <data name="windowToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Window</value>
-  </data>
-  <data name="helpToolStripMenuItem.AccessibleName" xml:space="preserve">
-    <value>helpToolStripMenuItem</value>
   </data>
   <data name="contentsToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>contentsToolStripMenuItem</value>
@@ -1642,54 +1690,36 @@
   <data name="aboutXMLNotepadToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;About XML Notepad</value>
   </data>
-  <data name="helpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 20</value>
-  </data>
-  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Help</value>
-  </data>
-  <data name="toolStripMenuItemUpdate.AccessibleName" xml:space="preserve">
-    <value>toolStripMenuItemUpdate</value>
-  </data>
-  <data name="toolStripMenuItemUpdate.Size" type="System.Drawing.Size, System.Drawing">
-    <value>108, 20</value>
-  </data>
-  <data name="toolStripMenuItemUpdate.Text" xml:space="preserve">
-    <value>Update Available</value>
-  </data>
-  <data name="toolStripMenuItemUpdate.ToolTipText" xml:space="preserve">
-    <value>Click here to read message about software update.</value>
-  </data>
-  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="menuStrip1.ShowHelp" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>736, 24</value>
-  </data>
-  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
-  <data name="menuStrip1.Text" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>0, 24</value>
   </metadata>
+  <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 24</value>
+  </data>
+  <data name="toolStrip1.ShowHelp" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="toolStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>736, 25</value>
+  </data>
+  <data name="toolStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="toolStrip1.Text" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
   <data name="toolStripButtonNew.AccessibleName" xml:space="preserve">
     <value>toolStripButtonNew</value>
   </data>
@@ -2022,33 +2052,6 @@
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
     <value>6, 25</value>
   </data>
-  <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 24</value>
-  </data>
-  <data name="toolStrip1.ShowHelp" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="toolStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>736, 25</value>
-  </data>
-  <data name="toolStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
-  <data name="toolStrip1.Text" xml:space="preserve">
-    <value>toolStrip1</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
-    <value>toolStrip1</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
   <data name="comboBoxLocation.AccessibleName" xml:space="preserve">
     <value>comboBoxLocation</value>
   </data>
@@ -2091,26 +2094,11 @@
   <data name="tabPageTreeView.AccessibleName" xml:space="preserve">
     <value>tabPageTreeView</value>
   </data>
-  <data name="xmlTreeView1.AccessibleName" xml:space="preserve">
-    <value>xmlTreeView1</value>
-  </data>
-  <data name="xmlTreeView1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="xmlTreeView1.ShowHelp" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="xmlTreeView1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>732, 336</value>
-  </data>
-  <data name="xmlTreeView1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="&gt;&gt;xmlTreeView1.Name" xml:space="preserve">
     <value>xmlTreeView1</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Type" xml:space="preserve">
-    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Parent" xml:space="preserve">
     <value>tabPageTreeView</value>
@@ -2137,7 +2125,7 @@
     <value>tabPageTreeView</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2148,32 +2136,11 @@
   <data name="tabPageHtmlView.AccessibleName" xml:space="preserve">
     <value>tabPageHtmlView</value>
   </data>
-  <data name="xsltViewer.AccessibleName" xml:space="preserve">
-    <value>xsltViewer</value>
-  </data>
-  <data name="xsltViewer.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="xsltViewer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="xsltViewer.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 0, 0, 0</value>
-  </data>
-  <data name="xsltViewer.ShowHelp" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="xsltViewer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>736, 339</value>
-  </data>
-  <data name="xsltViewer.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
-  </data>
   <data name="&gt;&gt;xsltViewer.Name" xml:space="preserve">
     <value>xsltViewer</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Parent" xml:space="preserve">
     <value>tabPageHtmlView</value>
@@ -2200,7 +2167,7 @@
     <value>tabPageHtmlView</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2227,13 +2194,73 @@
     <value>tabControlViews</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tabControlViews.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="xmlTreeView1.AccessibleName" xml:space="preserve">
+    <value>xmlTreeView1</value>
+  </data>
+  <data name="xmlTreeView1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="xmlTreeView1.ShowHelp" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="xmlTreeView1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>732, 336</value>
+  </data>
+  <data name="xmlTreeView1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;xmlTreeView1.Name" xml:space="preserve">
+    <value>xmlTreeView1</value>
+  </data>
+  <data name="&gt;&gt;xmlTreeView1.Type" xml:space="preserve">
+    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+  </data>
+  <data name="&gt;&gt;xmlTreeView1.Parent" xml:space="preserve">
+    <value>tabPageTreeView</value>
+  </data>
+  <data name="&gt;&gt;xmlTreeView1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="xsltViewer.AccessibleName" xml:space="preserve">
+    <value>xsltViewer</value>
+  </data>
+  <data name="xsltViewer.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="xsltViewer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="xsltViewer.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="xsltViewer.ShowHelp" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="xsltViewer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>736, 339</value>
+  </data>
+  <data name="xsltViewer.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;xsltViewer.Name" xml:space="preserve">
+    <value>xsltViewer</value>
+  </data>
+  <data name="&gt;&gt;xsltViewer.Type" xml:space="preserve">
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+  </data>
+  <data name="&gt;&gt;xsltViewer.Parent" xml:space="preserve">
+    <value>tabPageHtmlView</value>
+  </data>
+  <data name="&gt;&gt;xsltViewer.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="resizer.AccessibleName" xml:space="preserve">
     <value>TaskResizer</value>
@@ -2254,7 +2281,7 @@
     <value>resizer</value>
   </data>
   <data name="&gt;&gt;resizer.Type" xml:space="preserve">
-    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;resizer.Parent" xml:space="preserve">
     <value>$this</value>
@@ -2278,7 +2305,7 @@
     <value>tabPageTaskList</value>
   </data>
   <data name="&gt;&gt;tabPageTaskList.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="tabPageDynamicHelp.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2296,7 +2323,7 @@
     <value>tabPageDynamicHelp</value>
   </data>
   <data name="&gt;&gt;tabPageDynamicHelp.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="taskList.AccessibleName" xml:space="preserve">
     <value>taskList</value>
@@ -2323,7 +2350,7 @@
     <value>taskList</value>
   </data>
   <data name="&gt;&gt;taskList.Type" xml:space="preserve">
-    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="dynamicHelpViewer.AccessibleName" xml:space="preserve">
     <value>dynamicHelpViewer</value>
@@ -2344,7 +2371,7 @@
     <value>dynamicHelpViewer</value>
   </data>
   <data name="&gt;&gt;dynamicHelpViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.1, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.24, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -2864,12 +2891,6 @@
   <data name="$this.Text" xml:space="preserve">
     <value>XML Notepad</value>
   </data>
-  <data name="&gt;&gt;changeToElementContextMenuItem.Name" xml:space="preserve">
-    <value>changeToElementContextMenuItem</value>
-  </data>
-  <data name="&gt;&gt;changeToElementContextMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;statusBarPanelMessage.Name" xml:space="preserve">
     <value>statusBarPanelMessage</value>
   </data>
@@ -2934,6 +2955,12 @@
     <value>changeToContextMenuItem</value>
   </data>
   <data name="&gt;&gt;changeToContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;changeToElementContextMenuItem.Name" xml:space="preserve">
+    <value>changeToElementContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;changeToElementContextMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;changeToAttributeContextMenuItem.Name" xml:space="preserve">
@@ -3680,6 +3707,12 @@
   <data name="&gt;&gt;indexToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;sampleToolStripMenuItem.Name" xml:space="preserve">
+    <value>sampleToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;sampleToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;checkUpdatesToolStripMenuItem.Name" xml:space="preserve">
     <value>checkUpdatesToolStripMenuItem</value>
   </data>
@@ -3799,12 +3832,6 @@
   </data>
   <data name="&gt;&gt;helpProvider1.Type" xml:space="preserve">
     <value>System.Windows.Forms.HelpProvider, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;sampleToolStripMenuItem.Name" xml:space="preserve">
-    <value>sampleToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;sampleToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>FormMain</value>
