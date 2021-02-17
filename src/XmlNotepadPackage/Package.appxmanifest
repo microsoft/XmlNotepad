@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap rescap">
-  <Identity Name="5632ff08-aa93-439a-b09f-677eb3664250" Publisher="CN=Chris Lovett, O=Chris Lovett, STREET=18606 201st Ave NE, L=Woodinville, S=WA, PostalCode=98077, C=US" Version="2.8.0.24" />
+  <Identity Name="5632ff08-aa93-439a-b09f-677eb3664250" Publisher="CN=Chris Lovett, O=Chris Lovett, STREET=18606 201st Ave NE, L=Woodinville, S=WA, PostalCode=98077, C=US" Version="2.8.0.25" />
   <Properties>
     <DisplayName>XML Notepad</DisplayName>
     <PublisherDisplayName>Chris Lovett</PublisherDisplayName>

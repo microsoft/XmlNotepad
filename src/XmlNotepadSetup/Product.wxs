@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.24" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
+  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.25" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate />

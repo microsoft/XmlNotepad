@@ -12,7 +12,7 @@ namespace XmlNotepad
 	/// Summary description for FormOptions.
 	/// </summary>
 	public class FormOptions : System.Windows.Forms.Form
-	{
+    {
         private Settings settings;
         UserSettings userSettings;
         
@@ -154,7 +154,15 @@ namespace XmlNotepad
                 if (value != null) {
                     this.settings = value.GetService(typeof(Settings)) as Settings;
                     this.userSettings = value.GetService(typeof(UserSettings)) as UserSettings;
-                    this.propertyGrid1.SelectedObject = this.userSettings;
+
+                    string[] hiddenProperties = new string[0];
+                    if ((string)this.settings["AnalyticsClientId"] == "disabled")
+                    {
+                        hiddenProperties = new string[] { "AllowAnalytics" };
+                    }
+
+                    MemberFilter filter = new MemberFilter(this.userSettings, hiddenProperties);
+                    this.propertyGrid1.SelectedObject = filter;
                 }
             }
         }
@@ -171,8 +179,7 @@ namespace XmlNotepad
                 this.propertyGrid1.SelectedObject = userSettings;
             }
         }
-
-	}
+    }
 
     public enum ColorTheme
     {
@@ -183,7 +190,8 @@ namespace XmlNotepad
     // This class keeps s a local snapshot of the settings until the user clicks the Ok button,
     // then the Apply() method is called to propagate the new settings to the underlying Settings object.
     // It also provides localizable strings for the property grid.
-    public class UserSettings {
+    public class UserSettings
+    {
         Settings settings;
         Font font;
         string fontName;
@@ -789,6 +797,102 @@ namespace XmlNotepad
             get { return this.xmlDiffIgnoreDtd; }
             set { this.xmlDiffIgnoreDtd = value; }
         }
+    }
 
+    public sealed class MemberFilter : ICustomTypeDescriptor
+    {
+        private readonly HashSet<string> hidden = new HashSet<string>();
+        private readonly object component;
+
+        public MemberFilter(object component, params string[] memberNamesToHide)
+        {
+            this.component = component;
+            hidden = new HashSet<string>(memberNamesToHide);
+        }
+
+        AttributeCollection ICustomTypeDescriptor.GetAttributes()
+        {
+            return TypeDescriptor.GetAttributes(component);
+        }
+
+        string ICustomTypeDescriptor.GetClassName()
+        {
+            return TypeDescriptor.GetClassName(component);
+        }
+
+        string ICustomTypeDescriptor.GetComponentName()
+        {
+            return TypeDescriptor.GetComponentName(component);
+        }
+
+        TypeConverter ICustomTypeDescriptor.GetConverter()
+        {
+            return TypeDescriptor.GetConverter(component);
+        }
+
+        EventDescriptor ICustomTypeDescriptor.GetDefaultEvent()
+        {
+            EventDescriptor result = TypeDescriptor.GetDefaultEvent(component);
+            return (result == null || hidden.Contains(result.Name)) ? null : result;
+
+        }
+
+        PropertyDescriptor ICustomTypeDescriptor.GetDefaultProperty()
+        {
+            PropertyDescriptor result = TypeDescriptor.GetDefaultProperty(component);
+            return (result == null || hidden.Contains(result.Name)) ? null : result;
+        }
+
+        object ICustomTypeDescriptor.GetEditor(Type editorBaseType)
+        {
+            return TypeDescriptor.GetEditor(component, editorBaseType);
+        }
+
+        EventDescriptorCollection
+        ICustomTypeDescriptor.GetEvents(Attribute[] attributes)
+        {
+            return GetEvents(); // don't filter on attribute; we're calling the shots...
+}
+        EventDescriptorCollection ICustomTypeDescriptor.GetEvents()
+        {
+            return GetEvents();
+        }
+        private EventDescriptorCollection GetEvents()
+        {
+            EventDescriptorCollection master = TypeDescriptor.GetEvents(component);
+            var list = new List<EventDescriptor>(master.Count);
+            foreach (EventDescriptor evt in master)
+            {
+                if (!hidden.Contains(evt.Name)) 
+                    list.Add(evt);
+            }
+            return new EventDescriptorCollection(list.ToArray());
+        }
+
+        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes)
+        {
+            return GetProperties(); // don't filter on attribute; we're calling the shots...
+        }
+
+        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()
+        {
+            return GetProperties();
+        }
+        private PropertyDescriptorCollection GetProperties()
+        {
+            PropertyDescriptorCollection master = TypeDescriptor.GetProperties(component);
+            var list = new List<PropertyDescriptor>(master.Count);
+            foreach (PropertyDescriptor prop in master)
+            {
+                if (!hidden.Contains(prop.Name)) 
+                    list.Add(prop);
+            }
+            return new PropertyDescriptorCollection(list.ToArray());
+        }
+
+        public object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            return component;
+        }
     }
 }

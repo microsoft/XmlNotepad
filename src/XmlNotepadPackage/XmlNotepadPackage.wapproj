@@ -63,7 +63,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
-    <AppInstallerUri>http://www.lovettsoftware.com/Downloads/XmlNotepad.Net/2.8.0.24/</AppInstallerUri>
+    <AppInstallerUri>http://www.lovettsoftware.com/Downloads/XmlNotepad.Net/2.8.0.25/</AppInstallerUri>
     <HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

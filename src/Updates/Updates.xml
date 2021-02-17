@@ -7,6 +7,9 @@
     <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.25">
+    <feature>Provide a way to disable google analytics before installing XML Notepad.</feature>
+  </version>
   <version number="2.8.0.24">
     <feature>Check XML diff files are different files.</feature>
   </version>
