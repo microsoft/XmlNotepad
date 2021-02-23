@@ -6,8 +6,8 @@ The Options Dialog can be used to configure how auto-update works in XML Notepad
 ```xml
 <application>
     <title>Microsoft XML Notepad</title>
-    <location>http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml</location>
-    <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
+    <location>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml</location>
+    <download>https://microsoft.github.io/XmlNotepad/#install/</download>
     <frequency>1.00:00:00</frequency>
   </application>
   <version number="2.8.0.9">

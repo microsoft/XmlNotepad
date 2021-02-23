@@ -44,13 +44,12 @@ able to compile the new version.
 
 ### Publish the ClickOnce installer
 
-Open the `Application` project properties and you will see a Publish option there which is currently configured to 
-upload the installer using FTP to the `ftp://lovettsoftware.com/lovettsoftware.com/Downloads/XmlNotepad/` location.
+Open the `Application` project properties and you will see a Publish option there.
 This is only something that can be done by the current author.  This setup is also only performed on strongly
 signed bits using a certificate belonging to the author.  This certificate is specified using environment variable
 `MYKEYFILE`, but you can build, debug and test XML Notepad without this environment variable set.
 
-This setup provides the ClickOnce installed version of XML Notepad installable from [lovettsoftware](http://lovettsoftware.com/downloads/xmlnotepad/XmlNotepad.application).  This is the most convenient installer since it is
+This setup provides the ClickOnce installed version of XML Notepad installable from [lovettsoftware](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application).  This is the most convenient installer since it is
 a single click and also provide auto-updating whenever a new version is published.
 
 ### Build the setup .msi installer

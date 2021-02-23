@@ -3,7 +3,7 @@
 There are thee ways to install XML Notepad:
 
 <div>
-<a href="http://lovettsoftware.com/downloads/xmlnotepad/XmlNotepad.application" class="btn btn-primary mt-20 mr-30" target="_blank">ClickOnce® installer</a>
+<a href="https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application" class="btn btn-primary mt-20 mr-30" target="_blank">ClickOnce® installer</a>
 <br/>
 <br/>
 </div>
@@ -16,7 +16,7 @@ If you need something that installs offline for machines that have no network or
 then use the standalone installer:
 
 <div>
-<a href="http://lovettsoftware.com/downloads/xmlnotepad/xmlnotepadsetup.zip" class="btn btn-primary mt-20 mr-30" target="_blank">Standalone installer</a>
+<a href="https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepadSetup.zip" class="btn btn-primary mt-20 mr-30" target="_blank">Standalone installer</a>
 <br/>
 <br/>
 </div>
