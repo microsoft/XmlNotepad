@@ -25,7 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontBuilder", "FontBuilder\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updates", "Updates", "{5CCAEF8A-CF71-40D9-9D1D-0984D0894BC7}"
 	ProjectSection(SolutionItems) = preProject
-		Updates\Readme.htm = Updates\Readme.htm
 		Updates\Updates.xml = Updates\Updates.xml
 		Updates\Updates.xsd = Updates\Updates.xsd
 		Updates\Updates.xslt = Updates\Updates.xslt

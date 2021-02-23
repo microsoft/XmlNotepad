@@ -386,7 +386,7 @@ namespace XmlNotepad {
 
             this.settings["LastUpdateCheck"] = DateTime.Now;
             this.settings["UpdateFrequency"] = TimeSpan.FromDays(20);
-            this.settings["UpdateLocation"] = "http://lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
+            this.settings["UpdateLocation"] = UserSettings.DefaultUpdateLocation;
             this.settings["UpdateEnabled"] = true;
 
             this.settings["AutoFormatOnSave"] = true;
@@ -2561,10 +2561,11 @@ namespace XmlNotepad {
                     }
 
                     string updates = (string)this.settings["UpdateLocation"];
-                    if (updates == "http://download.microsoft.com/download/6/e/e/6eef2361-33d4-48a2-b52e-5827c7f2ad68/Updates.xml" ||
-                        string.IsNullOrEmpty(updates))
+                    if (string.IsNullOrEmpty(updates) ||
+                        updates.Contains("download.microsoft.com") ||
+                        updates.Contains("lovettsoftware.com"))
                     {
-                        this.settings["UpdateLocation"] = "http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
+                        this.settings["UpdateLocation"] = UserSettings.DefaultUpdateLocation;
                     }
                     
                 }

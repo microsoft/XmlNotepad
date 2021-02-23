@@ -3,8 +3,8 @@
 <updates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Updates.xsd">
   <application>
     <title>Microsoft XML Notepad</title>
-    <location>http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml</location>
-    <download>http://www.lovettsoftware.com/downloads/xmlnotepad/readme.htm</download>
+    <location>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml</location>
+    <download>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/readme.htm</download>
     <frequency>1.00:00:00</frequency>
   </application>
   <version number="2.8.0.25">

@@ -229,6 +229,8 @@ namespace XmlNotepad
         bool xmlDiffIgnoreDtd;
         bool allowAnalytics;
 
+        public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
+
         public UserSettings(Settings s) {            
             this.settings = s;
 
@@ -394,7 +396,7 @@ namespace XmlNotepad
             this.lightColors = GetDefaultColors(ColorTheme.Light);
             this.darkColors = GetDefaultColors(ColorTheme.Dark);
             this.LoadColors();
-            updateLocation = "http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml";
+            updateLocation = DefaultUpdateLocation;
             enableUpdate = true;
             autoFormatOnSave = true;
             noByteOrderMark = false;
@@ -797,6 +799,7 @@ namespace XmlNotepad
             get { return this.xmlDiffIgnoreDtd; }
             set { this.xmlDiffIgnoreDtd = value; }
         }
+
     }
 
     public sealed class MemberFilter : ICustomTypeDescriptor
