@@ -5,16 +5,18 @@ XML Notepad provides a simple intuitive [User Interface](help/overview.md) for b
 
 [![image](assets/images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
-XML Notepad is the result of a promise Chris Lovett made to a friend at Microsoft. The original XML Notepad shipped in
-back in 1998, written by Murray Low in C++. Later on it fell behind in support for XML standards and, because we didn't
-have time to fix it, we pulled the downloader. But Murray apparently did such a nice job that MSDN was inundated with
-requests to put the notepad back up, so they asked for a replacement.
+XML Notepad is the result of a promise Chris Lovett made to a friend at Microsoft. The original XML
+Notepad shipped in back in 1998, written by Murray Low in C++. Later on it fell behind in support
+for XML standards and, because we didn't have time to fix it, we pulled the downloader. But Murray
+apparently did such a nice job that MSDN was inundated with requests to put the notepad back up, so
+they asked for a replacement.
 
-Chris was working on System.Xml in C# in 1999, so he figured he could crank out a replacement using the .NET Framework
-pretty quickly. Well, the problem was it was one of those side projects on my "one-day" list — you know how that goes!
-Fortunately, another good friend, Michael Corning, took interest in it, helped hold his feet to the fire, and also added
-some cool features himself. Dan Doris also took pity on me and helped identify some great bugs. So here we are, a nifty
-tool that should be useful to those who want a quick way to view and edit XML documents.
+Chris was working on System.Xml in C# in 1999, so he figured he could crank out a replacement using
+the .NET Framework pretty quickly. Well, the problem was it was one of those side projects on his
+"one-day" list — you know how that goes! Fortunately, another good friend, Michael Corning, took
+interest in it, helped hold his feet to the fire, and also added some cool features himself. Dan
+Doris also took pity on Chris and helped identify some great bugs. So here we are, a nifty tool that
+should be useful to those who want a quick way to view and edit XML documents.
 
 There have been over 3 million downloads since then - so thanks to everyone who tried it out!  
 
@@ -45,8 +47,11 @@ There have been over 3 million downloads since then - so thanks to everyone who 
 This source code is available
 The source code is available at [https://github.com/microsoft/XmlNotepad](https://github.com/microsoft/XmlNotepad).
 
-Please provide feedback or any issues you have using the [XML Notepad GitHub issues](https://github.com/microsoft/XmlNotepad/issues) list.
+Please provide feedback or any issues you have using the [XML Notepad GitHub
+issues](https://github.com/microsoft/XmlNotepad/issues) list.
 
 See [development](dev.md) information on how to build XML Notepad from source.
 
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+For more information see the [Code of Conduct
+FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact
+[opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
