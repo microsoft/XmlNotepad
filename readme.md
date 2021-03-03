@@ -15,9 +15,9 @@ Just download the zip file, copy it to the machine you want to install it on, un
 - Automatic conversion of .csv files
 - Handy stats about your XML documents
 - XML diff to compare 2 similar XML documents
-- Vibrant community with many [updates and bug fixes](http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml).
+- Vibrant community with many [updates and bug fixes](http://microsoft.github.io/XmlNotepad/help/updates/).
 
-See [XML Notepad Design ](http://microsoft.github.io/XmlNotepad/design) for information about how this application is built.
+See [XML Notepad Design ](http://microsoft.github.io/XmlNotepad/help/design/) for information about how this application is built.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
@@ -25,7 +25,7 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Change History
 
-See [Change History](http://www.lovettsoftware.com/downloads/xmlnotepad/Updates.xml) for list of new features and bug fixes.
+See [Change History](http://microsoft.github.io/XmlNotepad/help/updates/) for list of new features and bug fixes.
 
 ## Help
 
