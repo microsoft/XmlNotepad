@@ -1,4 +1,4 @@
-<Employees xmlns="http://Employees">
+<Employees xmlns="http://Employees" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Employee.xsd" >
   <Employee id="12615" title="Architect">
     <!--This is a comment-->
     <Name>
