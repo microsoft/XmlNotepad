@@ -245,3 +245,5 @@ site/
 _site/
 /src/XmlNotepad/XmlNotepad.GeneratedMSBuildEditorConfig.editorconfig
 /src/XmlStats/XmlStats.GeneratedMSBuildEditorConfig.editorconfig
+/src/Application/Samples/rss_output.htm
+/src/Application/Samples/rsspretty_output.htm

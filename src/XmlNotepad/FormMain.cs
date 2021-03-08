@@ -3371,7 +3371,9 @@ namespace XmlNotepad {
             SelectTreeView();
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = SR.SaveAsFilter;
-            while (ofd.ShowDialog(this) == DialogResult.OK) {
+            bool retry = true;
+            while (retry && ofd.ShowDialog(this) == DialogResult.OK) 
+            {
                 string secondFile = ofd.FileName;
                 if (secondFile.ToUpperInvariant() == this.model.FileName.ToUpperInvariant())
                 {
@@ -3379,6 +3381,7 @@ namespace XmlNotepad {
                 }
                 else
                 {
+                    retry = false;
                     try
                     {
                         DoCompare(secondFile);

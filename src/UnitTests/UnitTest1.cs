@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Reflection;
 using XmlNotepad;
 using System.Text.RegularExpressions;
+using System.Windows.Automation;
 
 // Here's a handy reference on SendKeys:
 // http://msdn2.microsoft.com/en-us/library/system.windows.forms.sendkeys.aspx
@@ -393,6 +394,7 @@ namespace UnitTests {
 
             Trace.WriteLine("Add <Basket>");
             w.InvokeMenuItem("elementChildToolStripMenuItem");
+            Sleep(500);
             w.SendKeystrokes("Basket{ENTER}");
 
             Save("out.xml");
@@ -641,15 +643,14 @@ namespace UnitTests {
             openDialog.SendKeystrokes(TestDir + "UnitTests\\test4.xml{ENTER}");
             Window msgBox = w.WaitForPopup();
             string text = msgBox.GetWindowText();
-            Assert.AreEqual<string>(text, "Files Identical");
+            Assert.AreEqual<string>(text, "XML Diff Error");
             msgBox.SendKeystrokes("{ENTER}");
 
-            // Now something different
-            w.InvokeAsyncMenuItem("compareXMLFilesToolStripMenuItem");
-
+            // the file open dialog will reopen...
             openDialog = w.WaitForPopup();            
             openDialog.SendKeystrokes(TestDir + "UnitTests\\test5.xml{ENTER}");
-            Window browser = w.WaitForPopup(openDialog.Handle);
+
+            Window browser = w.WaitForPopup();
             text = browser.GetWindowText();
             browser.DismissPopUp("%{F4}");
 
@@ -921,13 +922,6 @@ namespace UnitTests {
             fd.FindString = "FinalDeliverable";
             popup.SendKeystrokes("{ENTER}");
             popup.DismissPopUp("{ESC}");
-
-            Trace.WriteLine("Test horizontal scroll bar");
-            AutomationWrapper hscroll = XmlTreeView.FindChild("HScrollBar");
-            Rectangle sbBounds = hscroll.Bounds;
-            Sleep(1000);
-            Mouse.MouseClick(new Point(sbBounds.Left + 5, sbBounds.Top + 5), MouseButtons.Left);
-            Sleep(500);
 
             this.TreeView.SetFocus();
             w.SendKeystrokes("{TAB}{ENTER}");

@@ -116,6 +116,17 @@ namespace UnitTests
             return new AutomationWrapper(e);
         }
 
+        public AutomationWrapper FindDescendant(ControlType controlType)
+        {
+            AutomationElement e = this.acc.AutomationElement.FindFirst(TreeScope.Descendants,
+                new PropertyCondition(AutomationElement.ControlTypeProperty, controlType));
+            if (e == null)
+            {
+                throw new Exception(string.Format("Control of type {0}  not found", controlType));
+            }
+            return new AutomationWrapper(e);
+        }
+
         public Window WaitForPopup()
         {
             return WaitForPopup(IntPtr.Zero);
