@@ -636,9 +636,8 @@ namespace XmlNotepad {
             Size s = this.ClientSize;
             int w = s.Width;
             int h = s.Height;
-            int top = this.menuStrip1.Height;
+            int top = this.toolStrip1.Bottom;
             this.toolStrip1.Size = new Size(w, 24);
-            top += 24;
             int sbHeight = 0;
             if (this.statusBar1.Visible) {
                 sbHeight = this.statusBar1.Height;
