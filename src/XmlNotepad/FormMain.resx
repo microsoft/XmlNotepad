@@ -315,9 +315,6 @@
   <data name="changeToContextMenuItem.Text" xml:space="preserve">
     <value>C&amp;hange To</value>
   </data>
-  <metadata name="changeToElementContextMenuItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
   <data name="changeToElementContextMenuItem.ShowShortcutKeys" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
