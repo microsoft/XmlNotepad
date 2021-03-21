@@ -25,8 +25,8 @@ namespace XmlNotepad {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TaskList));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TaskList));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Severity = new System.Windows.Forms.DataGridViewImageColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -39,7 +39,6 @@ namespace XmlNotepad {
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
-            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -57,6 +56,7 @@ namespace XmlNotepad {
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
