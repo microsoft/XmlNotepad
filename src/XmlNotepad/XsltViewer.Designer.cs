@@ -34,8 +34,8 @@ namespace XmlNotepad {
             this.TransformButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.OutputFileName = new System.Windows.Forms.TextBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -109,7 +109,7 @@ namespace XmlNotepad {
             // XsltViewer
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.panel1);
             this.Name = "XsltViewer";
             this.panel1.ResumeLayout(false);

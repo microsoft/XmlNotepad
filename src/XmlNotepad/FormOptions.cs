@@ -129,6 +129,7 @@ namespace XmlNotepad
             // 
             this.AcceptButton = this.buttonOK;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.buttonCancel;
             this.Controls.Add(this.buttonReset);

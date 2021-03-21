@@ -2144,6 +2144,7 @@ namespace XmlNotepad {
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.comboBoxLocation);
             this.Controls.Add(this.tabControlViews);
             this.Controls.Add(this.toolStrip1);

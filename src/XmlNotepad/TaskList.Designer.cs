@@ -102,7 +102,7 @@ namespace XmlNotepad {
             // TaskList
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.dataGridView1);
             this.Name = "TaskList";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
