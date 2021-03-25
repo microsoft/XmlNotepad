@@ -11,7 +11,8 @@ namespace UnitTests {
     // Why the heck does .NET provide SendKeys but not mouse simulation???
     // Another interesting tid-bit.  Reading the cursor position doesn't work over
     // terminal server!
-    public class Mouse {
+    public class Mouse 
+    {
         static int Timeout = 100;
 
         private Mouse() { }
@@ -21,26 +22,25 @@ namespace UnitTests {
             input.type = (int)InputType.INPUT_MOUSE;
             input.dx = pt.X;
             input.dy = pt.Y;
-            input.dwFlags = (int)GetMouseDownFlags(buttons);
-            input.dwFlags |= (int)MouseFlags.MOUSEEVENTF_ABSOLUTE;
-            SendInput(input);
-        }
-
-        private static MouseFlags GetMouseDownFlags(MouseButtons buttons) {
-            MouseFlags flags = 0;
-            if ((buttons & MouseButtons.Left) != 0) {
+            MouseFlags flags = MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            if ((buttons & MouseButtons.Left) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_LEFTDOWN;
             }
-            if ((buttons & MouseButtons.Right) != 0) {
+            if ((buttons & MouseButtons.Right) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_RIGHTDOWN;
             }
-            if ((buttons & MouseButtons.Middle) != 0) {
+            if ((buttons & MouseButtons.Middle) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_MIDDLEDOWN;
             }
-            if ((buttons & MouseButtons.XButton1) != 0) {
+            if ((buttons & MouseButtons.XButton1) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_XDOWN;
             }
-            return flags;
+            input.dwFlags = (int)flags;
+            SendInput(input);
         }
 
         public static void MouseUp(Point pt, MouseButtons buttons) {
@@ -65,7 +65,7 @@ namespace UnitTests {
             SendInput(input);
         }
 
-        public static void MouseClick(Point pt, MouseButtons buttons) {
+        public static void MouseClick(Point pt, MouseButtons buttons) {            
             MouseDown(pt, buttons);
             MouseUp(pt, buttons);
         }
@@ -139,13 +139,17 @@ namespace UnitTests {
             Timeout = s;
         }
 
-        public static void MouseWheel(int clicks) {
+        public static void MouseWheel(AutomationWrapper w, int clicks) {
+            var c = Cursor.Position;
+            if (w != null)
+            {
+                c = w.PhysicalToLogicalPoint(c);
+            }
             MouseInput input = new MouseInput();
             input.type = (int)InputType.INPUT_MOUSE;
             input.mouseData = clicks;
             MouseFlags flags = MouseFlags.MOUSEEVENTF_WHEEL;
             input.dwFlags = (int)flags;
-            Point c = Cursor.Position;
             input.dx = c.X;
             input.dy = c.Y;
             SendInput(input);
@@ -215,6 +219,18 @@ namespace UnitTests {
 
         [DllImport("User32", EntryPoint = "SendInput")]
         static extern uint SendInput(uint nInputs, IntPtr pInputs, int cbSize);
+
+        // GetSystemMetrics
+        public const int SM_CXMAXTRACK = 59;
+        public const int SM_CYMAXTRACK = 60;
+        public const int SM_XVIRTUALSCREEN = 76;
+        public const int SM_YVIRTUALSCREEN = 77;
+        public const int SM_CXVIRTUALSCREEN = 78;
+        public const int SM_CYVIRTUALSCREEN = 79;
+        public const int SM_SWAPBUTTON = 23;
+
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int metric);
 
     }
 
