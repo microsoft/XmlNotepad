@@ -73,7 +73,7 @@ jobs:
       run: nuget restore ./src/XmlNotepad.sln      
 
     # Build the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration /verbosity:minimal
+    - name: Build the application
+      run: msbuild ./src/XmlNotepad.sln /p:Platform=x64 /p:Configuration=$env:Configuration /verbosity:minimal
       env:
         Configuration: ${{ matrix.configuration }}
