@@ -1501,7 +1501,7 @@ namespace XmlNotepad {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td title=&apos;{0}&apos;&gt;&lt;b&gt; File in editor : {1}&lt;/b&gt;&lt;/td&gt;
-        ///  &lt;td title=&apos;{2}&apos;&gt;&lt;b&gt; File to compare : {2}&lt;/b&gt;&lt;/td&gt;
+        ///  &lt;td title=&apos;{2}&apos;&gt;&lt;b&gt; File to compare : {3}&lt;/b&gt;&lt;/td&gt;
         ///&lt;/tr&gt;.
         /// </summary>
         internal static string XmlDiffBody {

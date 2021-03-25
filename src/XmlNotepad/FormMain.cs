@@ -3452,9 +3452,9 @@ namespace XmlNotepad {
 
             resultHtml.WriteLine(string.Format(SR.XmlDiffBody,
                     System.IO.Path.GetDirectoryName(sourceXmlFile),
-                    System.IO.Path.GetFileName(sourceXmlFile),
+                    sourceXmlFile,
                     System.IO.Path.GetDirectoryName(changedXmlFile),
-                    System.IO.Path.GetFileName(changedXmlFile)
+                    changedXmlFile
             ));
 
         }

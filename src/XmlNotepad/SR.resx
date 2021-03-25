@@ -451,7 +451,7 @@ Do you want to enable execution of this script code?</value>
   </data>
   <data name="XmlDiffBody" xml:space="preserve">
     <value>&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td title='{0}'&gt;&lt;b&gt; File in editor : {1}&lt;/b&gt;&lt;/td&gt;
-  &lt;td title='{2}'&gt;&lt;b&gt; File to compare : {2}&lt;/b&gt;&lt;/td&gt;
+  &lt;td title='{2}'&gt;&lt;b&gt; File to compare : {3}&lt;/b&gt;&lt;/td&gt;
 &lt;/tr&gt;</value>
   </data>
   <data name="IncludeHRefRequired" xml:space="preserve">
