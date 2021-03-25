@@ -73,7 +73,9 @@ jobs:
       run: nuget restore ./src/XmlNotepad.sln      
 
     # Build the application to populate the obj folder with RuntimeIdentifiers
-    - name: Build the application
-      run: msbuild ./src/XmlNotepad.sln /p:Platform=x64 /p:Configuration=$env:Configuration /verbosity:minimal
-      env:
-        Configuration: ${{ matrix.configuration }}
+    # mshtml COM component is causing problems on github action, weird it works fine locally though.
+    # - name: Build the application
+    #   run: msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration /verbosity:minimal
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
+    # 
