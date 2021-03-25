@@ -3707,6 +3707,10 @@ namespace XmlNotepad {
 
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (this.model == null || string.IsNullOrEmpty(this.model.FileName))
+            {
+                return;
+            }
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
             
@@ -3732,10 +3736,14 @@ namespace XmlNotepad {
             // now we can use "xmlstats -f names.txt" to generate the stats in a console window, this
             // way the user learns they can use xmlstats from the command line.
             string tempFile = Path.Combine(scratch, "stats.cmd");
-            using (TextWriter cmdFile = new StreamWriter(tempFile, false, Encoding.UTF8))
+            using (TextWriter cmdFile = new StreamWriter(tempFile, false, Encoding.Default))
             {
-                cmdFile.WriteLine("echo on");
+                cmdFile.WriteLine("@echo off");
+                cmdFile.WriteLine("echo XML stats for: " + this.model.FileName);
+                cmdFile.WriteLine("echo ---------------" + new string('-', this.model.FileName.Length));
                 cmdFile.WriteLine("xmlstats -f \"{0}\"", fileNameFile);
+                cmdFile.WriteLine("echo ---------------" + new string('-', this.model.FileName.Length));
+                cmdFile.WriteLine("echo You can explore other options using : xmlstats -? " + this.model.FileName);
             }
 
             string cmd = Path.Combine(Environment.GetEnvironmentVariable("WINDIR"), "System32", "cmd.exe");
