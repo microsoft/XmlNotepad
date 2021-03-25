@@ -207,7 +207,6 @@ namespace XmlNotepad {
         private ToolStripMenuItem changeToCDATAContextMenuItem;
         private ToolStripMenuItem changeToCommentContextMenuItem;
         private ToolStripMenuItem changeToProcessingInstructionContextMenuItem;
-        private ToolStripMenuItem changeToElementContextMenuItem;
         private ToolStripMenuItem incrementalSearchToolStripMenuItem;
         private ToolStripMenuItem deleteToolStripMenuItem1;
         private ToolStripMenuItem renameToolStripMenuItem;
@@ -221,6 +220,7 @@ namespace XmlNotepad {
         private ToolStripMenuItem statsToolStripMenuItem;
         private ToolStripMenuItem checkUpdatesToolStripMenuItem;
         private ToolStripMenuItem sampleToolStripMenuItem;
+        private ToolStripMenuItem changeToElementContextMenuItem;
         private string redoLabel;
 
 
@@ -739,6 +739,7 @@ namespace XmlNotepad {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            this.changeToElementContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusBar1 = new System.Windows.Forms.StatusBar();
             this.statusBarPanelMessage = new System.Windows.Forms.StatusBarPanel();
             this.statusBarPanelBusy = new System.Windows.Forms.StatusBarPanel();
@@ -910,7 +911,6 @@ namespace XmlNotepad {
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
             this.taskList = new XmlNotepad.TaskList();
             this.dynamicHelpViewer = new XmlNotepad.XsltViewer();
-            changeToElementContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).BeginInit();
             this.contextMenu1.SuspendLayout();
@@ -920,6 +920,12 @@ namespace XmlNotepad {
             this.tabPageTreeView.SuspendLayout();
             this.tabPageHtmlView.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // changeToElementContextMenuItem
+            // 
+            this.changeToElementContextMenuItem.Name = "changeToElementContextMenuItem";
+            resources.ApplyResources(this.changeToElementContextMenuItem, "changeToElementContextMenuItem");
+            this.changeToElementContextMenuItem.Click += new System.EventHandler(this.changeToElementContextMenuItem_Click);
             // 
             // statusBar1
             // 
@@ -1015,7 +1021,7 @@ namespace XmlNotepad {
             // changeToContextMenuItem
             // 
             this.changeToContextMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            changeToElementContextMenuItem,
+            this.changeToElementContextMenuItem,
             this.changeToAttributeContextMenuItem,
             this.changeToTextContextMenuItem,
             this.changeToCDATAContextMenuItem,
@@ -1023,12 +1029,6 @@ namespace XmlNotepad {
             this.changeToProcessingInstructionContextMenuItem});
             this.changeToContextMenuItem.Name = "changeToContextMenuItem";
             resources.ApplyResources(this.changeToContextMenuItem, "changeToContextMenuItem");
-            // 
-            // changeToElementContextMenuItem
-            // 
-            changeToElementContextMenuItem.Name = "changeToElementContextMenuItem";
-            resources.ApplyResources(changeToElementContextMenuItem, "changeToElementContextMenuItem");
-            changeToElementContextMenuItem.Click += new System.EventHandler(this.changeToElementContextMenuItem_Click);
             // 
             // changeToAttributeContextMenuItem
             // 
