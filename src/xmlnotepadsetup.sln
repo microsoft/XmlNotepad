@@ -1,0 +1,94 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{484CF3FF-5CEA-4C82-A937-949100142455}"
+	ProjectSection(SolutionItems) = preProject
+		PublishDrop.cmd = PublishDrop.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updates", "Updates", "{5CCAEF8A-CF71-40D9-9D1D-0984D0894BC7}"
+	ProjectSection(SolutionItems) = preProject
+		Updates\Updates.xml = Updates\Updates.xml
+		Updates\Updates.xsd = Updates\Updates.xsd
+		Updates\Updates.xslt = Updates\Updates.xslt
+		Updates\xmlicon.png = Updates\xmlicon.png
+	EndProjectSection
+EndProject
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "XmlNotepadPackage", "XmlNotepadPackage\XmlNotepadPackage.wapproj", "{026F426D-0A2B-4782-98FD-717D91FAE019}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "XmlNotepadSetup", "XmlNotepadSetup\XmlNotepadSetup.wixproj", "{601EBCF6-50D0-4458-A5DC-06450816B525}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|ARM.ActiveCfg = Debug|ARM
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|ARM.Build.0 = Debug|ARM
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|ARM.Deploy.0 = Debug|ARM
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|ARM64.Build.0 = Debug|ARM64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|x64.ActiveCfg = Debug|x64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|x64.Build.0 = Debug|x64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|x64.Deploy.0 = Debug|x64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|x86.ActiveCfg = Debug|x86
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|x86.Build.0 = Debug|x86
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Debug|x86.Deploy.0 = Debug|x86
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|ARM.ActiveCfg = Release|ARM
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|ARM.Build.0 = Release|ARM
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|ARM.Deploy.0 = Release|ARM
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|ARM64.ActiveCfg = Release|ARM64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|ARM64.Build.0 = Release|ARM64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|ARM64.Deploy.0 = Release|ARM64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|x64.ActiveCfg = Release|x64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|x64.Build.0 = Release|x64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|x64.Deploy.0 = Release|x64
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|x86.ActiveCfg = Release|x86
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|x86.Build.0 = Release|x86
+		{026F426D-0A2B-4782-98FD-717D91FAE019}.Release|x86.Deploy.0 = Release|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|ARM.ActiveCfg = Debug|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|ARM64.ActiveCfg = Debug|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|x64.ActiveCfg = Debug|x64
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|x64.Build.0 = Debug|x64
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|x86.ActiveCfg = Debug|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Debug|x86.Build.0 = Debug|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|ARM.ActiveCfg = Release|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|ARM64.ActiveCfg = Release|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|x64.ActiveCfg = Release|x64
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|x64.Build.0 = Release|x64
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|x86.ActiveCfg = Release|x86
+		{601EBCF6-50D0-4458-A5DC-06450816B525}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5CCAEF8A-CF71-40D9-9D1D-0984D0894BC7} = {484CF3FF-5CEA-4C82-A937-949100142455}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFC2D943-B1EE-4D6C-96D3-B54A62B18557}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = xmlnotepad.vsmdi
+	EndGlobalSection
+EndGlobal
