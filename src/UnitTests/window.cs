@@ -150,7 +150,7 @@ namespace UnitTests
                     else
                     {
                         IntPtr hwnd = GetForegroundWindow();
-                        if (hwnd != h && popup != excludingThisWindow)
+                        if (hwnd != h && hwnd != excludingThisWindow)
                         {
                             found = new Window(this, hwnd);
                         }
@@ -345,7 +345,21 @@ namespace UnitTests
 
         public void SetWindowSize(int cx, int cy)
         {
-            SetWindowPos(this.handle, IntPtr.Zero, 0, 0, cx, cy, (uint)SetWindowPosFlags.SWP_NOMOVE);
+            var wb = GetWindowBounds();
+            Screen s = Screen.FromHandle(this.Handle);
+            int x = wb.Left;
+            int y = wb.Top;
+            if (wb.Left + cx > s.WorkingArea.Width)
+            {
+                // move window left so it stays on screen.
+                x = s.WorkingArea.Width - cx;
+            }
+            if (wb.Top + cy > s.WorkingArea.Height)
+            {
+                // move window left so it stays on screen.
+                y = s.WorkingArea.Height - cy;
+            }
+            SetWindowPos(this.handle, IntPtr.Zero, x, y, cx, cy, 0);
         }
 
         public void SetWindowPosition(int x, int y)

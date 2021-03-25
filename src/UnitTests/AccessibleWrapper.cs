@@ -51,38 +51,14 @@ namespace UnitTests {
 
         internal static AutomationWrapper AccessibleObjectAt(Point center)
         {
+            // The given point must have already been converted to physical screen
+            // coordinates.
             AutomationElement e = AutomationElement.FromPoint(new System.Windows.Point(center.X, center.Y));
             if (e == null)
             {
                 throw new Exception("Automation element not found at this location: " +  center.ToString());
             }
             return new AutomationWrapper(e);
-        }
-
-        internal static AutomationWrapper AccessibleWindowObjectAt(Point center)
-        {
-            AutomationWrapper e = AccessibleObjectAt(center);
-            if (e == null)
-            {
-                throw new Exception("Automation element not found for this window");
-            }
-
-            AutomationElement ae = e.e;
-
-            while (ae != null && ae.Current.ControlType != ControlType.Window)
-            {
-                ae = TreeWalker.RawViewWalker.GetParent(ae);
-                if (ae == null)
-                {
-                    throw new Exception("Window not found for this element");
-                }
-            }
-
-            if (ae != null)
-            {
-                return new AutomationWrapper(ae);
-            }
-            throw new Exception("Window not found at this location: " + center.ToString());
         }
 
         public string Name {
@@ -275,7 +251,6 @@ namespace UnitTests {
             return list.ToArray();
         }
 
-
         internal AutomationWrapper GetChild(int index)
         {
             AutomationWrapper[] children = GetChildren();
@@ -288,10 +263,10 @@ namespace UnitTests {
 
         internal AutomationWrapper HitTest(int x, int y)
         {
-            return AutomationWrapper.AccessibleObjectAt(new Point(x, y));
+            var node = AutomationWrapper.AccessibleObjectAt(new Point(x, y));
+            return node;
         }
     
-
         #endregion 
 
         #region Selection 
@@ -448,6 +423,68 @@ namespace UnitTests {
 
 
         public string ControlTypeName { get { return this.e.Current.ControlType.ToString(); } }
+
+        #region DPI scaling
+
+        public Point LogicalToPhysicalPoint(Point logical)
+        {
+            NativeMethods.POINT pt = new NativeMethods.POINT()
+            {
+                x = logical.X,
+                y = logical.Y
+            };
+            NativeMethods.LogicalToPhysicalPointForPerMonitorDPI(this.Hwnd, ref pt);
+            return new Point(pt.x, pt.y);
+        }
+
+        public Point PhysicalToLogicalPoint(Point physical)
+        {
+            NativeMethods.POINT pt = new NativeMethods.POINT()
+            {
+                x = physical.X,
+                y = physical.Y
+            };
+            var rc = NativeMethods.PhysicalToLogicalPointForPerMonitorDPI(this.Hwnd, ref pt);
+            return new Point(pt.x, pt.y);
+        }
+
+        static class NativeMethods
+        {
+            public struct POINT
+            {
+                public int x;
+                public int y;
+            }
+
+            [DllImport("User32", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool LogicalToPhysicalPointForPerMonitorDPI(
+              IntPtr hWnd,
+              ref POINT lpPoint
+            );
+
+
+            [DllImport("User32", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool PhysicalToLogicalPointForPerMonitorDPI(
+              IntPtr hWnd,
+              ref POINT lpPoint
+            );
+
+            [DllImport("User32", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool LogicalToPhysicalPoint(
+              IntPtr hWnd,
+              ref POINT lpPoint
+            );
+
+
+            [DllImport("User32", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool PhysicalToLogicalPoint(
+              IntPtr hWnd,
+              ref POINT lpPoint
+            );
+
+        }
+
+        #endregion
     }
 
 

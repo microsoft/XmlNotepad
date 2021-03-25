@@ -183,9 +183,11 @@ namespace XmlNotepad {
 
                 c.MouseLeave += new EventHandler(OnWatchMouseLeave);
             }
-            bool outside = !lastHover.Contains(Cursor.Position);
+            Point local = c.PointToClient(Cursor.Position);
+            bool outside = !lastHover.Contains(local);
             if (outside)
             {
+                Debug.WriteLine("cursor is outside hover rect = " + local.ToString());
                 // if mouse moves outside the hover rect then we are not hovering.
                 Stop();
                 Hide();
@@ -196,8 +198,9 @@ namespace XmlNotepad {
             {
                 if (resetpending)
                 {
+                    Debug.WriteLine("last hover rect = " + lastHover.ToString());
                     resetpending = false;
-                    lastHover = new Rectangle(Cursor.Position, Size.Empty);
+                    lastHover = new Rectangle(local, Size.Empty);
                     lastHover.Inflate(this.hoverWidth / 2, this.hoverHeight / 2);
                     // start the timer, if we remain inside this hover rect until timer
                     // fires, then show tooltip.  

@@ -61,18 +61,21 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Setup NuGet.exe
+      uses: NuGet/setup-nuget@v1
+
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
-      run: msbuild ./src/XmlNotepad.sln /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+      run: nuget restore ./src/XmlNotepad.sln      
 
     # Build the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+    # mshtml COM component is causing problems on github action, weird it works fine locally though.
+    # - name: Build the application
+    #   run: msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration /verbosity:minimal
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
+    # 
