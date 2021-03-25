@@ -48,7 +48,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>    
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -109,6 +109,7 @@
     <Compile Include="Commands.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DelayedAction.cs" />
     <Compile Include="DomLoader.cs" />
     <Compile Include="EditableView.cs" />
     <Compile Include="FileAssociation.cs" />

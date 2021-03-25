@@ -839,7 +839,7 @@
     <value>Update Available</value>
   </data>
   <data name="toolStripMenuItemUpdate.ToolTipText" xml:space="preserve">
-    <value>Click here to read message about software update.</value>
+    <value>Click here to read message about software updates.</value>
   </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>

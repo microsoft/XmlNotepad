@@ -22,6 +22,11 @@
                   <xs:documentation>Location of the download page.</xs:documentation>
                 </xs:annotation>
               </xs:element>
+              <xs:element name="installer" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Location of the installation page.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
               <xs:element name="frequency" type="xs:string" >
                 <xs:annotation>
                   <xs:documentation>The frequency we need to check for updates to the application, any valid TimeSpan.</xs:documentation>

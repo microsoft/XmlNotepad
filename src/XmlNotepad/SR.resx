@@ -498,9 +498,8 @@ Do you want to enable execution of this script code?</value>
     <value>Update Available</value>
     <comment>Message box caption</comment>
   </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>Version {1} of {0} is now available.  
-Do you want to visit the web page that describes this update?</value>
+  <data name="UpdateAvailableTooltip" xml:space="preserve">
+    <value>Version {1} of {0} is now available. </value>
     <comment>Message box prompt</comment>
   </data>
   <data name="ChangeErrorCaption" xml:space="preserve">
@@ -832,5 +831,18 @@ Do you want to visit the web page that describes this update?</value>
   <data name="XmlDiffSameFilePrompt" xml:space="preserve">
     <value>You selected the same file, please select a different file.</value>
     <comment>Message box prompt</comment>
+  </data>
+  <data name="ShowInstallPage" xml:space="preserve">
+    <value>Click here to open the installer web page.</value>
+  </data>
+  <data name="ShowUpdateHistory" xml:space="preserve">
+    <value>Click here to visit the update history.</value>
+  </data>
+  <data name="UpToDate" xml:space="preserve">
+    <value>Up to date</value>
+    <comment>Button caption.</comment>
+  </data>
+  <data name="UpToDateTooltip" xml:space="preserve">
+    <value>You have the latest version: {0}</value>
   </data>
 </root>
