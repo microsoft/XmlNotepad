@@ -44,7 +44,6 @@ There have been over 3 million downloads since then - so thanks to everyone who 
 - Goto definition to navigate includes and XSD schema information.
 - Vibrant community with many [updates and bug fixes](help/updates.md).
 
-This source code is available
 The source code is available at [https://github.com/microsoft/XmlNotepad](https://github.com/microsoft/XmlNotepad).
 
 Please provide feedback or any issues you have using the [XML Notepad GitHub
