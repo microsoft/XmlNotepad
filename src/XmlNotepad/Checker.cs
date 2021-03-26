@@ -396,6 +396,7 @@ namespace XmlNotepad {
 
         string GetRelative(string s) {
             if (baseUri == null) return s;
+            if (string.IsNullOrEmpty(s)) return s;
             Uri uri = new Uri(s);
             return this.baseUri.MakeRelative(uri);
         }
