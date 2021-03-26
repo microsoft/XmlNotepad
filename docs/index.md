@@ -3,7 +3,7 @@
 
 XML Notepad provides a simple intuitive [User Interface](help/overview.md) for browsing and editing XML documents.
 
-[![image](assets/images/help.png)](https://youtu.be/dtuSI4ZDZxg)
+[![image](assets/images/help.png)](https://youtu.be/bmchxiu_oV0)
 
 XML Notepad is the result of a promise Chris Lovett made to a friend at Microsoft. The original XML
 Notepad shipped in back in 1998, written by Murray Low in C++. Later on it fell behind in support
