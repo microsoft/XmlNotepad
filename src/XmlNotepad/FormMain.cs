@@ -2629,7 +2629,6 @@ namespace XmlNotepad {
             this.settings.StopWatchingFileChanges();
             Rectangle r = (this.WindowState == FormWindowState.Normal) ? this.Bounds : this.RestoreBounds;
             this.settings["WindowBounds"] = r;
-            this.settings["Font"] = this.Font;
             this.settings["TaskListSize"] = this.tabControlLists.Height;
             this.settings["TreeViewSize"] = this.xmlTreeView1.ResizerPosition;
             this.settings["RecentFiles"] = this.recentFiles.ToArray();
