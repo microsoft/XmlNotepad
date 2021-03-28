@@ -1,5 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Windows.Forms;
 
 namespace XmlNotepad {
@@ -9,6 +10,10 @@ namespace XmlNotepad {
         /// </summary>
         [STAThread]
         static void Main(string[] args) {
+            if (Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_HIGH_DPI") == "1") {
+                var section = ConfigurationManager.GetSection("System.Windows.Forms.ApplicationConfigurationSection") as NameValueCollection;
+                section.Set("DpiAwareness", "false");
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             MyForm form = new MyForm();
