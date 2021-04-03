@@ -8,6 +8,9 @@
     <installer>https://microsoft.github.io/XmlNotepad/install/</installer>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.28">
+    <feature>Thanks to Austin Wise for adding High DPI scaling which makes the fonts a lot less blurry on high DPI screens.</feature>
+  </version>
   <version number="2.8.0.27">
     <feature>Minor fixes to XML stats output got github issues #76 and #77.</feature>
   </version>

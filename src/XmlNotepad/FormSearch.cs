@@ -39,6 +39,12 @@ namespace XmlNotepad {
             this.tnav = new TabNavigator(this);
         }
 
+        protected override void OnDpiChanged(DpiChangedEventArgs e)
+        {
+            base.OnDpiChanged(e);
+            this.PerformLayout();
+        }
+
         void comboBoxFind_LostFocus(object sender, EventArgs e) {
             return;
         }

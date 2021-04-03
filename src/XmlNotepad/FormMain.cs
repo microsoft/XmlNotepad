@@ -632,12 +632,20 @@ namespace XmlNotepad {
             Invalidate();
         }
 
-        protected override void OnLayout(LayoutEventArgs levent) {
+        protected override void OnDpiChanged(DpiChangedEventArgs e)
+        {
+            base.OnDpiChanged(e);
+            this.PerformLayout();
+        }
+
+        protected override void OnLayout(LayoutEventArgs levent)
+        {
+            base.OnLayout(levent);
             Size s = this.ClientSize;
             int w = s.Width;
             int h = s.Height;
-            int top = this.toolStrip1.Bottom;
             this.toolStrip1.Size = new Size(w, 24);
+            int top = this.toolStrip1.Bottom;
             int sbHeight = 0;
             if (this.statusBar1.Visible) {
                 sbHeight = this.statusBar1.Height;

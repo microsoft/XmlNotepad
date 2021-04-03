@@ -36,6 +36,13 @@ namespace XmlNotepad {
             this.UpdateMenuState();
         }
 
+        protected override void OnDpiChanged(DpiChangedEventArgs e)
+        {
+            base.OnDpiChanged(e);
+            this.PerformLayout();
+            this.dataGridView1.PerformLayout();
+        }
+
         protected override void OnLoad(EventArgs e) {            
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
             if (hp != null && Utilities.DynamicHelpEnabled)
