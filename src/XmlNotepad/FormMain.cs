@@ -636,9 +636,8 @@ namespace XmlNotepad {
             Size s = this.ClientSize;
             int w = s.Width;
             int h = s.Height;
-            int top = this.menuStrip1.Height;
+            int top = this.toolStrip1.Bottom;
             this.toolStrip1.Size = new Size(w, 24);
-            top += 24;
             int sbHeight = 0;
             if (this.statusBar1.Visible) {
                 sbHeight = this.statusBar1.Height;
@@ -2144,6 +2143,7 @@ namespace XmlNotepad {
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.comboBoxLocation);
             this.Controls.Add(this.tabControlViews);
             this.Controls.Add(this.toolStrip1);
@@ -2629,7 +2629,6 @@ namespace XmlNotepad {
             this.settings.StopWatchingFileChanges();
             Rectangle r = (this.WindowState == FormWindowState.Normal) ? this.Bounds : this.RestoreBounds;
             this.settings["WindowBounds"] = r;
-            this.settings["Font"] = this.Font;
             this.settings["TaskListSize"] = this.tabControlLists.Height;
             this.settings["TreeViewSize"] = this.xmlTreeView1.ResizerPosition;
             this.settings["RecentFiles"] = this.recentFiles.ToArray();

@@ -138,8 +138,9 @@ namespace XmlNotepad {
             // FormAbout
             // 
             this.AcceptButton = this.buttonOK;
-            this.CancelButton = this.buttonOK;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.CancelButton = this.buttonOK;
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tableLayoutPanel1);

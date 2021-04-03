@@ -37,9 +37,9 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
+            this.labelStatus = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.labelTest = new System.Windows.Forms.Label();
-            this.labelStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -177,6 +177,17 @@
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
+            // labelStatus
+            // 
+            this.labelStatus.AutoEllipsis = true;
+            this.labelStatus.AutoSize = true;
+            this.labelStatus.Location = new System.Drawing.Point(10, 10);
+            this.labelStatus.Margin = new System.Windows.Forms.Padding(10);
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(89, 13);
+            this.labelStatus.TabIndex = 2;
+            this.labelStatus.Text = "status message...";
+            // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.AutoSize = true;
@@ -203,21 +214,10 @@
             this.labelTest.Text = "This is item 1";
             this.labelTest.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // labelStatus
-            // 
-            this.labelStatus.AutoEllipsis = true;
-            this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(10, 10);
-            this.labelStatus.Margin = new System.Windows.Forms.Padding(10);
-            this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(89, 13);
-            this.labelStatus.TabIndex = 2;
-            this.labelStatus.Text = "status message...";
-            // 
             // FormCsvImport
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(534, 261);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FormCsvImport";

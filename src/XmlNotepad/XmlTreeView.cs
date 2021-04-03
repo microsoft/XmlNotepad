@@ -1502,9 +1502,9 @@ namespace XmlNotepad
             this.vScrollBar1.AccessibleName = "VScrollBar";
             this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.vScrollBar1.Location = new System.Drawing.Point(480, 0);
+            this.vScrollBar1.Location = new System.Drawing.Point(477, 0);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 224);
+            this.vScrollBar1.Size = new System.Drawing.Size(20, 224);
             this.vScrollBar1.TabIndex = 0;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
             // 
@@ -1513,9 +1513,9 @@ namespace XmlNotepad
             this.hScrollBar1.AccessibleName = "HScrollBar";
             this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 207);
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 204);
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(179, 17);
+            this.hScrollBar1.Size = new System.Drawing.Size(179, 20);
             this.hScrollBar1.TabIndex = 2;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
@@ -1570,6 +1570,8 @@ namespace XmlNotepad
             // 
             // XmlTreeView
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.hScrollBar1);
