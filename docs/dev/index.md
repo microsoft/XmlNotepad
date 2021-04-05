@@ -6,7 +6,11 @@ XML Notepad targets .NET Framework version 4.7.2 which is the default target for
 
 ### Build the code
 
-After cloning the repo:
+First clone the repo:
+```
+git clone https://github.com/microsoft/XmlNotepad.git
+```
+Then:
 
 - Load `src/XmlNotepad.sln` into VS 2019.
 - Select Debug or Release and target "Any CPU".
