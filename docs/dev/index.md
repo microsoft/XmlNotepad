@@ -44,18 +44,21 @@ able to compile the new version.
 
 ### Publish the ClickOnce installer
 
-Open the `Application` project properties and you will see a Publish option there.
-This is only something that can be done by the current author.  This setup is also only performed on strongly
-signed bits using a certificate belonging to the author.  This certificate is specified using environment variable
-`MYKEYFILE`, but you can build, debug and test XML Notepad without this environment variable set.
+Open the `Application` project properties and you will see a Publish option there. This will place
+the publish bits in a folder named `d:\git\lovettchris\XmlNotepad\publish\` you can change this on
+the Project properties.  It is recommended you use strongly signed bits.  The signing certificate is
+specified using environment variable `MYKEYFILE`, but you can build, debug and test XML Notepad
+without this environment variable set.
 
 This setup provides the ClickOnce installed version of XML Notepad installable from [lovettsoftware](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application).  This is the most convenient installer since it is
 a single click and also provide auto-updating whenever a new version is published.
 
 ### Build the setup .msi installer
 
-XML Notepad uses the [WIX Toolset](https://wixtoolset.org/) to build a standalone windows .msi installer. To build that
-setup you will need to install the WIX toolset then the [Wix Toolset Visual Studio 2019
+After building the `Release` configuration of `XmlNotepad.sln` load the `XmlNotepadSetup.sln`.  This
+solution uses the [WIX Toolset](https://wixtoolset.org/) to build a standalone windows .msi
+installer. To build that setup you will need to install the WIX toolset then the [Wix Toolset Visual
+Studio 2019
 Extension](https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2019Extension).
 
 Then right click the `XmlNotepadSetup` project and select "build".  This will produce an .msi installer in the
@@ -68,14 +71,16 @@ there are quite a few customers who have requested this, which is why it exists.
 
 ### Build the winget setup package
 
-The `winget` setup package is built by the `XmlNotepadPackage` project.  Right click this project in the Solution
-Explorer and select `Publish` and `Create App Packages`.  Choose Sideloading, and the package files will be written to
-the XmlNotepadPackage\AppPackages folder.  These can then be uploaded to the server hosting these packages and you can
-then update the manifest in
-[winget-pkgs](https://github.com/microsoft/winget-pkgs/tree/master/manifests/Microsoft/XMLNotepad).  
+The `winget` setup package is built by the `XmlNotepadPackage` project in the `XmlNotepadSetup.sln`
+solution.  Right click this project in the Solution Explorer and select `Publish` and `Create App
+Packages`.  Choose Sideloading, and the package files will be written to the
+XmlNotepadPackage\AppPackages folder.  These can then be uploaded to the server hosting these
+packages and you can then update the manifest in
+[winget-pkgs](https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/XMLNotepad).
+
 
 This package provides the `winget install xmlnotepad` setup option.
 
 ### Design
 
-See [XML Notepad Design ](help/design.md) for more detailed information about how this application is designed.
+See [XML Notepad Design ](dev/design.md) for more detailed information about how this application is designed.

@@ -49,7 +49,7 @@ The source code is available at [https://github.com/microsoft/XmlNotepad](https:
 Please provide feedback or any issues you have using the [XML Notepad GitHub
 issues](https://github.com/microsoft/XmlNotepad/issues) list.
 
-See [development](dev.md) information on how to build XML Notepad from source.
+See [development](dev/index.md) information on how to build XML Notepad from source.
 
 For more information see the [Code of Conduct
 FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact
