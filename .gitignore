@@ -247,3 +247,4 @@ _site/
 /src/XmlStats/XmlStats.GeneratedMSBuildEditorConfig.editorconfig
 /src/Application/Samples/rss_output.htm
 /src/Application/Samples/rsspretty_output.htm
+/publish_appx
