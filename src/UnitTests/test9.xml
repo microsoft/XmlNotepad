@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- This tests all element types -->
+<!-- Test all element types -->
 <?pi at root level?>
 <Root id="55" name="foo">
   <!--inner comment--><![CDATA[A CDATA block]]><item>Some text</item><?pi end?><FM><P>ASCII text placed in the public domain by Moby Lexical Tools, 1992.</P><P>SGML markup by Jon Bosak, 1992-1994.</P><P>XML version by Jon Bosak, 1996-1999.</P><P>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-  <!-- This tests all element types -->
+  <!-- Test all element types -->
   <?pi at root level?>
   <Root id="55" name="foo">
     <Employee xmlns="http://www.hr.org" id="46613" title="Architect">

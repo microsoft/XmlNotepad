@@ -25,7 +25,6 @@ namespace XmlNotepad {
         StringComparison comp;
         XmlNodeMatch match;
         IEditableView ev;
-        int start;
 
         public XmlTreeViewFindTarget(XmlTreeView view) {
             this.view = view;
@@ -159,11 +158,6 @@ namespace XmlNotepad {
 
             CheckCurrentState(expression, flags, filter);
 
-            if (ev != null && ev.IsEditing) {
-                start = ev.SelectionStart; // remember where we were in the editor.
-                ev.EndEdit(false);
-            }
-            this.ev = null;
             this.match = null;
 
             if (string.IsNullOrEmpty(expression))
@@ -195,10 +189,7 @@ namespace XmlNotepad {
                 this.match = m;
 
                 if (node != null) {
-                    this.current = this.view.FindNode(node);
-                    if (this.current == this.view.SelectedNode) {
-                        continue;
-                    }
+                    this.current = this.view.FindNode(node);                    
                     if (this.current != null) {
                         this.view.SelectedNode = this.current;
                         if (m.IsName) {
@@ -220,6 +211,21 @@ namespace XmlNotepad {
             // Now find where the selectedNode is in the matching list so we can start there.
             int pos = -1;
             XmlNode selectedNode = null;
+            bool treeFocused = this.view.TreeView.ContainsFocus;
+            bool textViewFocused = this.view.NodeTextView.ContainsFocus;
+            bool textEditing = this.view.NodeTextView.IsEditing;
+            int start = 0;
+            if (textEditing)
+            {
+                textViewFocused = true;
+                // can select multiple words in one big paragraph, so we need to know where we are.
+                start = this.view.NodeTextView.SelectionStart;
+            }
+            else if (!textViewFocused)
+            {
+                // then pretend the tree view has focus for 'findnext' purposes.
+                treeFocused = true;
+            }
             XmlTreeNode selected = this.view.SelectedNode;
 
             if (selected != null && list != null) {
@@ -230,8 +236,14 @@ namespace XmlNotepad {
                     foreach (XmlNodeMatch m in list) {
                         XmlNode node = m.Node;
                         if (node == selectedNode) {
-                            if (m.Index >= start)
+                            if (m.IsName && treeFocused)
+                            {
+                                return ++pos; // selected node is the node name.
+                            }
+                            else if (!m.IsName && m.Index >= start)
+                            {
                                 return ++pos; // selected node is one of the matching nodes.
+                            }
                         } else if (IsNodeAfter(selectedNode, node)) {
                             break;
                         }
@@ -244,37 +256,53 @@ namespace XmlNotepad {
         }
 
         // returns true if the match node comes after the selected node in document order.
-        bool IsNodeAfter(XmlNode selected, XmlNode match) {
-            if (FindCommonParent(ref selected, ref match)) {
-                XmlNode next = selected.NextSibling;
-                while (next != null) {
-                    if (next == match) return true;
-                    next = next.NextSibling;
-                }
-            }
-            return false;
-        }
-
-        bool FindCommonParent(ref XmlNode a, ref XmlNode b) {
-            List<XmlNode> aparents = GetParentChain(a);
-            List<XmlNode> bparents = GetParentChain(b);
+        bool IsNodeAfter(XmlNode selected, XmlNode match) 
+        {
+            List<XmlNode> aparents = GetParentChain(selected);
+            List<XmlNode> bparents = GetParentChain(match);
             // now find the lowest common node.
-            for (int i = aparents.Count - 1; i >= 0; i--) {
+            int i = 0;
+            for (; i < aparents.Count && i < bparents.Count; i++)
+            {
                 XmlNode p1 = aparents[i];
-                for (int j = bparents.Count - 1; j >= 0; j--) {
-                    XmlNode p2 = bparents[j];
-                    if (p1 == p2) {
-                        // Ok, found the common parent, so now return the
-                        // siblings under this parent so we can calculate 
-                        // relative document order of those siblings.
-                        if (i + 1 < aparents.Count)
-                            a = aparents[i + 1];
-                        if (j + 1 < bparents.Count)
-                            b = bparents[j + 1];
-                        return true;
-                    }
+                XmlNode p2 = bparents[i];
+                if (p1 != p2)
+                {
+                    // Ok, found the common parent, so now return the
+                    // siblings under this parent so we can calculate 
+                    // relative document order of those siblings.
+                    break;
                 }
             }
+
+            XmlNode sibling1 = null;
+            XmlNode sibling2 = null;
+            if (i < aparents.Count)
+            {
+                sibling1 = aparents[i];
+            }
+            else
+            {
+                sibling1 = selected;
+            }
+
+            if (i < bparents.Count)
+            {
+                sibling2 = bparents[i];
+            }
+            else
+            {
+                sibling2 = match;
+            }
+
+            for (XmlNode s1 = sibling1; s1 != null; s1 = s1.NextSibling)
+            {
+                if (s1 == sibling2)
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
 

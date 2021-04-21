@@ -1388,12 +1388,13 @@ Prefix 'user' is not defined. ");
             findDialog.FocusFindString();
             
             Sleep(500);
-            findDialog.Window.SendKeystrokes("Some{ENTER}");
+            // check we can find attribute values!
+            findDialog.Window.SendKeystrokes("foo{ENTER}");
             Sleep(500);
 
             findDialog.Window.DismissPopUp("{ESC}");
             w.SendKeystrokes("^c{ESC}");
-            CheckClipboard("Some");
+            CheckClipboard("foo");
             Sleep(200);
             w.SendKeystrokes("^{HOME}");
             
@@ -1404,25 +1405,24 @@ Prefix 'user' is not defined. ");
             popup.DismissPopUp("{ENTER}");
 
             Sleep(200);
-            Trace.WriteLine("test we can find the 'this' text.");
+            Trace.WriteLine("test we can find the 'this' text twice in one paragraph.");
             findDialog.Window.SendKeystrokes("this{ENTER}");
             Sleep(200);
             findDialog.Window.DismissPopUp("{ESC}");
             Sleep(200);
+            w.SendKeystrokes("^c");
+            CheckClipboard("this");
+            Trace.WriteLine("repeat find with shortcut");
+            w.SendKeystrokes("{F3}");
+            Sleep(200);
+            w.SendKeystrokes("^c");
+            CheckClipboard("This");
             w.SendKeystrokes("{ESC}");
             Sleep(200);
             w.SendKeystrokes("^c");
-            CheckClipboard("<!-- This tests all element types -->");
-            
-            Trace.WriteLine("repeat find with shortcut");
-            w.SendKeystrokes("{F3}{ESC}");
-            Sleep(200);
-            w.SendKeystrokes("^c");
-            CheckClipboard(@"
-    The XML markup in this version is Copyright © 1999 Jon Bosak.
-    This work may freely be distributed on condition that it not be
-    modified or altered in any way.
-    ");
+            // make sure we are on the right node.
+            this.CheckClipboard(new Regex(@".*Copyright © 1999 Jon Bosak.*"));
+            var original = Clipboard.GetText();
 
             Trace.WriteLine("Test illegal regular expressions.");
             findDialog = OpenFindDialog();
@@ -1484,7 +1484,7 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Check compound undo.");
             Undo();
-            CheckOuterXml("<!-- This tests all element types -->");
+            CheckOuterXml(original);
 
             Sleep(1000);
             Save("out.xml");
@@ -2093,7 +2093,7 @@ Prefix 'user' is not defined. ");
             CheckNodeName(cset, "Root");
 
             AutomationWrapper next = first.NextSibling;
-            CheckNodeValue(next, " This tests all element types ");            
+            CheckNodeValue(next, " Test all element types ");            
 
             next = next.NextSibling; // pi
             next = next.NextSibling; // root

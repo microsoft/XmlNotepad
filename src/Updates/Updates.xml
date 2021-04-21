@@ -8,6 +8,10 @@
     <installer>https://microsoft.github.io/XmlNotepad/install/</installer>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.29">
+    <feature>Fix [github issue #87](https://github.com/microsoft/XmlNotepad/issues/87) - bug in finding text in attribute values
+    and add unit tests to cover this.  Also fixed problem with stepping through multiple matches using F3 in one big paragraph.</feature>
+  </version>
   <version number="2.8.0.28">
     <feature>Thanks to Austin Wise for adding High DPI scaling which makes the fonts a lot less blurry on high DPI screens.</feature>
   </version>

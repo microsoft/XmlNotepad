@@ -12,7 +12,10 @@ namespace XmlNotepadBuildTasks
     public class SyncVersions : Task
     {
         [Required]
-        public string VersionFile { get; set; }
+        public string MasterVersionFile { get; set; }
+
+        [Required]
+        public string CSharpVersionFile { get; set; }
 
         [Required]
         public string WixFile { get; set; }
@@ -31,48 +34,72 @@ namespace XmlNotepadBuildTasks
 
         public override bool Execute()
         {
-            if (!System.IO.File.Exists(this.VersionFile))
+            if (!System.IO.File.Exists(this.MasterVersionFile))
             {
-                Log.LogError("Cannot find version file: " + this.VersionFile);
+                Log.LogError("Cannot find master version file: " + this.MasterVersionFile);
                 return false;
             }
-            using (var reader = new StreamReader(this.VersionFile))
+            if (!System.IO.File.Exists(this.CSharpVersionFile))
             {
-                string line = null;
-                string version = null;
-                do
+                Log.LogError("Cannot find C# version file: " + this.CSharpVersionFile);
+                return false;
+            }
+
+            string version = File.ReadAllText(this.MasterVersionFile).Trim();
+
+            Version v;
+            if (string.IsNullOrEmpty(version) || !Version.TryParse(version, out v))
+            {
+                Log.LogError("Could not find valid valid version number in : " + this.MasterVersionFile);
+                return false;
+            }
+
+            Log.LogMessage(MessageImportance.High, "SyncVersions to " + v.ToString());
+
+            bool result = UpdateCSharpVersion(v);
+            result &= UpdateWixDoc(v);
+            result &= UpdatePackageManifest(v);
+            result &= UpdateAppXProject(v);
+            result &= CheckUpdatesFile(v);
+            return result;
+        }
+
+        private bool UpdateCSharpVersion(Version v)
+        {
+            // Fix these assembly attributes:
+            // [assembly: AssemblyVersion("2.8.0.29")]
+            // [assembly: AssemblyFileVersion("2.8.0.29")]
+            bool changed = true;
+            string[] prefixes = new string[] { "[assembly: AssemblyVersion", "[assembly: AssemblyFileVersion" };
+            string[] lines = File.ReadAllLines(this.CSharpVersionFile);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i].Trim();
+                foreach (var prefix in prefixes)
                 {
-                    line = reader.ReadLine();
-                    if (line == null) break;
-                    //[assembly: AssemblyVersion("2.8.0.1")]
-                    if (line.Contains("AssemblyVersion"))
+                    if (line.StartsWith(prefix))
                     {
-                        int i = line.IndexOf('"');
-                        if (i > 0)
+                        string expected = string.Format("{0}(\"{1}\")]", prefix, v);
+                        if (line != expected)
                         {
-                            i++;
-                            int j = line.IndexOf('"', i);
-                            version = line.Substring(i, j - i);
-                            break;
+                            lines[i] = expected;
+                            changed = true;
                         }
                     }
-                } while (line != null);
-
-                Version v;
-                if (string.IsNullOrEmpty(version) || !Version.TryParse(version, out v))
-                {
-                    Log.LogError("Could not find valid quoted version number in : " + this.VersionFile);
-                    return false;
                 }
-
-                Log.LogMessage(MessageImportance.High, "SyncVersions to " + v.ToString());
-
-                bool result = UpdateWixDoc(v);
-                result &= UpdatePackageManifest(v);
-                result &= UpdateAppXProject(v);
-                result &= CheckUpdatesFile(v);
-                return result;
             }
+            if (changed)
+            {
+                try
+                {
+                    File.WriteAllLines(this.CSharpVersionFile, lines);
+                }
+                catch (Exception ex)
+                {
+                    Log.LogError("file '" + CSharpVersionFile + "' edit failed: " + ex.Message);
+                }
+            }
+            return changed;
         }
 
         private bool UpdatePackageManifest(Version v)
@@ -98,7 +125,7 @@ namespace XmlNotepadBuildTasks
                         e.SetAttributeValue("Version", newVersion);
                     }
                 }
-                
+
                 if (changed)
                 {
                     Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.AppManifestFile);
@@ -107,7 +134,7 @@ namespace XmlNotepadBuildTasks
             }
             catch (Exception ex)
             {
-                Log.LogError("AppManifest file edit failed: " + ex.Message);
+                Log.LogError("file '" + this.AppManifestFile + "' edit failed: " + ex.Message);
                 return false;
             }
             return true;
@@ -132,7 +159,7 @@ namespace XmlNotepadBuildTasks
                     var s = e.Value.Trim('/');
                     var name = Path.GetFileName(s);
                     s = s.Substring(0, s.Length - name.Length);
-                    
+
                     if (name != newVersion)
                     {
                         changed = true;
@@ -149,7 +176,7 @@ namespace XmlNotepadBuildTasks
             }
             catch (Exception ex)
             {
-                Log.LogError("AppXProjectFile file edit failed: " + ex.Message);
+                Log.LogError("file '" + this.AppXProjectFile + "' edit failed: " + ex.Message);
                 return false;
             }
             return true;
@@ -177,7 +204,7 @@ namespace XmlNotepadBuildTasks
             }
             catch (Exception ex)
             {
-                Log.LogError("WIX file edit failed: " + ex.Message);
+                Log.LogError("file '" + this.WixFile + "' edit failed: " + ex.Message);
                 return false;
             }
             return true;
@@ -231,8 +258,9 @@ namespace XmlNotepadBuildTasks
             if (v.ToString() != (string)product.Attribute("Version"))
             {
                 product.SetAttributeValue("Version", v.ToString());
+                return true;
             }
-            return true;
+            return false;
         }
 
         private bool UpdateDropFiles(XDocument wixdoc, Version v)
@@ -414,28 +442,6 @@ namespace XmlNotepadBuildTasks
                 return false;
             }
             return true;
-        }
-    }
-
-    class Program
-    {
-        public static void Main()
-        {
-            var location = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-            // find root of XmlNotepad repo.
-            location = new Uri(new Uri("file:///" + location), "../../..").LocalPath;
-
-            SyncVersions wix = new SyncVersions()
-            {
-                DropDir = Path.Combine(location, @"src\drop"),
-                VersionFile = Path.Combine(location, @"src\Version\Version.cs"),
-                WixFile = Path.Combine(location, @"src\XmlNotepadSetup\Product.wxs"),
-                UpdatesFile = Path.Combine(location, @"src\Updates\Updates.xml"),
-                AppManifestFile = Path.Combine(location, @"src\XmlNotepadPackage\Package.appxmanifest"),
-                AppXProjectFile = Path.Combine(location, @"src\XmlNotepadPackage\XmlNotepadPackage.wapproj"),
-            };
-
-            wix.Execute();
         }
     }
 }

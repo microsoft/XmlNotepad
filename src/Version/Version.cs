@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Reflection;
@@ -15,5 +15,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.8.0.28")]
-[assembly: AssemblyFileVersion("2.8.0.28")]
+[assembly: AssemblyVersion("2.8.0.29")]
+[assembly: AssemblyFileVersion("2.8.0.29")]

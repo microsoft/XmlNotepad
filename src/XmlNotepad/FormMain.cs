@@ -528,7 +528,6 @@ namespace XmlNotepad {
                     break;
                 case Keys.F3:
                     if (this.search != null) {
-                        this.xmlTreeView1.Commit();
                         this.search.FindAgain(e.Shift);
                         e.Handled = true;
                     }

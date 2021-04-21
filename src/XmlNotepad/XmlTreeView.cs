@@ -218,6 +218,14 @@ namespace XmlNotepad
                 return null;
             }
 
+            XmlTreeNode parent;
+
+            if (node is XmlAttribute a)
+            {
+                parent = FindNode(a.OwnerElement);
+                return FindChild(parent.Nodes, node);
+            }
+
             if (node == null || node.ParentNode == null)
             {
                 // then we have a node that is disconnected
@@ -229,7 +237,7 @@ namespace XmlNotepad
                 return null;
             }
 
-            XmlTreeNode parent = FindNode(node.ParentNode);
+            parent = FindNode(node.ParentNode);
             if (parent == null) 
             {
                 // then the node is a root node.

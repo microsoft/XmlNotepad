@@ -41,8 +41,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>readme.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>28</ApplicationRevision>
-    <ApplicationVersion>2.8.0.28</ApplicationVersion>
+    <ApplicationRevision>29</ApplicationRevision>
+    <ApplicationVersion>2.8.0.29</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -124,6 +124,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="..\Version\Version.txt">
+      <Link>Version.txt</Link>
+    </Content>
     <Content Include="Samples\basket.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -289,7 +292,7 @@
     <PreBuildEvent>copy "$(SolutionDir)\FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="SyncVersionsTarget">
-    <SyncVersions VersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" AppXProjectFile="$(SolutionDir)XmlNotepadPackage\XmlNotepadPackage.wapproj" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" />
+    <SyncVersions MasterVersionFile="$(SolutionDir)Version\Version.txt" CSharpVersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" AppXProjectFile="$(SolutionDir)XmlNotepadPackage\XmlNotepadPackage.wapproj" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" />
   </Target>
   <PropertyGroup>
     <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncVersionsTarget</CoreBuildDependsOn>
