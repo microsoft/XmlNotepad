@@ -21,6 +21,7 @@ namespace XmlNotepad
         const int DefaultDelay = 5000;
         string download;
         string installer;
+        string history;
         string title;
         string version;
         bool enabled = true;
@@ -61,6 +62,7 @@ namespace XmlNotepad
         public string Version { get { return this.version; } set { this.version = value; } }
         public Uri UpdateLocation { get { return this.updateUri; } }
         public string InstallerLocation { get { return this.installer; } }
+        public string InstallerHistory { get { return this.history; } }
 
         void OnSettingChanged(object sender, string name)
         {
@@ -263,6 +265,12 @@ namespace XmlNotepad
             if (ie != null)
             {
                 this.installer = ie.InnerText;
+            }
+
+            XmlElement ie = doc.SelectSingleNode("updates/application/history") as XmlElement;
+            if (ie != null)
+            {
+                this.history = ie.InnerText;
             }
 
             XmlElement f = doc.SelectSingleNode("updates/application/frequency") as XmlElement;

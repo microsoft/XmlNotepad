@@ -593,6 +593,10 @@ namespace XmlNotepad {
             {
                 Utilities.OpenUrl(this.Handle, this.updater.InstallerLocation);
             }
+            else if (this.updater.InstallerHistory != null)
+            {
+                Utilities.OpenUrl(this.Handle, this.updater.InstallerHistory);
+            }
             else if (this.updater.UpdateLocation != null)
             {
                 Utilities.OpenUrl(this.Handle, this.updater.UpdateLocation.ToString());

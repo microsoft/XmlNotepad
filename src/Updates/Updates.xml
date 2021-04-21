@@ -6,6 +6,7 @@
     <location>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml</location>
     <download>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/readme.htm</download>
     <installer>https://microsoft.github.io/XmlNotepad/install/</installer>
+    <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
   <version number="2.8.0.29">

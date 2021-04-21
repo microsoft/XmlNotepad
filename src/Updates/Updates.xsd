@@ -27,6 +27,11 @@
                   <xs:documentation>Location of the installation page.</xs:documentation>
                 </xs:annotation>
               </xs:element>
+              <xs:element name="history" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation>Location of the page showing update history.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
               <xs:element name="frequency" type="xs:string" >
                 <xs:annotation>
                   <xs:documentation>The frequency we need to check for updates to the application, any valid TimeSpan.</xs:documentation>

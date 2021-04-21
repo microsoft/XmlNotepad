@@ -1,12 +1,11 @@
 
 ## Updates
 
-The Options Dialog can be used to configure how auto-update works in XML Notepad. The Options Dialog points to an [Updates.xml](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml) file that contains the following kind of information:
+The Options Dialog can be used to configure how auto-update works in XML Notepad. The Options Dialog points to an [Updates.xml](https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml) file that contains the following kind of information:
 
 ```xml
 <application>
     <title>Microsoft XML Notepad</title>
-    <location>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml</location>
     <download>https://microsoft.github.io/XmlNotepad/#install/</download>
     <frequency>1.00:00:00</frequency>
   </application>
