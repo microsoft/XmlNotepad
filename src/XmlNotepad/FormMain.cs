@@ -1,37 +1,31 @@
 //#define WHIDBEY_MENUS
 
+using Microsoft.Xml;
+using Microsoft.XmlDiffPatch;
+using Sgml;
 using System;
-using System.Drawing;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Xsl;
-using System.IO;
-using System.Diagnostics;
-using System.Text;
-using Microsoft.XmlDiffPatch;
 
-using MyContextMenu = System.Windows.Forms.ContextMenu;
-using TopLevelMenuItemBaseType = System.Windows.Forms.MenuItem;
-using Microsoft.Win32;
-using System.Runtime.InteropServices;
-using Microsoft.Xml;
-using Sgml;
-
-namespace XmlNotepad {
+namespace XmlNotepad
+{
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
-    public class FormMain : System.Windows.Forms.Form, ISite {
+    public class FormMain : Form, ISite {
 
         UndoManager undoManager;
         Settings settings;
         string[] args;
         DataFormats.Format urlFormat;
-        private System.Windows.Forms.StatusBar statusBar1;
-        private System.Windows.Forms.StatusBarPanel statusBarPanelMessage;
-        private System.Windows.Forms.StatusBarPanel statusBarPanelBusy;
+        private StatusBar statusBar1;
+        private StatusBarPanel statusBarPanelMessage;
+        private StatusBarPanel statusBarPanelBusy;
         RecentFilesMenu recentFiles;
         TaskList taskList;
         XsltViewer dynamicHelpViewer;
@@ -246,9 +240,9 @@ namespace XmlNotepad {
             // Separated out so we can have virtual CreateTreeView without causing WinForms designer to barf.
             InitializeTreeView();
 
-            this.xmlTreeView1.Dock = System.Windows.Forms.DockStyle.None;
+            this.xmlTreeView1.Dock = DockStyle.None;
             this.xmlTreeView1.Size = this.tabPageTreeView.ClientSize;
-            this.xmlTreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.xmlTreeView1.Dock = DockStyle.Fill;
 
             this.undoLabel = this.undoToolStripMenuItem.Text;
             this.redoLabel = this.redoToolStripMenuItem.Text;
@@ -707,17 +701,17 @@ namespace XmlNotepad {
             this.tabPageTaskList.Location = new System.Drawing.Point(4, 24);
             this.tabPageTaskList.Name = "tabPageTaskList";
             this.tabPageTaskList.AccessibleName = "tabPageTaskList";
-            this.tabPageTaskList.Padding = new System.Windows.Forms.Padding(0);
+            this.tabPageTaskList.Padding = new Padding(0);
             this.tabPageTaskList.Size = new System.Drawing.Size(728, 68);
             this.tabPageTaskList.TabIndex = 1;
             this.tabPageTaskList.Text = SR.ErrorListTab;
             // 
             // taskList
             // 
-            this.taskList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.taskList.Dock = DockStyle.Fill;
             this.taskList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.taskList.Location = new System.Drawing.Point(3, 3);
-            this.taskList.Margin = new System.Windows.Forms.Padding(0);
+            this.taskList.Margin = new Padding(0);
             this.taskList.Name = "taskList";
             this.taskList.Size = new System.Drawing.Size(722, 62);
             this.taskList.TabIndex = 2;
@@ -731,7 +725,7 @@ namespace XmlNotepad {
             this.tabPageDynamicHelp.Controls.Add(dynamicHelpViewer);
             this.tabPageDynamicHelp.Location = new System.Drawing.Point(4, 24);
             this.tabPageDynamicHelp.Name = "tabPageDynamicHelp";
-            this.tabPageDynamicHelp.Padding = new System.Windows.Forms.Padding(0);
+            this.tabPageDynamicHelp.Padding = new Padding(0);
             this.tabPageDynamicHelp.Size = new System.Drawing.Size(728, 68);
             this.tabPageDynamicHelp.TabIndex = 2;
             this.tabPageDynamicHelp.Text = SR.DynamicHelpTab;
@@ -773,168 +767,168 @@ namespace XmlNotepad {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            this.changeToElementContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusBar1 = new System.Windows.Forms.StatusBar();
-            this.statusBarPanelMessage = new System.Windows.Forms.StatusBarPanel();
-            this.statusBarPanelBusy = new System.Windows.Forms.StatusBarPanel();
-            this.contextMenu1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ctxcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuItemPaste = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripSeparator();
-            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.insertToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.duplicateToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToAttributeContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToCDATAContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToCommentContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToProcessingInstructionContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.ctxGotoDefinitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuItem20 = new System.Windows.Forms.ToolStripSeparator();
-            this.ctxElementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxElementBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxElementAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxElementChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxAttributeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxAttributeBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxAttributeAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxAttributeChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTextBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTextAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTextChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCommentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCommentBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCommentAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCommentChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCdataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCdataBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCdataAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxCdataChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxPIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxPIBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxPIAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxPIChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuItem23 = new System.Windows.Forms.ToolStripSeparator();
-            this.ctxMenuItemExpand = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxMenuItemCollapse = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.recentFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.repeatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToElementToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToAttributeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToTextToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToCDATAToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToCommentToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeToProcessingInstructionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
-            this.gotoDefinitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.expandXIncludesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
-            this.nudgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.upToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.downToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.leftToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
-            this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.incrementalSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
-            this.statusBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
-            this.sourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.schemasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fileAssociationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
-            this.nextErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.compareXMLFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.insertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.elementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.elementBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.elementAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.elementChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attributeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attributeBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attributeAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attributeChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.commentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.commentBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.commentAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.commentChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CDATAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cdataBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cdataAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cdataChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.PIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.PIBeforeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.PIAfterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.PIChildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sampleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
-            this.aboutXMLNotepadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemUpdate = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButtonNew = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOpen = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonUndo = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonRedo = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonCut = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonCopy = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonPaste = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonDelete = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonNudgeUp = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonNudgeDown = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonNudgeLeft = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonNudgeRight = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.helpProvider1 = new System.Windows.Forms.HelpProvider();
-            this.comboBoxLocation = new System.Windows.Forms.ComboBox();
+            this.changeToElementContextMenuItem = new ToolStripMenuItem();
+            this.statusBar1 = new StatusBar();
+            this.statusBarPanelMessage = new StatusBarPanel();
+            this.statusBarPanelBusy = new StatusBarPanel();
+            this.contextMenu1 = new ContextMenuStrip(this.components);
+            this.ctxcutToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxMenuItemCopy = new ToolStripMenuItem();
+            this.ctxMenuItemPaste = new ToolStripMenuItem();
+            this.toolStripMenuItem13 = new ToolStripSeparator();
+            this.deleteToolStripMenuItem1 = new ToolStripMenuItem();
+            this.insertToolStripMenuItem1 = new ToolStripMenuItem();
+            this.renameToolStripMenuItem = new ToolStripMenuItem();
+            this.duplicateToolStripMenuItem1 = new ToolStripMenuItem();
+            this.changeToContextMenuItem = new ToolStripMenuItem();
+            this.changeToAttributeContextMenuItem = new ToolStripMenuItem();
+            this.changeToTextContextMenuItem = new ToolStripMenuItem();
+            this.changeToCDATAContextMenuItem = new ToolStripMenuItem();
+            this.changeToCommentContextMenuItem = new ToolStripMenuItem();
+            this.changeToProcessingInstructionContextMenuItem = new ToolStripMenuItem();
+            this.toolStripSeparator3 = new ToolStripSeparator();
+            this.ctxGotoDefinitionToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxMenuItem20 = new ToolStripSeparator();
+            this.ctxElementToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxElementBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxElementAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxElementChildToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxAttributeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxAttributeBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxAttributeAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxAttributeChildToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxTextToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxTextBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxTextAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxTextChildToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCommentToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCommentBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCommentAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCommentChildToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCdataToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCdataBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCdataAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxCdataChildToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxPIToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxPIBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxPIAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxPIChildToolStripMenuItem = new ToolStripMenuItem();
+            this.ctxMenuItem23 = new ToolStripSeparator();
+            this.ctxMenuItemExpand = new ToolStripMenuItem();
+            this.ctxMenuItemCollapse = new ToolStripMenuItem();
+            this.menuStrip1 = new MenuStrip();
+            this.fileToolStripMenuItem = new ToolStripMenuItem();
+            this.newToolStripMenuItem = new ToolStripMenuItem();
+            this.openToolStripMenuItem = new ToolStripMenuItem();
+            this.reloadToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem1 = new ToolStripSeparator();
+            this.saveToolStripMenuItem = new ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new ToolStripMenuItem();
+            this.exportErrorsToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem2 = new ToolStripSeparator();
+            this.recentFilesToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem3 = new ToolStripSeparator();
+            this.exitToolStripMenuItem = new ToolStripMenuItem();
+            this.editToolStripMenuItem = new ToolStripMenuItem();
+            this.undoToolStripMenuItem = new ToolStripMenuItem();
+            this.redoToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem4 = new ToolStripSeparator();
+            this.cutToolStripMenuItem = new ToolStripMenuItem();
+            this.copyToolStripMenuItem = new ToolStripMenuItem();
+            this.pasteToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem5 = new ToolStripSeparator();
+            this.deleteToolStripMenuItem = new ToolStripMenuItem();
+            this.repeatToolStripMenuItem = new ToolStripMenuItem();
+            this.renameToolStripMenuItem1 = new ToolStripMenuItem();
+            this.duplicateToolStripMenuItem = new ToolStripMenuItem();
+            this.changeToToolStripMenuItem = new ToolStripMenuItem();
+            this.changeToElementToolStripMenuItem1 = new ToolStripMenuItem();
+            this.changeToAttributeToolStripMenuItem1 = new ToolStripMenuItem();
+            this.changeToTextToolStripMenuItem1 = new ToolStripMenuItem();
+            this.changeToCDATAToolStripMenuItem1 = new ToolStripMenuItem();
+            this.changeToCommentToolStripMenuItem1 = new ToolStripMenuItem();
+            this.changeToProcessingInstructionToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem12 = new ToolStripSeparator();
+            this.gotoDefinitionToolStripMenuItem = new ToolStripMenuItem();
+            this.expandXIncludesToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem6 = new ToolStripSeparator();
+            this.nudgeToolStripMenuItem = new ToolStripMenuItem();
+            this.upToolStripMenuItem = new ToolStripMenuItem();
+            this.downToolStripMenuItem = new ToolStripMenuItem();
+            this.leftToolStripMenuItem = new ToolStripMenuItem();
+            this.rightToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem7 = new ToolStripSeparator();
+            this.findToolStripMenuItem = new ToolStripMenuItem();
+            this.replaceToolStripMenuItem = new ToolStripMenuItem();
+            this.incrementalSearchToolStripMenuItem = new ToolStripMenuItem();
+            this.viewToolStripMenuItem = new ToolStripMenuItem();
+            this.expandAllToolStripMenuItem = new ToolStripMenuItem();
+            this.collapseAllToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem8 = new ToolStripSeparator();
+            this.statusBarToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem9 = new ToolStripSeparator();
+            this.sourceToolStripMenuItem = new ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new ToolStripMenuItem();
+            this.schemasToolStripMenuItem = new ToolStripMenuItem();
+            this.statsToolStripMenuItem = new ToolStripMenuItem();
+            this.fileAssociationsToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem11 = new ToolStripSeparator();
+            this.nextErrorToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripSeparator2 = new ToolStripSeparator();
+            this.compareXMLFilesToolStripMenuItem = new ToolStripMenuItem();
+            this.insertToolStripMenuItem = new ToolStripMenuItem();
+            this.elementToolStripMenuItem = new ToolStripMenuItem();
+            this.elementBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.elementAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.elementChildToolStripMenuItem = new ToolStripMenuItem();
+            this.attributeToolStripMenuItem = new ToolStripMenuItem();
+            this.attributeBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.attributeAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.attributeChildToolStripMenuItem = new ToolStripMenuItem();
+            this.textToolStripMenuItem = new ToolStripMenuItem();
+            this.textBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.textAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.textChildToolStripMenuItem = new ToolStripMenuItem();
+            this.commentToolStripMenuItem = new ToolStripMenuItem();
+            this.commentBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.commentAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.commentChildToolStripMenuItem = new ToolStripMenuItem();
+            this.CDATAToolStripMenuItem = new ToolStripMenuItem();
+            this.cdataBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.cdataAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.cdataChildToolStripMenuItem = new ToolStripMenuItem();
+            this.PIToolStripMenuItem = new ToolStripMenuItem();
+            this.PIBeforeToolStripMenuItem = new ToolStripMenuItem();
+            this.PIAfterToolStripMenuItem = new ToolStripMenuItem();
+            this.PIChildToolStripMenuItem = new ToolStripMenuItem();
+            this.windowToolStripMenuItem = new ToolStripMenuItem();
+            this.newWindowToolStripMenuItem = new ToolStripMenuItem();
+            this.helpToolStripMenuItem = new ToolStripMenuItem();
+            this.contentsToolStripMenuItem = new ToolStripMenuItem();
+            this.indexToolStripMenuItem = new ToolStripMenuItem();
+            this.sampleToolStripMenuItem = new ToolStripMenuItem();
+            this.checkUpdatesToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItem10 = new ToolStripSeparator();
+            this.aboutXMLNotepadToolStripMenuItem = new ToolStripMenuItem();
+            this.toolStripMenuItemUpdate = new ToolStripMenuItem();
+            this.toolStrip1 = new ToolStrip();
+            this.toolStripButtonNew = new ToolStripButton();
+            this.toolStripButtonOpen = new ToolStripButton();
+            this.toolStripButtonSave = new ToolStripButton();
+            this.toolStripButtonUndo = new ToolStripButton();
+            this.toolStripButtonRedo = new ToolStripButton();
+            this.toolStripButtonCut = new ToolStripButton();
+            this.toolStripButtonCopy = new ToolStripButton();
+            this.toolStripButtonPaste = new ToolStripButton();
+            this.toolStripButtonDelete = new ToolStripButton();
+            this.toolStripSeparator4 = new ToolStripSeparator();
+            this.toolStripButtonNudgeUp = new ToolStripButton();
+            this.toolStripButtonNudgeDown = new ToolStripButton();
+            this.toolStripButtonNudgeLeft = new ToolStripButton();
+            this.toolStripButtonNudgeRight = new ToolStripButton();
+            this.toolStripSeparator1 = new ToolStripSeparator();
+            this.helpProvider1 = new HelpProvider();
+            this.comboBoxLocation = new ComboBox();
             this.tabControlViews = new XmlNotepad.NoBorderTabControl();
             this.tabPageTreeView = new XmlNotepad.NoBorderTabPage();
             this.xmlTreeView1 = new XmlNotepad.XmlTreeView();
@@ -965,7 +959,7 @@ namespace XmlNotepad {
             // 
             resources.ApplyResources(this.statusBar1, "statusBar1");
             this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+            this.statusBar1.Panels.AddRange(new StatusBarPanel[] {
             this.statusBarPanelMessage,
             this.statusBarPanelBusy});
             this.helpProvider1.SetShowHelp(this.statusBar1, ((bool)(resources.GetObject("statusBar1.ShowHelp"))));
@@ -973,7 +967,7 @@ namespace XmlNotepad {
             // 
             // statusBarPanelMessage
             // 
-            this.statusBarPanelMessage.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+            this.statusBarPanelMessage.AutoSize = StatusBarPanelAutoSize.Spring;
             resources.ApplyResources(this.statusBarPanelMessage, "statusBarPanelMessage");
             // 
             // statusBarPanelBusy
@@ -982,7 +976,7 @@ namespace XmlNotepad {
             // 
             // contextMenu1
             // 
-            this.contextMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenu1.Items.AddRange(new ToolStripItem[] {
             this.ctxcutToolStripMenuItem,
             this.ctxMenuItemCopy,
             this.ctxMenuItemPaste,
@@ -1054,7 +1048,7 @@ namespace XmlNotepad {
             // 
             // changeToContextMenuItem
             // 
-            this.changeToContextMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeToContextMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.changeToElementContextMenuItem,
             this.changeToAttributeContextMenuItem,
             this.changeToTextContextMenuItem,
@@ -1112,7 +1106,7 @@ namespace XmlNotepad {
             // 
             // ctxElementToolStripMenuItem
             // 
-            this.ctxElementToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxElementToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.ctxElementBeforeToolStripMenuItem,
             this.ctxElementAfterToolStripMenuItem,
             this.ctxElementChildToolStripMenuItem});
@@ -1139,7 +1133,7 @@ namespace XmlNotepad {
             // 
             // ctxAttributeToolStripMenuItem
             // 
-            this.ctxAttributeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxAttributeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.ctxAttributeBeforeToolStripMenuItem,
             this.ctxAttributeAfterToolStripMenuItem,
             this.ctxAttributeChildToolStripMenuItem});
@@ -1166,7 +1160,7 @@ namespace XmlNotepad {
             // 
             // ctxTextToolStripMenuItem
             // 
-            this.ctxTextToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxTextToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.ctxTextBeforeToolStripMenuItem,
             this.ctxTextAfterToolStripMenuItem,
             this.ctxTextChildToolStripMenuItem});
@@ -1193,7 +1187,7 @@ namespace XmlNotepad {
             // 
             // ctxCommentToolStripMenuItem
             // 
-            this.ctxCommentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxCommentToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.ctxCommentBeforeToolStripMenuItem,
             this.ctxCommentAfterToolStripMenuItem,
             this.ctxCommentChildToolStripMenuItem});
@@ -1220,7 +1214,7 @@ namespace XmlNotepad {
             // 
             // ctxCdataToolStripMenuItem
             // 
-            this.ctxCdataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxCdataToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.ctxCdataBeforeToolStripMenuItem,
             this.ctxCdataAfterToolStripMenuItem,
             this.ctxCdataChildToolStripMenuItem});
@@ -1247,7 +1241,7 @@ namespace XmlNotepad {
             // 
             // ctxPIToolStripMenuItem
             // 
-            this.ctxPIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxPIToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.ctxPIBeforeToolStripMenuItem,
             this.ctxPIAfterToolStripMenuItem,
             this.ctxPIChildToolStripMenuItem});
@@ -1289,7 +1283,7 @@ namespace XmlNotepad {
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStrip1.Items.AddRange(new ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
@@ -1303,7 +1297,7 @@ namespace XmlNotepad {
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
             this.reloadToolStripMenuItem,
@@ -1382,7 +1376,7 @@ namespace XmlNotepad {
             // 
             // editToolStripMenuItem
             // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
             this.toolStripMenuItem4,
@@ -1474,7 +1468,7 @@ namespace XmlNotepad {
             // changeToToolStripMenuItem
             // 
             resources.ApplyResources(this.changeToToolStripMenuItem, "changeToToolStripMenuItem");
-            this.changeToToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeToToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.changeToElementToolStripMenuItem1,
             this.changeToAttributeToolStripMenuItem1,
             this.changeToTextToolStripMenuItem1,
@@ -1543,7 +1537,7 @@ namespace XmlNotepad {
             // 
             // nudgeToolStripMenuItem
             // 
-            this.nudgeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nudgeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.upToolStripMenuItem,
             this.downToolStripMenuItem,
             this.leftToolStripMenuItem,
@@ -1600,7 +1594,7 @@ namespace XmlNotepad {
             // 
             // viewToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.expandAllToolStripMenuItem,
             this.collapseAllToolStripMenuItem,
             this.toolStripMenuItem8,
@@ -1701,7 +1695,7 @@ namespace XmlNotepad {
             // insertToolStripMenuItem
             // 
             resources.ApplyResources(this.insertToolStripMenuItem, "insertToolStripMenuItem");
-            this.insertToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.insertToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.elementToolStripMenuItem,
             this.attributeToolStripMenuItem,
             this.textToolStripMenuItem,
@@ -1712,7 +1706,7 @@ namespace XmlNotepad {
             // 
             // elementToolStripMenuItem
             // 
-            this.elementToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.elementToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.elementBeforeToolStripMenuItem,
             this.elementAfterToolStripMenuItem,
             this.elementChildToolStripMenuItem});
@@ -1739,7 +1733,7 @@ namespace XmlNotepad {
             // 
             // attributeToolStripMenuItem
             // 
-            this.attributeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.attributeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.attributeBeforeToolStripMenuItem,
             this.attributeAfterToolStripMenuItem,
             this.attributeChildToolStripMenuItem});
@@ -1766,7 +1760,7 @@ namespace XmlNotepad {
             // 
             // textToolStripMenuItem
             // 
-            this.textToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.textToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.textBeforeToolStripMenuItem,
             this.textAfterToolStripMenuItem,
             this.textChildToolStripMenuItem});
@@ -1794,7 +1788,7 @@ namespace XmlNotepad {
             // commentToolStripMenuItem
             // 
             resources.ApplyResources(this.commentToolStripMenuItem, "commentToolStripMenuItem");
-            this.commentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.commentToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.commentBeforeToolStripMenuItem,
             this.commentAfterToolStripMenuItem,
             this.commentChildToolStripMenuItem});
@@ -1820,7 +1814,7 @@ namespace XmlNotepad {
             // 
             // CDATAToolStripMenuItem
             // 
-            this.CDATAToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CDATAToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.cdataBeforeToolStripMenuItem,
             this.cdataAfterToolStripMenuItem,
             this.cdataChildToolStripMenuItem});
@@ -1847,7 +1841,7 @@ namespace XmlNotepad {
             // 
             // PIToolStripMenuItem
             // 
-            this.PIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.PIToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.PIBeforeToolStripMenuItem,
             this.PIAfterToolStripMenuItem,
             this.PIChildToolStripMenuItem});
@@ -1875,7 +1869,7 @@ namespace XmlNotepad {
             // windowToolStripMenuItem
             // 
             resources.ApplyResources(this.windowToolStripMenuItem, "windowToolStripMenuItem");
-            this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.windowToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.newWindowToolStripMenuItem});
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
             // 
@@ -1888,7 +1882,7 @@ namespace XmlNotepad {
             // helpToolStripMenuItem
             // 
             resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             this.contentsToolStripMenuItem,
             this.indexToolStripMenuItem,
             this.sampleToolStripMenuItem,
@@ -1935,13 +1929,13 @@ namespace XmlNotepad {
             // toolStripMenuItemUpdate
             // 
             resources.ApplyResources(this.toolStripMenuItemUpdate, "toolStripMenuItemUpdate");
-            this.toolStripMenuItemUpdate.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripMenuItemUpdate.Alignment = ToolStripItemAlignment.Right;
             this.toolStripMenuItemUpdate.BackColor = System.Drawing.Color.MediumAquamarine;
             this.toolStripMenuItemUpdate.Name = "toolStripMenuItemUpdate";
             // 
             // toolStrip1
             // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStrip1.Items.AddRange(new ToolStripItem[] {
             this.toolStripButtonNew,
             this.toolStripButtonOpen,
             this.toolStripButtonSave,
@@ -1964,63 +1958,63 @@ namespace XmlNotepad {
             // toolStripButtonNew
             // 
             resources.ApplyResources(this.toolStripButtonNew, "toolStripButtonNew");
-            this.toolStripButtonNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNew.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonNew.Name = "toolStripButtonNew";
             this.toolStripButtonNew.Click += new System.EventHandler(this.toolStripButtonNew_Click);
             // 
             // toolStripButtonOpen
             // 
             resources.ApplyResources(this.toolStripButtonOpen, "toolStripButtonOpen");
-            this.toolStripButtonOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonOpen.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonOpen.Name = "toolStripButtonOpen";
             this.toolStripButtonOpen.Click += new System.EventHandler(this.toolStripButtonOpen_Click);
             // 
             // toolStripButtonSave
             // 
             resources.ApplyResources(this.toolStripButtonSave, "toolStripButtonSave");
-            this.toolStripButtonSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonSave.Name = "toolStripButtonSave";
             this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripButtonSave_Click);
             // 
             // toolStripButtonUndo
             // 
             resources.ApplyResources(this.toolStripButtonUndo, "toolStripButtonUndo");
-            this.toolStripButtonUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonUndo.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonUndo.Name = "toolStripButtonUndo";
             this.toolStripButtonUndo.Click += new System.EventHandler(this.toolStripButtonUndo_Click);
             // 
             // toolStripButtonRedo
             // 
             resources.ApplyResources(this.toolStripButtonRedo, "toolStripButtonRedo");
-            this.toolStripButtonRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonRedo.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonRedo.Name = "toolStripButtonRedo";
             this.toolStripButtonRedo.Click += new System.EventHandler(this.toolStripButtonRedo_Click);
             // 
             // toolStripButtonCut
             // 
             resources.ApplyResources(this.toolStripButtonCut, "toolStripButtonCut");
-            this.toolStripButtonCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCut.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonCut.Name = "toolStripButtonCut";
             this.toolStripButtonCut.Click += new System.EventHandler(this.toolStripButtonCut_Click);
             // 
             // toolStripButtonCopy
             // 
             resources.ApplyResources(this.toolStripButtonCopy, "toolStripButtonCopy");
-            this.toolStripButtonCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCopy.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonCopy.Name = "toolStripButtonCopy";
             this.toolStripButtonCopy.Click += new System.EventHandler(this.toolStripButtonCopy_Click);
             // 
             // toolStripButtonPaste
             // 
             resources.ApplyResources(this.toolStripButtonPaste, "toolStripButtonPaste");
-            this.toolStripButtonPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonPaste.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonPaste.Name = "toolStripButtonPaste";
             this.toolStripButtonPaste.Click += new System.EventHandler(this.toolStripButtonPaste_Click);
             // 
             // toolStripButtonDelete
             // 
             resources.ApplyResources(this.toolStripButtonDelete, "toolStripButtonDelete");
-            this.toolStripButtonDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonDelete.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonDelete.Name = "toolStripButtonDelete";
             this.toolStripButtonDelete.Click += new System.EventHandler(this.toolStripButtonDelete_Click);
             // 
@@ -2032,28 +2026,28 @@ namespace XmlNotepad {
             // toolStripButtonNudgeUp
             // 
             resources.ApplyResources(this.toolStripButtonNudgeUp, "toolStripButtonNudgeUp");
-            this.toolStripButtonNudgeUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNudgeUp.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonNudgeUp.Name = "toolStripButtonNudgeUp";
             this.toolStripButtonNudgeUp.Click += new System.EventHandler(this.toolStripButtonNudgeUp_Click);
             // 
             // toolStripButtonNudgeDown
             // 
             resources.ApplyResources(this.toolStripButtonNudgeDown, "toolStripButtonNudgeDown");
-            this.toolStripButtonNudgeDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNudgeDown.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonNudgeDown.Name = "toolStripButtonNudgeDown";
             this.toolStripButtonNudgeDown.Click += new System.EventHandler(this.toolStripButtonNudgeDown_Click);
             // 
             // toolStripButtonNudgeLeft
             // 
             resources.ApplyResources(this.toolStripButtonNudgeLeft, "toolStripButtonNudgeLeft");
-            this.toolStripButtonNudgeLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNudgeLeft.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonNudgeLeft.Name = "toolStripButtonNudgeLeft";
             this.toolStripButtonNudgeLeft.Click += new System.EventHandler(this.toolStripButtonNudgeLeft_Click);
             // 
             // toolStripButtonNudgeRight
             // 
             resources.ApplyResources(this.toolStripButtonNudgeRight, "toolStripButtonNudgeRight");
-            this.toolStripButtonNudgeRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNudgeRight.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.toolStripButtonNudgeRight.Name = "toolStripButtonNudgeRight";
             this.toolStripButtonNudgeRight.Click += new System.EventHandler(this.toolStripButtonNudgeRight_Click);
             // 
@@ -2116,7 +2110,7 @@ namespace XmlNotepad {
             // resizer
             // 
             resources.ApplyResources(this.resizer, "resizer");
-            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.resizer.Border3DStyle = Border3DStyle.Raised;
             this.resizer.Name = "resizer";
             this.resizer.Pane1 = null;
             this.resizer.Pane2 = null;
@@ -2154,7 +2148,7 @@ namespace XmlNotepad {
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             this.Controls.Add(this.comboBoxLocation);
             this.Controls.Add(this.tabControlViews);
             this.Controls.Add(this.toolStrip1);
@@ -2572,7 +2566,17 @@ namespace XmlNotepad {
             get { 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 Debug.Assert(!string.IsNullOrEmpty(path));
-                return path + @"\Microsoft\Xml Notepad\XmlNotepad.settings";
+                return System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
+            }
+        }
+
+        public virtual string LocalConfigFile
+        {
+            get
+            {
+                string path = Path.GetDirectoryName(this.GetType().Assembly.Location);
+                Debug.Assert(!string.IsNullOrEmpty(path));
+                return System.IO.Path.Combine(path, "XmlNotepad.settings");
             }
         }
 
@@ -2585,8 +2589,15 @@ namespace XmlNotepad {
                 path = this.args[0];
                 this.settings.FileName = this.ConfigFile;
             } else {
-                if (File.Exists(this.ConfigFile)) {
-                    settings.Load(this.ConfigFile);
+                // allow user to have a local settings file (xcopy deployable).
+                path = this.LocalConfigFile;
+                if (!File.Exists(path))
+                {
+                    path = this.ConfigFile;
+                }
+
+                if (File.Exists(path)) {
+                    settings.Load(path);
 
                     UserSettings.AddDefaultColors(settings, "LightColors", ColorTheme.Light);
                     UserSettings.AddDefaultColors(settings, "DarkColors", ColorTheme.Dark);
@@ -2605,8 +2616,7 @@ namespace XmlNotepad {
                         updates.Contains("lovettsoftware.com"))
                     {
                         this.settings["UpdateLocation"] = UserSettings.DefaultUpdateLocation;
-                    }
-                    
+                    }                    
                 }
             }            
             this.loading = false;
@@ -2643,7 +2653,12 @@ namespace XmlNotepad {
             this.settings["TaskListSize"] = this.tabControlLists.Height;
             this.settings["TreeViewSize"] = this.xmlTreeView1.ResizerPosition;
             this.settings["RecentFiles"] = this.recentFiles.ToArray();
-            this.settings.Save(this.ConfigFile);
+            var path = this.settings.FileName;
+            if (string.IsNullOrEmpty(path))
+            {
+                path = this.ConfigFile;
+            }
+            this.settings.Save(path);
         }
 
         #region  ISite implementation

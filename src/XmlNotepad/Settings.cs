@@ -108,48 +108,54 @@ namespace XmlNotepad
         public void Load(string filename)
         {
             // we don't use the serializer because it's too slow to fire up.
-            XmlTextReader r = null;
             try 
             {
-                r = new XmlTextReader(filename);                
-                if (r.IsStartElement("Settings"))
+                using (var r = new XmlTextReader(filename))
                 {
-                    while (r.Read())
+                    if (r.IsStartElement("Settings"))
                     {
-                        if (r.NodeType == XmlNodeType.Element)
+                        while (r.Read())
                         {
-                            string name = r.Name;
-                            object o = map[name];
-                            if (o != null) 
+                            if (r.NodeType == XmlNodeType.Element)
                             {
-                                object value = null;
-                                if (o is Hashtable) {
-                                    ReadHashTable(r, (Hashtable)o);
-                                } else if (o is Array) {
-                                    value = ReadArray(name, (Array)o, r);
-                                } else if (o is IXmlSerializable) {
-                                    IXmlSerializable xs = (IXmlSerializable)o;
-                                    xs.ReadXml(r);
-                                } else {
-                                    string s = r.ReadString();
-                                    value = ConvertToType(s, o.GetType());
+                                string name = r.Name;
+                                object o = map[name];
+                                if (o != null)
+                                {
+                                    object value = null;
+                                    if (o is Hashtable)
+                                    {
+                                        ReadHashTable(r, (Hashtable)o);
+                                    }
+                                    else if (o is Array)
+                                    {
+                                        value = ReadArray(name, (Array)o, r);
+                                    }
+                                    else if (o is IXmlSerializable)
+                                    {
+                                        IXmlSerializable xs = (IXmlSerializable)o;
+                                        xs.ReadXml(r);
+                                    }
+                                    else
+                                    {
+                                        string s = r.ReadString();
+                                        value = ConvertToType(s, o.GetType());
+                                    }
+                                    if (value != null)
+                                    {
+                                        this[name] = value;
+                                    }
                                 }
-                                if (value != null) {                                    
-                                    this[name] = value;
-                                }
+                                OnChanged(name);
                             }
-                            OnChanged(name);
                         }
                     }
                 }
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 // Hey, at least we tried!
-            }
-            finally
-            {
-                using (r) {}
+                Debug.WriteLine("Load settings failed: " + ex.Message);
             }
 
             this.FileName = filename;
@@ -208,37 +214,44 @@ namespace XmlNotepad
         public void Save(string filename) {
             // make sure directory exists!
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
-            XmlTextWriter w = null;
             try {
-                w = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
-                w.Formatting = Formatting.Indented;
-                w.WriteStartElement("Settings");
-                foreach (string key in map.Keys) {
-                    object value = map[key];
-                    if (value != null) {
-                        if (value is Hashtable) {
-                            w.WriteStartElement(key); // container element      
-                            WriteHashTable(w, (Hashtable)value);
-                            w.WriteEndElement();
-                        } else if (value is Array) {
-                            WriteArray(w, key, (Array)value);
-                        } else if (value is IXmlSerializable) {
-                            w.WriteStartElement(key); // container element      
-                            IXmlSerializable xs = (IXmlSerializable)value;
-                            xs.WriteXml(w);
-                            w.WriteEndElement();
-                        } else {
-                            string s = ConvertToString(value);
-                            if (s != null) w.WriteElementString(key, s);
+                using (var w = new XmlTextWriter(filename, System.Text.Encoding.UTF8))
+                {
+                    w.Formatting = Formatting.Indented;
+                    w.WriteStartElement("Settings");
+                    foreach (string key in map.Keys)
+                    {
+                        object value = map[key];
+                        if (value != null)
+                        {
+                            if (value is Hashtable)
+                            {
+                                w.WriteStartElement(key); // container element      
+                                WriteHashTable(w, (Hashtable)value);
+                                w.WriteEndElement();
+                            }
+                            else if (value is Array)
+                            {
+                                WriteArray(w, key, (Array)value);
+                            }
+                            else if (value is IXmlSerializable)
+                            {
+                                w.WriteStartElement(key); // container element      
+                                IXmlSerializable xs = (IXmlSerializable)value;
+                                xs.WriteXml(w);
+                                w.WriteEndElement();
+                            }
+                            else
+                            {
+                                string s = ConvertToString(value);
+                                if (s != null) w.WriteElementString(key, s);
+                            }
                         }
                     }
                 }
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
-            } finally {
-                using (w) { 
-                }
-            }
+            } 
         }
 
         private void ReadHashTable(XmlReader r, Hashtable ht) {

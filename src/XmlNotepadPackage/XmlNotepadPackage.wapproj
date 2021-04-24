@@ -63,7 +63,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
-    <AppInstallerUri>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad.Net/2.8.0.29/</AppInstallerUri>
+    <AppInstallerUri>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad.Net/2.8.0.30/</AppInstallerUri>
     <HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
     <AppxPackageDir>D:\git\lovettchris\XmlNotepad\src\XmlNotepadPackage\AppPackages\2.8.0.29\</AppxPackageDir>
   </PropertyGroup>

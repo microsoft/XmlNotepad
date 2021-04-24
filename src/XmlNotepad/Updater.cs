@@ -267,10 +267,10 @@ namespace XmlNotepad
                 this.installer = ie.InnerText;
             }
 
-            XmlElement ie = doc.SelectSingleNode("updates/application/history") as XmlElement;
-            if (ie != null)
+            XmlElement ih = doc.SelectSingleNode("updates/application/history") as XmlElement;
+            if (ih != null)
             {
-                this.history = ie.InnerText;
+                this.history = ih.InnerText;
             }
 
             XmlElement f = doc.SelectSingleNode("updates/application/frequency") as XmlElement;
