@@ -24,9 +24,6 @@ namespace XmlNotepadBuildTasks
         public string AppManifestFile { get; set; }
 
         [Required]
-        public string AppXProjectFile { get; set; }
-
-        [Required]
         public string DropDir { get; set; }
 
         [Required]
@@ -45,7 +42,10 @@ namespace XmlNotepadBuildTasks
                 return false;
             }
 
-            string version = File.ReadAllText(this.MasterVersionFile).Trim();
+            var doc = XDocument.Load(this.MasterVersionFile);
+            var ns = doc.Root.Name.Namespace;
+            var e = doc.Root.Element(ns + "PropertyGroup").Element(ns + "ApplicationVersion");
+            string version = e.Value;
 
             Version v;
             if (string.IsNullOrEmpty(version) || !Version.TryParse(version, out v))
@@ -59,7 +59,6 @@ namespace XmlNotepadBuildTasks
             bool result = UpdateCSharpVersion(v);
             result &= UpdateWixDoc(v);
             result &= UpdatePackageManifest(v);
-            result &= UpdateAppXProject(v);
             result &= CheckUpdatesFile(v);
             return result;
         }
@@ -99,7 +98,8 @@ namespace XmlNotepadBuildTasks
                     Log.LogError("file '" + CSharpVersionFile + "' edit failed: " + ex.Message);
                 }
             }
-            return changed;
+            // return that there is no error.
+            return true;
         }
 
         private bool UpdatePackageManifest(Version v)
@@ -137,48 +137,7 @@ namespace XmlNotepadBuildTasks
                 Log.LogError("file '" + this.AppManifestFile + "' edit failed: " + ex.Message);
                 return false;
             }
-            return true;
-        }
-
-        private bool UpdateAppXProject(Version v)
-        {
-            if (!System.IO.File.Exists(this.AppXProjectFile))
-            {
-                Log.LogError("AppXProjectFile file not found: " + this.AppXProjectFile);
-                return false;
-            }
-
-            try
-            {
-                string newVersion = v.ToString();
-                bool changed = false;
-                XDocument doc = XDocument.Load(this.AppXProjectFile);
-                var ns = doc.Root.Name.Namespace;
-                foreach (var e in doc.Root.Descendants(ns + "AppInstallerUri"))
-                {
-                    var s = e.Value.Trim('/');
-                    var name = Path.GetFileName(s);
-                    s = s.Substring(0, s.Length - name.Length);
-
-                    if (name != newVersion)
-                    {
-                        changed = true;
-                        s += newVersion + "/";
-                        e.Value = s;
-                    }
-                }
-
-                if (changed)
-                {
-                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.AppXProjectFile);
-                    doc.Save(this.AppXProjectFile);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.LogError("file '" + this.AppXProjectFile + "' edit failed: " + ex.Message);
-                return false;
-            }
+            // return that there is no error.
             return true;
         }
 
@@ -207,6 +166,7 @@ namespace XmlNotepadBuildTasks
                 Log.LogError("file '" + this.WixFile + "' edit failed: " + ex.Message);
                 return false;
             }
+            // return that there is no error.
             return true;
         }
 
@@ -248,6 +208,7 @@ namespace XmlNotepadBuildTasks
                 }
             }
 
+            // return that there is no error.
             return true;
         }
 
@@ -441,6 +402,7 @@ namespace XmlNotepadBuildTasks
                 Log.LogError("WIX file edit failed: " + ex.Message);
                 return false;
             }
+            // return that there is no error.
             return true;
         }
     }

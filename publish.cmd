@@ -1,7 +1,7 @@
 @echo off
 cd %~dp0
 
-for /f "usebackq" %%i in (src\Version\Version.txt) do (
+for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version.props`) do (
     set VERSION=%%i
 )
 
