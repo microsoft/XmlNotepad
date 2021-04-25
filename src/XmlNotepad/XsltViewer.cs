@@ -1,22 +1,16 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Data;
 using System.IO;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
-using System.Linq;
-using System.Xml.Linq;
-using System.Net;
-using System.Security;
-using System.Security.Permissions;
 
-namespace XmlNotepad {
+namespace XmlNotepad
+{
     public partial class XsltViewer : UserControl {
         Uri baseUri;
         XslCompiledTransform defaultss;
@@ -54,6 +48,7 @@ namespace XmlNotepad {
             toolTip1.SetToolTip(this.OutputFileName, SR.XslOutputFileNameTooltip);
 
             BrowseButton.Click += new EventHandler(BrowseButton_Click);
+            BrowseOutputButton.Click += new EventHandler(BrowseOutputButton_Click);
             this.SourceFileName.KeyDown += new KeyEventHandler(OnSourceFileNameKeyDown);
             this.OutputFileName.KeyDown += new KeyEventHandler(OnOutputFileNameKeyDown);
 
@@ -214,6 +209,61 @@ namespace XmlNotepad {
             DisplayXsltResults(doc);
         }
 
+        private string GetOutputFileFilter()
+        {
+            // return something like this:
+            // XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|All files (*.*)|*.*
+            var ext = GetDefaultOutputExtension();
+            switch (ext)
+            {
+                case ".xml":
+                    return "XML files(*.xml) | *.xml|All files (*.*)|*.*";
+                case ".htm":
+                    return "HTML files(*.htm;*.html) | *.htm;*.html|All files (*.*)|*.*";
+                default:
+                    return "Text files(*.txt) | *.txt|All files (*.*)|*.*";
+            }
+        }
+
+        private string MakeRelative(string path)
+        {
+            var uri = new Uri(path);
+            var relative = this.baseUri.MakeRelativeUri(uri);
+            return relative.OriginalString;
+        }
+
+        private string GetDefaultOutputExtension()
+        {
+            string ext = ".xml";
+            try
+            {
+                if (this.xsltdoc == null)
+                {
+                    string path = null;
+                    if (this.showFileStrip)
+                    {
+                        path = this.SourceFileName.Text.Trim();
+                    }
+                    var resolved = new Uri(baseUri, path);
+                    this.xsltdoc = new XmlDocument();
+                    this.xsltdoc.Load(resolved.AbsoluteUri);
+                }
+                var method = GetOutputMethod(this.xsltdoc);
+                if (method.ToLower() == "html")
+                {
+                    ext = ".htm";
+                }
+                else if (method.ToLower() == "text")
+                {
+                    ext = ".txt";
+                }
+            } 
+            catch (Exception)
+            {
+            }
+            return ext;
+        }
+
         public void DisplayXsltResults(XmlDocument context) {
 
             Uri resolved = null;
@@ -250,24 +300,14 @@ namespace XmlNotepad {
                     transform = xslt;
                 }
 
-                var method = GetOutputMethod(this.xsltdoc);
-
                 if (string.IsNullOrEmpty(outpath) && !DisableOutputFile)
                 {
                     if (!string.IsNullOrEmpty(path))
                     {
                         // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
                         // XslCompiledTransform doesn't give us that so we need to get it outselves.
-                        
-                        string ext = ".xml";
-                        if (method.ToLower() == "html")
-                        {
-                            ext = ".htm";
-                        }
-                        else if (method.ToLower() == "text")
-                        {
-                            ext = ".txt";
-                        }
+
+                        var ext = GetDefaultOutputExtension();
                         outpath = Path.GetFileNameWithoutExtension(path) + "_output" + ext;
 
                         var safeUri = GetWritableBaseUri(outpath);
@@ -452,7 +492,17 @@ namespace XmlNotepad {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = SR.XSLFileFilter;
             if (ofd.ShowDialog(this) == DialogResult.OK) {
-                this.SourceFileName.Text = ofd.FileName;
+                this.SourceFileName.Text = MakeRelative(ofd.FileName);
+            }
+        }
+
+        private void BrowseOutputButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = GetOutputFileFilter();
+            if (ofd.ShowDialog(this) == DialogResult.OK)
+            {
+                this.OutputFileName.Text = MakeRelative(ofd.FileName);
             }
         }
 
@@ -510,7 +560,6 @@ namespace XmlNotepad {
                 System.Windows.Forms.MessageBox.Show(e.Message);
             }
         }
-
     }
 
     [CLSCompliant(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

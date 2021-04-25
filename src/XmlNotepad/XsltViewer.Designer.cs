@@ -34,6 +34,7 @@ namespace XmlNotepad {
             this.TransformButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.OutputFileName = new System.Windows.Forms.TextBox();
+            this.BrowseOutputButton = new System.Windows.Forms.Button();
             this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
@@ -57,9 +58,10 @@ namespace XmlNotepad {
             this.tableLayoutPanel1.Controls.Add(this.SourceFileName, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.BrowseButton, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.TransformButton, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.TransformButton, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.OutputFileName, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.BrowseOutputButton, 6, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             // 
             // label1
@@ -101,6 +103,12 @@ namespace XmlNotepad {
             resources.ApplyResources(this.OutputFileName, "OutputFileName");
             this.OutputFileName.Name = "OutputFileName";
             // 
+            // BrowseOutputButton
+            // 
+            resources.ApplyResources(this.BrowseOutputButton, "BrowseOutputButton");
+            this.BrowseOutputButton.Name = "BrowseOutputButton";
+            this.BrowseOutputButton.UseVisualStyleBackColor = true;
+            // 
             // WebBrowser1
             // 
             resources.ApplyResources(this.WebBrowser1, "WebBrowser1");
@@ -138,5 +146,6 @@ namespace XmlNotepad {
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox OutputFileName;
+        private System.Windows.Forms.Button BrowseOutputButton;
     }
 }
