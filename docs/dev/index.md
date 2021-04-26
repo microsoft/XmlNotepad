@@ -87,4 +87,4 @@ This package provides the `winget install xmlnotepad` setup option.
 
 ### Design
 
-See [XML Notepad Design ](dev/design.md) for more detailed information about how this application is designed.
+See [XML Notepad Design ](design.md) for more detailed information about how this application is designed.
