@@ -22,7 +22,11 @@ namespace XmlNotepad {
         }
 
         void AddToTable(XmlNode node) {
-            lineTable[node] = new LineInfo(reader);
+            // stop this table from eating up too much memory on very large XML documents.
+            if (lineTable.Count < 1000000)
+            {
+                lineTable[node] = new LineInfo(reader);
+            }
         }
 
         public LineInfo GetLineInfo(XmlNode node) {

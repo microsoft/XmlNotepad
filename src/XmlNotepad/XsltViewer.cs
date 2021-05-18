@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -11,10 +12,10 @@ using System.Xml.Xsl;
 
 namespace XmlNotepad
 {
-    public partial class XsltViewer : UserControl {
+    public partial class XsltViewer : UserControl
+    {
         Uri baseUri;
         XslCompiledTransform defaultss;
-        XslCompiledTransform xslt;
         Uri xsltUri;
         DateTime loaded;
         XsltSettings settings;
@@ -22,14 +23,24 @@ namespace XmlNotepad
         ISite site;
         XmlCache model;
         XmlDocument doc;
+        XslCompiledTransform xslt;
         XmlDocument xsltdoc;
         bool showFileStrip = true;
         string defaultSSResource = "XmlNotepad.DefaultSS.xslt";
         IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
         int stripHeight;
         string html;
+        Stopwatch urlWatch = new Stopwatch();
+        PerformanceInfo info = null;
 
-        public XsltViewer() {
+        public class PerformanceInfo
+        {
+            public long XsltMilliseconds;
+            public long BrowserMilliseconds;
+        }
+
+        public XsltViewer()
+        {
             this.SetStyle(ControlStyles.ResizeRedraw, true);
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -38,7 +49,6 @@ namespace XmlNotepad
 
             stripHeight = this.WebBrowser1.Top;
 
-            xslt = new XslCompiledTransform();
             settings = new XsltSettings(true, true);
             resolver = new XmlUrlResolver();
 
@@ -54,9 +64,12 @@ namespace XmlNotepad
 
             this.WebBrowser1.ScriptErrorsSuppressed = true;
             this.WebBrowser1.WebBrowserShortcutsEnabled = true;
+            this.WebBrowser1.DocumentCompleted += OnWebDocumentCompleted;
 
             TransformButton.SizeChanged += TransformButton_SizeChanged;
         }
+
+        public event EventHandler<PerformanceInfo> Completed;
 
         private void TransformButton_SizeChanged(object sender, EventArgs e)
         {
@@ -72,19 +85,24 @@ namespace XmlNotepad
             OutputFileName.Margin = new Padding(0, center, 3, 3);
         }
 
-        public string DefaultStylesheetResource {
+        public string DefaultStylesheetResource
+        {
             get { return this.defaultSSResource; }
             set { this.defaultSSResource = value; }
         }
 
         public bool DisableOutputFile { get; set; }
 
-        public bool ShowFileStrip {
+        public bool ShowFileStrip
+        {
             get { return this.showFileStrip; }
-            set {
-                if (value != this.showFileStrip) {
+            set
+            {
+                if (value != this.showFileStrip)
+                {
                     this.showFileStrip = value;
-                    if (value) {
+                    if (value)
+                    {
                         AnchorStyles saved = this.WebBrowser1.Anchor;
                         this.WebBrowser1.Anchor = AnchorStyles.None;
                         this.WebBrowser1.Location = new Point(0, stripHeight);
@@ -92,7 +110,9 @@ namespace XmlNotepad
                         this.WebBrowser1.Anchor = saved;
                         this.panel1.Controls.Remove(this.tableLayoutPanel1);
                         this.panel1.Controls.SetChildIndex(this.tableLayoutPanel1, 0);
-                    } else {
+                    }
+                    else
+                    {
                         AnchorStyles saved = this.WebBrowser1.Anchor;
                         this.WebBrowser1.Location = new Point(0, 0);
                         this.WebBrowser1.Height = this.Height;
@@ -107,9 +127,11 @@ namespace XmlNotepad
             }
         }
 
-        void OnSourceFileNameKeyDown(object sender, KeyEventArgs e) {
+        void OnSourceFileNameKeyDown(object sender, KeyEventArgs e)
+        {
             this.OutputFileName.Text = ""; // need to recompute this then...
-            if (e.KeyCode == Keys.Enter) {
+            if (e.KeyCode == Keys.Enter)
+            {
                 this.DisplayXsltResults();
             }
         }
@@ -123,13 +145,18 @@ namespace XmlNotepad
         }
 
 
-        XslCompiledTransform GetDefaultStylesheet() {
-            if (defaultss != null) {
+        XslCompiledTransform GetDefaultStylesheet()
+        {
+            if (defaultss != null)
+            {
                 return defaultss;
             }
-            using (Stream stream = this.GetType().Assembly.GetManifestResourceStream(this.defaultSSResource)) {
-                if (null != stream) {
-                    using (XmlReader reader = XmlReader.Create(stream)) {
+            using (Stream stream = this.GetType().Assembly.GetManifestResourceStream(this.defaultSSResource))
+            {
+                if (null != stream)
+                {
+                    using (XmlReader reader = XmlReader.Create(stream))
+                    {
                         XslCompiledTransform t = new XslCompiledTransform();
                         t.Load(reader);
                         defaultss = t;
@@ -142,20 +169,24 @@ namespace XmlNotepad
             }
             return defaultss;
         }
-        protected override void OnPaint(PaintEventArgs e) {
-            if (this.showFileStrip && this.WebBrowser1.Top > 0 && this.Width > 0) {
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (this.showFileStrip && this.WebBrowser1.Top > 0 && this.Width > 0)
+            {
                 Graphics g = e.Graphics;
                 Rectangle r = new Rectangle(0, 0, this.Width, this.WebBrowser1.Top);
                 Color c1 = Color.FromArgb(250, 249, 245);
                 Color c2 = Color.FromArgb(192, 192, 168);
                 Color s1 = SystemColors.ControlLight;
-                using (LinearGradientBrush brush = new LinearGradientBrush(r, c1, c2, LinearGradientMode.Vertical)) {
+                using (LinearGradientBrush brush = new LinearGradientBrush(r, c1, c2, LinearGradientMode.Vertical))
+                {
                     g.FillRectangle(brush, r);
                 }
             }
         }
 
-        public void SetSite(ISite site) {
+        public void SetSite(ISite site)
+        {
             this.site = site;
             IServiceProvider sp = (IServiceProvider)site;
             this.resolver = new XmlProxyResolver(sp);
@@ -164,14 +195,18 @@ namespace XmlNotepad
             this.model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
         }
 
-        void OnModelChanged(object sender, ModelChangedEventArgs e) {
+        void OnModelChanged(object sender, ModelChangedEventArgs e)
+        {
             OnModelChanged();
         }
 
-        void OnModelChanged() {
+        void OnModelChanged()
+        {
             this.doc = model.Document;
-            try {
-                if (!string.IsNullOrEmpty(model.FileName)) {
+            try
+            {
+                if (!string.IsNullOrEmpty(model.FileName))
+                {
                     var uri = new Uri(model.FileName);
                     if (uri != this.baseUri)
                     {
@@ -180,32 +215,42 @@ namespace XmlNotepad
                     }
                 }
                 this.SourceFileName.Text = model.XsltFileName;
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
             }
         }
 
-        Uri GetBaseUri() {
-            if (this.baseUri == null) {
+        Uri GetBaseUri()
+        {
+            if (this.baseUri == null)
+            {
                 OnModelChanged();
-                if (this.baseUri == null) {
+                if (this.baseUri == null)
+                {
                     this.baseUri = new Uri(Application.StartupPath + "/");
                 }
             }
             return this.baseUri;
         }
 
-        protected override void OnLayout(LayoutEventArgs e) {
+        protected override void OnLayout(LayoutEventArgs e)
+        {
             base.OnLayout(e);
-            if (showFileStrip) {
+            if (showFileStrip)
+            {
                 this.WebBrowser1.Top = this.tableLayoutPanel1.Bottom;
                 this.WebBrowser1.Height = this.Height - this.tableLayoutPanel1.Height;
-            } else {
+            }
+            else
+            {
                 this.WebBrowser1.Top = 0;
                 this.WebBrowser1.Height = this.Height;
             }
         }
 
-        public void DisplayXsltResults() {
+        public void DisplayXsltResults()
+        {
             DisplayXsltResults(doc);
         }
 
@@ -257,20 +302,22 @@ namespace XmlNotepad
                 {
                     ext = ".txt";
                 }
-            } 
+            }
             catch (Exception)
             {
             }
             return ext;
         }
 
-        public void DisplayXsltResults(XmlDocument context) {
-
+        public void DisplayXsltResults(XmlDocument context)
+        {
             Uri resolved = null;
-            try {
+            try
+            {
                 XslCompiledTransform transform;
                 string path = null;
-                if (this.showFileStrip) {
+                if (this.showFileStrip)
+                {
                     path = this.SourceFileName.Text.Trim();
                 }
                 string outpath = null;
@@ -278,17 +325,23 @@ namespace XmlNotepad
                 {
                     outpath = this.OutputFileName.Text.Trim();
                 }
-                if (string.IsNullOrEmpty(path)) {
+                if (string.IsNullOrEmpty(path))
+                {
                     transform = GetDefaultStylesheet();
-                } else {
+                }
+                else
+                {
                     resolved = new Uri(baseUri, path);
-                    if (resolved != this.xsltUri || IsModified()) {
+                    if (resolved != this.xsltUri || IsModified())
+                    {
+                        xslt = new XslCompiledTransform();
                         this.loaded = DateTime.Now;
                         settings.EnableScript = (trusted.ContainsKey(resolved));
                         XmlReaderSettings rs = new XmlReaderSettings();
                         rs.DtdProcessing = model.GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
                         rs.XmlResolver = resolver;
-                        using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs)) {
+                        using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
+                        {
                             xslt.Load(r, settings, resolver);
                         }
 
@@ -296,7 +349,6 @@ namespace XmlNotepad
                         this.xsltdoc = new XmlDocument();
                         this.xsltdoc.Load(resolved.AbsoluteUri);
                     }
-
                     transform = xslt;
                 }
 
@@ -361,7 +413,13 @@ namespace XmlNotepad
                         {
                             using (FileStream writer = new FileStream(outpath, FileMode.OpenOrCreate, FileAccess.Write))
                             {
+                                Stopwatch watch = new Stopwatch();
+                                watch.Start();
                                 transform.Transform(xmlReader, null, writer);
+                                watch.Stop();
+                                info = new PerformanceInfo();
+                                info.XsltMilliseconds = watch.ElapsedMilliseconds;
+                                Debug.WriteLine("Transform in {0} milliseconds", watch.ElapsedMilliseconds);
                                 this.xsltUri = resolved;
                             }
                         }
@@ -369,18 +427,24 @@ namespace XmlNotepad
                         DisplayFile(outpath);
                     }
                 }
-            } catch (System.Xml.Xsl.XsltException x) {
-                if (x.Message.Contains("XsltSettings")) {
+            }
+            catch (System.Xml.Xsl.XsltException x)
+            {
+                if (x.Message.Contains("XsltSettings"))
+                {
                     if (!trusted.ContainsKey(resolved) &&
                         MessageBox.Show(this, SR.XslScriptCodePrompt, SR.XslScriptCodeCaption,
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes) {
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    {
                         trusted[resolved] = true;
                         DisplayXsltResults();
                         return;
                     }
                 }
                 WriteError(x);
-            } catch (Exception x) {
+            }
+            catch (Exception x)
+            {
                 WriteError(x);
             }
         }
@@ -427,7 +491,7 @@ namespace XmlNotepad
             }
 
             // then we need to figure out the default method which is xml unless there's an html element here
-            foreach(XmlNode node in xsltdoc.DocumentElement.ChildNodes)
+            foreach (XmlNode node in xsltdoc.DocumentElement.ChildNodes)
             {
                 if (node is XmlElement child)
                 {
@@ -454,8 +518,10 @@ namespace XmlNotepad
             return method;
         }
 
-        bool IsModified() {
-            if (this.xsltUri.IsFile) {
+        bool IsModified()
+        {
+            if (this.xsltUri.IsFile)
+            {
                 string path = this.xsltUri.LocalPath;
                 DateTime lastWrite = File.GetLastWriteTime(path);
                 return this.loaded < lastWrite;
@@ -463,20 +529,24 @@ namespace XmlNotepad
             return false;
         }
 
-        private void WriteError(Exception e) {
+        private void WriteError(Exception e)
+        {
             StringWriter writer = new StringWriter();
             writer.WriteLine("<html><body><h3>");
             writer.WriteLine(SR.TransformErrorCaption);
             writer.WriteLine("</h3></body></html>");
-            while (e != null) {
+            while (e != null)
+            {
                 writer.WriteLine(e.Message);
                 e = e.InnerException;
             }
             Display(writer.ToString());
         }
 
-        private void Display(string content) {
-            if (content != this.html) {
+        private void Display(string content)
+        {
+            if (content != this.html)
+            {
                 this.WebBrowser1.DocumentText = content;
                 this.html = content;
             }
@@ -485,13 +555,32 @@ namespace XmlNotepad
         private void DisplayFile(string filename)
         {
             this.html = null;
+            urlWatch.Reset();
+            urlWatch.Start();
             this.WebBrowser1.Url = new Uri(filename);
         }
 
-        private void BrowseButton_Click(object sender, EventArgs e) {
+        private void OnWebDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            urlWatch.Stop();
+            if (info != null)
+            {
+                info.BrowserMilliseconds = urlWatch.ElapsedMilliseconds;
+                if (Completed != null)
+                {
+                    Completed(this, info);
+                }
+                Debug.WriteLine("Browser loaded in {0} milliseconds", urlWatch.ElapsedMilliseconds);
+                info = null;
+            }
+        }
+
+        private void BrowseButton_Click(object sender, EventArgs e)
+        {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = SR.XSLFileFilter;
-            if (ofd.ShowDialog(this) == DialogResult.OK) {
+            if (ofd.ShowDialog(this) == DialogResult.OK)
+            {
                 this.SourceFileName.Text = MakeRelative(ofd.FileName);
             }
         }
@@ -506,64 +595,80 @@ namespace XmlNotepad
             }
         }
 
-        private void TransformButton_Click(object sender, EventArgs e) {
+        private void TransformButton_Click(object sender, EventArgs e)
+        {
             this.html = null; // force update of html
             this.DisplayXsltResults();
         }
 
         private Guid cmdGuid = new Guid("ED016940-BD5B-11CF-BA4E-00C04FD70816");
 
-        private enum OLECMDEXECOPT {
+        private enum OLECMDEXECOPT
+        {
 #pragma warning disable CA1712 // Do not prefix enum values with type name
-            OLECMDEXECOPT_DODEFAULT         = 0,
-            OLECMDEXECOPT_PROMPTUSER        = 1,
-            OLECMDEXECOPT_DONTPROMPTUSER    = 2,
-            OLECMDEXECOPT_SHOWHELP          = 3
+            OLECMDEXECOPT_DODEFAULT = 0,
+            OLECMDEXECOPT_PROMPTUSER = 1,
+            OLECMDEXECOPT_DONTPROMPTUSER = 2,
+            OLECMDEXECOPT_SHOWHELP = 3
 #pragma warning restore CA1712 // Do not prefix enum values with type name
         }
 
-        private enum MiscCommandTarget {
+        private enum MiscCommandTarget
+        {
             Find = 1,
             ViewSource,
             Options
         }
-	
-        private mshtml.HTMLDocument GetDocument() {
-            try {
+
+        private mshtml.HTMLDocument GetDocument()
+        {
+            try
+            {
                 mshtml.HTMLDocument htm = (mshtml.HTMLDocument)this.WebBrowser1.Document.DomDocument;
                 return htm;
-            } catch {
+            }
+            catch
+            {
                 throw (new Exception("Cannot retrieve the document from the WebBrowser control"));
             }
         }
 
-        public void ViewSource() {
+        public void ViewSource()
+        {
             IOleCommandTarget cmdt;
             Object o = new object();
-            try {
+            try
+            {
                 cmdt = (IOleCommandTarget)GetDocument();
                 cmdt.Exec(ref cmdGuid, (uint)MiscCommandTarget.ViewSource,
                 (uint)OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT, ref o, ref o);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.Windows.Forms.MessageBox.Show(e.Message);
             }
         }
 
-        public void Find() {
+        public void Find()
+        {
             IOleCommandTarget cmdt;
             Object o = new object();
-            try {
+            try
+            {
                 cmdt = (IOleCommandTarget)GetDocument();
                 cmdt.Exec(ref cmdGuid, (uint)MiscCommandTarget.Find,
                 (uint)OLECMDEXECOPT.OLECMDEXECOPT_DODEFAULT, ref o, ref o);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.Windows.Forms.MessageBox.Show(e.Message);
             }
         }
     }
 
     [CLSCompliant(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct OLECMDTEXT {
+    public struct OLECMDTEXT
+    {
         public uint cmdtextf;
         public uint cwActual;
         public uint cwBuf;
@@ -572,7 +677,8 @@ namespace XmlNotepad
     }
 
     [CLSCompliant(false), StructLayout(LayoutKind.Sequential)]
-    public struct OLECMD {
+    public struct OLECMD
+    {
         public uint cmdID;
         public uint cmdf;
     }
@@ -580,7 +686,8 @@ namespace XmlNotepad
     // Interop definition for IOleCommandTarget. 
     [CLSCompliant(false), ComImport, Guid("b722bccb-4e68-101b-a2bc-00aa00404770"),
     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IOleCommandTarget {
+    public interface IOleCommandTarget
+    {
         //IMPORTANT: The order of the methods is critical here. You
         //perform early binding in most cases, so the order of the methods
         //here MUST match the order of their vtable layout (which is determined

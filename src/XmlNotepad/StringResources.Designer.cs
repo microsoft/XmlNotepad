@@ -1383,6 +1383,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transformed in {0} ms and browser loaded in {1} ms.
+        /// </summary>
+        internal static string TransformedTimeStatus {
+            get {
+                return ResourceManager.GetString("TransformedTimeStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Transforming XML.
         /// </summary>
         internal static string TransformErrorCaption {

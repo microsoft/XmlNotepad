@@ -9,6 +9,12 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.31">
+      <bug>
+          Fix memory usage bug to do with loading huge XML files.
+          Report XSLT transform times in the status bar.
+      </bug>
+  </version>
   <version number="2.8.0.30">
     <feature>
       Enable [github issue #86](https://github.com/microsoft/XmlNotepad/issues/86) - allow an XmlNotepad.settings

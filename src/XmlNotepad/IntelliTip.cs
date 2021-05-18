@@ -187,7 +187,6 @@ namespace XmlNotepad {
             bool outside = !lastHover.Contains(local);
             if (outside)
             {
-                Debug.WriteLine("cursor is outside hover rect = " + local.ToString());
                 // if mouse moves outside the hover rect then we are not hovering.
                 Stop();
                 Hide();
@@ -198,7 +197,6 @@ namespace XmlNotepad {
             {
                 if (resetpending)
                 {
-                    Debug.WriteLine("last hover rect = " + lastHover.ToString());
                     resetpending = false;
                     lastHover = new Rectangle(local, Size.Empty);
                     lastHover.Inflate(this.hoverWidth / 2, this.hoverHeight / 2);

@@ -845,4 +845,8 @@ Do you want to enable execution of this script code?</value>
   <data name="UpToDateTooltip" xml:space="preserve">
     <value>You have the latest version: {0}</value>
   </data>
+  <data name="TransformedTimeStatus" xml:space="preserve">
+    <value>Transformed in {0} ms and browser loaded in {1} ms</value>
+    <comment>status text</comment>
+  </data>
 </root>

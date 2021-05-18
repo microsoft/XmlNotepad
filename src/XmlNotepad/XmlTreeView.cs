@@ -30,6 +30,7 @@ namespace XmlNotepad
         XmlTreeNode dragged;
         XmlTreeViewDropFeedback feedback;
         IntelliTip tip;
+        DelayedActions delayedActions = new DelayedActions();
         private NodeTextView nodeTextView;
         private TreeView myTreeView;
         private System.Windows.Forms.ImageList imageList1;
@@ -1157,19 +1158,11 @@ namespace XmlNotepad
         }
 
         private void settings_Changed(object sender, string name)
-        {
-            ISynchronizeInvoke si = (ISynchronizeInvoke)this;
-            if (si.InvokeRequired)
-            {
-                this.Invoke(new SettingsEventHandler(OnSettingsChanged), new object[] { sender, name });
-            }
-            else
-            {
-                OnSettingsChanged(sender, name);
-            }
+        {           
+            delayedActions.StartDelayedAction("UpdateSettings", OnSettingsChanged, TimeSpan.FromMilliseconds(100));
         }
 
-        private void OnSettingsChanged(object sender, string name)
+        private void OnSettingsChanged()
         {
             // change the node colors.
             var theme = (ColorTheme)this.settings["Theme"];

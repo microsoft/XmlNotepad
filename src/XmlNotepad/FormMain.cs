@@ -248,6 +248,7 @@ namespace XmlNotepad
             this.redoLabel = this.redoToolStripMenuItem.Text;
 
             this.xsltViewer.SetSite(this);
+            this.xsltViewer.Completed += OnXsltComplete;
             this.dynamicHelpViewer.SetSite(this);
 
             CreateTabControl();
@@ -323,6 +324,11 @@ namespace XmlNotepad
 
             System.Threading.Tasks.Task.Run(CheckNetwork);
             System.Threading.Tasks.Task.Run((Action)CheckNetwork);
+        }
+
+        private void OnXsltComplete(object sender, XsltViewer.PerformanceInfo e)
+        {
+            ShowStatus(string.Format(SR.TransformedTimeStatus, e.XsltMilliseconds, e.BrowserMilliseconds));
         }
 
         private void CheckNetwork()
@@ -2298,6 +2304,12 @@ namespace XmlNotepad
 
         public virtual void ShowStatus(string msg) {
             this.statusBarPanelMessage.Text = msg;
+            this.delayedActions.StartDelayedAction("ClearStatus", ClearStatus, TimeSpan.FromSeconds(20));
+        }
+
+        private void ClearStatus()
+        {
+            this.statusBarPanelMessage.Text = "";
         }
 
         public virtual void Open(string filename) {
@@ -2526,7 +2538,6 @@ namespace XmlNotepad
             }            
             this.Text = caption;
             sourceToolStripMenuItem.Enabled = this.model.FileName != null;
-            ShowStatus("");
         }
 
         void OnFileChanged(object sender, EventArgs e) {
@@ -2553,7 +2564,6 @@ namespace XmlNotepad
         }
 
         private void undoManager_StateChanged(object sender, EventArgs e) {
-            this.ShowStatus("");
             this.undoToolStripMenuItem.Enabled = toolStripButtonUndo.Enabled = this.undoManager.CanUndo;
             this.redoToolStripMenuItem.Enabled = toolStripButtonRedo.Enabled = this.undoManager.CanRedo;
             Command cmd = this.undoManager.Peek();
@@ -2782,7 +2792,6 @@ namespace XmlNotepad
             }
             XmlDocument xmlDoc = xmlTreeView1.SelectedNode.GetDocumentation();
             if (this.dynamicHelpViewer.Visible) {
-                ShowStatus("");
                 helpAvailableHint = false;
                 if (null == xmlDoc) {
                     xmlDoc = new XmlDocument();
