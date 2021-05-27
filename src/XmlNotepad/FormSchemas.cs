@@ -196,6 +196,7 @@ namespace XmlNotepad {
 
         private void addSchemasToolStripMenuItem_Click(object sender, EventArgs e) {
             this.openFileDialog1.Multiselect = true;
+            this.openFileDialog1.FileName = "";
             if (this.openFileDialog1.ShowDialog(this) == DialogResult.OK) {
                 Push(new SchemaDialogAddFiles(this.dataGridView1, this.items, this.openFileDialog1.FileNames));                
             }

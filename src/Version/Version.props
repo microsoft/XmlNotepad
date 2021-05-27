@@ -2,6 +2,6 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ApplicationRevision>31</ApplicationRevision>
-    <ApplicationVersion>2.8.0.31</ApplicationVersion>
+    <ApplicationVersion>2.8.0.32</ApplicationVersion>
   </PropertyGroup>
 </Project>

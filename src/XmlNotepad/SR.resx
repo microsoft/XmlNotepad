@@ -849,4 +849,16 @@ Do you want to enable execution of this script code?</value>
     <value>Transformed in {0} ms and browser loaded in {1} ms</value>
     <comment>status text</comment>
   </data>
+  <data name="EditingCategory" xml:space="preserve">
+    <value>Editor</value>
+    <comment>Property grid category</comment>
+  </data>
+  <data name="TextEditorDescription" xml:space="preserve">
+    <value>The text editor to use for View Source option</value>
+    <comment>Property grid description</comment>
+  </data>
+  <data name="TextEditorProperty" xml:space="preserve">
+    <value>Default text editor</value>
+    <comment>Property grid name</comment>
+  </data>
 </root>

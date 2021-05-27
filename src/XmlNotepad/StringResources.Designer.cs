@@ -450,6 +450,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editor.
+        /// </summary>
+        internal static string EditingCategory {
+            get {
+                return ResourceManager.GetString("EditingCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Name.
         /// </summary>
         internal static string EditNameCommand {
@@ -1316,6 +1325,24 @@ namespace XmlNotepad {
         internal static string TextColorDescription {
             get {
                 return ResourceManager.GetString("TextColorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The text editor to use for View Source option.
+        /// </summary>
+        internal static string TextEditorDescription {
+            get {
+                return ResourceManager.GetString("TextEditorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default text editor.
+        /// </summary>
+        internal static string TextEditorProperty {
+            get {
+                return ResourceManager.GetString("TextEditorProperty", resourceCulture);
             }
         }
         

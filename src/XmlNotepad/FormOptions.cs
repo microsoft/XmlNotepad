@@ -229,6 +229,7 @@ namespace XmlNotepad
         bool xmlDiffIgnoreXmlDecl;
         bool xmlDiffIgnoreDtd;
         bool allowAnalytics;
+        string textEditor;
 
         public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
 
@@ -262,6 +263,7 @@ namespace XmlNotepad
             this.xmlDiffIgnoreXmlDecl = (bool)this.settings["XmlDiffIgnoreXmlDecl"];
             this.xmlDiffIgnoreDtd = (bool)this.settings["XmlDiffIgnoreDtd"];
             this.allowAnalytics = (bool)this.settings["AllowAnalytics"];
+            this.textEditor = (string)this.settings["TextEditor"];
         }
 
         private void LoadColors()
@@ -385,6 +387,7 @@ namespace XmlNotepad
             this.settings["XmlDiffIgnoreDtd"] = this.xmlDiffIgnoreDtd;
 
             this.settings["AllowAnalytics"] = this.allowAnalytics;
+            this.settings["TextEditor"] = this.textEditor;
 
             this.settings.OnChanged("Colors");
 
@@ -800,6 +803,25 @@ namespace XmlNotepad
             get { return this.xmlDiffIgnoreDtd; }
             set { this.xmlDiffIgnoreDtd = value; }
         }
+
+        [SRCategoryAttribute("EditingCategory")]
+        [LocDisplayName("TextEditorProperty")]
+        [SRDescriptionAttribute("TextEditorDescription")]
+        public string Editor
+        {
+            get
+            {
+                return this.textEditor;
+            }
+            set
+            {
+                if (this.textEditor != value)
+                {
+                    this.textEditor = value;
+                }
+            }
+        }
+
 
     }
 

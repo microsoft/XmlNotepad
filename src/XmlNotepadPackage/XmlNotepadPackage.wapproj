@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(SolutionDir)/Version/Version.props"/>
+  <Import Project="$(SolutionDir)/Version/Version.props" />
   <PropertyGroup Condition="'$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '15.0'">
     <VisualStudioVersion>15.0</VisualStudioVersion>
   </PropertyGroup>
@@ -66,7 +66,7 @@
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
     <AppInstallerUri>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad.Net/$(ApplicationVersion)/</AppInstallerUri>
     <HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
-    <AppxPackageDir>$(SolutionDir)\XmlNotepadPackage\AppPackages\$(ApplicationVersion)\</AppxPackageDir>
+    <AppxPackageDir>D:\git\lovettchris\XmlNotepad\src\XmlNotepadPackage\AppPackages\2.8.0.32\</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AppxBundle>Always</AppxBundle>

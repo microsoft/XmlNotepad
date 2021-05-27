@@ -416,6 +416,10 @@ namespace XmlNotepad
             // analytics question has been answered...
             this.Settings["AllowAnalytics"] = false;
             this.Settings["AnalyticsClientId"] = "";
+
+            // default text editor
+            string sysdir = Environment.SystemDirectory;
+            this.Settings["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
         }
 
         public FormMain(string[] args)
@@ -2868,10 +2872,19 @@ namespace XmlNotepad
 
         protected virtual void OpenNotepad(string path) {
             if (this.SaveIfDirty(true)){
-                string sysdir = Environment.SystemDirectory;
-                string notepad = Path.Combine(sysdir, "notepad.exe");
-                if (File.Exists(notepad)){
-                    ProcessStartInfo pi = new ProcessStartInfo(notepad, path);
+                if (path.StartsWith("http://") || path.StartsWith("https://") || path.StartsWith("ftp://"))
+                {
+                    path = System.IO.Path.GetTempFileName();
+                    model.SaveCopy(path);
+                }
+                string notepad = (string)this.Settings["TextEditor"];
+                if (string.IsNullOrEmpty(notepad) || !File.Exists(notepad))
+                {
+                    string sysdir = Environment.SystemDirectory;
+                    notepad = Path.Combine(sysdir, "notepad.exe");
+                }
+                if (File.Exists(notepad)) {
+                    ProcessStartInfo pi = new ProcessStartInfo(notepad, "\"" + path + "\"");
                     Process.Start(pi);
                 }
             }

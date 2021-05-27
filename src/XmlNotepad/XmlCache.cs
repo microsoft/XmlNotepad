@@ -328,6 +328,15 @@ namespace XmlNotepad
 
         public void Save(string name)
         {
+            SaveCopy(name);
+            this.dirty = false;
+            this.filename = name;
+            this.lastModified = this.LastModTime;
+            FireModelChanged(ModelChangeType.Saved, this.doc);
+        }
+
+        public void SaveCopy(string filename)
+        {
             try
             {
                 StopFileWatch();
@@ -359,20 +368,16 @@ namespace XmlNotepad
                     }
                     ms.Seek(0, SeekOrigin.Begin);
 
-                    Utilities.WriteFileWithoutBOM(ms, name);
-                    
+                    Utilities.WriteFileWithoutBOM(ms, filename);
+
                 }
                 else
                 {
-                    using (XmlWriter w = XmlWriter.Create(name, s))
+                    using (XmlWriter w = XmlWriter.Create(filename, s))
                     {
                         doc.Save(w);
                     }
                 }
-                this.dirty = false;
-                this.filename = name;
-                this.lastModified = this.LastModTime;
-                FireModelChanged(ModelChangeType.Saved, this.doc);
             }
             finally
             {

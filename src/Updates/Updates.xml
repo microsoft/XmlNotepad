@@ -9,6 +9,15 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.32">
+      <feature>
+          Add user settable default text editor option for View Source.
+      </feature>
+      <bug>
+          Fix Schema dialog so it doesn't set filename to "openFileDialog1".
+          Fix View/Source on http files (uses temp file)
+      </bug>
+  </version>
   <version number="2.8.0.31">
       <bug>
           Fix memory usage bug to do with loading huge XML files.

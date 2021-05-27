@@ -834,6 +834,16 @@ namespace UnitTests {
             var pt = new Point(r.Right - 10, r.Top + r.Height / 2);
             Mouse.MouseClick(pt, MouseButtons.Left);
             Sleep(500);
+            Rectangle r2 = font.Bounds;
+            if (r2 != r)
+            {
+                // this happens if the item was the very bottom of the scrollbox and
+                // so it scrolls up a bit when it is selected.
+                r = r2;
+                pt = new Point(r.Right - 10, r.Top + r.Height / 2);
+                Mouse.MouseClick(pt, MouseButtons.Left);
+            }
+            Sleep(500);
             Mouse.MouseClick(pt, MouseButtons.Left);
             Window popup = options.WaitForPopup();
             
