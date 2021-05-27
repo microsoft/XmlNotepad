@@ -1277,7 +1277,7 @@
     <value>&amp;Source</value>
   </data>
   <data name="sourceToolStripMenuItem.ToolTipText" xml:space="preserve">
-    <value>Show the current XML document in text form using Notepad.</value>
+    <value>Show the current XML document in text form using configured text editor.</value>
   </data>
   <data name="optionsToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>optionsToolStripMenuItem</value>
