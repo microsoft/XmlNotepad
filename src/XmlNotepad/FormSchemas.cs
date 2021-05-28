@@ -423,7 +423,9 @@ namespace XmlNotepad {
             if (!string.IsNullOrEmpty(filename)) {
                 Uri uri = new Uri(filename);
                 if (uri.IsFile) {
-                    fd.FileName = uri.LocalPath;
+                    var path = uri.LocalPath;
+                    fd.InitialDirectory = System.IO.Path.GetDirectoryName(path);
+                    fd.FileName = System.IO.Path.GetFileName(path);
                 }
             }
             fd.Multiselect = false;
