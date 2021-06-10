@@ -428,6 +428,10 @@ namespace XmlNotepad {
                     fd.FileName = System.IO.Path.GetFileName(path);
                 }
             }
+            else
+            {
+                fd.FileName = "";
+            }
             fd.Multiselect = false;
             if (fd.ShowDialog(this.DataGridView.FindForm()) == DialogResult.OK) {
                 if (SchemaDialogCommand.ValidateSchema(row, fd.FileName) != null) {
@@ -616,13 +620,10 @@ namespace XmlNotepad {
             }
         }
 
-        
-
         public static XmlSchema LoadSchema(string filename) {
             if (string.IsNullOrEmpty(filename)) return null;
             return XmlSchema.Read(new XmlTextReader(filename, new NameTable()), null);
         }
-
     }
 
     class SchemaDialogNewRow : SchemaDialogCommand {

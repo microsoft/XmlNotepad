@@ -48,7 +48,7 @@ goto :eof
 echo 'publish' folder not found, please run Solution/Publish first.
 exit /b 1
 
-:nozip
+:nomsi
 echo 'XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi' not found, please use src\XmlNotepadSetup.sln to build the msi.
 exit /b 1
 

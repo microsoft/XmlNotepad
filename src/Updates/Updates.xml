@@ -9,17 +9,24 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.33">
+    <bug>
+        Ctrl+A short cut for SaveAs interferes with text editing, so removed Ctrl+A shortcut from SaveAs.
+        One more fix to "openFileDialog1" default file name on schema dialog.
+        Fix tooltip in options dialog Default Text Editor option.
+    </bug>
+  </version>
   <version number="2.8.0.32">
-      <feature>
+    <feature>
           Add user settable default text editor option for View Source.
       </feature>
-      <bug>
+    <bug>
           Fix Schema dialog so it doesn't set filename to "openFileDialog1".
-          Fix View/Source on http files (uses temp file)
+          Fix View/Source on http files (uses temp file).
       </bug>
   </version>
   <version number="2.8.0.31">
-      <bug>
+    <bug>
           Fix memory usage bug to do with loading huge XML files.
           Report XSLT transform times in the status bar.
       </bug>
