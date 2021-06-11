@@ -6,7 +6,8 @@ for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version
 )
 
 echo ### Publishing version %VERSION%...
-
+where sed2 > nul 2>&1
+if ERRORLEVEL 1 echo goto :nosed
 if not EXIST publish goto :nobits
 if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
 if EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip del src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip
@@ -42,6 +43,23 @@ echo Uploading MSIX installer to XmlNotepad.Net
 AzurePublishClickOnce %~dp0publish_appx downloads/XmlNotepad.Net "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
 if ERRORLEVEL 1 goto :eof
 
+:winget
+echo Preparing winget package
+mkdir d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%
+for /f "usebackq tokens=2* delims= " %%i in (`winget hash src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle`) do (
+    set HASH=%%i
+)
+
+set SEDFILE=%TEMP%\patterns.txt
+echo s/$(VERSION)/%VERSION%/g > %SEDFILE%
+echo s/$(HASH)/%HASH%/g >> %SEDFILE%
+sed -f %SEDFILE% tools\Microsoft.XMLNotepad.yaml > ..\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\Microsoft.XMLNotepad.yaml
+pushd d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\
+winget validate Microsoft.XMLNotepad.yaml 
+winget install -m Microsoft.XMLNotepad.yaml 
+if ERRORLEVEL 1 goto :installfailed
+echo ===========================================================================
+echo Please create pull request for new winget package.
 goto :eof
 
 :nobits
@@ -58,4 +76,12 @@ exit /b 1
 
 :noappx
 echo Please build the .msixbundle using src\XmlNotepadSetup.sln XmlNotepadPackage project, publish/create appx packages.
+exit /b 1
+
+:nosed
+echo Missing sed.exe tool, please add c:\Program Files\Git\usr\bin to your PATH
+exit /b 1
+
+:installfailed
+echo winget install failed
 exit /b 1

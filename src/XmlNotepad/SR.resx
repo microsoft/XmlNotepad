@@ -215,7 +215,7 @@ Reason:
     <value>Error loading: {0}
 {1}
 
-Would you like to open it using Notepad?</value>
+Would you like to open it using your text editor?</value>
     <comment>Message box prompt, arg0=filename, arg1=error message</comment>
   </data>
   <data name="LongLineCaption" xml:space="preserve">

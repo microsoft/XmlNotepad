@@ -840,7 +840,7 @@ namespace XmlNotepad {
         ///   Looks up a localized string similar to Error loading: {0}
         ///{1}
         ///
-        ///Would you like to open it using Notepad?.
+        ///Would you like to open it using your text editor?.
         /// </summary>
         internal static string LoadErrorPrompt {
             get {
