@@ -42,8 +42,6 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>readme.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>33</ApplicationRevision>
-    <ApplicationVersion>2.8.0.33</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
