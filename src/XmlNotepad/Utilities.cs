@@ -227,4 +227,10 @@ namespace XmlNotepad
         public static EventArgs Event;
     }
 
+    public class PerformanceInfo : EventArgs
+    {
+        public long XsltMilliseconds;
+        public long BrowserMilliseconds;
+    }
+
 }

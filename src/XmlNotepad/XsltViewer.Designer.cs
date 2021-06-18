@@ -26,6 +26,7 @@ namespace XmlNotepad {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XsltViewer));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.SourceFileName = new System.Windows.Forms.TextBox();
@@ -35,9 +36,10 @@ namespace XmlNotepad {
             this.label2 = new System.Windows.Forms.Label();
             this.OutputFileName = new System.Windows.Forms.TextBox();
             this.BrowseOutputButton = new System.Windows.Forms.Button();
-            this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.xsltControl = new XmlNotepad.XsltControl();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -45,10 +47,16 @@ namespace XmlNotepad {
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Controls.Add(this.WebBrowser1);
+            this.panel1.Controls.Add(this.tableLayoutPanel2);
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
+            // 
+            // tableLayoutPanel2
+            // 
+            resources.ApplyResources(this.tableLayoutPanel2, "tableLayoutPanel2");
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.xsltControl, 0, 1);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             // 
             // tableLayoutPanel1
             // 
@@ -109,10 +117,14 @@ namespace XmlNotepad {
             this.BrowseOutputButton.Name = "BrowseOutputButton";
             this.BrowseOutputButton.UseVisualStyleBackColor = true;
             // 
-            // WebBrowser1
+            // xsltControl
             // 
-            resources.ApplyResources(this.WebBrowser1, "WebBrowser1");
-            this.WebBrowser1.Name = "WebBrowser1";
+            this.xsltControl.BaseUri = null;
+            this.xsltControl.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
+            this.xsltControl.DisableOutputFile = false;
+            resources.ApplyResources(this.xsltControl, "xsltControl");
+            this.xsltControl.IgnoreDTD = false;
+            this.xsltControl.Name = "xsltControl";
             // 
             // XsltViewer
             // 
@@ -122,6 +134,8 @@ namespace XmlNotepad {
             this.Name = "XsltViewer";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -136,16 +150,17 @@ namespace XmlNotepad {
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        public System.Windows.Forms.WebBrowser WebBrowser1;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox SourceFileName;
-        private System.Windows.Forms.Button TransformButton;
         private System.Windows.Forms.Button BrowseButton;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button TransformButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox OutputFileName;
         private System.Windows.Forms.Button BrowseOutputButton;
+        private XsltControl xsltControl;
     }
 }

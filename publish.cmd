@@ -6,14 +6,12 @@ for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version
 )
 
 echo ### Publishing version %VERSION%...
-where sed2 > nul 2>&1
-if ERRORLEVEL 1 echo goto :nosed
+where sed > nul 2>&1
+if ERRORLEVEL 1 goto :nosed
 if not EXIST publish goto :nobits
 if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
 if EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip del src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip
 if "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%" == "" goto :nokey
-
-goto :winget
 
 copy /y src\Updates\Updates.xml publish\
 if ERRORLEVEL 1 goto :eof
@@ -62,7 +60,7 @@ sed -f %SEDFILE% tools\Microsoft.XMLNotepad.yaml > ..\winget-pkgs\manifests\m\Mi
 
 pushd d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\
 winget validate .
-winget install .
+winget install -m .
 if ERRORLEVEL 1 goto :installfailed
 echo ===========================================================================
 echo Please create pull request for new winget package.

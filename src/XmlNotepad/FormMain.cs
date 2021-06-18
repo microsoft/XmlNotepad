@@ -28,7 +28,7 @@ namespace XmlNotepad
         private StatusBarPanel statusBarPanelBusy;
         RecentFilesMenu recentFiles;
         TaskList taskList;
-        XsltViewer dynamicHelpViewer;
+        XsltControl dynamicHelpViewer;
         bool loading;
         FormSearch search;
         IIntellisenseProvider ip;
@@ -260,7 +260,6 @@ namespace XmlNotepad
             InitializeHelp(this.helpProvider1);
 
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DynamicHelp.xslt";
-            this.dynamicHelpViewer.ShowFileStrip = false;
             this.dynamicHelpViewer.DisableOutputFile = true;
 
             model.FileChanged += new EventHandler(OnFileChanged);
@@ -326,7 +325,7 @@ namespace XmlNotepad
             System.Threading.Tasks.Task.Run((Action)CheckNetwork);
         }
 
-        private void OnXsltComplete(object sender, XsltViewer.PerformanceInfo e)
+        private void OnXsltComplete(object sender, PerformanceInfo e)
         {
             ShowStatus(string.Format(SR.TransformedTimeStatus, e.XsltMilliseconds, e.BrowserMilliseconds));
         }
@@ -564,6 +563,10 @@ namespace XmlNotepad
         }
 
         void OnUpdateRequired(object sender, bool updateAvailable) {
+            if (this.Disposing)
+            {
+                return;
+            }
             ISynchronizeInvoke si = (ISynchronizeInvoke)this;
             if (si.InvokeRequired) {
                 // get on the right thread.
@@ -948,7 +951,7 @@ namespace XmlNotepad
             this.tabPageTaskList = new XmlNotepad.NoBorderTabPage();
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
             this.taskList = new XmlNotepad.TaskList();
-            this.dynamicHelpViewer = new XmlNotepad.XsltViewer();
+            this.dynamicHelpViewer = new XmlNotepad.XsltControl();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).BeginInit();
             this.contextMenu1.SuspendLayout();
@@ -2111,10 +2114,7 @@ namespace XmlNotepad
             // xsltViewer
             // 
             resources.ApplyResources(this.xsltViewer, "xsltViewer");
-            this.xsltViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
-            this.xsltViewer.DisableOutputFile = false;
             this.xsltViewer.Name = "xsltViewer";
-            this.xsltViewer.ShowFileStrip = true;
             this.helpProvider1.SetShowHelp(this.xsltViewer, ((bool)(resources.GetObject("xsltViewer.ShowHelp"))));
             // 
             // resizer
@@ -2150,9 +2150,8 @@ namespace XmlNotepad
             // 
             resources.ApplyResources(this.dynamicHelpViewer, "dynamicHelpViewer");
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
-            this.dynamicHelpViewer.DisableOutputFile = false;
+            this.dynamicHelpViewer.DisableOutputFile = true;
             this.dynamicHelpViewer.Name = "dynamicHelpViewer";
-            this.dynamicHelpViewer.ShowFileStrip = true;
             this.helpProvider1.SetShowHelp(this.dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
             // 
             // FormMain
@@ -2791,7 +2790,7 @@ namespace XmlNotepad
         private void DisplayHelp() {
             // display documentation
             if (null == xmlTreeView1.SelectedNode) {
-                this.dynamicHelpViewer.DisplayXsltResults(new XmlDocument());
+                this.dynamicHelpViewer.DisplayXsltResults(new XmlDocument(), null);
                 return;
             }
             XmlDocument xmlDoc = xmlTreeView1.SelectedNode.GetDocumentation();
@@ -2805,7 +2804,7 @@ namespace XmlNotepad
                         xmlDoc.AppendChild(xmlDoc.CreateElement("nothing"));
                     }
                 }
-                this.dynamicHelpViewer.DisplayXsltResults(xmlDoc);
+                this.dynamicHelpViewer.DisplayXsltResults(xmlDoc, null);
             } else if (helpAvailableHint && xmlDoc != null) {
                 helpAvailableHint = false;
                 ShowStatus(SR.DynamicHelpAvailable);
@@ -3136,7 +3135,7 @@ namespace XmlNotepad
 
         void Search(bool replace) {
             if (this.tabControlViews.SelectedTab == this.tabPageHtmlView) {
-                this.xsltViewer.Find();
+                // TBD...
                 return;
             }
 
@@ -3195,7 +3194,7 @@ namespace XmlNotepad
 
         private void sourceToolStripMenuItem_Click(object sender, EventArgs e) {
             if (this.tabControlViews.SelectedTab == this.tabPageHtmlView) {
-                this.xsltViewer.ViewSource();
+                // TBD
             } else {
                 OpenNotepad(this.model.FileName);
             }
