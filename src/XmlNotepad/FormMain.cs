@@ -23,9 +23,6 @@ namespace XmlNotepad
         Settings settings;
         string[] args;
         DataFormats.Format urlFormat;
-        private StatusBar statusBar1;
-        private StatusBarPanel statusBarPanelMessage;
-        private StatusBarPanel statusBarPanelBusy;
         RecentFilesMenu recentFiles;
         TaskList taskList;
         XsltControl dynamicHelpViewer;
@@ -216,6 +213,9 @@ namespace XmlNotepad
         private ToolStripMenuItem checkUpdatesToolStripMenuItem;
         private ToolStripMenuItem sampleToolStripMenuItem;
         private ToolStripMenuItem changeToElementContextMenuItem;
+        private StatusStrip statusStrip1;
+        private StatusStrip statusStrip2;
+        private ToolStripStatusLabel toolStripStatusLabel1;
         private string redoLabel;
 
 
@@ -657,9 +657,9 @@ namespace XmlNotepad
             this.toolStrip1.Size = new Size(w, 24);
             int top = this.toolStrip1.Bottom;
             int sbHeight = 0;
-            if (this.statusBar1.Visible) {
-                sbHeight = this.statusBar1.Height;
-                this.statusBar1.Size = new Size(w, sbHeight);
+            if (this.statusStrip1.Visible) {
+                sbHeight = this.statusStrip1.Height;
+                this.statusStrip1.Size = new Size(w, sbHeight);
             }
             this.tabControlViews.Location = new Point(0, top);
             this.comboBoxLocation.Location = new Point(this.comboBoxLocation.Location.X, this.menuStrip1.Height);
@@ -781,9 +781,6 @@ namespace XmlNotepad
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.changeToElementContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusBar1 = new System.Windows.Forms.StatusBar();
-            this.statusBarPanelMessage = new System.Windows.Forms.StatusBarPanel();
-            this.statusBarPanelBusy = new System.Windows.Forms.StatusBarPanel();
             this.contextMenu1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
@@ -952,14 +949,16 @@ namespace XmlNotepad
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
             this.taskList = new XmlNotepad.TaskList();
             this.dynamicHelpViewer = new XmlNotepad.XsltControl();
-            ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).BeginInit();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusStrip2 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenu1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tabControlViews.SuspendLayout();
             this.tabPageTreeView.SuspendLayout();
             this.tabPageHtmlView.SuspendLayout();
+            this.statusStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // changeToElementContextMenuItem
@@ -967,25 +966,6 @@ namespace XmlNotepad
             this.changeToElementContextMenuItem.Name = "changeToElementContextMenuItem";
             resources.ApplyResources(this.changeToElementContextMenuItem, "changeToElementContextMenuItem");
             this.changeToElementContextMenuItem.Click += new System.EventHandler(this.changeToElementContextMenuItem_Click);
-            // 
-            // statusBar1
-            // 
-            resources.ApplyResources(this.statusBar1, "statusBar1");
-            this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
-            this.statusBarPanelMessage,
-            this.statusBarPanelBusy});
-            this.helpProvider1.SetShowHelp(this.statusBar1, ((bool)(resources.GetObject("statusBar1.ShowHelp"))));
-            this.statusBar1.ShowPanels = true;
-            // 
-            // statusBarPanelMessage
-            // 
-            this.statusBarPanelMessage.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
-            resources.ApplyResources(this.statusBarPanelMessage, "statusBarPanelMessage");
-            // 
-            // statusBarPanelBusy
-            // 
-            resources.ApplyResources(this.statusBarPanelBusy, "statusBarPanelBusy");
             // 
             // contextMenu1
             // 
@@ -2149,26 +2129,44 @@ namespace XmlNotepad
             // dynamicHelpViewer
             // 
             resources.ApplyResources(this.dynamicHelpViewer, "dynamicHelpViewer");
+            this.dynamicHelpViewer.BaseUri = null;
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
             this.dynamicHelpViewer.DisableOutputFile = true;
+            this.dynamicHelpViewer.IgnoreDTD = false;
             this.dynamicHelpViewer.Name = "dynamicHelpViewer";
             this.helpProvider1.SetShowHelp(this.dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
+            // 
+            // statusStrip1
+            // 
+            resources.ApplyResources(this.statusStrip1, "statusStrip1");
+            this.statusStrip1.Name = "statusStrip1";
+            // 
+            // statusStrip2
+            // 
+            this.statusStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+            resources.ApplyResources(this.statusStrip2, "statusStrip2");
+            this.statusStrip2.Name = "statusStrip2";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
             // 
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.statusStrip2);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.comboBoxLocation);
             this.Controls.Add(this.tabControlViews);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.resizer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
             this.helpProvider1.SetShowHelp(this, ((bool)(resources.GetObject("$this.ShowHelp"))));
-            ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMessage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelBusy)).EndInit();
             this.contextMenu1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -2177,6 +2175,8 @@ namespace XmlNotepad
             this.tabControlViews.ResumeLayout(false);
             this.tabPageTreeView.ResumeLayout(false);
             this.tabPageHtmlView.ResumeLayout(false);
+            this.statusStrip2.ResumeLayout(false);
+            this.statusStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2306,13 +2306,13 @@ namespace XmlNotepad
         }
 
         public virtual void ShowStatus(string msg) {
-            this.statusBarPanelMessage.Text = msg;
+            this.toolStripStatusLabel1.Text = msg;
             this.delayedActions.StartDelayedAction("ClearStatus", ClearStatus, TimeSpan.FromSeconds(20));
         }
 
         private void ClearStatus()
         {
-            this.statusBarPanelMessage.Text = "";
+            this.toolStripStatusLabel1.Text = "";
         }
 
         public virtual void Open(string filename) {
@@ -3185,10 +3185,10 @@ namespace XmlNotepad
             statusBarToolStripMenuItem.Checked = visible;
             int h = this.ClientSize.Height - this.toolStrip1.Bottom - 2;
             if (visible) {
-                h -= this.statusBar1.Height;
+                h -= this.statusStrip1.Height;
             }
             this.tabControlViews.Height = h;
-            this.statusBar1.Visible = visible;
+            this.statusStrip1.Visible = visible;
             this.PerformLayout();
         }
 
