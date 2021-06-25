@@ -33,13 +33,23 @@ screen lock until this test is completed.  Total test run time is about 12 minut
 
 ### BuildTasks
 
-The `BuildTasks` project contains special MSBuild task that is used to synchronize the `Versions.cs` information
-across multiple places so you can edit the version number in one place and this is then propagated to:
+The `BuildTasks` project contains special MSBuild task that is used to synchronize the `Version.props` information
+across multiple places so you can edit the version number there be sure to update both the `ApplicationRevision`
+and the `ApplicationVersion` so that the final number in the `ApplicationVersion` matches the `ApplicationRevision`.
+```
+    <ApplicationRevision>36</ApplicationRevision>
+    <ApplicationVersion>2.8.0.36</ApplicationVersion>
+```
+Then when you do a build the following will be updated automatically:
 
+1. The `Version.cs` file which sets the assembly version for all projects in the solution.
 1. The WIX based setup file `Product.wxs`.
 2. The windows package manifest file `Package.appxmanifest`.
 3. The updates.xml file.
 4. The readme.htm file.
+
+You will also have to restart Visual Studio so that the new versions are picked up by the ClickOnce
+deployment information in  `Application.csproj`.
 
 **Note**: if you change the `SyncVersions.cs` code, and build a new DLL you will need to close VS, and copy the
 resulting `BuildTasks\bin\Debug\XmlNotepadBuildTasks.dll` to `BuildTasks\XmlNotepadBuildTasks.dll`, then reload the
@@ -85,6 +95,19 @@ packages and you can then update the manifest in
 
 This package provides the `winget install xmlnotepad` setup option.
 
+### Publishing the bits to Azure Blob Store
+
+The `publish.cmd` script then takes all the above built binaries and collects them together and uploads
+them to the appropriate places in Azure using [AzurePublishClickOnce](https://github.com/clovett/tools/tree/master/AzurePublishClickOnce) and it also prepares a new manifest for `winget-pkgs`.
+This step uses an environment variable named `LOVETTSOFTWARE_STORAGE_CONNECTION_STRING` to find the
+Azure storage account.
+
 ### Design
 
 See [XML Notepad Design ](design.md) for more detailed information about how this application is designed.
+
+### Issues
+
+Feedback and suggestions are welcome, just use the [GitHub  issues
+list](https://github.com/microsoft/XmlNotepad/issues).  Pull requests are also welcome, in fact, a number of good pull
+requests have already been merged.  Thanks to all who are helping to make XML notepad a great tool!
