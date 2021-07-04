@@ -1,351 +1,350 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.35" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="LovettSoftware" Name="LovettSoftware">
-					<Directory Id="RootDirectory" Name="XmlNotepad">
-						<Directory Id="Help" Name="Help" />
-						<Directory Id="samples" Name="Samples" />
-					</Directory>
-				</Directory>
-			</Directory>
-			<Directory Id="ProgramMenuFolder">
-				<Directory Id="CompanyProgramsFolder" Name="Lovett Software">
-					<Directory Id="ApplicationProgramsFolder" Name="XML Notepad" />
-				</Directory>
-			</Directory>
-		</Directory>
-		<!-- Step 2: Add files to your installer package -->
-		<DirectoryRef Id="RootDirectory" FileSource="$(var.Application.TargetDir)">
-			<Component Id="XmlNotepad.exe" Guid="37F5A68E-3507-44A6-BA7D-DC88FA074E88">
-				<File Id="XmlNotepad.exe" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="XmlNotepad.exe.manifest" Guid="C98A3BF4-D07C-4D1A-BA28-6D413D4A61C9">
-				<File Id="XmlNotepad.exe.manifest" KeyPath="yes" />
-			</Component>
-			<Component Id="XmlNotepad.exe.config" Guid="C4957B41-B536-42C3-B79C-955EA99CD558">
-				<File Id="XmlNotepad.exe.config" KeyPath="yes" />
-			</Component>
-			<Component Id="Microsoft.XmlNotepad.dll" Guid="5F934F76-70C8-4BFE-AA5A-05DC5AAB838C">
-				<File Id="Microsoft.XmlNotepad.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="Microsoft.mshtml.dll" Guid="60F2839E-6DC2-4A7E-9B00-AC277FF03E80">
-				<File Id="Microsoft.mshtml.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="XmlDiffPatch.dll" Guid="4EE562B3-FF32-4107-87F3-C843D44B26C0">
-				<File Id="XmlDiffPatch.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="XmlDiffPatch.View.dll" Guid="464A81EC-822A-42E1-9353-DB0AF3F5C5F9">
-				<File Id="XmlDiffPatch.View.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="FontBuilder.dll" Guid="0F3EDCEC-529C-489F-9717-A0D3A06A33A9">
-				<File Id="FontBuilder.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="SimpleGoogleAnalytics.dll" Guid="5ada2db2-67f9-486b-b7f3-e5dc851b6ff2">
-				<File Id="SimpleGoogleAnalytics.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="SgmlReaderDll.dll" Guid="70c0cd62-a6e5-4da4-9336-3fcef1bfb0d1">
-				<File Id="SgmlReaderDll.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-
-			<Component Id="Microsoft.Web.WebView2.Core.dll" Guid="e2a18224-f75d-4a1b-ba41-10b2700f5db6">
-				<File Id="Microsoft.Web.WebView2.Core.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			<Component Id="Microsoft.Web.WebView2.WinForms.dll" Guid="68aa124d-e537-4671-8d65-7a222b0bfe3a">
-				<File Id="Microsoft.Web.WebView2.WinForms.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
-			
-			<Directory Id="runtimes" Name="runtimes"/>
-		</DirectoryRef>
-		<DirectoryRef Id="Help" FileSource="$(var.SolutionDir)\drop\Help">
-			<Component Id="design.htm" Guid="045549c7-34e5-4e8a-aa8c-a49a678e3ed4">
-				<File Id="design.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="index.html" Guid="f6e4a1fb-616a-4972-8274-b72b949cad66">
-				<File Id="index.html" KeyPath="yes" />
-			</Component>
-			<Component Id="install.htm" Guid="4b55b2f6-62a9-493e-981e-44947027da4c">
-				<File Id="install.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="readme.md" Guid="c91836ac-8876-4b8a-9e10-b9b76e7f2bfb">
-				<File Id="readme.md" KeyPath="yes" />
-			</Component>
-			<Directory Id="assets" Name="assets" />
-			<Directory Id="help" Name="help" />
-		</DirectoryRef>
-		<DirectoryRef Id="assets" FileSource="$(var.SolutionDir)\drop\Help\assets">
-			<Directory Id="css" Name="css" />
-			<Directory Id="images" Name="images" />
-			<Directory Id="js" Name="js" />
-		</DirectoryRef>
-		<DirectoryRef Id="runtimes" FileSource="$(var.Application.TargetDir)\runtimes">
-			<Directory Id="winarm64" Name="win-arm64" />
-			<Directory Id="winx64" Name="win-x64" />
-			<Directory Id="winx86" Name="win-x86" />
-		</DirectoryRef>
-		<DirectoryRef Id="winarm64" FileSource="$(var.Application.TargetDir)\runtimes\win-arm64">
-			<Directory Id="arm64native" Name="native"/>		
-		</DirectoryRef>
-		<DirectoryRef Id="winx86" FileSource="$(var.Application.TargetDir)\runtimes\win-x86">
-			<Directory Id="x86native" Name="native"/>
-		</DirectoryRef>
-		<DirectoryRef Id="winx64" FileSource="$(var.Application.TargetDir)\runtimes\win-x64">
-			<Directory Id="x64native" Name="native"/>
-		</DirectoryRef>
-		<DirectoryRef Id="x64native" FileSource="$(var.Application.TargetDir)\runtimes\win-x64\native">
-			<Component Id="WebView2Loader.x64.dll" Guid="AF738744-F741-4366-852C-6ED8E8A09CCA">
-				<File Id="WebView2Loader.x64.dll" KeyPath="yes" Name="WebView2Loader.dll"/>
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="x86native" FileSource="$(var.Application.TargetDir)\runtimes\win-x86\native">
-			<Component Id="WebView2Loader.x86.dll" Guid="3D84CFE6-EF8E-4E8D-8788-8F673AA2812D">
-				<File Id="WebView2Loader.x86.dll" KeyPath="yes" Name="WebView2Loader.dll" />
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="arm64native" FileSource="$(var.Application.TargetDir)\runtimes\win-arm64\native">
-			<Component Id="WebView2Loader.arm64.dll" Guid="A3F09BD7-F075-47F0-81C3-7273E106CF53">
-				<File Id="WebView2Loader.arm64.dll" KeyPath="yes"  Name="WebView2Loader.dll"/>
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="css" FileSource="$(var.SolutionDir)\drop\Help\assets\css">
-			<Component Id="styles.css" Guid="0b2da722-6aa4-43eb-a36e-8f4102aac0fe">
-				<File Id="styles.css" KeyPath="yes"/>
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="images" FileSource="$(var.SolutionDir)\drop\Help\assets\images">
-			<Component Id="colors.jpg" Guid="ed940f13-42d0-48b9-afce-30288ac98cb4">
-				<File Id="colors.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="commands.png" Guid="da1291d9-1ce1-4157-a30a-38262f282b85">
-				<File Id="commands.png" KeyPath="yes" />
-			</Component>
-			<Component Id="datetime.jpg" Guid="9feb9b78-85fb-4d8a-8380-08cbd47f032c">
-				<File Id="datetime.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="dragdrop.jpg" Guid="b0047fd3-bbcc-43a0-830f-aebef85780b5">
-				<File Id="dragdrop.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="find.jpg" Guid="08ddaeff-2a6e-4d82-aee7-aa2d10134335">
-				<File Id="find.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="find.png" Guid="87b40165-476d-4466-9eda-0e228af783ad">
-				<File Id="find.png" KeyPath="yes" />
-			</Component>
-			<Component Id="findxpath.jpg" Guid="eaf7a59c-d908-4c81-899f-4f53707268e7">
-				<File Id="findxpath.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="help.png" Guid="1cbe7f3f-9108-4064-850f-946b0ad607e0">
-				<File Id="help.png" KeyPath="yes" />
-			</Component>
-			<Component Id="icon.png" Guid="afa32ecb-e790-4ae7-b86d-8cfd940a2858">
-				<File Id="icon.png" KeyPath="yes" />
-			</Component>
-			<Component Id="intellisense.jpg" Guid="ff0027b7-70ba-4a51-bc9e-e18f2a266cd1">
-				<File Id="intellisense.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="intellisense.png" Guid="bbe63758-2c3c-4872-b720-c44434d39516">
-				<File Id="intellisense.png" KeyPath="yes" />
-			</Component>
-			<Component Id="intellisense2.jpg" Guid="7d161833-3cc8-4139-95ae-c12aa2e96308">
-				<File Id="intellisense2.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="microsoft.svg" Guid="768a95d7-cb0b-4755-9b4f-231379986656">
-				<File Id="microsoft.svg" KeyPath="yes" />
-			</Component>
-			<Component Id="options.jpg" Guid="7fe7123c-18b1-41dd-a551-38790abc2719">
-				<File Id="options.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="plugins.png" Guid="de3ca4ef-e198-449f-8592-1a4adc1cd240">
-				<File Id="plugins.png" KeyPath="yes" />
-			</Component>
-			<Component Id="replace.jpg" Guid="04e3610c-158f-4308-b571-e40c4ab8c9e4">
-				<File Id="replace.jpg" KeyPath="yes" />
-			</Component>
-			<Component Id="schemas.png" Guid="9db8b459-753f-4abc-8fb5-ac07d871cb66">
-				<File Id="schemas.png" KeyPath="yes" />
-			</Component>
-			<Component Id="screen.png" Guid="152ed035-f3cc-4ed0-9d57-d24cb6904abe">
-				<File Id="screen.png" KeyPath="yes" />
-			</Component>
-			<Component Id="ui.png" Guid="323aa73e-8959-40a5-93cb-78e0ab35931e">
-				<File Id="ui.png" KeyPath="yes" />
-			</Component>
-			<Component Id="undo.png" Guid="2150aa74-420f-4c54-a605-63b1aa53f28c">
-				<File Id="undo.png" KeyPath="yes" />
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="js" FileSource="$(var.SolutionDir)\drop\Help\assets\js">
-			<Component Id="main.js" Guid="dd64e268-691c-4cff-b9a1-d619af8849e1">
-				<File Id="main.js" KeyPath="yes" />
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="help" FileSource="$(var.SolutionDir)\drop\Help\help">
-			<Component Id="clipboard.htm" Guid="a4a2e9e5-ad84-4a81-aa90-da38616994dc">
-				<File Id="clipboard.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="customeditors.htm" Guid="27c58e3a-6be2-4170-b696-b2a7d7041d79">
-				<File Id="customeditors.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="dragdrop.htm" Guid="531e4a2d-9af6-47a6-88b5-d6714a1ee415">
-				<File Id="dragdrop.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="find.htm" Guid="38bbe67a-5a79-4c0e-b1f4-5aed81e581d1">
-				<File Id="find.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="intellisense.htm" Guid="912d890b-3d8d-41ee-af86-8288a831cb51">
-				<File Id="intellisense.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="keyboard.htm" Guid="e5e43a62-97d6-4029-bd84-b6fee206df66">
-				<File Id="keyboard.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="menus.htm" Guid="78937a51-8f57-4fdb-bbed-ce5f0fad91f3">
-				<File Id="menus.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="options.htm" Guid="5fb1f22a-c6e8-4637-9461-bfbc332ae315">
-				<File Id="options.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="overview.htm" Guid="f6cfea8e-5190-4485-bc4b-066d981f33a9">
-				<File Id="overview.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="schemas.htm" Guid="1896b159-6416-4018-8dca-73f6d55ea90b">
-				<File Id="schemas.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="ui.htm" Guid="379b4104-f438-4273-9ddf-aa2ecaab6dd2">
-				<File Id="ui.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="updates.htm" Guid="692bcd9e-c606-4f6e-9ea5-a42e38a39f9e">
-				<File Id="updates.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="validation.htm" Guid="606085c7-26ba-499f-a263-b7290b9f2f66">
-				<File Id="validation.htm" KeyPath="yes" />
-			</Component>
-		</DirectoryRef>
-		<DirectoryRef Id="samples" FileSource="$(var.SolutionDir)\drop\samples">
-			<Component Id="basket.xml" Guid="f6f6a570-5783-42b9-9da4-26c059e7dc4e">
-				<File Id="basket.xml" KeyPath="yes" />
-			</Component>
-			<Component Id="basket.xsd" Guid="f8fb7c3c-e70a-48e6-aceb-44b44f9bc4dd">
-				<File Id="basket.xsd" KeyPath="yes" />
-			</Component>
-			<Component Id="Employee.xml" Guid="12a3d24f-9e32-4bba-940c-a194ccb281fe">
-				<File Id="Employee.xml" KeyPath="yes" />
-			</Component>
-			<Component Id="Employee.xsd" Guid="fc1231c1-9662-4312-957b-0a8362ed56ef">
-				<File Id="Employee.xsd" KeyPath="yes" />
-			</Component>
-			<Component Id="Hamlet.xml" Guid="f1b3d847-070b-4711-92ca-a7e6470f5679">
-				<File Id="Hamlet.xml" KeyPath="yes" />
-			</Component>
-			<Component Id="rss.xml" Guid="0950015c-5651-419b-a05e-53b91bbde32f">
-				<File Id="rss.xml" KeyPath="yes" />
-			</Component>
-			<Component Id="rsspretty.xsl" Guid="b9298d1c-8ac6-4ebb-872c-d7e7e2ed8cf8">
-				<File Id="rsspretty.xsl" KeyPath="yes" />
-			</Component>
-			<Component Id="willy.xsl" Guid="bece5b74-a8f2-4bfb-a146-6647170f014a">
-				<File Id="willy.xsl" KeyPath="yes" />
-			</Component>
-			<Component Id="rsspretty_output.htm" Guid="83f4a2fe-70d6-48a8-98d9-2e22dcd6b838">
-				<File Id="rsspretty_output.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="rss_output.htm" Guid="549bba71-0c45-401c-8402-cbdb34ca7583">
-				<File Id="rss_output.htm" KeyPath="yes" />
-			</Component>
-			<Component Id="willy_output.htm" Guid="8f50d61a-9f66-4dbe-9280-7701e3d387ca">
-				<File Id="willy_output.htm" KeyPath="yes" />
-			</Component>
-		</DirectoryRef>
-		<!-- shortcut in start menu -->
-		<DirectoryRef Id="ApplicationProgramsFolder">
-			<Component Id="ApplicationShortcut" Guid="01D93FF2-E181-4C0A-B0FC-D85B413DDB8D">
-				<Shortcut Id="ApplicationStartMenuShortcut" Name="XML Notepad" Description="Simple XML Editor" Target="[#XmlNotepad.exe]" WorkingDirectory="RootDirectory" />
-				<RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
-				<RemoveFolder Id="RemoveCompanyProgramsFolder" Directory="CompanyProgramsFolder" On="uninstall" />
-				<RegistryValue Root="HKCU" Key="Software\LovettSoftware\XmlNotepad" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-			</Component>
-		</DirectoryRef>
-		<!-- Step 3: Tell WiX to install the files -->
-		<Feature Id="ProductFeature" Title="XmlNotepad" Level="1">
-			<ComponentRef Id="XmlNotepad.exe" />
-			<ComponentRef Id="XmlNotepad.exe.manifest" />
-			<ComponentRef Id="XmlNotepad.exe.config" />
-			<ComponentRef Id="Microsoft.XmlNotepad.dll" />
-			<ComponentRef Id="Microsoft.mshtml.dll" />
-			<ComponentRef Id="XmlDiffPatch.dll" />
-			<ComponentRef Id="XmlDiffPatch.View.dll" />
-			<ComponentRef Id="FontBuilder.dll" />
-			<ComponentRef Id="SimpleGoogleAnalytics.dll" />
-			<ComponentRef Id="SgmlReaderDll.dll" />
-			<ComponentRef Id="Microsoft.Web.WebView2.Core.dll"/>
-			<ComponentRef Id="Microsoft.Web.WebView2.WinForms.dll"/>
-			<ComponentRef Id="WebView2Loader.x86.dll" />
-			<ComponentRef Id="WebView2Loader.x64.dll" />
-			<ComponentRef Id="WebView2Loader.arm64.dll" />
-			<ComponentRef Id="design.htm" />
-			<ComponentRef Id="index.html" />
-			<ComponentRef Id="install.htm" />
-			<ComponentRef Id="readme.md" />
-			<ComponentRef Id="styles.css" />
-			<ComponentRef Id="colors.jpg" />
-			<ComponentRef Id="commands.png" />
-			<ComponentRef Id="datetime.jpg" />
-			<ComponentRef Id="dragdrop.jpg" />
-			<ComponentRef Id="find.jpg" />
-			<ComponentRef Id="find.png" />
-			<ComponentRef Id="findxpath.jpg" />
-			<ComponentRef Id="help.png" />
-			<ComponentRef Id="icon.png" />
-			<ComponentRef Id="intellisense.jpg" />
-			<ComponentRef Id="intellisense.png" />
-			<ComponentRef Id="intellisense2.jpg" />
-			<ComponentRef Id="microsoft.svg" />
-			<ComponentRef Id="options.jpg" />
-			<ComponentRef Id="plugins.png" />
-			<ComponentRef Id="replace.jpg" />
-			<ComponentRef Id="schemas.png" />
-			<ComponentRef Id="screen.png" />
-			<ComponentRef Id="ui.png" />
-			<ComponentRef Id="undo.png" />
-			<ComponentRef Id="main.js" />
-			<ComponentRef Id="clipboard.htm" />
-			<ComponentRef Id="customeditors.htm" />
-			<ComponentRef Id="dragdrop.htm" />
-			<ComponentRef Id="find.htm" />
-			<ComponentRef Id="intellisense.htm" />
-			<ComponentRef Id="keyboard.htm" />
-			<ComponentRef Id="menus.htm" />
-			<ComponentRef Id="options.htm" />
-			<ComponentRef Id="overview.htm" />
-			<ComponentRef Id="schemas.htm" />
-			<ComponentRef Id="ui.htm" />
-			<ComponentRef Id="updates.htm" />
-			<ComponentRef Id="validation.htm" />
-			<ComponentRef Id="basket.xml" />
-			<ComponentRef Id="basket.xsd" />
-			<ComponentRef Id="Employee.xml" />
-			<ComponentRef Id="Employee.xsd" />
-			<ComponentRef Id="Hamlet.xml" />
-			<ComponentRef Id="rss.xml" />
-			<ComponentRef Id="rsspretty.xsl" />
-			<ComponentRef Id="willy.xsl" />
-			<ComponentRef Id="rsspretty_output.htm" />
-			<ComponentRef Id="rss_output.htm" />
-			<ComponentRef Id="willy_output.htm" />
-			<ComponentRef Id="ApplicationShortcut" />
-		</Feature>
-		<WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />
-		<!-- Step 2: Add UI to your installer / Step 4: Trigger the custom action -->
-		<UI>
-			<UIRef Id="WixUI_Minimal" />
-			<Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
-		</UI>
-		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch XML Notepad" />
-		<!-- Step 3: Include the custom action -->
-		<Property Id="WixShellExecTarget" Value="[#XmlNotepad.exe]" />
-		<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
-	</Product>
+  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.35" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <MajorUpgrade Schedule="afterInstallFinalize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
+    <MediaTemplate />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="LovettSoftware" Name="LovettSoftware">
+          <Directory Id="RootDirectory" Name="XmlNotepad">
+            <Directory Id="Help" Name="Help" />
+            <Directory Id="samples" Name="Samples" />
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="CompanyProgramsFolder" Name="Lovett Software">
+          <Directory Id="ApplicationProgramsFolder" Name="XML Notepad" />
+        </Directory>
+      </Directory>
+    </Directory>
+    <!-- Step 2: Add files to your installer package -->
+    <DirectoryRef Id="RootDirectory" FileSource="$(var.Application.TargetDir)">
+      <Component Id="XmlNotepad.exe" Guid="37F5A68E-3507-44A6-BA7D-DC88FA074E88">
+        <File Id="XmlNotepad.exe" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="XmlNotepad.exe.manifest" Guid="C98A3BF4-D07C-4D1A-BA28-6D413D4A61C9">
+        <File Id="XmlNotepad.exe.manifest" KeyPath="yes" />
+      </Component>
+      <Component Id="XmlNotepad.exe.config" Guid="C4957B41-B536-42C3-B79C-955EA99CD558">
+        <File Id="XmlNotepad.exe.config" KeyPath="yes" />
+      </Component>
+      <Component Id="Microsoft.XmlNotepad.dll" Guid="5F934F76-70C8-4BFE-AA5A-05DC5AAB838C">
+        <File Id="Microsoft.XmlNotepad.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Microsoft.mshtml.dll" Guid="60F2839E-6DC2-4A7E-9B00-AC277FF03E80">
+        <File Id="Microsoft.mshtml.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="XmlDiffPatch.dll" Guid="4EE562B3-FF32-4107-87F3-C843D44B26C0">
+        <File Id="XmlDiffPatch.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="XmlDiffPatch.View.dll" Guid="464A81EC-822A-42E1-9353-DB0AF3F5C5F9">
+        <File Id="XmlDiffPatch.View.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="FontBuilder.dll" Guid="0F3EDCEC-529C-489F-9717-A0D3A06A33A9">
+        <File Id="FontBuilder.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="SimpleGoogleAnalytics.dll" Guid="5ada2db2-67f9-486b-b7f3-e5dc851b6ff2">
+        <File Id="SimpleGoogleAnalytics.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="SgmlReaderDll.dll" Guid="70c0cd62-a6e5-4da4-9336-3fcef1bfb0d1">
+        <File Id="SgmlReaderDll.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.Core.dll" Guid="e2a18224-f75d-4a1b-ba41-10b2700f5db6">
+        <File Id="Microsoft.Web.WebView2.Core.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.WinForms.dll" Guid="68aa124d-e537-4671-8d65-7a222b0bfe3a">
+        <File Id="Microsoft.Web.WebView2.WinForms.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Directory Id="runtimes" Name="runtimes" />
+    </DirectoryRef>
+    <DirectoryRef Id="Help" FileSource="$(var.SolutionDir)\drop\Help">
+      <Component Id="design.htm" Guid="045549c7-34e5-4e8a-aa8c-a49a678e3ed4">
+        <File Id="design.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="index.html" Guid="f6e4a1fb-616a-4972-8274-b72b949cad66">
+        <File Id="index.html" KeyPath="yes" />
+      </Component>
+      <Component Id="install.htm" Guid="4b55b2f6-62a9-493e-981e-44947027da4c">
+        <File Id="install.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="readme.md" Guid="c91836ac-8876-4b8a-9e10-b9b76e7f2bfb">
+        <File Id="readme.md" KeyPath="yes" />
+      </Component>
+      <Directory Id="assets" Name="assets" />
+      <Directory Id="help" Name="help" />
+    </DirectoryRef>
+    <DirectoryRef Id="assets" FileSource="$(var.SolutionDir)\drop\Help\assets">
+      <Directory Id="css" Name="css" />
+      <Directory Id="images" Name="images" />
+      <Directory Id="js" Name="js" />
+    </DirectoryRef>
+    <DirectoryRef Id="runtimes" FileSource="$(var.Application.TargetDir)\runtimes">
+      <Directory Id="winarm64" Name="win-arm64" />
+      <Directory Id="winx64" Name="win-x64" />
+      <Directory Id="winx86" Name="win-x86" />
+    </DirectoryRef>
+    <DirectoryRef Id="winarm64" FileSource="$(var.Application.TargetDir)\runtimes\win-arm64">
+      <Directory Id="arm64native" Name="native" />
+    </DirectoryRef>
+    <DirectoryRef Id="winx86" FileSource="$(var.Application.TargetDir)\runtimes\win-x86">
+      <Directory Id="x86native" Name="native" />
+    </DirectoryRef>
+    <DirectoryRef Id="winx64" FileSource="$(var.Application.TargetDir)\runtimes\win-x64">
+      <Directory Id="x64native" Name="native" />
+    </DirectoryRef>
+    <DirectoryRef Id="x64native" FileSource="$(var.Application.TargetDir)\runtimes\win-x64\native">
+      <Component Id="WebView2Loader.x64.dll" Guid="AF738744-F741-4366-852C-6ED8E8A09CCA">
+        <File Id="WebView2Loader.x64.dll" KeyPath="yes" Name="WebView2Loader.dll" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="x86native" FileSource="$(var.Application.TargetDir)\runtimes\win-x86\native">
+      <Component Id="WebView2Loader.x86.dll" Guid="3D84CFE6-EF8E-4E8D-8788-8F673AA2812D">
+        <File Id="WebView2Loader.x86.dll" KeyPath="yes" Name="WebView2Loader.dll" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="arm64native" FileSource="$(var.Application.TargetDir)\runtimes\win-arm64\native">
+      <Component Id="WebView2Loader.arm64.dll" Guid="A3F09BD7-F075-47F0-81C3-7273E106CF53">
+        <File Id="WebView2Loader.arm64.dll" KeyPath="yes" Name="WebView2Loader.dll" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="css" FileSource="$(var.SolutionDir)\drop\Help\assets\css">
+      <Component Id="styles.css" Guid="0b2da722-6aa4-43eb-a36e-8f4102aac0fe">
+        <File Id="styles.css" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="images" FileSource="$(var.SolutionDir)\drop\Help\assets\images">
+      <Component Id="colors.jpg" Guid="ed940f13-42d0-48b9-afce-30288ac98cb4">
+        <File Id="colors.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="commands.png" Guid="da1291d9-1ce1-4157-a30a-38262f282b85">
+        <File Id="commands.png" KeyPath="yes" />
+      </Component>
+      <Component Id="datetime.jpg" Guid="9feb9b78-85fb-4d8a-8380-08cbd47f032c">
+        <File Id="datetime.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="dragdrop.jpg" Guid="b0047fd3-bbcc-43a0-830f-aebef85780b5">
+        <File Id="dragdrop.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="find.jpg" Guid="08ddaeff-2a6e-4d82-aee7-aa2d10134335">
+        <File Id="find.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="find.png" Guid="87b40165-476d-4466-9eda-0e228af783ad">
+        <File Id="find.png" KeyPath="yes" />
+      </Component>
+      <Component Id="findxpath.jpg" Guid="eaf7a59c-d908-4c81-899f-4f53707268e7">
+        <File Id="findxpath.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="help.png" Guid="1cbe7f3f-9108-4064-850f-946b0ad607e0">
+        <File Id="help.png" KeyPath="yes" />
+      </Component>
+      <Component Id="icon.png" Guid="afa32ecb-e790-4ae7-b86d-8cfd940a2858">
+        <File Id="icon.png" KeyPath="yes" />
+      </Component>
+      <Component Id="intellisense.jpg" Guid="ff0027b7-70ba-4a51-bc9e-e18f2a266cd1">
+        <File Id="intellisense.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="intellisense.png" Guid="bbe63758-2c3c-4872-b720-c44434d39516">
+        <File Id="intellisense.png" KeyPath="yes" />
+      </Component>
+      <Component Id="intellisense2.jpg" Guid="7d161833-3cc8-4139-95ae-c12aa2e96308">
+        <File Id="intellisense2.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="microsoft.svg" Guid="768a95d7-cb0b-4755-9b4f-231379986656">
+        <File Id="microsoft.svg" KeyPath="yes" />
+      </Component>
+      <Component Id="options.jpg" Guid="7fe7123c-18b1-41dd-a551-38790abc2719">
+        <File Id="options.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="plugins.png" Guid="de3ca4ef-e198-449f-8592-1a4adc1cd240">
+        <File Id="plugins.png" KeyPath="yes" />
+      </Component>
+      <Component Id="replace.jpg" Guid="04e3610c-158f-4308-b571-e40c4ab8c9e4">
+        <File Id="replace.jpg" KeyPath="yes" />
+      </Component>
+      <Component Id="schemas.png" Guid="9db8b459-753f-4abc-8fb5-ac07d871cb66">
+        <File Id="schemas.png" KeyPath="yes" />
+      </Component>
+      <Component Id="screen.png" Guid="152ed035-f3cc-4ed0-9d57-d24cb6904abe">
+        <File Id="screen.png" KeyPath="yes" />
+      </Component>
+      <Component Id="ui.png" Guid="323aa73e-8959-40a5-93cb-78e0ab35931e">
+        <File Id="ui.png" KeyPath="yes" />
+      </Component>
+      <Component Id="undo.png" Guid="2150aa74-420f-4c54-a605-63b1aa53f28c">
+        <File Id="undo.png" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="js" FileSource="$(var.SolutionDir)\drop\Help\assets\js">
+      <Component Id="main.js" Guid="dd64e268-691c-4cff-b9a1-d619af8849e1">
+        <File Id="main.js" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="help" FileSource="$(var.SolutionDir)\drop\Help\help">
+      <Component Id="clipboard.htm" Guid="a4a2e9e5-ad84-4a81-aa90-da38616994dc">
+        <File Id="clipboard.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="customeditors.htm" Guid="27c58e3a-6be2-4170-b696-b2a7d7041d79">
+        <File Id="customeditors.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="dragdrop.htm" Guid="531e4a2d-9af6-47a6-88b5-d6714a1ee415">
+        <File Id="dragdrop.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="find.htm" Guid="38bbe67a-5a79-4c0e-b1f4-5aed81e581d1">
+        <File Id="find.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="intellisense.htm" Guid="912d890b-3d8d-41ee-af86-8288a831cb51">
+        <File Id="intellisense.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="keyboard.htm" Guid="e5e43a62-97d6-4029-bd84-b6fee206df66">
+        <File Id="keyboard.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="menus.htm" Guid="78937a51-8f57-4fdb-bbed-ce5f0fad91f3">
+        <File Id="menus.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="options.htm" Guid="5fb1f22a-c6e8-4637-9461-bfbc332ae315">
+        <File Id="options.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="overview.htm" Guid="f6cfea8e-5190-4485-bc4b-066d981f33a9">
+        <File Id="overview.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="schemas.htm" Guid="1896b159-6416-4018-8dca-73f6d55ea90b">
+        <File Id="schemas.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="ui.htm" Guid="379b4104-f438-4273-9ddf-aa2ecaab6dd2">
+        <File Id="ui.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="updates.htm" Guid="692bcd9e-c606-4f6e-9ea5-a42e38a39f9e">
+        <File Id="updates.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="validation.htm" Guid="606085c7-26ba-499f-a263-b7290b9f2f66">
+        <File Id="validation.htm" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="samples" FileSource="$(var.SolutionDir)\drop\samples">
+      <Component Id="basket.xml" Guid="f6f6a570-5783-42b9-9da4-26c059e7dc4e">
+        <File Id="basket.xml" KeyPath="yes" />
+      </Component>
+      <Component Id="basket.xsd" Guid="f8fb7c3c-e70a-48e6-aceb-44b44f9bc4dd">
+        <File Id="basket.xsd" KeyPath="yes" />
+      </Component>
+      <Component Id="Employee.xml" Guid="12a3d24f-9e32-4bba-940c-a194ccb281fe">
+        <File Id="Employee.xml" KeyPath="yes" />
+      </Component>
+      <Component Id="Employee.xsd" Guid="fc1231c1-9662-4312-957b-0a8362ed56ef">
+        <File Id="Employee.xsd" KeyPath="yes" />
+      </Component>
+      <Component Id="Hamlet.xml" Guid="f1b3d847-070b-4711-92ca-a7e6470f5679">
+        <File Id="Hamlet.xml" KeyPath="yes" />
+      </Component>
+      <Component Id="rss.xml" Guid="0950015c-5651-419b-a05e-53b91bbde32f">
+        <File Id="rss.xml" KeyPath="yes" />
+      </Component>
+      <Component Id="rsspretty.xsl" Guid="b9298d1c-8ac6-4ebb-872c-d7e7e2ed8cf8">
+        <File Id="rsspretty.xsl" KeyPath="yes" />
+      </Component>
+      <Component Id="willy.xsl" Guid="bece5b74-a8f2-4bfb-a146-6647170f014a">
+        <File Id="willy.xsl" KeyPath="yes" />
+      </Component>
+      <Component Id="rsspretty_output.htm" Guid="83f4a2fe-70d6-48a8-98d9-2e22dcd6b838">
+        <File Id="rsspretty_output.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="rss_output.htm" Guid="549bba71-0c45-401c-8402-cbdb34ca7583">
+        <File Id="rss_output.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="willy_output.htm" Guid="8f50d61a-9f66-4dbe-9280-7701e3d387ca">
+        <File Id="willy_output.htm" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <!-- shortcut in start menu -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="01D93FF2-E181-4C0A-B0FC-D85B413DDB8D">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="XML Notepad" Description="Simple XML Editor" Target="[#XmlNotepad.exe]" WorkingDirectory="RootDirectory" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RemoveFolder Id="RemoveCompanyProgramsFolder" Directory="CompanyProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\LovettSoftware\XmlNotepad" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <!-- Step 3: Tell WiX to install the files -->
+    <Feature Id="ProductFeature" Title="XmlNotepad" Level="1">
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="XmlNotepad.exe" />
+      <ComponentRef Id="XmlNotepad.exe.manifest" />
+      <ComponentRef Id="XmlNotepad.exe.config" />
+      <ComponentRef Id="Microsoft.XmlNotepad.dll" />
+      <ComponentRef Id="Microsoft.mshtml.dll" />
+      <ComponentRef Id="XmlDiffPatch.dll" />
+      <ComponentRef Id="XmlDiffPatch.View.dll" />
+      <ComponentRef Id="FontBuilder.dll" />
+      <ComponentRef Id="SimpleGoogleAnalytics.dll" />
+      <ComponentRef Id="SgmlReaderDll.dll" />
+      <ComponentRef Id="Microsoft.Web.WebView2.Core.dll" />
+      <ComponentRef Id="Microsoft.Web.WebView2.WinForms.dll" />
+      <ComponentRef Id="WebView2Loader.x86.dll" />
+      <ComponentRef Id="WebView2Loader.x64.dll" />
+      <ComponentRef Id="WebView2Loader.arm64.dll" />
+      <ComponentRef Id="design.htm" />
+      <ComponentRef Id="index.html" />
+      <ComponentRef Id="install.htm" />
+      <ComponentRef Id="readme.md" />
+      <ComponentRef Id="styles.css" />
+      <ComponentRef Id="colors.jpg" />
+      <ComponentRef Id="commands.png" />
+      <ComponentRef Id="datetime.jpg" />
+      <ComponentRef Id="dragdrop.jpg" />
+      <ComponentRef Id="find.jpg" />
+      <ComponentRef Id="find.png" />
+      <ComponentRef Id="findxpath.jpg" />
+      <ComponentRef Id="help.png" />
+      <ComponentRef Id="icon.png" />
+      <ComponentRef Id="intellisense.jpg" />
+      <ComponentRef Id="intellisense.png" />
+      <ComponentRef Id="intellisense2.jpg" />
+      <ComponentRef Id="microsoft.svg" />
+      <ComponentRef Id="options.jpg" />
+      <ComponentRef Id="plugins.png" />
+      <ComponentRef Id="replace.jpg" />
+      <ComponentRef Id="schemas.png" />
+      <ComponentRef Id="screen.png" />
+      <ComponentRef Id="ui.png" />
+      <ComponentRef Id="undo.png" />
+      <ComponentRef Id="main.js" />
+      <ComponentRef Id="clipboard.htm" />
+      <ComponentRef Id="customeditors.htm" />
+      <ComponentRef Id="dragdrop.htm" />
+      <ComponentRef Id="find.htm" />
+      <ComponentRef Id="intellisense.htm" />
+      <ComponentRef Id="keyboard.htm" />
+      <ComponentRef Id="menus.htm" />
+      <ComponentRef Id="options.htm" />
+      <ComponentRef Id="overview.htm" />
+      <ComponentRef Id="schemas.htm" />
+      <ComponentRef Id="ui.htm" />
+      <ComponentRef Id="updates.htm" />
+      <ComponentRef Id="validation.htm" />
+      <ComponentRef Id="basket.xml" />
+      <ComponentRef Id="basket.xsd" />
+      <ComponentRef Id="Employee.xml" />
+      <ComponentRef Id="Employee.xsd" />
+      <ComponentRef Id="Hamlet.xml" />
+      <ComponentRef Id="rss.xml" />
+      <ComponentRef Id="rsspretty.xsl" />
+      <ComponentRef Id="willy.xsl" />
+      <ComponentRef Id="rsspretty_output.htm" />
+      <ComponentRef Id="rss_output.htm" />
+      <ComponentRef Id="willy_output.htm" />
+    </Feature>
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />
+    <!-- Step 2: Add UI to your installer / Step 4: Trigger the custom action -->
+    <UI>
+      <UIRef Id="WixUI_Minimal" />
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+    </UI>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch XML Notepad" />
+    <!-- Step 3: Include the custom action -->
+    <Property Id="WixShellExecTarget" Value="[#XmlNotepad.exe]" />
+    <Property Id="REINSTALLMODE" Value="amus" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+  </Product>
 </Wix>
