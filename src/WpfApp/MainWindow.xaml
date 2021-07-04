@@ -1,0 +1,196 @@
+﻿<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp"
+        mc:Ignorable="d" Background="{StaticResource ApplicationBackgroundBrush}"
+        Title="XML Notepad - {0}" Height="800" Width="1280">
+    <Grid Background="{StaticResource ApplicationBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="New" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="Open" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Reload" InputGestureText="F5"/>
+                <MenuItem Header="Save" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Save As..."/>
+                <MenuItem Header="Export Errors..."/>
+                <MenuItem Header="Recent Files" x:Name="RecentFilesMenu"/>
+                <MenuItem Header="Exit" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="Redo" InputGestureText="Ctrl+Y"/>
+                <Separator/>
+                <MenuItem Header="Cut" InputGestureText="Ctrl+X"/>
+                <MenuItem Header="Copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="Paste" InputGestureText="Ctrl+V"/>
+                <Separator/>
+                <MenuItem Header="Delete" InputGestureText="Del"/>
+                <MenuItem Header="Insert" InputGestureText="Ins"/>
+                <MenuItem Header="Rename" InputGestureText="Enter"/>
+                <MenuItem Header="Duplicate" InputGestureText="Ctrl+D"/>
+                <MenuItem Header="Change To">
+                    
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Goto Definition..." InputGestureText="F12"/>
+                <MenuItem Header="Expand XIncludes"/>
+                <MenuItem Header="Nudge">
+
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Find" InputGestureText="Ctrl+F"/>
+                <MenuItem Header="Replace" InputGestureText="Ctrl+H"/>
+                <MenuItem Header="Incremental Search" InputGestureText="Ctrl+I"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Expand All"/>
+                <MenuItem Header="Collapse All"/>
+                <Separator/>
+                <MenuItem Header="Status Bar"/>
+                <Separator/>
+                <MenuItem Header="Source"/>
+                <MenuItem Header="Options..."/>
+                <MenuItem Header="Schemas..."/>
+                <MenuItem Header="Statistics..."/>
+                <MenuItem Header="File Associations..."/>
+                <Separator/>
+                <MenuItem Header="Next Error" InputGestureText="F4"/>
+                <Separator/>
+                <MenuItem Header="Compare XML Files..."/>
+            </MenuItem>
+            <MenuItem Header="Insert">
+                <MenuItem Header="Element">
+                    <MenuItem Header="Before"/>
+                    <MenuItem Header="After"/>
+                    <MenuItem Header="Child" InputGestureText="Ctrl+Ins"/>
+                </MenuItem>
+                <MenuItem Header="Attribute">
+                    <MenuItem Header="Before"/>
+                    <MenuItem Header="After"/>
+                    <MenuItem Header="Child" InputGestureText="Alt+Ins"/>
+                </MenuItem>
+                <MenuItem Header="Text">
+                    <MenuItem Header="Before"/>
+                    <MenuItem Header="After"/>
+                    <MenuItem Header="Child"/>
+                </MenuItem>
+                <MenuItem Header="Comment">
+                    <MenuItem Header="Before"/>
+                    <MenuItem Header="After"/>
+                    <MenuItem Header="Child"/>
+                </MenuItem>
+                <MenuItem Header="CDATA">
+                    <MenuItem Header="Before"/>
+                    <MenuItem Header="After"/>
+                    <MenuItem Header="Child"/>
+                </MenuItem>
+                <MenuItem Header="Processing Instruction">
+                    <MenuItem Header="Before"/>
+                    <MenuItem Header="After"/>
+                    <MenuItem Header="Child"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Window">
+                <MenuItem Header="New Window"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="Contents"/>
+                <MenuItem Header="Index"/>
+                <MenuItem Header="Open Sample..."/>
+                <MenuItem Header="Check for updates..."/>
+                <Separator/>
+                <MenuItem Header="About XML Notepad..."/>
+            </MenuItem>
+            <MenuItem HorizontalAlignment="Right" Header="Update"></MenuItem>
+        </Menu>
+        <DockPanel Grid.Row="1" Background="{StaticResource ApplicationBackgroundBrush}"
+                   Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ToolBarPanel}}}">
+            <DockPanel.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                </Style>
+            </DockPanel.Resources>
+            <Button x:Name="NewButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="New" >&#xE132;</Button>
+            <Button x:Name="OpenButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Open" >&#xE1A5;</Button>
+            <Button x:Name="SaveButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Save" >&#xE105;</Button>
+
+            <Button x:Name="UndoButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Undo" >&#xE10E;</Button>
+            <Button x:Name="RedoButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Redo" >&#xE10D;</Button>
+
+            <Button x:Name="CutButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Cut" >&#xE16b;</Button>
+            <Button x:Name="CopyButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Copy" >&#xE16f;</Button>
+            <Button x:Name="PasteButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Paste" >&#xE16D;</Button>
+            <Button x:Name="DeleteButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Delete" >&#xE107;</Button>
+
+            <Button x:Name="NudgeUpButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Up" >&#xE18d;</Button>
+            <Button x:Name="NudgeDownButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Down">
+                <TextBlock Text="&#xE18d;">
+                    <TextBlock.RenderTransform>
+                        <RotateTransform Angle="180" CenterX="9" CenterY="12.5"/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Button>
+            <Button x:Name="NudgeLeftButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Left" >&#xE0d7;</Button>
+            <Button x:Name="NudgeRightButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Right" >&#xE0b2;</Button>
+        </DockPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label VerticalAlignment="Center" >Location: </Label>
+            <TextBox x:Name="TextBoxAddress" Grid.Column="1" HorizontalAlignment="Stretch"
+                      Background="{StaticResource ControlBackgroundBrush}" VerticalAlignment="Center" Padding="2"
+                     Foreground="{StaticResource ControlForegroundBrush}"/>
+
+            <Button Grid.Column="2" MinWidth="50" Height="20" Padding="0">
+                <Label Content="&#xe0c2;" FontFamily="Segoe UI Symbol" Margin="0,-5,0,0"/>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Stretch"
+              ShowsPreview="True"
+              Width="5"
+              />
+        </Grid>
+        
+        <GridSplitter Grid.Row="4"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+              ShowsPreview="True"
+              Height="5"
+              />
+
+        <DataGrid x:Name="TaskList" Grid.Row="5">
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Description" Width="2*"/>
+                <DataGridTextColumn Header="File"  Width="*"/>
+                <DataGridTextColumn Header="Line" MinWidth="80"/>
+                <DataGridTextColumn Header="Column"  MinWidth="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <StatusBar Grid.Row="6">
+            <StatusBarItem x:Name="StatusMessage">This is a test</StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
