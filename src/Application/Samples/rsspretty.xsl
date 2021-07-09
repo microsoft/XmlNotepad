@@ -12,11 +12,11 @@
 		<head>
 			<title>RSS Feed for <xsl:value-of select='channel/title'/></title>
 			<style type="text/css">
-				body { margin-top:10px; margin-bottom:25px; text-align:center; font-family: verdana, sans-serif; font-size: 80%; line-height: 1.45em; } 
+				body { margin-top:10px; margin-bottom:25px; text-align:center; font-family: verdana, sans-serif; font-size: 80%; line-height: 1.45em; }
 				#block { margin:0px auto; width:600px; text-align:left; }
 				p { padding-top: 0px; margin-top: 0px; }
 				h1 { font-size: 120%; padding-bottom: 0px; margin-bottom: 0px; }
-				h2 { font-size: 100%; margin-bottom: 0px; } 
+				h2 { font-size: 100%; margin-bottom: 0px; }
 			</style>
 		</head>
 		<body>
@@ -46,7 +46,7 @@
 			<br />
 			<font color='gray'>
 		<xsl:for-each select='category'>
-			<xsl:value-of select='.' /> | 
+			<xsl:value-of select='.' /> |
 		</xsl:for-each>
 			</font>
 			<br />
@@ -55,7 +55,7 @@
 </xsl:template>
 
 <xsl:template match='category'>
-		<xsl:value-of select='.'/> |  
+		<xsl:value-of select='.'/> |
 </xsl:template>
 
 

@@ -40,14 +40,14 @@ namespace XmlNotepad
         public event EventHandler FileChanged;
         public event EventHandler<ModelChangedEventArgs> ModelChanged;
 
-        public XmlCache(IServiceProvider site, ISynchronizeInvoke sync)
+        public XmlCache(IServiceProvider site, ISynchronizeInvoke sync, DelayedActions handler)
         {
             this.loader = new DomLoader(site);
             this.schemaCache = new SchemaCache(site);
             this.site = site;
             this.sync = sync;
             this.Document = new XmlDocument();
-            this.actions = new DelayedActions();
+            this.actions = handler;
         }
 
         ~XmlCache() {

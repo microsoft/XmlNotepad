@@ -4,20 +4,35 @@ using System.Diagnostics;
 
 namespace XmlNotepad
 {
+    public delegate void DispatchHandler(Action a);
+
+
     /// <summary>
     /// This class provides a delayed action that has a name.  If the same named action is
     /// started multiple times before the delay if fires the action only once.
     /// </summary>
     public class DelayedActions
     {
+        DispatchHandler handler;
         Dictionary<string, DelayedAction> pending = new Dictionary<string, DelayedAction>();
+
+        /// <summary>
+        /// Construct a new DelayedActions providing the action handler that knows how to switch
+        /// the execution of the action to the correct thread (e.g. sometimes you want actions
+        /// to run on the UI thread).
+        /// </summary>
+        /// <param name="handler"></param>
+        public DelayedActions(DispatchHandler handler)
+        {
+            this.handler = handler;
+        }
 
         public void StartDelayedAction(string name, Action action, TimeSpan delay)
         {
             DelayedAction da;
             if (!pending.TryGetValue(name, out da))
             {
-                da = new DelayedAction();
+                da = new DelayedAction(this.handler);
                 pending[name] = da;
             }
             da.StartDelayTimer(action, delay);
@@ -48,6 +63,12 @@ namespace XmlNotepad
             System.Threading.Timer delayTimer;
             Action delayedAction;
             int startTime;
+            DispatchHandler handler;
+
+            public DelayedAction(DispatchHandler handler)
+            {
+                this.handler = handler;
+            }
 
             /// <summary>
             /// Start a count down with the given delay, and fire the given action when it reaches zero.
@@ -92,7 +113,7 @@ namespace XmlNotepad
 
                 if (a != null)
                 {
-                    UiDispatcher.RunOnUIThread(() =>
+                    this.handler(() =>
                     {
                         try
                         {

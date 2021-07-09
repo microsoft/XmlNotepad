@@ -152,7 +152,7 @@
       <xs:choice>
         <xs:element name="Zip" type="xs:int"/>
         <xs:element name="postalCode" type="xs:string"/>
-      </xs:choice>      
+      </xs:choice>
     </xs:sequence>
     <xs:attribute name="first" type="xs:int"/>
     <xs:attribute name="attr2" type="xs:string"/>

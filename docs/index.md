@@ -18,7 +18,7 @@ interest in it, helped hold his feet to the fire, and also added some cool featu
 Doris also took pity on Chris and helped identify some great bugs. So here we are, a nifty tool that
 should be useful to those who want a quick way to view and edit XML documents.
 
-There have been over 3 million downloads since then - so thanks to everyone who tried it out!  
+There have been over 3 million downloads since then - so thanks to everyone who tried it out!
 
 ### Handy features include:
 

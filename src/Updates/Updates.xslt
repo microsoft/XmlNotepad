@@ -30,7 +30,7 @@
             </tr>
             <tr>
               <td>
-                <table border="1" cellpadding="2" >                  
+                <table border="1" cellpadding="2" >
                   <xsl:apply-templates/>
                 </table>
               </td>
@@ -47,7 +47,7 @@
   </xsl:template>
   <xsl:template match="version">
     <xsl:variable name="color">background:teal;color:white</xsl:variable>
-    <tr>      
+    <tr>
       <td style="{$color}"> </td>
       <td style="{$color}"  align="center">
         Version <xsl:value-of select="@number"/>

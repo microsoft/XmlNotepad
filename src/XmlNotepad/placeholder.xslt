@@ -17,11 +17,11 @@
       <BODY>
         <p>
           Your XML document contains no XSLT filename.
-          The XSLT transform is defined by a processing instruction at the top of 
+          The XSLT transform is defined by a processing instruction at the top of
           your XML document that looks like this:
           <pre style="font-size:small">
             <span class="delim">&lt;?</span><span class="name">xml-stylesheet</span>&#160;<span class="attr">type</span><span class="delim">=</span>"<span class="attrvalue">text/xsl</span>" <span class="attr">href</span><span class="delim">=</span>"<span class="attrvalue">willy.xsl</span>"<span class="delim">?&gt;</span>
-          </pre>          
+          </pre>
           You can enter the XSLT file name using the above text box, but if you want
           the XSLT file name to persist with your document you should cut and paste the above
           processing instruction and move it to the top of your document and edit the href

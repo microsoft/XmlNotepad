@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" 
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+<xsl:stylesheet version="1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="html"/>
-	
+
   <xsl:template match="@* | node()">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()" />
@@ -19,9 +19,9 @@
 					<xsl:apply-templates select="@* | node()" />
 				</xsl:copy>
 			</xsl:otherwise>
-		</xsl:choose>    
-  </xsl:template>  
-	
+		</xsl:choose>
+  </xsl:template>
+
   <xsl:template match="/">
     <html>
 			<style>
@@ -34,8 +34,8 @@
   </xsl:template>
 	<xsl:template match="nothing">
 		<font color="rgb(43,145,175)">
-			Dynamic help displays the xsd:documentation for the selected node.  You 
-			currently have no associated XML schema or your selected node has no 
+			Dynamic help displays the xsd:documentation for the selected node.  You
+			currently have no associated XML schema or your selected node has no
 			corresponding xsd:documentation in an xsd:annotation.
 		</font>
   </xsl:template>

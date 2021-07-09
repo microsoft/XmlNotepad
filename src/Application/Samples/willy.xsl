@@ -83,7 +83,7 @@
         </td>
         <!-- The XML data is a little weird in that they break out individual lines of
 					     a character's speech, although the line tags *don't* correspond to pauses
-					     in the actor's speech.  With the XSL below I'm basically merging the 
+					     in the actor's speech.  With the XSL below I'm basically merging the
 					     lines into a single text block.
 					-->
         <td valign="top" width="400">

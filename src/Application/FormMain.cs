@@ -38,7 +38,7 @@ namespace XmlNotepad
         bool helpAvailableHint = true;
         Analytics analytics;
         Updater updater;
-        DelayedActions delayedActions = new DelayedActions();
+        DelayedActions delayedActions;
         System.CodeDom.Compiler.TempFileCollection tempFiles = new System.CodeDom.Compiler.TempFileCollection();
         private ContextMenuStrip contextMenu1;
         private ToolStripSeparator ctxMenuItem20;
@@ -226,12 +226,25 @@ namespace XmlNotepad
             this.settings.StartupPath = Application.StartupPath;
             this.settings.ExecutablePath = Application.ExecutablePath;
             this.settings.Resolver = new XmlProxyResolver(this);
+            this.delayedActions = new DelayedActions((action) =>
+            {
+                ISynchronizeInvoke si = (ISynchronizeInvoke)this;
+                if (si.InvokeRequired)
+                {
+                    // get on the right thread.
+                    si.Invoke(action, null);
+                    return;
+                }
+                else
+                {
+                    action();
+                }
+            });
 
             SetDefaultSettings();
 
             this.model = (XmlCache)GetService(typeof(XmlCache));
             this.ip = (XmlIntellisenseProvider)GetService(typeof(XmlIntellisenseProvider));
-            //this.model = new XmlCache((ISynchronizeInvoke)this);
             this.undoManager = new UndoManager(1000);
             this.undoManager.StateChanged += new EventHandler(undoManager_StateChanged);
 
@@ -569,7 +582,7 @@ namespace XmlNotepad
         }
 
         protected override void OnLoad(EventArgs e) {
-            this.updater = new Updater(this.settings);
+            this.updater = new Updater(this.settings, this.delayedActions);
             this.updater.Title = this.Caption;
             this.updater.UpdateRequired += new EventHandler<bool>(OnUpdateRequired);
             LoadConfig();
@@ -2265,7 +2278,7 @@ namespace XmlNotepad
             } else if (service == typeof(XmlCache)) {
                 if (null == this.model)
                 {
-                    this.model = new XmlCache((IServiceProvider)this, (ISynchronizeInvoke)this);
+                    this.model = new XmlCache((IServiceProvider)this, (ISynchronizeInvoke)this, this.delayedActions);
                 }
                 return this.model;
             } else if (service == typeof(Settings)){

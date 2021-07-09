@@ -29,7 +29,7 @@ namespace XmlNotepad
         XmlTreeNode dragged;
         XmlTreeViewDropFeedback feedback;
         IntelliTip tip;
-        DelayedActions delayedActions = new DelayedActions();
+        DelayedActions delayedActions;
         private NodeTextView nodeTextView;
         private TreeView myTreeView;
         private System.Windows.Forms.ImageList imageList1;
@@ -40,6 +40,20 @@ namespace XmlNotepad
 
         public XmlTreeView()
         {
+            this.delayedActions = new DelayedActions((action) =>
+            {
+                ISynchronizeInvoke si = (ISynchronizeInvoke)this;
+                if (si.InvokeRequired)
+                {
+                    // get on the right thread.
+                    si.Invoke(action, null);
+                    return;
+                }
+                else
+                {
+                    action();
+                }
+            });
 
             this.SetStyle(ControlStyles.ContainerControl, true);
             this.SetStyle(ControlStyles.ResizeRedraw, true);

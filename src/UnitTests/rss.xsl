@@ -9,9 +9,9 @@
 <xsl:template match="/">
   <html>
     <h3>
-      Found <xsl:value-of select="count(rss/channel/item)"/> RSS items. 
+      Found <xsl:value-of select="count(rss/channel/item)"/> RSS items.
       <xsl:value-of select="user:GetMessage()"/>
     </h3>
   </html>
 </xsl:template>
-</xsl:stylesheet> 
+</xsl:stylesheet>

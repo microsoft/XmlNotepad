@@ -15,7 +15,7 @@ namespace XmlNotepad
         Settings settings;
         Analytics analytics;
         Updater updater;
-        DelayedActions delayedActions = new DelayedActions();
+        DelayedActions delayedActions;
 
         public MainWindow()
         {
@@ -24,6 +24,11 @@ namespace XmlNotepad
             this.settings.StartupPath = System.IO.Path.GetDirectoryName(Application.Current.StartupUri.LocalPath);
             this.settings.ExecutablePath = Application.Current.StartupUri.LocalPath;
 
+            delayedActions = new DelayedActions((action) =>
+            {
+                this.Dispatcher.Invoke(action);
+            });
+
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
@@ -31,7 +36,7 @@ namespace XmlNotepad
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            this.updater = new Updater(this.settings);
+            this.updater = new Updater(this.settings, this.delayedActions);
             this.updater.Title = this.Title;
             this.updater.UpdateRequired += new EventHandler<bool>(OnUpdateRequired);
         }

@@ -13,7 +13,7 @@ namespace XmlNotepad
         DateTime lastCheck = DateTime.MinValue;
         TimeSpan updateFrequency = TimeSpan.MaxValue;
         Uri updateUri;
-        DelayedActions delayedActions = new DelayedActions();
+        DelayedActions delayedActions;
         const string RetryAction = "Retry";
         const int DefaultDelay = 5000;
         string download;
@@ -30,9 +30,10 @@ namespace XmlNotepad
 
         public event EventHandler<bool> UpdateRequired;
 
-        public Updater(Settings s)
+        public Updater(Settings s, DelayedActions handler)
         {
             this.settings = s;
+            this.delayedActions = handler;
             s["LastUpdateCheck"] = lastCheck;
             s["UpdateFrequency"] = updateFrequency;
             s["UpdateLocation"] = "";
