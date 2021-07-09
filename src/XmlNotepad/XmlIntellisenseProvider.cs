@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.ComponentModel;
@@ -7,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad {
     public class XmlIntellisenseProvider : IIntellisenseProvider, IDisposable {

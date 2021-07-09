@@ -113,36 +113,6 @@
     <Compile Include="DomLoader.cs" />
     <Compile Include="EditableView.cs" />
     <Compile Include="FileAssociation.cs" />
-    <Compile Include="FormAnalytics.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormCsvImport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormCsvImport.Designer.cs">
-      <DependentUpon>FormCsvImport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAbout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSchemas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSchemas.Designer.cs">
-      <DependentUpon>FormSchemas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSearch.Designer.cs">
-      <DependentUpon>FormSearch.cs</DependentUpon>
-    </Compile>
     <Compile Include="HLSColor.cs" />
     <Compile Include="IntellisenseProvider.cs" />
     <Compile Include="IntelliTip.cs" />
@@ -154,7 +124,7 @@
     <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SR.resx</DependentUpon>
+      <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
     <Compile Include="TabNavigator.cs" />
     <Compile Include="TreeView.cs">
@@ -211,33 +181,6 @@
     <Compile Include="XsltViewer.Designer.cs">
       <DependentUpon>XsltViewer.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="FormAnalytics.resx">
-      <DependentUpon>FormAnalytics.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormCsvImport.resx">
-      <DependentUpon>FormCsvImport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormOptions.resx">
-      <DependentUpon>FormOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSchemas.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormSchemas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSearch.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormSearch.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="NodeTextView.resx">
       <DependentUpon>NodeTextView.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -251,8 +194,8 @@
       <DependentUpon>Resizer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SR.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+    <EmbeddedResource Include="StringResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -310,8 +253,6 @@
     <Content Include="Resources\Text.ICO" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
     <Content Include="Resources\Undo.bmp" />
-    <EmbeddedResource Include="Resources\XmlDiffHeader.html" />
-    <EmbeddedResource Include="Resources\XmlReportStyles.css" />
     <Content Include="Resources\xmlnote.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -399,5 +340,4 @@
   </Target>
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
   <Import Project="..\packages\Microsoft.Web.WebView2.1.0.902-prerelease\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.902-prerelease\build\Microsoft.Web.WebView2.targets')" />
-  
 </Project>

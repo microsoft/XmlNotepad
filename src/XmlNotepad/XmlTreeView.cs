@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 using System.Xml.Schema;
-using System.Diagnostics;
-using System.Drawing.Drawing2D;
-using System.Text;
+using SR = XmlNotepad.StringResources;
+
 
 namespace XmlNotepad
 {
@@ -737,7 +736,7 @@ namespace XmlNotepad
             this.nodeTextView.Invalidate();
         }
 
-        internal void OnLoaded()
+        public void OnLoaded()
         {
             this.nodeTextView.OnLoaded();
         }
@@ -1585,22 +1584,22 @@ namespace XmlNotepad
 
         }
 
-        internal void BeginUpdate()
+        public void BeginUpdate()
         {
             this.updating++;
         }
 
-        internal void EndUpdate()
+        public void EndUpdate()
         {
             this.updating--;
         }
 
-        internal void BeginSave()
+        public void BeginSave()
         {
             this.saving = true;
         }
 
-        internal void EndSave()
+        public void EndSave()
         {
             this.saving = false;
         }

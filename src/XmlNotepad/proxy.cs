@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using System.ComponentModel;
 using System.Text;
 using System.Net;
 using System.Net.Cache;
@@ -9,6 +8,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Xml;
+using SR = XmlNotepad.StringResources;
+
 
 namespace XmlNotepad {
 
@@ -58,7 +59,7 @@ namespace XmlNotepad {
         }
     }
 
-    enum WebProxyState {
+    public enum WebProxyState {
         NoCredentials = 0,
         DefaultCredentials = 1,
         CachedCredentials = 2,
@@ -67,7 +68,7 @@ namespace XmlNotepad {
     } ;
 
 
-    internal class WebProxyService {
+    public class WebProxyService {
         private IServiceProvider site;
         private NetworkCredential cachedCredentials;
         private string currentProxyUrl;

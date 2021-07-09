@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace XmlNotepad
 {
-    class FileAssociation
+    public class FileAssociation
     {
         public static void AddXmlProgids()
         {

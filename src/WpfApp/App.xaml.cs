@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace WpfApp
+namespace XmlNotepad
 {
     /// <summary>
     /// Interaction logic for App.xaml

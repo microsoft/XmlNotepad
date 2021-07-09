@@ -1,15 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Schema;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Design;
-using System.Xml;
-using System.Globalization;
 using System.ComponentModel;
+using System.Drawing;
+using System.Globalization;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
+using SR = XmlNotepad.StringResources;
 
-namespace XmlNotepad {
+
+namespace XmlNotepad
+{
     /// <summary>
     /// This interface is used to provide extensible popup modal dialog for editing a particular
     /// type of value in the XML document.  (e.g. color picker).

@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-using Microsoft.Xml;
-using System.Reflection;
-using System.Diagnostics;
+using SR = XmlNotepad.StringResources;
 
-namespace XmlNotepad {
+namespace XmlNotepad
+{
     public partial class FormSearch : Form {
         IFindTarget target;
         Settings settings;

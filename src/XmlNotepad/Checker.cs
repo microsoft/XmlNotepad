@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 using System.Xml;
 using System.Xml.Schema;
-using System.Diagnostics;
-using System.Reflection;
-using System.ComponentModel;
-using System.Globalization;
-namespace XmlNotepad {
+using SR = XmlNotepad.StringResources;
+
+namespace XmlNotepad
+{
 
     public abstract class ErrorHandler {
         public abstract void HandleError(Severity sev, string reason, string filename, int line, int col, object data);

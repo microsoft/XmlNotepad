@@ -3,11 +3,12 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Collections;
 using System.Diagnostics;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using SR = XmlNotepad.StringResources;
+
 
 namespace XmlNotepad
 {

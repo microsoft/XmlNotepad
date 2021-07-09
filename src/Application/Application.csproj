@@ -44,6 +44,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>readme.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
+    <ApplicationRevision>35</ApplicationRevision>
+    <ApplicationVersion>2.8.0.35</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -83,6 +85,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SgmlReaderDll, Version=1.8.21.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.21\lib\net47\SgmlReaderDll.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -90,17 +95,78 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="XmlDiffPatch, Version=1.0.2.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.2\lib\net47\XmlDiffPatch.dll</HintPath>
+    </Reference>
+    <Reference Include="XmlDiffPatch.View, Version=1.0.2.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.2\lib\net47\XmlDiffPatch.View.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Version\Version.cs">
       <Link>Version.cs</Link>
     </Compile>
-    <Compile Include="MyForm.cs">
+    <Compile Include="FormAbout.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAnalytics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCsvImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCsvImport.Designer.cs">
+      <DependentUpon>FormCsvImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSchemas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSchemas.Designer.cs">
+      <DependentUpon>FormSchemas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSearch.Designer.cs">
+      <DependentUpon>FormSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Resources\XmlReportStyles.css" />
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAnalytics.resx">
+      <DependentUpon>FormAnalytics.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCsvImport.resx">
+      <DependentUpon>FormCsvImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormOptions.resx">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSchemas.resx">
+      <DependentUpon>FormSchemas.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSearch.resx">
+      <DependentUpon>FormSearch.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -119,6 +185,7 @@
     <None Include="license.rtf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -131,6 +198,7 @@
     <Content Include="..\Version\Version.xsl">
       <Link>Version.xsl</Link>
     </Content>
+    <EmbeddedResource Include="Resources\XmlDiffHeader.html" />
     <Content Include="Samples\basket.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -194,82 +262,82 @@
   <ItemGroup>
     <PublishFile Include="Samples\basket.xml">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\basket.xsd">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xml">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xsd">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Hamlet.xml">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rss.xml">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rsspretty.xsl">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\willy.xsl">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>

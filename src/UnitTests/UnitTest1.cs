@@ -1293,9 +1293,10 @@ namespace UnitTests {
 
             Trace.WriteLine("Show XSLT");
             AutomationWrapper tabControl = w.FindDescendant("tabControlViews");
-            bounds = tabControl.Bounds;
+            AutomationWrapper xslOutputTab = tabControl.FindDescendant("XSL Output");
+            bounds = xslOutputTab.Bounds;
             Trace.WriteLine("Select tabPageHtmlView ");
-            Mouse.MouseClick(new Point(bounds.Left + 20 + 70, bounds.Top + 5), MouseButtons.Left);
+            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
             Sleep(1000);
 
             Trace.WriteLine("Enter custom XSL with script code.");

@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics;
-using System.Text;
 using System.ComponentModel;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad {
     [AttributeUsage(AttributeTargets.All)]
-    internal sealed class SRDescriptionAttribute : DescriptionAttribute {
+    public sealed class SRDescriptionAttribute : DescriptionAttribute {
 
         private bool replaced = false;
 
@@ -25,7 +25,7 @@ namespace XmlNotepad {
     }
 
     [AttributeUsage(AttributeTargets.All)]
-    internal sealed class SRCategoryAttribute : CategoryAttribute {
+    public sealed class SRCategoryAttribute : CategoryAttribute {
 
         public SRCategoryAttribute(string category)
             : base(category) {
@@ -37,7 +37,7 @@ namespace XmlNotepad {
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
-    internal sealed class LocDisplayNameAttribute : DisplayNameAttribute {
+    public sealed class LocDisplayNameAttribute : DisplayNameAttribute {
         string name;
 
         /// <include file='doc\PropertyPages.uex' path='docs/doc[@for="LocDisplayNameAttribute.DisplayNameAttribute"]/*' />

@@ -11,6 +11,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
@@ -392,7 +393,7 @@ namespace XmlNotepad
             this.settings["AutoFormatOnSave"] = true;
             this.settings["IndentLevel"] = 2;
             this.settings["IndentChar"] = IndentChar.Space;
-            this.settings["NewLineChars"] = UserSettings.Escape("\r\n");
+            this.settings["NewLineChars"] = Utilities.Escape("\r\n");
             this.settings["Language"] = "";
             this.settings["NoByteOrderMark"] = false;
 
@@ -3472,6 +3473,10 @@ namespace XmlNotepad
         {
             using (Stream stream = typeof(XmlNotepad.FormMain).Assembly.GetManifestResourceStream(name))
             {
+                if (stream == null)
+                {
+                    throw new Exception(string.Format("You have a build problem: resource '{0} not found", name));
+                }
                 StreamReader sr = new StreamReader(stream);
                 return sr.ReadToEnd();
             }

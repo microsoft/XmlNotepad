@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.35" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
+  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.36" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallFinalize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
     <MediaTemplate />
@@ -256,6 +256,9 @@
       <Component Id="willy_output.htm" Guid="8f50d61a-9f66-4dbe-9280-7701e3d387ca">
         <File Id="willy_output.htm" KeyPath="yes" />
       </Component>
+      <Component Id="foo.htm" Guid="af86f093-c547-4bc8-b83b-443a7454552f">
+        <File Id="foo.htm" KeyPath="yes" />
+      </Component>
     </DirectoryRef>
     <!-- shortcut in start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -268,7 +271,6 @@
     </DirectoryRef>
     <!-- Step 3: Tell WiX to install the files -->
     <Feature Id="ProductFeature" Title="XmlNotepad" Level="1">
-      <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="XmlNotepad.exe" />
       <ComponentRef Id="XmlNotepad.exe.manifest" />
       <ComponentRef Id="XmlNotepad.exe.config" />
@@ -281,13 +283,13 @@
       <ComponentRef Id="SgmlReaderDll.dll" />
       <ComponentRef Id="Microsoft.Web.WebView2.Core.dll" />
       <ComponentRef Id="Microsoft.Web.WebView2.WinForms.dll" />
-      <ComponentRef Id="WebView2Loader.x86.dll" />
-      <ComponentRef Id="WebView2Loader.x64.dll" />
-      <ComponentRef Id="WebView2Loader.arm64.dll" />
       <ComponentRef Id="design.htm" />
       <ComponentRef Id="index.html" />
       <ComponentRef Id="install.htm" />
       <ComponentRef Id="readme.md" />
+      <ComponentRef Id="WebView2Loader.x64.dll" />
+      <ComponentRef Id="WebView2Loader.x86.dll" />
+      <ComponentRef Id="WebView2Loader.arm64.dll" />
       <ComponentRef Id="styles.css" />
       <ComponentRef Id="colors.jpg" />
       <ComponentRef Id="commands.png" />
@@ -334,6 +336,8 @@
       <ComponentRef Id="rsspretty_output.htm" />
       <ComponentRef Id="rss_output.htm" />
       <ComponentRef Id="willy_output.htm" />
+      <ComponentRef Id="foo.htm" />
+      <ComponentRef Id="ApplicationShortcut" />
     </Feature>
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />
     <!-- Step 2: Add UI to your installer / Step 4: Trigger the custom action -->

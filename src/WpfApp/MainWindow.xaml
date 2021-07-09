@@ -1,12 +1,18 @@
-﻿<Window x:Class="WpfApp.MainWindow"
+﻿<Window x:Class="XmlNotepad.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp"
-        mc:Ignorable="d" Background="{StaticResource ApplicationBackgroundBrush}"
+        xmlns:local="clr-namespace:XmlNotepad"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Style="{DynamicResource MyWindowStyle}"
         Title="XML Notepad - {0}" Height="800" Width="1280">
-    <Grid Background="{StaticResource ApplicationBackgroundBrush}">
+    <Window.Resources>
+        <Style x:Key="MyWindowStyle"
+           TargetType="Window"
+           BasedOn="{StaticResource DefaultWindowStyle}">
+        </Style>
+    </Window.Resources>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -40,13 +46,21 @@
                 <MenuItem Header="Rename" InputGestureText="Enter"/>
                 <MenuItem Header="Duplicate" InputGestureText="Ctrl+D"/>
                 <MenuItem Header="Change To">
-                    
+                    <MenuItem Header="Element"/>
+                    <MenuItem Header="Attribute"/>
+                    <MenuItem Header="Text"/>
+                    <MenuItem Header="CDATA"/>
+                    <MenuItem Header="Comment"/>
+                    <MenuItem Header="Processing Instruction"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Goto Definition..." InputGestureText="F12"/>
                 <MenuItem Header="Expand XIncludes"/>
                 <MenuItem Header="Nudge">
-
+                    <MenuItem Header="Up"/>
+                    <MenuItem Header="Down"/>
+                    <MenuItem Header="Left"/>
+                    <MenuItem Header="Right"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Find" InputGestureText="Ctrl+F"/>
@@ -102,6 +116,8 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Window">
+                <MenuItem Header="Dark" Click="OnDarkTheme"/>
+                <MenuItem Header="Light" Click="OnLightTheme"/>
                 <MenuItem Header="New Window"/>
             </MenuItem>
             <MenuItem Header="Help">
@@ -114,49 +130,88 @@
             </MenuItem>
             <MenuItem HorizontalAlignment="Right" Header="Update"></MenuItem>
         </Menu>
-        <DockPanel Grid.Row="1" Background="{StaticResource ApplicationBackgroundBrush}"
-                   Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ToolBarPanel}}}">
-            <DockPanel.Resources>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                </Style>
-            </DockPanel.Resources>
-            <Button x:Name="NewButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="New" >&#xE132;</Button>
-            <Button x:Name="OpenButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Open" >&#xE1A5;</Button>
-            <Button x:Name="SaveButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Save" >&#xE105;</Button>
+        <ui:CommandBar Grid.Row="1" HorizontalAlignment="Left">
+            <ui:AppBarButton x:Name="NewButton" ToolTip="New">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE132;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
 
-            <Button x:Name="UndoButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Undo" >&#xE10E;</Button>
-            <Button x:Name="RedoButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Redo" >&#xE10D;</Button>
+            <ui:AppBarButton x:Name="OpenButton" ToolTip="Open">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE1A5;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
 
-            <Button x:Name="CutButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Cut" >&#xE16b;</Button>
-            <Button x:Name="CopyButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Copy" >&#xE16f;</Button>
-            <Button x:Name="PasteButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Paste" >&#xE16D;</Button>
-            <Button x:Name="DeleteButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Delete" >&#xE107;</Button>
+            <ui:AppBarButton x:Name="SaveButton" ToolTip="Save">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE105;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
 
-            <Button x:Name="NudgeUpButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Up" >&#xE18d;</Button>
-            <Button x:Name="NudgeDownButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Down">
-                <TextBlock Text="&#xE18d;">
-                    <TextBlock.RenderTransform>
-                        <RotateTransform Angle="180" CenterX="9" CenterY="12.5"/>
-                    </TextBlock.RenderTransform>
-                </TextBlock>
-            </Button>
-            <Button x:Name="NudgeLeftButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Left" >&#xE0d7;</Button>
-            <Button x:Name="NudgeRightButton" Style="{StaticResource AppBarButtonStyle}" ToolTip="Nudge Right" >&#xE0b2;</Button>
-        </DockPanel>
+            <ui:AppBarButton x:Name="UndoButton" ToolTip="Undo">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE10E;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+
+            <ui:AppBarButton x:Name="RedoButton" ToolTip="Redo">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE10D;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+
+            <!--<ui:AppBarButton x:Name="CutButton" ToolTip="Cut" >&#xE16b;</ui:AppBarButton>
+            <ui:AppBarButton x:Name="CopyButton" ToolTip="Copy" >&#xE16f;</ui:AppBarButton>
+            <ui:AppBarButton x:Name="PasteButton" ToolTip="Paste" >&#xE16D;</ui:AppBarButton>
+            <ui:AppBarButton x:Name="DeleteButton" ToolTip="Delete" >&#xE107;</ui:AppBarButton>-->
+
+            <ui:AppBarButton x:Name="NudgeUpButton" ToolTip="Nudge Up">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE18d;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+
+            <ui:AppBarButton x:Name="NudgeDownButton" ToolTip="Nudge Down">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE18d;">
+                        <ui:FontIcon.RenderTransform>
+                            <RotateTransform Angle="180" CenterX="9" CenterY="12.5"/>
+                        </ui:FontIcon.RenderTransform>
+                    </ui:FontIcon>
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+
+            <ui:AppBarButton x:Name="NudgeLeftButton" ToolTip="Nudge Left">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE0d7;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+
+            <ui:AppBarButton x:Name="NudgeRightButton" ToolTip="Nudge Right">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE0b2;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+        </ui:CommandBar>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label VerticalAlignment="Center" >Location: </Label>
+            <Label VerticalAlignment="Center" Margin="5,2" >Location:</Label>
             <TextBox x:Name="TextBoxAddress" Grid.Column="1" HorizontalAlignment="Stretch"
-                      Background="{StaticResource ControlBackgroundBrush}" VerticalAlignment="Center" Padding="2"
-                     Foreground="{StaticResource ControlForegroundBrush}"/>
-
-            <Button Grid.Column="2" MinWidth="50" Height="20" Padding="0">
-                <Label Content="&#xe0c2;" FontFamily="Segoe UI Symbol" Margin="0,-5,0,0"/>
-            </Button>
+                     VerticalAlignment="Center" 
+                     ToolTip="Enter local file path or http address of file to load"
+                     />
+            <ui:CommandBar Grid.Column="2">
+                <ui:AppBarButton>
+                    <ui:AppBarButton.Icon>
+                        <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xe0c2;" />
+                    </ui:AppBarButton.Icon>
+                </ui:AppBarButton>
+            </ui:CommandBar>
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -171,7 +226,7 @@
               Width="5"
               />
         </Grid>
-        
+
         <GridSplitter Grid.Row="4"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -180,7 +235,7 @@
               />
 
         <DataGrid x:Name="TaskList" Grid.Row="5">
-            
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Description" Width="2*"/>
                 <DataGridTextColumn Header="File"  Width="*"/>
@@ -188,7 +243,7 @@
                 <DataGridTextColumn Header="Column"  MinWidth="80"/>
             </DataGrid.Columns>
         </DataGrid>
-        
+
         <StatusBar Grid.Row="6">
             <StatusBarItem x:Name="StatusMessage">This is a test</StatusBarItem>
         </StatusBar>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace XmlNotepad
 {
-    class Analytics
+    public class Analytics
     {
         const string HostName = "microsoft.github.io";
         const string TrackingId = "UA-89203408-1";

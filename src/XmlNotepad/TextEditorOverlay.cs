@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Xml;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Diagnostics;
 using System.ComponentModel;
-using System.Text;
+using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using System.Xml.Schema;
+using SR = XmlNotepad.StringResources;
 
-namespace XmlNotepad {
-    
+namespace XmlNotepad
+{
+
     public class TextEditorEventArgs : EventArgs {
         string text;
         bool cancelled;

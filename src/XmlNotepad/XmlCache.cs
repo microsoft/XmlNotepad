@@ -220,7 +220,7 @@ namespace XmlNotepad
             FireModelChanged(ModelChangeType.Reloaded, this.doc);
         }
 
-        internal XmlReaderSettings GetReaderSettings() {
+        public XmlReaderSettings GetReaderSettings() {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.DtdProcessing = GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
             settings.CheckCharacters = false;

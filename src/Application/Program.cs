@@ -17,7 +17,7 @@ namespace XmlNotepad {
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            MyForm form = new MyForm();
+            FormMain form = new FormMain();
             form.Show();
             Application.DoEvents();
             foreach(string arg in args){

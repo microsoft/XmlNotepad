@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
-using System.IO;
+using SR = XmlNotepad.StringResources;
 
-namespace XmlNotepad {
+
+namespace XmlNotepad
+{
 
     /// <summary>
     /// XmlIncludeReader automatically expands XInclude elements and returns

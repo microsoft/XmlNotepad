@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Xsl;
+using SR = XmlNotepad.StringResources;
+
 
 namespace XmlNotepad
 {

@@ -2,17 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
@@ -104,6 +100,7 @@ namespace XmlNotepad
             this.webBrowser1.DocumentCompleted += OnWebDocumentCompleted;
 
             this.webBrowser1.Visible = true;
+            this.webInitialized = true; // no callback from this guy.
         }
 
         private void CoreWebView2_DOMContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
@@ -467,6 +464,10 @@ namespace XmlNotepad
                     stream.Seek(0, SeekOrigin.Begin);
                     this.xsltdoc = new XmlDocument();
                     this.xsltdoc.Load(stream);
+                }
+                else
+                {
+                    throw new Exception(string.Format("You have a build problem: resource '{0} not found", this.defaultSSResource));                    
                 }
             }
             return defaultss;

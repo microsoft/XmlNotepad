@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Diagnostics;
-using System.ComponentModel;
 using System.Text;
+using System.Windows.Forms;
+using SR = XmlNotepad.StringResources;
 
-namespace XmlNotepad {
+namespace XmlNotepad
+{
     //========================================================================================
     /// <summary>
     /// Displays the text of the attributes, comments, text, cdata and leaf element nodes and 

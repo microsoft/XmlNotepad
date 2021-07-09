@@ -89,6 +89,10 @@
     <Content Include="unicode.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj">
+      <Project>{07661035-bfe2-4169-adef-364839871457}</Project>
+      <Name>Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FontBuilder\FontBuilder.csproj">
       <Project>{C33DB045-65F8-45F1-A703-C7D2969F06CA}</Project>
       <Name>FontBuilder</Name>

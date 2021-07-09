@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace XmlNotepad
 {
-    class Updater : IDisposable
+    public class Updater : IDisposable
     {
         Settings settings;
         DateTime lastCheck = DateTime.MinValue;
@@ -324,7 +324,7 @@ namespace XmlNotepad
             }
         }
 
-        internal void CheckNow()
+        public void CheckNow()
         {
             StopTimer();
             if (this.updateUri != null)

@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using ModernWpf;
+using ModernWpf.Controls;
+using System.Windows;
 
-namespace WpfApp
+namespace XmlNotepad
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -10,6 +12,17 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnDarkTheme(object sender, RoutedEventArgs e)
+        {
+            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+        }
+
+        private void OnLightTheme(object sender, RoutedEventArgs e)
+        {
+            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+
         }
     }
 }

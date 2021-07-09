@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace XmlNotepad {
     
-    internal class XmlTreeViewFindTarget : IFindTarget {
+    public class XmlTreeViewFindTarget : IFindTarget {
         XmlTreeView view;
         string expression;
         FindFlags flags;

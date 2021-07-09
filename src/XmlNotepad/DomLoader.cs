@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Schema;
+using SR = XmlNotepad.StringResources;
 
-namespace XmlNotepad {
+namespace XmlNotepad
+{
     /// <summary>
     /// This class keeps track of DOM node line locations so you can do error reporting.
     /// </summary>

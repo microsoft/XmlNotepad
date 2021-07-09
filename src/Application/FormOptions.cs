@@ -3,8 +3,8 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
 using System.Collections.Generic;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
@@ -182,12 +182,6 @@ namespace XmlNotepad
         }
     }
 
-    public enum ColorTheme
-    {
-        Light,
-        Dark
-    }
-
     // This class keeps s a local snapshot of the settings until the user clicks the Ok button,
     // then the Apply() method is called to propagate the new settings to the underlying Settings object.
     // It also provides localizable strings for the property grid.
@@ -346,13 +340,6 @@ namespace XmlNotepad
             colors["EditorBackground"] = this.editorBackgroundColor;
         }
 
-        public static string Escape(string nl) {
-            return nl.Replace("\r", "\\r").Replace("\n", "\\n");
-        }
-        public static string Unescape(string nl) {
-            return nl.Replace("\\r", "\r").Replace("\\n", "\n");
-        }
-
         public void Apply() {
             this.settings["Font"] = this.font;
 
@@ -406,7 +393,7 @@ namespace XmlNotepad
             noByteOrderMark = false;
             indentLevel = 2;
             indentChar = IndentChar.Space;
-            newLineChars = Escape("\r\n");
+            newLineChars = Utilities.Escape("\r\n");
             language = "";
             this.maximumLineLength = 10000;
             this.maximumValueLength = short.MaxValue;

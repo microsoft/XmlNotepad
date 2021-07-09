@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Schema;
 using System.Xml;
 using System.Diagnostics;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad {
     /// <summary>

@@ -1,21 +1,25 @@
 using System;
-using System.Xml;
-using System.Xml.Serialization;
 using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Reflection;
-using System.Threading;
-using System.Xml.Schema;
-using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
     public delegate void SettingsEventHandler(object sender, string name);
 
-	/// <summary>
+    public enum ColorTheme
+    {
+        Light,
+        Dark
+    }
+
+    /// <summary>
     /// Settings is a container for persistent settings that you want to store in a file
     /// like XmlNotepad.settings.  Each setting has a name and some typed value.  The
     /// deserialization process returns strings by default.  If you want a typed value
@@ -33,8 +37,8 @@ namespace XmlNotepad
     /// Transform any Uri setting to a persistent file name using the PersistentFileNames class.
     /// </item>
     /// </list>
-	/// </summary>
-	public class Settings : IDisposable
+    /// </summary>
+    public class Settings : IDisposable
 	{
         string filename;
         FileSystemWatcher watcher;

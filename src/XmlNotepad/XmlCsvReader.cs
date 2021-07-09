@@ -628,7 +628,7 @@ namespace Microsoft.Xml {
 
     }
 
-    internal class CsvReader {
+    public class CsvReader {
         TextReader _r;
         char[] _buffer;
         int _pos;

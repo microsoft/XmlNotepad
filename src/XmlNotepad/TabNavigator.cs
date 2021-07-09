@@ -8,7 +8,7 @@ namespace XmlNotepad {
     // For some unexplainable reason the TabIndexes defined in the Form 
     // are not being honored by the default TAB navigation provided by the base Form so
     // we are implementing it ourselves here.
-    class TabNavigator {
+    public class TabNavigator {
         Control owner;
 
         public TabNavigator(Control c) {

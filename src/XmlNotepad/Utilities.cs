@@ -48,7 +48,7 @@ namespace XmlNotepad
                     int indentLevel = (int)s["IndentLevel"];
                     char ch = (indentChar == IndentChar.Space) ? ' ' : '\t';
                     settings.IndentChars = new string(ch, indentLevel);
-                    settings.NewLineChars = UserSettings.Unescape((string)s["NewLineChars"]);
+                    settings.NewLineChars = Utilities.Unescape((string)s["NewLineChars"]);
                 }
             }
         }
@@ -209,6 +209,16 @@ namespace XmlNotepad
             int luminosity = (hls.Luminosity > 120) ? 20 : 220;
             return new SolidBrush(HLSColor.ColorFromHLS(cls.Hue, luminosity, cls.Saturation));
         }
+
+        public static string Escape(string nl)
+        {
+            return nl.Replace("\r", "\\r").Replace("\n", "\\n");
+        }
+        public static string Unescape(string nl)
+        {
+            return nl.Replace("\\r", "\r").Replace("\\n", "\n");
+        }
+
 
 
         public static void OpenUrl(IntPtr hwnd, string url) {
