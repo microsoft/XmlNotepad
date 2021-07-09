@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
 
-namespace XmlNotepad {
-
-    public enum Severity { None, Hint, Warning, Error }
+namespace XmlNotepad
+{
 
     public delegate void NavigateEventHandler(object sender, Task task);
 

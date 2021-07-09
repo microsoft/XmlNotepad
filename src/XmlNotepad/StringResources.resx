@@ -329,10 +329,6 @@ Would you like to reformat the text into multiple lines?</value>
     <value>HH:mm:ss</value>
     <comment>Format for XmlTypeCode.Time</comment>
   </data>
-  <data name="TNSMismatch" xml:space="preserve">
-    <value>Schema must define same target namespace</value>
-    <comment>Message box prompt</comment>
-  </data>
   <data name="TransformButtonTooltip" xml:space="preserve">
     <value>Click here to execute XSLT transform</value>
     <comment>Tooltip</comment>
@@ -341,17 +337,9 @@ Would you like to reformat the text into multiple lines?</value>
     <value>Error Transforming XML</value>
     <comment>Message box caption</comment>
   </data>
-  <data name="TypeConvertError" xml:space="preserve">
-    <value>Type converter for type '{0}' not found.</value>
-    <comment>Message Box, arg0=type name</comment>
-  </data>
   <data name="UnexpectedNodeType" xml:space="preserve">
     <value>Unexpected node type '{0}'</value>
     <comment>Message box, arg0=node type enum</comment>
-  </data>
-  <data name="UnexpectedToken" xml:space="preserve">
-    <value>Unexpected token '{0}' at line {1} column {2}</value>
-    <comment>Message box, arg0=token, arg1=number, arg2=number</comment>
   </data>
   <data name="UriBrowseLabel" xml:space="preserve">
     <value>&amp;Browse...</value>
@@ -453,18 +441,6 @@ Do you want to enable execution of this script code?</value>
     <value>&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td title='{0}'&gt;&lt;b&gt; File in editor : {1}&lt;/b&gt;&lt;/td&gt;
   &lt;td title='{2}'&gt;&lt;b&gt; File to compare : {3}&lt;/b&gt;&lt;/td&gt;
 &lt;/tr&gt;</value>
-  </data>
-  <data name="IncludeHRefRequired" xml:space="preserve">
-    <value>href attribute is missing from your XInclude element</value>
-    <comment>Exception message</comment>
-  </data>
-  <data name="IllegalSurrogatePair" xml:space="preserve">
-    <value>Illegal surrogate character pair 0x{0}, 0x{1} at position {2} in this text node.</value>
-    <comment>Validation error</comment>
-  </data>
-  <data name="InvalidCharacter" xml:space="preserve">
-    <value>Character value {0} at position {1} in this text node is illegal in XML documents.  See http://www.w3.org/TR/2006/REC-xml-20060816/#NT-Char.</value>
-    <comment>Validation error</comment>
   </data>
   <data name="SaveExpandedIncludesCaption" xml:space="preserve">
     <value>Lose XInclude Information</value>

@@ -693,24 +693,6 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Illegal surrogate character pair 0x{0}, 0x{1} at position {2} in this text node..
-        /// </summary>
-        public static string IllegalSurrogatePair {
-            get {
-                return ResourceManager.GetString("IllegalSurrogatePair", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to href attribute is missing from your XInclude element.
-        /// </summary>
-        public static string IncludeHRefRequired {
-            get {
-                return ResourceManager.GetString("IncludeHRefRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Indent char.
         /// </summary>
         public static string IndentChar {
@@ -761,15 +743,6 @@ namespace XmlNotepad {
         public static string InsertNodeCommand {
             get {
                 return ResourceManager.GetString("InsertNodeCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Character value {0} at position {1} in this text node is illegal in XML documents.  See http://www.w3.org/TR/2006/REC-xml-20060816/#NT-Char..
-        /// </summary>
-        public static string InvalidCharacter {
-            get {
-                return ResourceManager.GetString("InvalidCharacter", resourceCulture);
             }
         }
         
@@ -1392,15 +1365,6 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Schema must define same target namespace.
-        /// </summary>
-        public static string TNSMismatch {
-            get {
-                return ResourceManager.GetString("TNSMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Click here to execute XSLT transform.
         /// </summary>
         public static string TransformButtonTooltip {
@@ -1428,15 +1392,6 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type converter for type &apos;{0}&apos; not found..
-        /// </summary>
-        public static string TypeConvertError {
-            get {
-                return ResourceManager.GetString("TypeConvertError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Undo Error.
         /// </summary>
         public static string UndoError {
@@ -1451,15 +1406,6 @@ namespace XmlNotepad {
         public static string UnexpectedNodeType {
             get {
                 return ResourceManager.GetString("UnexpectedNodeType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected token &apos;{0}&apos; at line {1} column {2}.
-        /// </summary>
-        public static string UnexpectedToken {
-            get {
-                return ResourceManager.GetString("UnexpectedToken", resourceCulture);
             }
         }
         

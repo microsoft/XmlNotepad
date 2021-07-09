@@ -369,7 +369,7 @@ namespace XmlNotepad
                     IIntellisenseProvider provider = this.IntellisenseProvider;
                     string text = value != null ? value : GetNodeText(this.selectedNode);
                     if (provider != null) {
-                        provider.SetContextNode(this.selectedNode);
+                        provider.SetContextNode(this.selectedNode as IXmlTreeNode);
                         if (!provider.IsValueEditable) {
                             return false;
                         }                        
@@ -517,7 +517,7 @@ namespace XmlNotepad
                     DrawItem(r, n, g);
                 }
                 if (n.IsExpanded){
-                    PaintNodes(n.Nodes, g, ref clip);
+                    PaintNodes(n.Children, g, ref clip);
                 }
             }
         }
@@ -567,7 +567,7 @@ namespace XmlNotepad
             if (this.Focused && tn == this.SelectedNode) {
                 focusSelected = true;
                 g.FillRectangle(SystemBrushes.Highlight, bounds);
-                myBrush = Utilities.HighlightTextBrush(c);
+                myBrush = Brushes.HighlightTextBrush(c);
             } else {
                 myBrush = new SolidBrush(c);
             }
@@ -715,7 +715,7 @@ namespace XmlNotepad
                     return n;
                 }
                 if (n.IsExpanded && n.LabelBounds.Top <= y && n.bottom >= y) {
-                    TreeNode result = FindNodeAt(n.Nodes, x, y);
+                    TreeNode result = FindNodeAt(n.Children, x, y);
                     if (result != null) return result;
                 }
             }
@@ -921,10 +921,10 @@ namespace XmlNotepad
             node.Toggle();
         }
         public override int GetChildCount() {
-            return node.Nodes.Count;
+            return node.Children.Count;
         }
         public override AccessibleObject GetChild(int index) {
-            TreeNode child = this.node.Nodes[index];
+            TreeNode child = this.node.Children[index];
             return acc.Wrap(child);
         }
         public override AccessibleObject GetFocused() {
@@ -965,7 +965,7 @@ namespace XmlNotepad
         }
         public override AccessibleObject Navigate(AccessibleNavigation navdir) {
             TreeNode result = null;
-            TreeNodeCollection children = node.Nodes;
+            TreeNodeCollection children = node.Children;
             int count = children.Count;
             switch (navdir) {
                 case AccessibleNavigation.Down:

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Text;
 using System.Xml;
-using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
 using System.Net;
 using System.IO;
-using System.Collections.Generic;
 
 namespace XmlNotepad
 {

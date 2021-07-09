@@ -32,7 +32,7 @@ namespace Microsoft {
 
         public string Caption { get { return "&Font picker..."; } }
 
-        public bool EditValue(IWin32Window owner, XmlSchemaType type, string input, out string output) {
+        public bool EditValue(IHostWindow owner, XmlSchemaType type, string input, out string output) {
             output = input;
             FontConverter fc = new FontConverter();
             Font f = null;
@@ -42,7 +42,7 @@ namespace Microsoft {
             } catch {
             }
             
-            if (fd.ShowDialog(owner) == DialogResult.OK) {
+            if (fd.ShowDialog(owner as IWin32Window) == DialogResult.OK) {
                 output = fc.ConvertToString(fd.Font);
                 return true;
             } else {

@@ -7,79 +7,8 @@ using System.Xml;
 using System.Xml.Schema;
 using SR = XmlNotepad.StringResources;
 
-
 namespace XmlNotepad
 {
-    /// <summary>
-    /// This interface is used to provide extensible popup modal dialog for editing a particular
-    /// type of value in the XML document.  (e.g. color picker).
-    /// </summary>
-    public interface IXmlBuilder {
-        
-        /// <summary>
-        /// Return a caption for the button that launches your dialog.
-        /// </summary>
-        string Caption { get; }
-
-        /// <summary>
-        /// Provides the ISite objects which is how you get services from the hosting application.
-        /// </summary>
-        /// <param name="site"></param>
-        ISite Site { get; set; }
-
-        /// <summary>
-        /// Provides the IntellisenseProvider that created this object.
-        /// </summary>
-        IIntellisenseProvider Owner { get; set; }
-                
-        /// <summary>
-        /// This method launches a custom builder (e.g. color picker, etc)
-        /// with an initial value and produces a resulting value.  
-        /// </summary>
-        /// <param name="owner">The parent window that is calling us</param>
-        /// <param name="type">The type associated with the value being edited</param>
-        /// <param name="input">The current value being edited</param>
-        /// <param name="output">The result of the builder</param>
-        /// <returns>Returns false if the user cancelled the operation</returns>
-        bool EditValue(IWin32Window owner, XmlSchemaType type, string input, out string output);
-    }
-
-    /// <summary>
-    /// This interface is used to provide other types of editors besides the default TextBox for
-    /// inline editing of particular types of values in the XML document.  For example, DateTimePicker.
-    /// </summary>
-    public interface IXmlEditor {
-
-        /// <summary>
-        /// Provides the ISite objects which is how you get services from the hosting application.
-        /// </summary>
-        /// <param name="site"></param>
-        ISite Site { get; set; }
-
-        /// <summary>
-        /// Provides the IntellisenseProvider that created this object.
-        /// </summary>
-        IIntellisenseProvider Owner { get; set; }
-
-        /// <summary>
-        /// This property provides the XmlSchemaType for the editor
-        /// </summary>
-        XmlSchemaType SchemaType { get; set; }
-
-        /// <summary>
-        /// Return the editor you want to use to edit your values.
-        /// </summary>
-        Control Editor { get; }
-
-        /// <summary>
-        /// The setter is called just before editing to pass in the current value from the 
-        /// XmlDocument.  At the end of editing, the getter is called to pull the new value
-        /// back out of the editor for storing in the XmlDocument.
-        /// </summary>
-        string XmlValue { get; set;}
-
-    }
-
     /// <summary>
     /// This is a custom builder for editing color values using the ColorDialog.
     /// You can specify this builder using the following annotation in your schema:
@@ -103,7 +32,7 @@ namespace XmlNotepad
 
         public string Caption { get { return SR.ColorPickerLabel; } }
        
-        public bool EditValue(IWin32Window owner, XmlSchemaType type, string input, out string output) {
+        public bool EditValue(IHostWindow owner, XmlSchemaType type, string input, out string output) {
             output = input;
             ColorConverter cc = new ColorConverter();
             Color c = Color.Black;
@@ -113,7 +42,7 @@ namespace XmlNotepad
             }
             cd.Color = c;
             cd.AnyColor = true;
-            if (cd.ShowDialog(owner) == DialogResult.OK) {
+            if (cd.ShowDialog(owner as IWin32Window) == DialogResult.OK) {
                 output = cc.ConvertToString(cd.Color);
                 return true;
             } else {
@@ -150,13 +79,13 @@ namespace XmlNotepad
 
         public string Caption { get { return SR.UriBrowseLabel; } }
 
-        public bool EditValue(IWin32Window owner, XmlSchemaType type, string input, out string output) {
+        public bool EditValue(IHostWindow owner, XmlSchemaType type, string input, out string output) {
             output = input;
 
             if (!string.IsNullOrEmpty(input)) {
                 fd.FileName = GetAbsolute(input);
             }            
-            if (fd.ShowDialog(owner) == DialogResult.OK) {
+            if (fd.ShowDialog(owner as IWin32Window) == DialogResult.OK) {
                 output = GetRelative(fd.FileName);
                 return true;
             } else {
@@ -193,6 +122,9 @@ namespace XmlNotepad
         }
     }
 
+    class CustomDateTimePicker : DateTimePicker, IEditorControl
+    { }
+
     /// <summary>
     /// This is a custom editor for editing date/time values using the DateTimePicker.
     /// This editor is provided by default when you use xs:time, xs:dateTime or xs:date
@@ -202,7 +134,7 @@ namespace XmlNotepad
     /// </summary>
     public class DateTimeEditor : IXmlEditor, IDisposable {
         XmlSchemaType type;
-        DateTimePicker picker = new DateTimePicker();
+        CustomDateTimePicker picker = new CustomDateTimePicker();
         string format = "yyyy-MM-dd";
         ISite site;
         IIntellisenseProvider owner;
@@ -250,7 +182,7 @@ namespace XmlNotepad
             }
         }
 
-        public Control Editor {
+        public IEditorControl Editor {
             get { return picker; }
         }
 

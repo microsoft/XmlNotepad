@@ -223,7 +223,7 @@ namespace XmlNotepad
             if (node is XmlAttribute a)
             {
                 parent = FindNode(a.OwnerElement);
-                return FindChild(parent.Nodes, node);
+                return FindChild(parent.Children, node);
             }
 
             if (node == null || node.ParentNode == null)
@@ -245,7 +245,7 @@ namespace XmlNotepad
             }
             else
             {
-                return FindChild(parent.Nodes, node);
+                return FindChild(parent.Children, node);
             }
         }
 
@@ -648,7 +648,7 @@ namespace XmlNotepad
                 count++;
                 if (tn.IsExpanded)
                 {
-                    count += CountVisibleNodes(tn.Nodes);
+                    count += CountVisibleNodes(tn.Children);
                 }
             }
             return count;
@@ -1041,7 +1041,7 @@ namespace XmlNotepad
                             this.NudgeNode(xn, NudgeDirection.Right);
                             e.Handled = true;
                         }
-                        else if (!this.IsEditing && n != null && n.Nodes.Count == 0)
+                        else if (!this.IsEditing && n != null && n.Children.Count == 0)
                         {
                             this.nodeTextView.Focus();
                             e.Handled = true;
@@ -1193,7 +1193,7 @@ namespace XmlNotepad
                     xn.Invalidate();
                     if (xn.IsExpanded)
                     {
-                        InvalidateNodes(xn.Nodes);
+                        InvalidateNodes(xn.Children);
                     }
                 }
             }
@@ -1335,7 +1335,7 @@ namespace XmlNotepad
                         cmd = MoveNode(this.dragged, (XmlTreeNode)this.feedback.After, InsertPosition.After, copy);
                     }
                     // Now we can expand it because it is now in the tree
-                    if (cmd != null && cmd.Source.Nodes.Count > 1)
+                    if (cmd != null && cmd.Source.Children.Count > 1)
                     {
                         cmd.Source.Expand();
                     }
@@ -1619,7 +1619,7 @@ namespace XmlNotepad
         CData,
     }
 
-    public class XmlTreeNode : TreeNode
+    public class XmlTreeNode : TreeNode, IXmlTreeNode
     {
         Settings settings;
         NodeImage img;
@@ -1651,6 +1651,8 @@ namespace XmlNotepad
             Init();
         }
 
+        public IXmlTreeNode ParentNode => this.Parent as IXmlTreeNode;
+
         [Browsable(false)]
         public XmlNodeType NodeType
         {
@@ -1671,6 +1673,19 @@ namespace XmlNotepad
             }
         }
 
+        public IEnumerable<IXmlTreeNode> Nodes
+        {
+            get
+            {
+                foreach (var item in this.Children)
+                {
+                    yield return item as IXmlTreeNode;
+                }
+            }
+        }
+
+
+
         public override void Remove()
         {
             base.Remove();
@@ -1683,7 +1698,7 @@ namespace XmlNotepad
 
         void OnChildRemoved()
         {
-            if (this.img == NodeImage.Element && this.Nodes.Count == 0)
+            if (this.img == NodeImage.Element && this.Children.Count == 0)
             {
                 MakeLeaf();
             }
@@ -1741,7 +1756,7 @@ namespace XmlNotepad
             set
             {
                 this.node = value;
-                int count = this.Nodes.Count;
+                int count = this.Children.Count;
                 Init();
                 this.Invalidate();
                 if (this.TreeView != null)
@@ -1811,7 +1826,7 @@ namespace XmlNotepad
             }
         }
 
-        public override TreeNodeCollection Nodes
+        public override TreeNodeCollection Children
         {
             get
             {
@@ -1975,7 +1990,7 @@ namespace XmlNotepad
                 cmd.Add(rename);
             }
 
-            foreach (XmlTreeNode child in this.Nodes)
+            foreach (XmlTreeNode child in this.Children)
             {
                 switch (child.NodeType)
                 {

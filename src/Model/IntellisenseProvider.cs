@@ -1,13 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using System.Xml.Schema;
 
 namespace XmlNotepad {
+
+    public interface IXmlTreeNode
+    {
+        XmlNodeType NodeType { get; }
+        IXmlTreeNode ParentNode { get; }
+        IEnumerable<IXmlTreeNode> Nodes { get; }
+        XmlNode Node { get; }
+    }
+
     public interface IIntellisenseProvider {
         Uri BaseUri { get; }
-        TreeNode ContextNode {get;set;}
-        void SetContextNode(TreeNode node);
+        IXmlTreeNode ContextNode {get;set;}
+        void SetContextNode(IXmlTreeNode node);
         bool IsNameEditable { get; }
         bool IsValueEditable { get; }
         XmlSchemaType GetSchemaType();

@@ -1,11 +1,10 @@
 ﻿using Microsoft.Win32;
-using System.Windows.Forms;
 
 namespace XmlNotepad
 {
     public class FileAssociation
     {
-        public static void AddXmlProgids()
+        public static void AddXmlProgids(string executablePath)
         {
             try
             {
@@ -16,10 +15,10 @@ namespace XmlNotepad
 
                 using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\XmlNotepad.xmlfile\shell\open\command"))
                 {
-                    var cmd = Application.ExecutablePath + " \"%1\"";
+                    var cmd = "\"" + executablePath + "\" \"%1\"";
                     key.SetValue("", cmd);
                 }
-            } 
+            }
             catch
             {
                 // todo: tell the user?

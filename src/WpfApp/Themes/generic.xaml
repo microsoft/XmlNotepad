@@ -3,5 +3,4 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib">
 
-    <sys:Double x:Key="AppBarButtonContentHeight">64</sys:Double>
 </ResourceDictionary>

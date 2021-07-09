@@ -5,11 +5,11 @@ using System.Xml.Schema;
 using System.Xml.XPath;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
 using System.ComponentModel;
 using System.Text;
 using System.Net;
 using System.Net.Cache;
+using System.Timers;
 
 namespace XmlNotepad
 {   
@@ -27,7 +27,6 @@ namespace XmlNotepad
         XmlDocument doc;
         FileSystemWatcher watcher;
         int retries;
-        Timer timer = new Timer();
         ISynchronizeInvoke sync;
         //string namespaceUri = string.Empty;
         SchemaCache schemaCache;
@@ -36,6 +35,7 @@ namespace XmlNotepad
         DateTime lastModified;
         Checker checker;
         IServiceProvider site;
+        DelayedActions actions;
 
         public event EventHandler FileChanged;
         public event EventHandler<ModelChangedEventArgs> ModelChanged;
@@ -47,9 +47,7 @@ namespace XmlNotepad
             this.site = site;
             this.sync = sync;
             this.Document = new XmlDocument();
-            this.timer.Tick += new EventHandler(Reload);
-            this.timer.Interval = 1000;
-            this.timer.Enabled = false;
+            this.actions = new DelayedActions();
         }
 
         ~XmlCache() {
@@ -104,7 +102,7 @@ namespace XmlNotepad
             }
         }
 
-        public void ValidateModel(TaskHandler handler) {
+        public void ValidateModel(ErrorHandler handler) {
             this.checker = new Checker(handler);
             checker.Validate(this);
         }
@@ -224,7 +222,7 @@ namespace XmlNotepad
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.DtdProcessing = GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
             settings.CheckCharacters = false;
-            settings.XmlResolver = new XmlProxyResolver(this.site);
+            settings.XmlResolver = Settings.Instance.Resolver;
             return settings;
         }
 
@@ -233,7 +231,7 @@ namespace XmlNotepad
                 this.dirty = true;
                 XmlReaderSettings s = new XmlReaderSettings();
                 s.DtdProcessing = GetSettingBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                s.XmlResolver = new XmlProxyResolver(this.site);
+                s.XmlResolver = Settings.Instance.Resolver;
                 using (XmlReader r = XmlIncludeReader.CreateIncludeReader(this.Document, s, this.FileName)) {
                     this.Document = loader.Load(r);
                 }
@@ -426,13 +424,13 @@ namespace XmlNotepad
                 StopFileWatch();
             }
         }
+
         void StartReload(object sender, EventArgs e)
         {
             // Apart from retrying, the timer has the nice side effect of also 
             // collapsing multiple file system events into one timer event.
             retries = 3;
-            timer.Enabled = true;
-            timer.Start();
+            actions.StartDelayedAction("reload", Reload, TimeSpan.FromSeconds(1));
         }
 
         DateTime LastModTime {
@@ -456,16 +454,15 @@ namespace XmlNotepad
                         fs.Close();
                     }
 
-                    timer.Enabled = false;
                     FireFileChanged();
                 }
             }
             finally
             {
                 retries--;
-                if (retries == 0)
+                if (retries > 0)
                 {
-                    timer.Enabled = false;
+                    actions.StartDelayedAction("reload", Reload, TimeSpan.FromSeconds(1));
                 }
             }
         }
@@ -562,10 +559,7 @@ namespace XmlNotepad
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (timer != null) {
-                timer.Dispose();
-                timer = null;
-            }
+            this.actions.CancelDelayedAction("reload");
             StopFileWatch();
             GC.SuppressFinalize(this);
         }

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Schema;
-using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
+    public enum Severity { None, Hint, Warning, Error }
 
     public abstract class ErrorHandler {
         public abstract void HandleError(Severity sev, string reason, string filename, int line, int col, object data);
@@ -187,13 +187,13 @@ namespace XmlNotepad
                 }
                 XmlSchema s = resolver.GetEntity(resolved, "", typeof(XmlSchema)) as XmlSchema;
                 if ((s.TargetNamespace+"") != (nsuri+"")) {
-                    ReportError(Severity.Warning, SR.TNSMismatch, ctx);
+                    ReportError(Severity.Warning, Strings.TNSMismatch, ctx);
                 } else if (!set.Contains(s)) {
                     set.Add(s);
                     return true;
                 }
             } catch (Exception e) {
-                ReportError(Severity.Warning, string.Format(SR.SchemaLoadError, filename, e.Message), ctx);
+                ReportError(Severity.Warning, string.Format(Strings.SchemaLoadError, filename, e.Message), ctx);
             }
             return false;
         }
@@ -331,18 +331,18 @@ namespace XmlNotepad
             for (int i = 0, n = text.Length; i < n; i++) {
                 char ch = text[i];
                 if ((ch < 20 && ch != 0x9 && ch != 0xa && ch != 0xd) || ch > 0xfffe) {
-                    ReportError(Severity.Error, string.Format(SR.InvalidCharacter, ((int)ch).ToString(), i), ctx);
+                    ReportError(Severity.Error, string.Format(Strings.InvalidCharacter, ((int)ch).ToString(), i), ctx);
                 } else if (ch >= SurHighStart && ch <= SurHighEnd) {
                     if (i + 1 < n) {
                         char nc = text[i + 1];
                         if (nc < SurLowStart || nc > SurLowEnd) {
-                            ReportError(Severity.Error, string.Format(SR.IllegalSurrogatePair, Convert.ToInt32(ch).ToString("x", CultureInfo.CurrentUICulture), Convert.ToInt32(nc).ToString("x", CultureInfo.CurrentUICulture), i), ctx);
+                            ReportError(Severity.Error, string.Format(Strings.IllegalSurrogatePair, Convert.ToInt32(ch).ToString("x", CultureInfo.CurrentUICulture), Convert.ToInt32(nc).ToString("x", CultureInfo.CurrentUICulture), i), ctx);
                         } else {
                             i++;
                         }
                     }
                 } else if (ch >= 0xd800 && ch < 0xe000) {
-                    ReportError(Severity.Error, string.Format(SR.InvalidCharacter, ((int)ch).ToString(), i), ctx);
+                    ReportError(Severity.Error, string.Format(Strings.InvalidCharacter, ((int)ch).ToString(), i), ctx);
                 }
             }
         }

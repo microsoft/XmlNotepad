@@ -54,11 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XmlNotepad\XmlNotepad.csproj">
-      <Project>{E401BDD0-8862-4818-98BD-83E457607E16}</Project>
-      <Name>XmlNotepad</Name>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{ccb469f3-9f2b-4ca2-9beb-e0b54aeefa6a}</Project>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

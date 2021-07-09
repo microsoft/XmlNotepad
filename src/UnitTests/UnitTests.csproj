@@ -97,12 +97,17 @@
       <Project>{C33DB045-65F8-45F1-A703-C7D2969F06CA}</Project>
       <Name>FontBuilder</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{ccb469f3-9f2b-4ca2-9beb-e0b54aeefa6a}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XmlNotepad\XmlNotepad.csproj">
       <Project>{E401BDD0-8862-4818-98BD-83E457607E16}</Project>
       <Name>XmlNotepad</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="emp.xsd">
       <SubType>Designer</SubType>
     </None>

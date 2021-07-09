@@ -138,10 +138,11 @@ namespace XmlNotepad
         Dictionary<string, CacheEntry> namespaceMap = new Dictionary<string, CacheEntry>();
         // sourceUri -> CacheEntry
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
-        PersistentFileNames pfn = new PersistentFileNames();
+        PersistentFileNames pfn;
 
         public SchemaCache(IServiceProvider site) {
             this.site = site;
+            this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
         }
 
         void FireOnChanged()
@@ -530,11 +531,14 @@ namespace XmlNotepad
         #endregion
     }
 
-    public class SchemaResolver : XmlProxyResolver {
+    public class SchemaResolver : XmlUrlResolver
+    {
         SchemaCache cache;
         ValidationEventHandler handler;
+        IServiceProvider site;
 
-        public SchemaResolver(SchemaCache cache, IServiceProvider site) : base(site) {
+        public SchemaResolver(SchemaCache cache, IServiceProvider site) {
+            this.site = site;
             this.cache = cache;
         }
 
@@ -543,7 +547,8 @@ namespace XmlNotepad
             set { handler = value; }
         }
 
-        public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn) {
+        public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
+        { 
             CacheEntry ce = cache.FindSchemaByUri(absoluteUri);
             if (ce != null && ce.HasUpToDateSchema) return ce.Schema;
 

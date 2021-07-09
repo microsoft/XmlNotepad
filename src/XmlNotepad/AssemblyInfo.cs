@@ -42,4 +42,3 @@ using System.Runtime.InteropServices;
 //       documentation for more information on this.
 //
 [assembly: ComVisibleAttribute(false)]
-[assembly: CLSCompliant(true)]

@@ -549,7 +549,7 @@ namespace XmlNotepad
             }
         }
 
-        [CLSCompliant(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct OLECMDTEXT
         {
             public uint cmdtextf;
@@ -559,7 +559,7 @@ namespace XmlNotepad
             public char rgwz;
         }
 
-        [CLSCompliant(false), StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         public struct OLECMD
         {
             public uint cmdID;
@@ -567,7 +567,7 @@ namespace XmlNotepad
         }
 
         // Interop definition for IOleCommandTarget. 
-        [CLSCompliant(false), ComImport, Guid("b722bccb-4e68-101b-a2bc-00aa00404770"),
+        [ComImport, Guid("b722bccb-4e68-101b-a2bc-00aa00404770"),
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         public interface IOleCommandTarget
         {

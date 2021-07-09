@@ -12,6 +12,9 @@
            BasedOn="{StaticResource DefaultWindowStyle}">
         </Style>
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="local:Commands.Exit" Executed="OnExit"/>
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -31,7 +34,7 @@
                 <MenuItem Header="Save As..."/>
                 <MenuItem Header="Export Errors..."/>
                 <MenuItem Header="Recent Files" x:Name="RecentFilesMenu"/>
-                <MenuItem Header="Exit" InputGestureText="Alt+F4"/>
+                <MenuItem Header="Exit" InputGestureText="Alt+F4" Command="local:Commands.Exit"/>
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Undo" InputGestureText="Ctrl+Z"/>
@@ -161,11 +164,27 @@
                 </ui:AppBarButton.Icon>
             </ui:AppBarButton>
 
-            <!--<ui:AppBarButton x:Name="CutButton" ToolTip="Cut" >&#xE16b;</ui:AppBarButton>
-            <ui:AppBarButton x:Name="CopyButton" ToolTip="Copy" >&#xE16f;</ui:AppBarButton>
-            <ui:AppBarButton x:Name="PasteButton" ToolTip="Paste" >&#xE16D;</ui:AppBarButton>
-            <ui:AppBarButton x:Name="DeleteButton" ToolTip="Delete" >&#xE107;</ui:AppBarButton>-->
 
+            <ui:AppBarButton x:Name="CutButton" ToolTip="Cut">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE16b;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+            <ui:AppBarButton x:Name="CopyButton" ToolTip="Copy">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE16f;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+            <ui:AppBarButton x:Name="PasteButton" ToolTip="Paste">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE16D;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+            <ui:AppBarButton x:Name="DeleteButton" ToolTip="Delete">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE107;" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
             <ui:AppBarButton x:Name="NudgeUpButton" ToolTip="Nudge Up">
                 <ui:AppBarButton.Icon>
                     <ui:FontIcon FontFamily="Segoe UI Symbol" Glyph="&#xE18d;" />

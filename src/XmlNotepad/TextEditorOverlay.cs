@@ -169,7 +169,7 @@ namespace XmlNotepad
             this.schemaType = provider.GetSchemaType();
 
             if (this.editor != null) {
-                this.currentEditor = this.editor.Editor;
+                this.currentEditor = this.editor.Editor as Control;
                 parent.Controls.Add(this.currentEditor);
                 this.editor.SchemaType = this.schemaType;    
                 this.currentEditor.KeyDown += new KeyEventHandler(editor_KeyDown);
@@ -429,7 +429,8 @@ namespace XmlNotepad
     // This class is used to display a set of names and icons, track user edits
     // in associated text box and automatically select the item that best matches
     // what the user is doing.
-    class CompletionSet : Control {
+    class CompletionSet : Control, IHostWindow
+    {
         bool parented;
         TextBox editor;
         ListBox listBox;
@@ -485,7 +486,6 @@ namespace XmlNotepad
         public void HideToolTip() {
             this.tip.Hide(); 
         }
-
 
         void OnShowToolTip(object sender, IntelliTipEventArgs args) {
             if (list != null) {

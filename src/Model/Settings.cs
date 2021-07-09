@@ -4,10 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
@@ -40,11 +38,12 @@ namespace XmlNotepad
     /// </summary>
     public class Settings : IDisposable
 	{
+        static Settings _instance;
         string filename;
         FileSystemWatcher watcher;
         Hashtable map = new Hashtable();
         System.Threading.Timer timer;
-        PersistentFileNames pfn = new PersistentFileNames();
+        PersistentFileNames pfn;
 
         /// <summary>
         /// This event is raised when a particular setting has been changed.
@@ -59,7 +58,36 @@ namespace XmlNotepad
         /// application shutdown.
         /// </summary>
         public Settings() {
+            _instance = this;
         }
+
+        public static Settings Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    throw new Exception("Settings is not yet available!");
+                }
+                return _instance;
+            }
+        }
+
+        /// <summary>
+        /// The application startup path.
+        /// </summary>
+        public string StartupPath { get; set; }
+
+        /// <summary>
+        /// The application executable path.
+        /// </summary>
+        public string ExecutablePath { get; set; }
+
+        /// <summary>
+        /// The XML resolver to use in loading XML
+        /// </summary>
+        public XmlResolver Resolver { get; set; }
+
 
         /// <summary>
         /// This method is usually called right before you update the settings and save
@@ -111,6 +139,8 @@ namespace XmlNotepad
         /// <param name="filename">XmlNotepad settings xml file.</param>
         public void Load(string filename)
         {
+            pfn = new PersistentFileNames(Settings.Instance.StartupPath);
+
             // we don't use the serializer because it's too slow to fire up.
             try 
             {
@@ -193,7 +223,7 @@ namespace XmlNotepad
                     string s = tc.ConvertToString(value);
                     return s;
                 }
-                throw new ApplicationException(string.Format(SR.TypeConvertError, value.GetType().FullName));
+                throw new ApplicationException(string.Format(Strings.TypeConvertError, value.GetType().FullName));
             }
         }
 
@@ -207,7 +237,7 @@ namespace XmlNotepad
                 if (tc != null) {
                     return tc.ConvertFromString(value);
                 }
-                throw new ApplicationException(string.Format(SR.TypeConvertError, type.FullName));
+                throw new ApplicationException(string.Format(Strings.TypeConvertError, type.FullName));
             }
         }
 
@@ -369,8 +399,8 @@ namespace XmlNotepad
     class PersistentFileNames {
         Hashtable variables = new Hashtable();
         
-        public PersistentFileNames() {
-            variables["StartupPath"] = Application.StartupPath;
+        public PersistentFileNames(string startupPath) {
+            variables["StartupPath"] = startupPath;
             variables["ProgramFiles"] = Environment.GetEnvironmentVariable("ProgramFiles");
             variables["UserProfile"] = Environment.GetEnvironmentVariable("UserProfile");
             variables["SystemRoot"] = Environment.GetEnvironmentVariable("SystemRoot");

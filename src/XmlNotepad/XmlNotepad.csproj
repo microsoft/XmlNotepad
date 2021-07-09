@@ -101,26 +101,21 @@
     <Compile Include="..\Version\Version.cs">
       <Link>Version.cs</Link>
     </Compile>
-    <Compile Include="Analytics.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Brushes.cs" />
     <Compile Include="Builders.cs" />
     <Compile Include="Commands.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DelayedAction.cs" />
-    <Compile Include="DomLoader.cs" />
     <Compile Include="EditableView.cs" />
-    <Compile Include="FileAssociation.cs" />
     <Compile Include="HLSColor.cs" />
-    <Compile Include="IntellisenseProvider.cs" />
     <Compile Include="IntelliTip.cs" />
     <Compile Include="localizableattributes.cs" />
     <Compile Include="NoBorderTabControl.cs" />
     <Compile Include="proxy.cs" />
     <Compile Include="RecentFilesMenu.cs" />
-    <Compile Include="FindTarget.cs" />
     <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -134,7 +129,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PerfTimer.cs" />
-    <Compile Include="Checker.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -143,8 +137,6 @@
     <Compile Include="Resizer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SchemaCache.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="TaskList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,23 +144,11 @@
       <DependentUpon>TaskList.cs</DependentUpon>
     </Compile>
     <Compile Include="TextEditorOverlay.cs" />
-    <Compile Include="UndoManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Updater.cs" />
-    <Compile Include="Utilities.cs" />
-    <Compile Include="XInclude.cs" />
-    <Compile Include="XmlCache.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlCsvReader.cs" />
-    <Compile Include="XmlIntellisenseProvider.cs" />
     <Compile Include="XmlTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="XmlTreeViewFindTarget.cs">
     </Compile>
-    <Compile Include="XPathGenerator.cs" />
     <Compile Include="XsltControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -275,9 +255,6 @@
     <Reference Include="SgmlReaderDll, Version=1.8.19.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.19\lib\net47\SgmlReaderDll.dll</HintPath>
     </Reference>
-    <Reference Include="SimpleGoogleAnalytics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleGoogleAnalytics.1.0.1\lib\netstandard2.0\SimpleGoogleAnalytics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -322,6 +299,12 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{ccb469f3-9f2b-4ca2-9beb-e0b54aeefa6a}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

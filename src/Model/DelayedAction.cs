@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XmlNotepad
 {
@@ -48,7 +45,7 @@ namespace XmlNotepad
 
         class DelayedAction
         {
-            System.Windows.Forms.Timer delayTimer;
+            System.Threading.Timer delayTimer;
             Action delayedAction;
             int startTime;
 
@@ -68,27 +65,23 @@ namespace XmlNotepad
 
                 this.delayedAction = action;
 
-                this.delayTimer = new System.Windows.Forms.Timer();
-                this.delayTimer.Tick += OnDelayTimerTick;
-                this.delayTimer.Interval = (int)delay.TotalMilliseconds;
-                this.delayTimer.Start();
+                this.delayTimer = new System.Threading.Timer(OnDelayTimerTick, null, (int)delay.TotalMilliseconds, System.Threading.Timeout.Infinite);
             }
 
             public void StopDelayTimer()
             {
-                var timer = this.delayTimer;
+                System.Threading.Timer timer = this.delayTimer;
                 System.Threading.Interlocked.CompareExchange(ref this.delayTimer, null, timer);
                 if (timer != null)
                 {
-                    // gie up on this old one and start over.
-                    timer.Stop();
+                    // give up on this old one and start over.
                     timer.Dispose();
                     timer = null;
                 }
                 delayedAction = null;
             }
 
-            private void OnDelayTimerTick(object sender, EventArgs e)
+            private void OnDelayTimerTick(object state)
             {
                 int endTime = Environment.TickCount;
                 int diff = startTime - endTime;
@@ -99,14 +92,17 @@ namespace XmlNotepad
 
                 if (a != null)
                 {
-                    try
+                    UiDispatcher.RunOnUIThread(() =>
                     {
-                        a();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("OnDelayTimerTick caught unhandled exception: " + ex.ToString());
-                    }
+                        try
+                        {
+                            a();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("OnDelayTimerTick caught unhandled exception: " + ex.ToString());
+                        }
+                    });
                 }
             }
         }

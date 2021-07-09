@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text;
+using System.Linq;
 using System.Windows.Forms;
 using System.Collections;
 using System.Drawing;
@@ -151,7 +151,7 @@ namespace XmlNotepad {
         internal void OnRemoveNode(TreeNode node) {
             if (node != null && this.SelectedNode != null &&
                 (node == this.SelectedNode || node.Contains(this.SelectedNode))) {
-                TreeNodeCollection col = (node.Parent == null) ? this.Nodes : node.Parent.Nodes;
+                TreeNodeCollection col = (node.Parent == null) ? this.Nodes : node.Parent.Children;
                 if (col != null) {
                     int count = col.Count;
                     TreeNode selected = null;
@@ -551,7 +551,7 @@ namespace XmlNotepad {
 
                 IIntellisenseProvider provider = this.GetService(typeof(IIntellisenseProvider)) as IIntellisenseProvider;
                 if (provider != null) {
-                    provider.SetContextNode(sel);
+                    provider.SetContextNode(sel as IXmlTreeNode);
                     if (!provider.IsNameEditable)
                         return false;
                 }
@@ -758,9 +758,9 @@ namespace XmlNotepad {
             if (view != null) view.BeginUpdate();
             try {
                 foreach (TreeNode n in nodes) {
-                    if (n.Nodes.Count > 0 && n.CanExpandAll) {
+                    if (n.Children.Count > 0 && n.CanExpandAll) {
                         if (!n.IsExpanded) n.Expand();
-                        ExpandAll(view, n.Nodes);
+                        ExpandAll(view, n.Children);
                     }
                 }
             } finally {
@@ -778,7 +778,7 @@ namespace XmlNotepad {
             try {
                 foreach (TreeNode n in nodes) {
                     if (n.IsExpanded) {
-                        CollapseAll(view, n.Nodes);
+                        CollapseAll(view, n.Children);
                         n.Collapse();
                     }
                 }
@@ -887,10 +887,10 @@ namespace XmlNotepad {
                     }
                     int y2 = y;
                     y += h;
-                    if (node.Nodes.Count > 0) {
+                    if (node.Children.Count > 0) {
                         int depth = state.Depth - 1;
                         if (node.IsExpanded) {
-                            y = DrawNodes(g, ref clip, state, indent, y, node.Nodes);
+                            y = DrawNodes(g, ref clip, state, indent, y, node.Children);
                             // Draw boxes on the way out.
                             if (visible) {
                                 DrawPlusMinus(g, x + (imgSize.Width / 2), y2, h, depth, indent, false);
@@ -985,8 +985,8 @@ namespace XmlNotepad {
                     node.Layout(g, f, h, x, indent, depth, y, imgSize);
                     y += h;
                     this.virtualWidth = Math.Max(this.virtualWidth, node.LabelBounds.Right);
-                    if (node.IsExpanded && node.Nodes.Count > 0) {
-                        y = LayoutNodes(g, indent, depth + 1, y, node.Nodes);
+                    if (node.IsExpanded && node.Children.Count > 0) {
+                        y = LayoutNodes(g, indent, depth + 1, y, node.Children);
                     }
                     node.bottom = y;
                 }
@@ -1045,7 +1045,7 @@ namespace XmlNotepad {
                             return n;
                         }
                         if (n.IsExpanded && n.LabelBounds.Top <= y && n.bottom >= y) {
-                            TreeNode result = FindNodeAt(n.Nodes, x, y);
+                            TreeNode result = FindNodeAt(n.Children, x, y);
                             if (result != null) return result;
                         }
                     }
@@ -1065,7 +1065,8 @@ namespace XmlNotepad {
     }
 
     // MyTreeNode is an abstract wrapper on the tree data that keeps track of UI state.
-    public abstract class TreeNode  {
+    public abstract class TreeNode  
+    {
         TreeNode parent;
         bool visible = true;
         bool expanded;
@@ -1085,7 +1086,7 @@ namespace XmlNotepad {
         public int Index {
             get {
                 if (this.parent != null) {
-                    return this.parent.Nodes.GetIndex(this);
+                    return this.parent.Children.GetIndex(this);
                 } else if (this.view != null) {
                     return this.view.Nodes.GetIndex(this);
                 }
@@ -1102,21 +1103,21 @@ namespace XmlNotepad {
 
         public abstract string Label { get ; set; }
         public abstract bool IsLabelEditable { get; }
-        public abstract TreeNodeCollection Nodes { get; }
+        public abstract TreeNodeCollection Children { get; }
         public abstract int ImageIndex { get; }        
         public abstract Color ForeColor { get; }
         public abstract string Text { get; set; }
 
         TreeNodeCollection ParentCollection {
             get {
-                TreeNode parent = this.parent;
-                return parent == null ? (view != null ? view.Nodes : null) : parent.Nodes;
+                var parent = this.parent;
+                return parent == null ? (view != null ? view.Nodes : null) : parent.Children;
             }
         }
 
         public TreeNode PrevNode {
             get {
-                TreeNodeCollection col = ParentCollection;
+                var col = ParentCollection;
                 if (col == null) return null;
                 int i = col.GetIndex(this) - 1;
                 if (i >= 0) {
@@ -1146,7 +1147,7 @@ namespace XmlNotepad {
                 TreeNode parent = this.parent;
                 TreeNode node = this;
                 do {
-                    TreeNodeCollection col = parent == null ? (view != null ? view.Nodes : null) : parent.Nodes;
+                    TreeNodeCollection col = parent == null ? (view != null ? view.Nodes : null) : parent.Children;
                     int i = col.GetIndex(node) + 1;
                     int count = col.Count;
                     if (i < count) {
@@ -1154,7 +1155,7 @@ namespace XmlNotepad {
                         return n;
                     }
                     node = parent;
-                    if (parent != null) parent = parent.Parent;
+                    if (parent != null) parent = parent.Parent as TreeNode;
                 } while (node != null);
                 return null;
             }
@@ -1173,7 +1174,7 @@ namespace XmlNotepad {
             TreeView view = this.view;
             if (view != null) view.BeginUpdate();
             try {
-                List<TreeNode>  snapshot = new List<TreeNode>(this.Nodes);
+                List<TreeNode>  snapshot = new List<TreeNode>(this.Children);
                 foreach (TreeNode child in snapshot) {
                     child.Remove();
                 }
@@ -1193,7 +1194,7 @@ namespace XmlNotepad {
                     this.view = null;
                 }
                 pc.Remove(this);
-                if (parent != null && parent.Nodes.Count == 0 && this.parent.IsExpanded) {
+                if (parent != null && parent.Children.Count() == 0 && this.parent.IsExpanded) {
                     this.parent.Collapse();
                 }
             } finally {
@@ -1203,7 +1204,7 @@ namespace XmlNotepad {
 
         public virtual TreeNode Parent {
             get { return this.parent; }
-            set { this.parent = value; }
+            set { this.parent = value as TreeNode; }
         }
 
         public bool IsExpanded {
@@ -1237,12 +1238,12 @@ namespace XmlNotepad {
 
         public void ExpandAll() {
             if (!this.IsExpanded) this.Expand();
-            this.view.ExpandAll(this.view, this.Nodes);
+            this.view.ExpandAll(this.view, this.Children);
         }
 
         
         public void CollapseAll() {
-            this.view.CollapseAll(this.view, this.Nodes);            
+            this.view.CollapseAll(this.view, this.Children);            
             if (this.IsExpanded) {
                 this.Collapse();
             }
@@ -1296,7 +1297,7 @@ namespace XmlNotepad {
                     return;
                 }
                 if (selected && view.Focused) {
-                    brush = Utilities.HighlightTextBrush(this.ForeColor);
+                    brush = Brushes.HighlightTextBrush(this.ForeColor);
                     g.FillRectangle(SystemBrushes.Highlight, this.labelBounds);
                 } else {
                     brush = new SolidBrush(this.ForeColor);
@@ -1348,7 +1349,7 @@ namespace XmlNotepad {
                 TreeNode child = nodes[i];
                 if (child.IsVisible) {
                     if (!child.IsExpanded) return child;
-                    return GetLastVisibleNode(child.Nodes);
+                    return GetLastVisibleNode(child.Children);
                 }
             }
             return null;
@@ -1356,16 +1357,16 @@ namespace XmlNotepad {
 
         internal TreeNode GetLastVisibleChild(TreeNode n) {
             TreeNode last = n;
-            if (n.IsExpanded && n.Nodes.Count > 0) {
-                TreeNode child = GetLastVisibleNode(n.Nodes);
+            if (n.IsExpanded && n.Children.Count > 0) {
+                TreeNode child = GetLastVisibleNode(n.Children);
                 if (child != null) last = child;
             }
             return last;
         }
 
         internal static TreeNode GetFirstVisibleChild(TreeNode n) {
-            if (n.IsExpanded && n.Nodes.Count > 0) {
-                foreach (TreeNode child in n.Nodes) {
+            if (n.IsExpanded && n.Children.Count > 0) {
+                foreach (TreeNode child in n.Children) {
                     if (child.IsVisible) {
                         return child;
                     }
@@ -1416,7 +1417,7 @@ namespace XmlNotepad {
         }
 
         public virtual void Expand() {
-            if (this.Nodes.Count > 0) {
+            if (this.Children.Count > 0) {
                 if (this.view != null) this.view.OnBeforeExpand(this);
                 this.expanded = true;
                 Invalidate();
@@ -1440,10 +1441,10 @@ namespace XmlNotepad {
         public int Depth {
             get {
                 int depth = 0;
-                TreeNode parent = this.parent;
+                TreeNode parent = this.Parent;
                 while (parent != null) {
                     depth++;
-                    parent = parent.parent;
+                    parent = parent.Parent;
                 }
                 return depth;
             }
@@ -1640,10 +1641,10 @@ namespace XmlNotepad {
             node.Toggle();
         }
         public override int GetChildCount() {
-            return node.Nodes.Count;
+            return node.Children.Count;
         }
         public override AccessibleObject GetChild(int index) {
-            return node.Nodes[index].AccessibleObject;
+            return node.Children[index].AccessibleObject;
         }
         public override AccessibleObject GetFocused() {
             return GetSelected();
@@ -1684,7 +1685,7 @@ namespace XmlNotepad {
         }
         public override AccessibleObject Navigate(AccessibleNavigation navdir) {
             TreeNode result = null;
-            TreeNodeCollection children = node.Nodes;
+            TreeNodeCollection children = node.Children;
             int count = children.Count;
             switch (navdir) {
                 case AccessibleNavigation.Down:
@@ -1700,7 +1701,8 @@ namespace XmlNotepad {
                     break;
                 case AccessibleNavigation.Left:
                     // like the left key, this navigates up the parent hierarchy.
-                    return node.Parent.AccessibleObject;
+                    TreeNode parent = node.Parent as TreeNode;
+                    return parent.AccessibleObject;
 
                 case AccessibleNavigation.Right:
                     // hack - this breaks architectural layering!!!
@@ -1728,8 +1730,10 @@ namespace XmlNotepad {
         }
         public override AccessibleObject Parent {
             get {
-                if (node.Parent != null) {
-                    return node.Parent.AccessibleObject;
+                if (node.Parent != null)
+                {
+                    TreeNode parent = node.Parent as TreeNode;
+                    return parent.AccessibleObject;
                 } else {
                     return node.TreeView.AccessibilityObject;
                 }
@@ -2039,7 +2043,7 @@ namespace XmlNotepad {
             if (node.LabelBounds.Contains(pos.X, pos.Y)) {
                 if (node != toggled){
                     if (count>10 && toggled != lastNode){
-                        if (node.Nodes.Count>0){
+                        if (node.Children.Count>0){
                             node.Toggle();
                         }
                         count = 0;
@@ -2057,8 +2061,8 @@ namespace XmlNotepad {
 
         bool ContainsNode(TreeNode parent, TreeNode node) {
             if (node == null) return false;
-            if (parent.Nodes.Count>0){
-                foreach (TreeNode n in parent.Nodes) {
+            if (parent.Children.Count>0){
+                foreach (TreeNode n in parent.Children) {
                     if (n == node)
                         return true;
                     if (ContainsNode(n, node))

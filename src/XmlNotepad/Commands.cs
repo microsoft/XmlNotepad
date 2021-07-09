@@ -79,7 +79,7 @@ namespace XmlNotepad
         {
             get
             {
-                if (parent != null) return parent.Nodes.Count;
+                if (parent != null) return parent.Children.Count;
                 return view.Nodes.Count;
             }
         }
@@ -97,7 +97,7 @@ namespace XmlNotepad
         }
         public XmlTreeNode GetChild(int i)
         {
-            if (parent != null) return (XmlTreeNode)parent.Nodes[i];
+            if (parent != null) return (XmlTreeNode)parent.Children[i];
             return (XmlTreeNode)view.Nodes[i];
         }
         public void SetParent(XmlTreeNode parent)
@@ -161,7 +161,7 @@ namespace XmlNotepad
                 view.Nodes.Insert(i, n);
             }
             else {
-                parent.Nodes.Insert(i, n);
+                parent.Children.Insert(i, n);
                 if (selectIt && !parent.IsExpanded)
                 {
                     parent.Expand(); // this will change image index of leaf nodes.
@@ -654,7 +654,7 @@ namespace XmlNotepad
                     }
                     else if (target != null)
                     {
-                        this.pos = target.Nodes.Count;
+                        this.pos = target.Children.Count;
                     }
                 }
             }
@@ -1231,7 +1231,7 @@ namespace XmlNotepad
                         // Add text node child.
                         XmlTreeNode text = view.CreateTreeNode();
                         text.Node = xn.FirstChild;
-                        n.Nodes.Add(text);
+                        n.Children.Add(text);
                     }
                 }
                 else if (xn is XmlProcessingInstruction)
@@ -1540,7 +1540,7 @@ namespace XmlNotepad
                 {
                     if (sp != null)
                     {
-                        sp.Nodes.Insert(sindex, source);
+                        sp.Children.Insert(sindex, source);
                     }
                     else if (tv != null)
                     {
@@ -1587,7 +1587,7 @@ namespace XmlNotepad
                 if (this.sourceParent.IsNodeInTree)
                 {
                     this.sourceParent.Insert(this.sourcePosition, InsertPosition.Before, source, true);
-                    if (source.Parent != null && source.Parent.Nodes.Count == 1)
+                    if (source.Parent != null && source.Parent.Children.Count == 1)
                     {
                         source.Parent.Expand();
                     }
@@ -1817,7 +1817,7 @@ namespace XmlNotepad
                 XmlTreeNode parent = (XmlTreeNode)node.Parent;
                 if (parent != null)
                 {
-                    if (node.Index == 0 && node.Index != parent.Nodes.Count - 1)
+                    if (node.Index == 0 && node.Index != parent.Children.Count - 1)
                     {
                         return new MoveNode(this.view, node, parent, InsertPosition.Before, false);
                     }
@@ -2083,7 +2083,7 @@ namespace XmlNotepad
                     view.Invalidate();
                     if (xn is XmlElement)
                     {
-                        if (node.Nodes.Count <= 1)
+                        if (node.Children.Count <= 1)
                         {
                             this.img = ((int)NodeImage.Leaf - 1);
                         }
@@ -2320,7 +2320,7 @@ namespace XmlNotepad
                 icmd.Initialize(source, this.target, position);
                 this.cmd = icmd;
                 this.cmd.Do();
-                if (this.source.Nodes.Count > 1)
+                if (this.source.Children.Count > 1)
                 {
                     this.source.Expand();
                 }
@@ -2345,191 +2345,4 @@ namespace XmlNotepad
 
     }
 
-    public class XmlName
-    {
-        private string prefix;
-        private string localName;
-        private string namespaceUri;
-
-        public string Prefix
-        {
-            get { return prefix; }
-            set { prefix = value; }
-        }
-
-        public string LocalName
-        {
-            get { return localName; }
-            set { localName = value; }
-        }
-
-        public string NamespaceUri
-        {
-            get { return namespaceUri; }
-            set { namespaceUri = value; }
-        }
-    }
-
-    public sealed class XmlHelpers
-    {
-        private XmlHelpers() { }
-
-        public const string XmlnsUri = "http://www.w3.org/2000/xmlns/";
-        public const string XmlUri = "http://www.w3.org/XML/1998/namespace";
-
-        public static XmlName ParseName(XmlNode context, string name, XmlNodeType nt)
-        {
-            XmlName result = new XmlName();
-            XmlConvert.VerifyName(name);
-            int i = name.IndexOf(':');
-            if (i > 0)
-            {
-                string prefix = result.Prefix = name.Substring(0, i);
-                result.LocalName = name.Substring(i + 1);
-                if (prefix == "xml")
-                {
-                    result.NamespaceUri = XmlUri;
-                }
-                else if (prefix == "xmlns")
-                {
-                    result.NamespaceUri = XmlnsUri;
-                }
-                else {
-                    result.NamespaceUri = context.GetNamespaceOfPrefix(prefix);
-                }
-            }
-            else {
-                result.Prefix = "";
-                result.LocalName = name;
-                if (name == "xmlns")
-                {
-                    result.NamespaceUri = XmlnsUri;
-                }
-                else if (nt == XmlNodeType.Attribute)
-                {
-                    result.NamespaceUri = ""; // non-prefixed attributes are empty namespace by definition
-                }
-                else {
-                    result.NamespaceUri = context.GetNamespaceOfPrefix("");
-                }
-            }
-            return result;
-        }
-
-        public static XmlName ParseName(XmlNamespaceManager nsmgr, string name, XmlNodeType nt)
-        {
-            XmlName result = new XmlName();
-            XmlConvert.VerifyName(name);
-            int i = name.IndexOf(':');
-            if (i > 0)
-            {
-                string prefix = result.Prefix = name.Substring(0, i);
-                result.LocalName = name.Substring(i + 1);
-                if (prefix == "xml")
-                {
-                    result.NamespaceUri = XmlUri;
-                }
-                else if (prefix == "xmlns")
-                {
-                    result.NamespaceUri = XmlnsUri;
-                }
-                else {
-                    result.NamespaceUri = nsmgr.LookupNamespace(prefix);
-                }
-            }
-            else {
-                result.LocalName = name;
-                if (name == "xmlns")
-                {
-                    result.NamespaceUri = XmlnsUri;
-                }
-                else if (nt == XmlNodeType.Attribute)
-                {
-                    result.NamespaceUri = ""; // non-prefixed attributes are empty namespace by definition
-                }
-                else {
-                    result.NamespaceUri = nsmgr.LookupNamespace("");
-                }
-            }
-            return result;
-        }
-
-        public static XmlNamespaceManager GetNamespaceScope(XmlNode context)
-        {
-            XmlDocument owner = null;
-            if (context is XmlDocument)
-            {
-                owner = (XmlDocument)context;
-            }
-            else {
-                owner = context.OwnerDocument;
-            }
-            XmlNameTable nt = owner.NameTable;
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(nt);
-            XmlNode parent = context;
-            while (parent != null)
-            {
-                if (parent is XmlElement)
-                {
-                    if (parent.Attributes != null)
-                    {
-                        foreach (XmlAttribute a in parent.Attributes)
-                        {
-                            if (a.NamespaceURI == XmlnsUri)
-                            {
-                                string prefix = nt.Add(a.LocalName);
-                                if (prefix == "xmlns") prefix = "";
-                                if (!nsmgr.HasNamespace(prefix))
-                                {
-                                    nsmgr.AddNamespace(prefix, nt.Add(a.Value));
-                                }
-                            }
-                        }
-                    }
-                }
-                parent = parent.ParentNode;
-            }
-            return nsmgr;
-        }
-
-        public static bool MissingNamespace(XmlName name)
-        {
-            return !string.IsNullOrEmpty(name.Prefix) && string.IsNullOrEmpty(name.NamespaceUri) &&
-                name.Prefix != "xmlns" && name.LocalName != "xmlns" && name.Prefix != "xml";
-        }
-
-        public static XmlAttribute GenerateNamespaceDeclaration(XmlElement context, XmlName name)
-        {
-            int count = 1;
-            while (!string.IsNullOrEmpty(context.GetPrefixOfNamespace("uri:" + count)))
-            {
-                count++;
-            }
-            name.NamespaceUri = "uri:" + count;
-            XmlAttribute xmlns = context.OwnerDocument.CreateAttribute("xmlns", name.Prefix, XmlHelpers.XmlnsUri);
-            if (context.HasAttribute(xmlns.Name))
-            {
-                // already have an attribute with this name! This is a tricky case where
-                // user is deleting a namespace declaration.  We don't want to reinsert it
-                // automatically in that case!
-                return null;
-            }
-            xmlns.Value = name.NamespaceUri;
-            return xmlns;
-        }
-
-        public static bool IsXmlnsNode(XmlNode node)
-        {
-            if (node == null) return false;
-            return node.NodeType == XmlNodeType.Attribute &&
-                (node.LocalName == "xmlns" || node.Prefix == "xmlns");
-        }
-
-        public static bool IsXsiAttribute(XmlNode node)
-        {
-            if (node == null) return false;
-            return node.NodeType == XmlNodeType.Attribute &&
-                (node.LocalName == "type" && node.NamespaceURI == "http://www.w3.org/2001/XMLSchema-instance");
-        }
-    }
 }

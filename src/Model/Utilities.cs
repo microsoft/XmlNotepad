@@ -2,9 +2,7 @@ using System;
 using System.Xml;
 using System.Text;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 using System.IO;
 
 namespace XmlNotepad
@@ -85,7 +83,7 @@ namespace XmlNotepad
                 }
                 else 
                 {
-                    return ValidPath(Application.StartupPath + "\\Help\\index.html");
+                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\index.html");
                 }
             }
         }
@@ -100,7 +98,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return ValidPath(Application.StartupPath + "\\Help\\help\\options.htm");
+                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\options.htm");
                 }
             }
         }
@@ -115,7 +113,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return ValidPath(Application.StartupPath + "\\Help\\help\\schemas.htm");
+                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\schemas.htm");
                 }
             }
         }
@@ -131,7 +129,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    return ValidPath(Application.StartupPath + "\\Help\\help\\find.htm");
+                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\find.htm");
                 }
             }
         }
@@ -200,16 +198,6 @@ namespace XmlNotepad
             return null;
         }
 
-        // Lighten up the given baseColor so it is easy to read on the system Highlight color background.
-        public static Brush HighlightTextBrush(Color baseColor) {
-            SolidBrush ht = SystemBrushes.Highlight as SolidBrush;
-            Color selectedColor = ht != null ? ht.Color : Color.FromArgb(49, 106, 197);
-            HLSColor cls = new HLSColor(baseColor);
-            HLSColor hls = new HLSColor(selectedColor);
-            int luminosity = (hls.Luminosity > 120) ? 20 : 220;
-            return new SolidBrush(HLSColor.ColorFromHLS(cls.Hue, luminosity, cls.Saturation));
-        }
-
         public static string Escape(string nl)
         {
             return nl.Replace("\r", "\\r").Replace("\n", "\\n");
@@ -219,11 +207,9 @@ namespace XmlNotepad
             return nl.Replace("\\r", "\r").Replace("\\n", "\n");
         }
 
-
-
         public static void OpenUrl(IntPtr hwnd, string url) {
             const int SW_SHOWNORMAL = 1;
-            ShellExecute(hwnd, "open", url, null, Application.StartupPath, SW_SHOWNORMAL);
+            ShellExecute(hwnd, "open", url, null, Settings.Instance.StartupPath, SW_SHOWNORMAL);
         }
 
         [DllImport("Shell32.dll", EntryPoint = "ShellExecuteA",

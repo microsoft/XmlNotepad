@@ -9,9 +9,14 @@
   
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RootNamespace>XmlNotepad</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="ModernWpfUI" Version="0.9.4" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 </Project>

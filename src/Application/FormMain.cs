@@ -223,6 +223,10 @@ namespace XmlNotepad
         public FormMain()
         {
             this.settings = new Settings();
+            this.settings.StartupPath = Application.StartupPath;
+            this.settings.ExecutablePath = Application.ExecutablePath;
+            this.settings.Resolver = new XmlProxyResolver(this);
+
             SetDefaultSettings();
 
             this.model = (XmlCache)GetService(typeof(XmlCache));
@@ -336,7 +340,7 @@ namespace XmlNotepad
             await System.Threading.Tasks.Task.Delay(1);
 
             // install Xml notepad as an available editor for .xml files.
-            FileAssociation.AddXmlProgids();
+            FileAssociation.AddXmlProgids(Application.ExecutablePath);
 
             CheckNetwork();
         }
@@ -3788,7 +3792,7 @@ namespace XmlNotepad
         {
             try
             {
-                FileAssociation.AddXmlProgids();
+                FileAssociation.AddXmlProgids(Application.ExecutablePath);
             } 
             catch (Exception)
             {

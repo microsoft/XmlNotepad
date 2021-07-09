@@ -6,13 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
-using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad {
     public class XmlIntellisenseProvider : IIntellisenseProvider, IDisposable {
         Hashtable typeCache = new Hashtable();
         XmlCache model;
-        XmlTreeNode node;
+        IXmlTreeNode node;
         XmlNode xn;
         Checker checker;
         ISite site;
@@ -32,14 +31,14 @@ namespace XmlNotepad {
 
         public virtual bool IsValueEditable { get { return true; } }
 
-        public void SetContextNode(TreeNode node) {
+        public void SetContextNode(IXmlTreeNode node) {
             this.ContextNode = node;
             OnContextChanged();
         }
 
-        public TreeNode ContextNode {
+        public IXmlTreeNode ContextNode {
             get { return node; }
-            set { node = value as XmlTreeNode; }
+            set { node = value; }
         }
 
         public virtual void OnContextChanged() {
@@ -50,12 +49,12 @@ namespace XmlNotepad {
                 this.node.NodeType == XmlNodeType.Attribute ||
                 this.node.NodeType == XmlNodeType.Text ||
                 this.node.NodeType == XmlNodeType.CDATA) {
-                XmlTreeNode elementNode = GetClosestElement(this.node);
+                IXmlTreeNode elementNode = GetClosestElement(this.node);
                 if (elementNode != null && elementNode.NodeType == XmlNodeType.Element) {
                     this.xn = elementNode.Node;
                     if (xn is XmlElement) {
                         this.checker = new Checker((XmlElement)xn,
-                            elementNode == this.node.Parent ? IntellisensePosition.FirstChild :
+                            elementNode == this.node.ParentNode ? IntellisensePosition.FirstChild :
                             (this.node.Node == null ? IntellisensePosition.AfterNode : IntellisensePosition.OnNode)
                             );
                         this.checker.ValidateContext(model);
@@ -64,10 +63,10 @@ namespace XmlNotepad {
             }
         }
 
-        static XmlTreeNode GetClosestElement(XmlTreeNode treeNode) {
-            XmlTreeNode element = treeNode.Parent as XmlTreeNode;
-            if (treeNode.Parent != null) {
-                foreach (XmlTreeNode child in treeNode.Parent.Nodes) {
+        static IXmlTreeNode GetClosestElement(IXmlTreeNode treeNode) {
+            IXmlTreeNode element = treeNode.ParentNode;
+            if (treeNode.ParentNode != null) {
+                foreach (IXmlTreeNode child in treeNode.ParentNode.Nodes) {
                     if (child.Node != null && child.NodeType == XmlNodeType.Element) {
                         element = child;
                     }
@@ -84,10 +83,10 @@ namespace XmlNotepad {
         }
 
         XmlSchemaInfo GetSchemaInfo() {
-            XmlTreeNode tn = node;
+            IXmlTreeNode tn = node;
             if (tn.NodeType == XmlNodeType.Text ||
                 tn.NodeType == XmlNodeType.CDATA) {
-                tn = (XmlTreeNode)tn.Parent;
+                tn = tn.ParentNode;
             }
             if (tn == null) return null;
             XmlNode xn = tn.Node;
@@ -118,7 +117,7 @@ namespace XmlNotepad {
             if (node != null && node.Node != null) {
                 XmlNode xn = node.Node;
                 if (xn.NodeType == XmlNodeType.Attribute && xn.NamespaceURI == "http://www.w3.org/2000/xmlns/") {
-                    XmlNode parent = ((XmlTreeNode)node.Parent).Node;
+                    XmlNode parent = node.ParentNode.Node;
                     return GetNamespaceList(parent);
                 }
             }            
@@ -273,9 +272,10 @@ namespace XmlNotepad {
                         if (a != null) {
                             t = a.GetType(typeName);
                         }
-                    } catch (Exception e) {
-                        System.Windows.Forms.MessageBox.Show(string.Format(SR.AssemblyLoadError, assembly, e.Message),
-                        SR.AssemblyLoadCaption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    } catch (Exception) {
+                        throw new Exception("??????????");
+                        // System.Windows.Forms.MessageBox.Show(string.Format(SR.AssemblyLoadError, assembly, e.Message),
+                        // SR.AssemblyLoadCaption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                     }
                 }
             }
