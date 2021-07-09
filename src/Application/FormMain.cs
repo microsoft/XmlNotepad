@@ -322,13 +322,23 @@ namespace XmlNotepad
 
             this.settings["SchemaCache"] = this.model.SchemaCache;
 
-            System.Threading.Tasks.Task.Run(CheckNetwork);
-            System.Threading.Tasks.Task.Run((Action)CheckNetwork);
+            _ = AsyncSetup();
         }
 
         private void OnXsltComplete(object sender, PerformanceInfo e)
         {
             ShowStatus(string.Format(SR.TransformedTimeStatus, e.XsltMilliseconds, e.BrowserMilliseconds));
+        }
+
+        private async System.Threading.Tasks.Task AsyncSetup()
+        {
+            // this is is on a background thread.
+            await System.Threading.Tasks.Task.Delay(1);
+
+            // install Xml notepad as an available editor for .xml files.
+            FileAssociation.AddXmlProgids();
+
+            CheckNetwork();
         }
 
         private void CheckNetwork()

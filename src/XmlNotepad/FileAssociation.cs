@@ -7,15 +7,22 @@ namespace XmlNotepad
     {
         public static void AddXmlProgids()
         {
-            using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\.xml\OpenWithProgids", true))
+            try
             {
-                key.SetValue("XmlNotepad.xmlfile", "");
-            }
+                using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\.xml\OpenWithProgids", true))
+                {
+                    key.SetValue("XmlNotepad.xmlfile", "");
+                }
 
-            using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\XmlNotepad.xmlfile\shell\open\command"))
+                using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\XmlNotepad.xmlfile\shell\open\command"))
+                {
+                    var cmd = Application.ExecutablePath + " \"%1\"";
+                    key.SetValue("", cmd);
+                }
+            } 
+            catch
             {
-                var cmd = Application.ExecutablePath + " \"%1\"";
-                key.SetValue("", cmd);
+                // todo: tell the user?
             }
         }
     }

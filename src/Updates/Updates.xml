@@ -9,6 +9,12 @@
 		<history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
 		<frequency>1.00:00:00</frequency>
 	</application>
+  <version number="2.8.0.36">
+    <bug>
+      Fix bug in support for non webview2 case.
+      Automatically register XML notepad with Open With dialog.
+    </bug>
+  </version>
 	<version number="2.8.0.35">
 		<bug>
 			Added support for Chromium based WebView2 control for XSLT output.

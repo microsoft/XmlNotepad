@@ -5,6 +5,10 @@ for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version
     set VERSION=%%i
 )
 
+set WINGET=1
+set APPX_DROPS=D:\XmlNotepadReleases
+if not exist %APPX_DROPS% mkdir %APPX_DROPS%
+
 echo ### Publishing version %VERSION%...
 where sed > nul 2>&1
 if ERRORLEVEL 1 goto :nosed
@@ -29,10 +33,9 @@ if exist publish\XmlNotepadSetup.zip del publish\XmlNotepadSetup.zip
 pwsh -command "Compress-Archive -Path src\XmlNotepadSetup\bin\Release\* -DestinationPath publish\XmlNotepadSetup.zip"
 
 if not EXIST src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle goto :noappx
-if not EXIST publish_appx mkdir publish_appx
-xcopy /y /s src\XmlNotepadPackage\AppPackages\%VERSION%\ publish_appx\%VERSION%\
+xcopy /y /s src\XmlNotepadPackage\AppPackages\%VERSION%\ %APPX_DROPS%\%VERSION%\
 if ERRORLEVEL 1 goto :eof
-copy /y src\XmlNotepadPackage\AppPackages\%VERSION%\index.html publish_appx
+copy /y src\XmlNotepadPackage\AppPackages\%VERSION%\index.html %APPX_DROPS%
 if ERRORLEVEL 1 goto :eof
 
 echo Uploading ClickOnce installer to XmlNotepad
@@ -40,8 +43,10 @@ AzurePublishClickOnce %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE
 if ERRORLEVEL 1 goto :eof
 
 echo Uploading MSIX installer to XmlNotepad.Net
-AzurePublishClickOnce %~dp0publish_appx downloads/XmlNotepad.Net "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
+AzurePublishClickOnce %APPX_DROPS% downloads/XmlNotepad.Net "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
 if ERRORLEVEL 1 goto :eof
+
+if "%WINGET%"=="0" goto :eof
 
 :winget
 echo Preparing winget package
