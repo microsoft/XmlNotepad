@@ -133,11 +133,11 @@ namespace XmlNotepad
             this.settings = (Settings)this.Site.GetService(typeof(Settings));
             if (this.settings != null)
             {
-                this.settings.Changed -= new SettingsEventHandler(settings_Changed);
-                this.settings.Changed += new SettingsEventHandler(settings_Changed);
+                this.settings.Changed -= new SettingsEventHandler(OnSettingsChanged);
+                this.settings.Changed += new SettingsEventHandler(OnSettingsChanged);
             }
-            settings_Changed(this, "Colors");
-            settings_Changed(this, "MaximumValueLength");
+            OnSettingsChanged(this, "Colors");
+            OnSettingsChanged(this, "MaximumValueLength");
         }
 
 
@@ -158,7 +158,7 @@ namespace XmlNotepad
             return new Point(pt.X - this.scrollPosition.X, pt.Y - this.scrollPosition.Y);
         }
 
-        private void settings_Changed(object sender, string name) {
+        private void OnSettingsChanged(object sender, string name) {
             // change the colors.
             Invalidate();
             if (this.settings != null) {

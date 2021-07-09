@@ -4,6 +4,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Net;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace XmlNotepad
 {
@@ -151,13 +152,13 @@ namespace XmlNotepad
               this.updateFrequency == TimeSpan.MaxValue ||
               this.lastCheck + this.updateFrequency < DateTime.Now)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(CheckForUpdate));
+                Task.Run(CheckForUpdate);
             }
         }
 
         bool busy;
 
-        void CheckForUpdate(object state)
+        void CheckForUpdate()
         {
             if (busy)
             {
@@ -299,9 +300,20 @@ namespace XmlNotepad
                     }
                 }
             }
-            if (this.UpdateRequired != null)
+
+            FireUpdate(newVersion);
+        }
+
+        public void FireUpdate(bool newVersion)
+        {
+            // Make sure we switch back to the UI thread.
+            var handler = this.UpdateRequired;
+            if (handler != null)
             {
-                this.UpdateRequired(this, newVersion);
+                this.delayedActions.StartDelayedAction("UpdateRequired", () =>
+                {
+                    handler(this, newVersion);
+                }, TimeSpan.FromMilliseconds(1));
             }
         }
 
@@ -327,7 +339,7 @@ namespace XmlNotepad
             StopTimer();
             if (this.updateUri != null)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(CheckForUpdate));
+                Task.Run(CheckForUpdate);
             }
         }
     }

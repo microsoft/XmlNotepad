@@ -41,7 +41,7 @@ namespace XmlNotepad
             this.updater.UpdateRequired += new EventHandler<bool>(OnUpdateRequired);
         }
 
-        private void OnUpdateRequired(object sender, bool e)
+        private void OnUpdateRequired(object sender, bool newVersion)
         {
             // show UI
         }

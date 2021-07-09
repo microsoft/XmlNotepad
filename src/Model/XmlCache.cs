@@ -27,7 +27,6 @@ namespace XmlNotepad
         XmlDocument doc;
         FileSystemWatcher watcher;
         int retries;
-        ISynchronizeInvoke sync;
         //string namespaceUri = string.Empty;
         SchemaCache schemaCache;
         Dictionary<XmlNode, XmlSchemaInfo> typeInfo;
@@ -40,12 +39,11 @@ namespace XmlNotepad
         public event EventHandler FileChanged;
         public event EventHandler<ModelChangedEventArgs> ModelChanged;
 
-        public XmlCache(IServiceProvider site, ISynchronizeInvoke sync, DelayedActions handler)
+        public XmlCache(IServiceProvider site, DelayedActions handler)
         {
             this.loader = new DomLoader(site);
             this.schemaCache = new SchemaCache(site);
             this.site = site;
-            this.sync = sync;
             this.Document = new XmlDocument();
             this.actions = handler;
         }
@@ -425,7 +423,7 @@ namespace XmlNotepad
             }
         }
 
-        void StartReload(object sender, EventArgs e)
+        void StartReload()
         {
             // Apart from retrying, the timer has the nice side effect of also 
             // collapsing multiple file system events into one timer event.
@@ -472,7 +470,7 @@ namespace XmlNotepad
             if (e.ChangeType == WatcherChangeTypes.Changed && 
                 IsSamePath(this.filename, e.FullPath))
             {
-                sync.BeginInvoke(new EventHandler(StartReload), new object[] { this, EventArgs.Empty });
+                StartReload();
             }
         }
 
@@ -483,7 +481,7 @@ namespace XmlNotepad
                 StopFileWatch();
                 this.filename = e.FullPath;
                 StartFileWatch();
-                sync.BeginInvoke(new EventHandler(StartReload), new object[] { this, EventArgs.Empty });
+                StartReload();
             }
         }
 

@@ -13,6 +13,7 @@ namespace XmlNotepad
     /// </summary>
     public class DelayedActions
     {
+        bool closed;
         DispatchHandler handler;
         Dictionary<string, DelayedAction> pending = new Dictionary<string, DelayedAction>();
 
@@ -29,12 +30,19 @@ namespace XmlNotepad
 
         public void StartDelayedAction(string name, Action action, TimeSpan delay)
         {
+            if (this.closed)
+            {
+                Debug.WriteLine(string.Format("Ignoring delayed action '{0}' because object is closed", name));
+                return;
+            }
+
             DelayedAction da;
             if (!pending.TryGetValue(name, out da))
             {
-                da = new DelayedAction(this.handler);
+                da = new DelayedAction(this.handler, name);
                 pending[name] = da;
             }
+
             da.StartDelayTimer(action, delay);
         }
 
@@ -50,6 +58,7 @@ namespace XmlNotepad
 
         public void Close()
         {
+            this.closed = true;
             foreach (var pair in pending)
             {
                 pair.Value.StopDelayTimer();
@@ -64,10 +73,12 @@ namespace XmlNotepad
             Action delayedAction;
             int startTime;
             DispatchHandler handler;
+            string name;
 
-            public DelayedAction(DispatchHandler handler)
+            public DelayedAction(DispatchHandler handler, string name)
             {
                 this.handler = handler;
+                this.name = name;
             }
 
             /// <summary>
@@ -78,7 +89,6 @@ namespace XmlNotepad
             /// <param name="delay">The timeout before calling the action</param>
             public void StartDelayTimer(Action action, TimeSpan delay)
             {
-
                 startTime = Environment.TickCount;
 
                 // stop any previous timer and start over.
@@ -86,7 +96,15 @@ namespace XmlNotepad
 
                 this.delayedAction = action;
 
-                this.delayTimer = new System.Threading.Timer(OnDelayTimerTick, null, (int)delay.TotalMilliseconds, System.Threading.Timeout.Infinite);
+                if (delay.TotalMilliseconds == 0)
+                {
+                    // immediate!
+                    this.OnDelayTimerTick(null);
+                }
+                else
+                {
+                    this.delayTimer = new System.Threading.Timer(OnDelayTimerTick, null, (int)delay.TotalMilliseconds, System.Threading.Timeout.Infinite);
+                }
             }
 
             public void StopDelayTimer()
@@ -102,7 +120,7 @@ namespace XmlNotepad
                 delayedAction = null;
             }
 
-            private void OnDelayTimerTick(object state)
+            internal void OnDelayTimerTick(object state)
             {
                 int endTime = Environment.TickCount;
                 int diff = startTime - endTime;
@@ -117,6 +135,7 @@ namespace XmlNotepad
                     {
                         try
                         {
+                            Debug.WriteLine("invoking delayed action: " + this.name);
                             a();
                         }
                         catch (Exception ex)

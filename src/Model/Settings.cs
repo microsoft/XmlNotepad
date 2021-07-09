@@ -88,6 +88,10 @@ namespace XmlNotepad
         /// </summary>
         public XmlResolver Resolver { get; set; }
 
+        /// <summary>
+        /// Object used to raise the change events on the right thread.
+        /// </summary>
+        public DelayedActions DelayedActions { get; set; }
 
         /// <summary>
         /// This method is usually called right before you update the settings and save
@@ -107,7 +111,14 @@ namespace XmlNotepad
         /// </summary>
         /// <param name="name"></param>
         public void OnChanged(string name) {
-            if (Changed != null) Changed(this, name);
+            var handler = this.Changed;
+            if (DelayedActions != null && handler != null)
+            {
+                this.DelayedActions.StartDelayedAction("On" + name + "Changed", () =>
+                {
+                    Changed(this, name);
+                }, TimeSpan.FromMilliseconds(0)); // timespan of zero makes these immediate.
+            }
         }
 
         /// <summary>

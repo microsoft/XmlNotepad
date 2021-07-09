@@ -27,7 +27,6 @@ namespace XmlNotepad
         RecentFilesMenu recentFiles;
         TaskList taskList;
         XsltControl dynamicHelpViewer;
-        bool loading;
         FormSearch search;
         IIntellisenseProvider ip;
         OpenFileDialog od;
@@ -226,22 +225,14 @@ namespace XmlNotepad
             this.settings.StartupPath = Application.StartupPath;
             this.settings.ExecutablePath = Application.ExecutablePath;
             this.settings.Resolver = new XmlProxyResolver(this);
-            this.delayedActions = new DelayedActions((action) =>
+
+            this.delayedActions = settings.DelayedActions = new DelayedActions((action) =>
             {
-                ISynchronizeInvoke si = (ISynchronizeInvoke)this;
-                if (si.InvokeRequired)
-                {
-                    // get on the right thread.
-                    si.Invoke(action, null);
-                    return;
-                }
-                else
-                {
-                    action();
-                }
+                DispatchAction(action);
             });
 
             SetDefaultSettings();
+            this.settings.Changed += new SettingsEventHandler(OnSettingsChanged);
 
             this.model = (XmlCache)GetService(typeof(XmlCache));
             this.ip = (XmlIntellisenseProvider)GetService(typeof(XmlIntellisenseProvider));
@@ -292,8 +283,6 @@ namespace XmlNotepad
             this.Controls.SetChildIndex(this.resizer, 0);
             this.taskList.Site = this;
 
-            this.settings.Changed += new SettingsEventHandler(settings_Changed);
-
             // now that we have a font, override the tabControlViews font setting.
             this.xmlTreeView1.Font = this.Font;
 
@@ -339,7 +328,25 @@ namespace XmlNotepad
 
             this.settings["SchemaCache"] = this.model.SchemaCache;
 
-            _ = AsyncSetup();
+            _ = AsyncSetup();            
+        }
+
+        private void DispatchAction(Action action)
+        {
+            if (!this.Disposing)
+            {
+                ISynchronizeInvoke si = (ISynchronizeInvoke)this;
+                if (si.InvokeRequired)
+                {
+                    // get on the right thread.
+                    si.Invoke(action, null);
+                    return;
+                }
+                else
+                {
+                    action();
+                }
+            }
         }
 
         private void OnXsltComplete(object sender, PerformanceInfo e)
@@ -587,18 +594,23 @@ namespace XmlNotepad
             this.updater.UpdateRequired += new EventHandler<bool>(OnUpdateRequired);
             LoadConfig();
             this.xmlTreeView1.OnLoaded();
+            EnsureWindowBounds();
             base.OnLoad(e);
+        }
+
+        private void EnsureWindowBounds()
+        {
+            Rectangle r = (Rectangle)this.settings["WindowBounds"];
+            if (r.Width == 0)
+            {
+                // trigger the settings change that makes the window visible the firs time.
+                this.settings["WindowBounds"] = this.Bounds;
+            }
         }
 
         void OnUpdateRequired(object sender, bool updateAvailable) {
             if (this.Disposing)
             {
-                return;
-            }
-            ISynchronizeInvoke si = (ISynchronizeInvoke)this;
-            if (si.InvokeRequired) {
-                // get on the right thread.
-                si.Invoke(new EventHandler<bool>(OnUpdateRequired), new object[2] { sender, updateAvailable } );
                 return;
             }
             this.toolStripMenuItemUpdate.Tag = updateAvailable;
@@ -651,6 +663,7 @@ namespace XmlNotepad
                     return;
                 }
             }
+            this.delayedActions.Close();
             SaveConfig();
             base.OnClosing (e);
         }
@@ -2207,7 +2220,6 @@ namespace XmlNotepad
             this.statusStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         const string HideUpdateButtonAction = "HideUpdateButton";
@@ -2278,7 +2290,7 @@ namespace XmlNotepad
             } else if (service == typeof(XmlCache)) {
                 if (null == this.model)
                 {
-                    this.model = new XmlCache((IServiceProvider)this, (ISynchronizeInvoke)this, this.delayedActions);
+                    this.model = new XmlCache((IServiceProvider)this, this.delayedActions);
                 }
                 return this.model;
             } else if (service == typeof(Settings)){
@@ -2294,6 +2306,8 @@ namespace XmlNotepad
                 return this.proxyService;
             } else if (service == typeof(UserSettings)) {
                 return new UserSettings(this.settings);
+            } else if (service == typeof(DelayedActions)) {
+                return this.delayedActions;
             }
             return base.GetService (service);
         }
@@ -2623,7 +2637,6 @@ namespace XmlNotepad
 
         public virtual void LoadConfig() {
             string path = null;
-            this.loading = true;
             if (this.args != null && this.args.Length > 0) {
                 // When user passes arguments we skip the config file
                 // This is for unit testing where we need consistent config!
@@ -2659,8 +2672,7 @@ namespace XmlNotepad
                         this.settings["UpdateLocation"] = UserSettings.DefaultUpdateLocation;
                     }                    
                 }
-            }            
-            this.loading = false;
+            }
 
             CheckAnalytics();
         }
@@ -2747,31 +2759,18 @@ namespace XmlNotepad
             UpdateCaption();
         }
 
-        private void settings_Changed(object sender, string name) {
-            // Make sure it's on the right thread...
-            ISynchronizeInvoke si = (ISynchronizeInvoke)this;
-            if (si.InvokeRequired) {
-                si.BeginInvoke(new SettingsEventHandler(OnSettingsChanged),
-                    new object[] { sender, name });
-            } else {
-                OnSettingsChanged(sender, name);
-            }
-        }
-
         protected virtual void OnSettingsChanged(object sender, string name) {        
             switch (name){
                 case "File":
                     this.settings.Reload(); // just do it!!                    
                     break;
                 case "WindowBounds":
-                    if (loading) { // only if loading first time!
-                        Rectangle r = (Rectangle)this.settings["WindowBounds"];
-                        if (!r.IsEmpty) {
-                            Screen s = Screen.FromRectangle(r);
-                            if (s.Bounds.Contains(r)) {
-                                this.Bounds = r;
-                                this.StartPosition = FormStartPosition.Manual;
-                            }
+                    Rectangle r = (Rectangle)this.settings["WindowBounds"];
+                    if (!r.IsEmpty) {
+                        Screen s = Screen.FromRectangle(r);
+                        if (s.Bounds.Contains(r)) {
+                            this.Bounds = r;
+                            this.StartPosition = FormStartPosition.Manual;
                         }
                     }
                     break;

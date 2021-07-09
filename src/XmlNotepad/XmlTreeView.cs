@@ -40,21 +40,6 @@ namespace XmlNotepad
 
         public XmlTreeView()
         {
-            this.delayedActions = new DelayedActions((action) =>
-            {
-                ISynchronizeInvoke si = (ISynchronizeInvoke)this;
-                if (si.InvokeRequired)
-                {
-                    // get on the right thread.
-                    si.Invoke(action, null);
-                    return;
-                }
-                else
-                {
-                    action();
-                }
-            });
-
             this.SetStyle(ControlStyles.ContainerControl, true);
             this.SetStyle(ControlStyles.ResizeRedraw, true);
             this.SetStyle(ControlStyles.UserPaint, true);
@@ -148,6 +133,7 @@ namespace XmlNotepad
             this.nodeTextView.SetSite(site);
             this.myTreeView.SetSite(site);
             this.model = (XmlCache)this.Site.GetService(typeof(XmlCache));
+            this.delayedActions = (DelayedActions)this.Site.GetService(typeof(DelayedActions));
             if (this.model != null)
             {
                 this.model.FileChanged += new EventHandler(OnFileChanged);
@@ -156,7 +142,7 @@ namespace XmlNotepad
             this.settings = (Settings)this.Site.GetService(typeof(Settings));
             if (this.settings != null)
             {
-                this.settings.Changed += new SettingsEventHandler(settings_Changed);
+                this.settings.Changed += new SettingsEventHandler(OnSettingsChanged);
             }
             if (this.model != null) BindTree();
         }
@@ -1170,31 +1156,38 @@ namespace XmlNotepad
             }
         }
 
-        private void settings_Changed(object sender, string name)
-        {           
-            delayedActions.StartDelayedAction("UpdateSettings", OnSettingsChanged, TimeSpan.FromMilliseconds(100));
-        }
-
-        private void OnSettingsChanged()
+        private void OnSettingsChanged(object sender, string name)
         {
+            bool update = false;
             // change the node colors.
-            var theme = (ColorTheme)this.settings["Theme"];
-            var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-            System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings[colorSetName];
-            Color backColor = (Color)colors["Background"];
-            this.BackColor = backColor;
-            this.myTreeView.BackColor = backColor;
-            this.nodeTextView.BackColor = backColor;
+            if (name == "LightColors" || name == "DarkColors" || name == "Theme")
+            {
+                var theme = (ColorTheme)this.settings["Theme"];
+                var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
+                System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings[colorSetName];
+                Color backColor = (Color)colors["Background"];
+                this.BackColor = backColor;
+                this.myTreeView.BackColor = backColor;
+                this.nodeTextView.BackColor = backColor;
 
-            Color foreColor = (Color)colors["Text"];
-            this.myTreeView.ForeColor = foreColor;
-            this.nodeTextView.ForeColor = foreColor;
+                Color foreColor = (Color)colors["Text"];
+                this.myTreeView.ForeColor = foreColor;
+                this.nodeTextView.ForeColor = foreColor;
+                update = true;
+            }
 
-            this.Font = (Font)this.settings["Font"];
+            if (name == "Font")
+            {
+                this.Font = (Font)this.settings["Font"];
+                update = true;
+            }
 
-            this.myTreeView.BeginUpdate();
-            InvalidateNodes(this.myTreeView.Nodes); // force nodes to pick up new colors.
-            this.myTreeView.EndUpdate();
+            if (update)
+            {
+                this.myTreeView.BeginUpdate();
+                InvalidateNodes(this.myTreeView.Nodes); // force nodes to pick up new colors.
+                this.myTreeView.EndUpdate();
+            }
         }
 
         void InvalidateNodes(TreeNodeCollection nodes)
