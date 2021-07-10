@@ -31,6 +31,7 @@ namespace XmlNotepad
         IIntellisenseProvider ip;
         OpenFileDialog od;
         WebProxyService proxyService;
+        bool loading;
         bool firstActivate = true;
         int batch;
         bool includesExpanded;
@@ -2637,41 +2638,54 @@ namespace XmlNotepad
 
         public virtual void LoadConfig() {
             string path = null;
-            if (this.args != null && this.args.Length > 0) {
-                // When user passes arguments we skip the config file
-                // This is for unit testing where we need consistent config!
-                path = this.args[0];
-                this.settings.FileName = this.ConfigFile;
-            } else {
-                // allow user to have a local settings file (xcopy deployable).
-                path = this.LocalConfigFile;
-                if (!File.Exists(path))
+            try
+            {
+                this.loading = true;
+                if (this.args != null && this.args.Length > 0)
                 {
-                    path = this.ConfigFile;
+                    // When user passes arguments we skip the config file
+                    // This is for unit testing where we need consistent config!
+                    path = this.args[0];
+                    this.settings.FileName = this.ConfigFile;
                 }
-
-                if (File.Exists(path)) {
-                    settings.Load(path);
-
-                    UserSettings.AddDefaultColors(settings, "LightColors", ColorTheme.Light);
-                    UserSettings.AddDefaultColors(settings, "DarkColors", ColorTheme.Dark);
-
-                    string newLines = (string)this.settings["NewLineChars"];
-
-                    Uri location = (Uri)this.settings["FileName"];
-                    // Load up the last file we were editing before - if it is local and still exists.
-                    if (location != null && location.OriginalString != "/" && location.IsFile && File.Exists(location.LocalPath)) {
-                        path = location.LocalPath;
+                else
+                {
+                    // allow user to have a local settings file (xcopy deployable).
+                    path = this.LocalConfigFile;
+                    if (!File.Exists(path))
+                    {
+                        path = this.ConfigFile;
                     }
 
-                    string updates = (string)this.settings["UpdateLocation"];
-                    if (string.IsNullOrEmpty(updates) ||
-                        updates.Contains("download.microsoft.com") ||
-                        updates.Contains("lovettsoftware.com"))
+                    if (File.Exists(path))
                     {
-                        this.settings["UpdateLocation"] = UserSettings.DefaultUpdateLocation;
-                    }                    
+                        settings.Load(path);
+
+                        UserSettings.AddDefaultColors(settings, "LightColors", ColorTheme.Light);
+                        UserSettings.AddDefaultColors(settings, "DarkColors", ColorTheme.Dark);
+
+                        string newLines = (string)this.settings["NewLineChars"];
+
+                        Uri location = (Uri)this.settings["FileName"];
+                        // Load up the last file we were editing before - if it is local and still exists.
+                        if (location != null && location.OriginalString != "/" && location.IsFile && File.Exists(location.LocalPath))
+                        {
+                            path = location.LocalPath;
+                        }
+
+                        string updates = (string)this.settings["UpdateLocation"];
+                        if (string.IsNullOrEmpty(updates) ||
+                            updates.Contains("download.microsoft.com") ||
+                            updates.Contains("lovettsoftware.com"))
+                        {
+                            this.settings["UpdateLocation"] = UserSettings.DefaultUpdateLocation;
+                        }
+                    }
                 }
+            } 
+            finally
+            {
+                this.loading = false;
             }
 
             CheckAnalytics();
@@ -2765,12 +2779,17 @@ namespace XmlNotepad
                     this.settings.Reload(); // just do it!!                    
                     break;
                 case "WindowBounds":
-                    Rectangle r = (Rectangle)this.settings["WindowBounds"];
-                    if (!r.IsEmpty) {
-                        Screen s = Screen.FromRectangle(r);
-                        if (s.Bounds.Contains(r)) {
-                            this.Bounds = r;
-                            this.StartPosition = FormStartPosition.Manual;
+                    if (this.loading)
+                    {
+                        Rectangle r = (Rectangle)this.settings["WindowBounds"];
+                        if (!r.IsEmpty)
+                        {
+                            Screen s = Screen.FromRectangle(r);
+                            if (s.Bounds.Contains(r))
+                            {
+                                this.Bounds = r;
+                                this.StartPosition = FormStartPosition.Manual;
+                            }
                         }
                     }
                     break;

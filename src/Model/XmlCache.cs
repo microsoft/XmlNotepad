@@ -425,10 +425,10 @@ namespace XmlNotepad
 
         void StartReload()
         {
-            // Apart from retrying, the timer has the nice side effect of also 
-            // collapsing multiple file system events into one timer event.
+            // Apart from retrying, the DelayedActions has the nice side effect of also 
+            // collapsing multiple file system events into one action callback.
             retries = 3;
-            actions.StartDelayedAction("reload", Reload, TimeSpan.FromSeconds(1));
+            actions.StartDelayedAction("reload", CheckReload, TimeSpan.FromSeconds(1));
         }
 
         DateTime LastModTime {
@@ -438,7 +438,7 @@ namespace XmlNotepad
             }
         }
 
-        void Reload(object sender, EventArgs e)
+        void CheckReload()
         {
             try
             {

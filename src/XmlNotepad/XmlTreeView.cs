@@ -132,6 +132,12 @@ namespace XmlNotepad
             base.Site = site;
             this.nodeTextView.SetSite(site);
             this.myTreeView.SetSite(site);
+
+            // register our customer builders
+            this.IntellisenseProvider.RegisterBuilder("XmlNotepad.ColorBuilder", typeof(ColorBuilder));
+            this.IntellisenseProvider.RegisterBuilder("XmlNotepad.UriBuilder", typeof(UriBuilder));
+            this.IntellisenseProvider.RegisterEditor("XmlNotepad.DateTimeEditor", typeof(DateTimeEditor));
+
             this.model = (XmlCache)this.Site.GetService(typeof(XmlCache));
             this.delayedActions = (DelayedActions)this.Site.GetService(typeof(DelayedActions));
             if (this.model != null)

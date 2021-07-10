@@ -916,7 +916,8 @@ namespace UnitTests {
             SetTreeViewWidth(290);
 
             Trace.WriteLine("TestDialogs==========================================================");
-            var w = LaunchNotepad();
+            string testFile = TestDir + "UnitTests\\supply.xml";
+            var w = LaunchNotepad(testFile);
 
             // About...
             Trace.WriteLine("About...");
@@ -931,23 +932,6 @@ namespace UnitTests {
             w.InvokeAsyncMenuItem("statusBarToolStripMenuItem");
             Sleep(500);
 
-            // open bad file.            
-            Trace.WriteLine("open bad file");
-            w.InvokeAsyncMenuItem("openToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes(TestDir + "UnitTests\\bad.xml{ENTER}");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes("%Y");
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("%{F4}");
-
-            // Test OpenFileDialog
-            Trace.WriteLine("OpenFileDialog");
-            w.InvokeAsyncMenuItem("openToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes(TestDir + "UnitTests\\supply.xml");
-            popup.DismissPopUp("{ENTER}");
-
             Trace.WriteLine("Test long line wrap message.");
             w.InvokeAsyncMenuItem("findToolStripMenuItem");
             popup = w.WaitForPopup();
@@ -960,7 +944,8 @@ namespace UnitTests {
             popup.DismissPopUp("{ESC}");
 
             this.TreeView.SetFocus();
-            w.SendKeystrokes("{TAB}{ENTER}");
+            w.SendKeystrokes("{TAB}");
+
             popup = w.WaitForPopup();
             popup.DismissPopUp("{ENTER}");
             w.SendKeystrokes("{ENTER}");
@@ -979,37 +964,6 @@ namespace UnitTests {
             w.SendKeystrokes("{F1}");
             popup = w.WaitForPopup();
             popup.DismissPopUp("%{F4}");
-            
-            // Test reload - discard changes
-            Trace.WriteLine("Reload- discard changes");
-            w.InvokeAsyncMenuItem("reloadToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("{ENTER}");
-
-            // Save As...
-            Trace.WriteLine("Save As..."); 
-            string outFile = TestDir + "UnitTests\\out.xml";
-            WipeFile(outFile);
-            w.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes("out.xml");
-            popup.DismissPopUp("{ENTER}");
-
-            // Check save read only
-            Trace.WriteLine("Check save read only.");
-            File.SetAttributes(outFile, File.GetAttributes(outFile) | FileAttributes.ReadOnly);
-            w.InvokeAsyncMenuItem("saveToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("%Y");
-            Sleep(2000); // let file system settle down...
-            
-            // Test "reload" message box.
-            Trace.WriteLine("File has changed on disk, do you want to reload?");
-            File.SetLastWriteTime(outFile, DateTime.Now);
-            Sleep(2000); // now takes 2 seconds for this to show up.
-
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("%Y"); // reload!
             
             // Window/NewWindow!
             Trace.WriteLine("Window/NewWindow");
@@ -1045,8 +999,80 @@ namespace UnitTests {
             popup = w.WaitForPopup();
             popup.DismissPopUp("{ENTER}");
             w.SendKeystrokes("{ESC}");
-            Undo();
-            
+            Undo();            
+        }
+
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestSaveLoad()
+        {
+            // ensure we get a horizontal scroll bar on the supply.xml file.
+            SetTreeViewWidth(290);
+
+            Trace.WriteLine("TestDialogs==========================================================");
+            var w = LaunchNotepad();
+
+            // open bad file.            
+            Trace.WriteLine("open bad file");
+            w.InvokeAsyncMenuItem("openToolStripMenuItem");
+            Window popup = w.WaitForPopup();
+            popup.SendKeystrokes(TestDir + "UnitTests\\bad.xml{ENTER}");
+            popup = w.WaitForPopup();
+            popup.SendKeystrokes("%Y");
+            popup = w.WaitForPopup();
+            popup.DismissPopUp("%{F4}");
+
+            // Test OpenFileDialog
+            Trace.WriteLine("OpenFileDialog");
+            w.InvokeAsyncMenuItem("openToolStripMenuItem");
+            popup = w.WaitForPopup();
+            popup.SendKeystrokes(TestDir + "UnitTests\\supply.xml");
+            popup.DismissPopUp("{ENTER}");
+
+            // make an edit.
+            this.TreeView.SetFocus();
+            w.SendKeystrokes("{END}{RIGHT}{DOWN}{DOWN}{ENTER}");
+            Sleep(100);
+            w.SendKeystrokes("FooBar{ENTER}");
+
+            // Test reload - discard changes
+            Trace.WriteLine("Reload- discard changes");
+            w.InvokeAsyncMenuItem("reloadToolStripMenuItem");
+            popup = w.WaitForPopup();
+            popup.DismissPopUp("{ENTER}");
+
+            // Save As...
+            Trace.WriteLine("Save As...");
+            string outFile = TestDir + "UnitTests\\out.xml";
+            WipeFile(outFile);
+            w.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
+            popup = w.WaitForPopup();
+            popup.SendKeystrokes("out.xml");
+            popup.DismissPopUp("{ENTER}");
+
+            // Check save read only
+            Trace.WriteLine("Check save read only.");
+            File.SetAttributes(outFile, File.GetAttributes(outFile) | FileAttributes.ReadOnly);
+            w.InvokeAsyncMenuItem("saveToolStripMenuItem");
+            popup = w.WaitForPopup();
+            popup.DismissPopUp("%Y");
+            Sleep(2000); // let file system settle down...
+
+            // Test "reload" message box.
+            Trace.WriteLine("File has changed on disk, do you want to reload?");
+            File.SetLastWriteTime(outFile, DateTime.Now);
+            Sleep(2000); // now takes 2 seconds for this to show up.
+
+            popup = w.WaitForPopup();
+            popup.DismissPopUp("%Y"); // reload!
+
+            // make document dirty again
+            this.TreeView.SetFocus();
+            w.SendKeystrokes("{END}{RIGHT}{DOWN}{DOWN}{ENTER}");
+            Sleep(100);
+            w.SendKeystrokes("FooBar{ENTER}");
+
             // Save changes on exit?
             Trace.WriteLine("Save changes on exit - cancel");
             w.InvokeAsyncMenuItem("exitToolStripMenuItem");
@@ -1062,13 +1088,12 @@ namespace UnitTests {
             Sleep(1000);
 
             Trace.WriteLine("Save changes on 'exit' - yes!");
-            CheckNodeName("Header");
+            CheckNodeName("FooBar");
             w.InvokeAsyncMenuItem("exitToolStripMenuItem");
             popup = w.WaitForPopup();
 
             // save the changes!
             popup.SendKeystrokes("%Y");
-
         }
 
         [TestMethod]

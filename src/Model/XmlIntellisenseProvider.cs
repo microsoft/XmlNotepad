@@ -9,7 +9,7 @@ using System.IO;
 
 namespace XmlNotepad {
     public class XmlIntellisenseProvider : IIntellisenseProvider, IDisposable {
-        Hashtable typeCache = new Hashtable();
+        Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
         XmlCache model;
         IXmlTreeNode node;
         XmlNode xn;
@@ -248,13 +248,24 @@ namespace XmlNotepad {
             }
         }
 
+        public void RegisterBuilder(string name, Type t)
+        {
+            typeCache[name] = t;
+        }
+
+        public void RegisterEditor(string name, Type t)
+        {
+            typeCache[name] = t;
+        }
+
         object ConstructType(string typeName) {
             // Cache the objects so they can preserve user state.
-            if (typeCache.ContainsKey(typeName))
-                return typeCache[typeName];
-
-            Type t = Type.GetType(typeName);
-            if (t == null) {
+            if (!typeCache.TryGetValue(typeName, out Type t)) {
+                // see if it is built in.
+                t = Type.GetType(typeName);
+            }
+            
+            if (t == null) { 
                 // perhaps there's an associated assembly we need to load.
                 string assembly = GetIntellisenseAttribute("assembly");
                 if (!string.IsNullOrEmpty(assembly)) {
@@ -284,7 +295,7 @@ namespace XmlNotepad {
                 if (ci != null) {
                     object result = ci.Invoke(new Object[0]);
                     if (result != null) {
-                        typeCache[typeName] = result;
+                        typeCache[typeName] = t;
                         return result;
                     }
                 }
@@ -353,13 +364,7 @@ namespace XmlNotepad {
         #endregion
 
         protected virtual void Dispose(bool disposing) {
-            if (this.typeCache != null) {
-                foreach (object value in this.typeCache.Values) {
-                    IDisposable d = value as IDisposable;
-                    if (d != null) d.Dispose();
-                }
-                this.typeCache = null;
-            }
+            this.typeCache.Clear();
         }
     }
 

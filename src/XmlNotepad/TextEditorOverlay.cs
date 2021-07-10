@@ -398,10 +398,19 @@ namespace XmlNotepad
                     this.currentEditor.KeyDown -= new KeyEventHandler(editor_KeyDown);
                     this.currentEditor.LostFocus -= new EventHandler(editor_LostFocus);
                     this.currentEditor = this.textEditor;
-                    this.editor = null;
+                    DisposeEditor();
                 }
                 if (wasFocused) this.parent.Focus();
             }
+        }
+
+        private void DisposeEditor()
+        {
+            if (this.editor is IDisposable d)
+            {
+                d.Dispose();
+            }
+            this.editor = null;
         }
 
         public void Dispose() {
@@ -421,8 +430,8 @@ namespace XmlNotepad
                 this.cset.Dispose();
                 this.cset = null;
             }
-            // do NOT dispose this guy, it's owned by someone else.
-            this.editor = null;
+
+            DisposeEditor();
         }
     }
 

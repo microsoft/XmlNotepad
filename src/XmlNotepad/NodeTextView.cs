@@ -116,7 +116,9 @@ namespace XmlNotepad
 
         [System.ComponentModel.Browsable(false)]
         public IIntellisenseProvider IntellisenseProvider {
-            get { return (IIntellisenseProvider)this.Site.GetService(typeof(IIntellisenseProvider)); }
+            get { 
+                return (IIntellisenseProvider)this.Site.GetService(typeof(IIntellisenseProvider)); 
+            }
         }
 
         public void SetSite(ISite site) {

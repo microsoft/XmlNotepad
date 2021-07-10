@@ -26,6 +26,8 @@ namespace XmlNotepad {
         IIntellisenseList GetExpectedValues();
         IXmlBuilder Builder { get; }
         IXmlEditor Editor { get; }
+        void RegisterBuilder(string name, Type t);
+        void RegisterEditor(string name, Type t);
     }
 
     public interface IIntellisenseList {

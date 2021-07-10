@@ -158,7 +158,7 @@ namespace XmlNotepad
                     this.comboBoxFind.Items.RemoveAt(0);
                 }
             }
-
+                
             lastFlags = flags;
             lastExpression = expr;
 
@@ -428,7 +428,7 @@ namespace XmlNotepad
             if (!e.Handled) {
                 base.OnKeyDown(e);
             }
-        }
+            }
 
         void comboBoxFind_KeyDown(object sender, KeyEventArgs e) {
             HandleKeyDown(e);
