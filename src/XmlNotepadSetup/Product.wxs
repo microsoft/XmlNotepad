@@ -275,7 +275,7 @@
       <ComponentRef Id="XmlNotepad.exe.manifest" />
       <ComponentRef Id="XmlNotepad.exe.config" />
       <ComponentRef Id="Microsoft.XmlNotepad.dll" />
-      <ComponentRef Id="XmlNotepad.Model.dll"/>
+      <ComponentRef Id="XmlNotepad.Model.dll" />
       <ComponentRef Id="Microsoft.mshtml.dll" />
       <ComponentRef Id="XmlDiffPatch.dll" />
       <ComponentRef Id="XmlDiffPatch.View.dll" />

@@ -13,7 +13,7 @@ namespace XmlNotepad
                     key.SetValue("XmlNotepad.xmlfile", "");
                 }
 
-                using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\XmlNotepad.xmlfile\shell\open\command"))
+                using (var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Classes\XmlNotepad.xmlfile\shell\open\command", true))
                 {
                     var cmd = "\"" + executablePath + "\" \"%1\"";
                     key.SetValue("", cmd);
