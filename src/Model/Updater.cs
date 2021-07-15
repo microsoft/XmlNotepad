@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net;
 using System.IO;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace XmlNotepad
 {
@@ -142,7 +143,7 @@ namespace XmlNotepad
             }
         }
 
-        void OnTimerTick()
+        async void OnTimerTick()
         {
             if (this.updateUri == null)
             {
@@ -152,18 +153,20 @@ namespace XmlNotepad
               this.updateFrequency == TimeSpan.MaxValue ||
               this.lastCheck + this.updateFrequency < DateTime.Now)
             {
-                Task.Run(CheckForUpdate);
+                bool update = await CheckForUpdate();
+                FireUpdate(update);
             }
         }
 
         bool busy;
 
-        void CheckForUpdate()
+        async Task<bool> CheckForUpdate(bool retry = true)
         {
             if (busy)
             {
-                return;
+                return false;
             }
+            bool update = false;
             busy = true;
             if (this.updateUri != null)
             {
@@ -178,7 +181,7 @@ namespace XmlNotepad
                     this.req = wr;
                     wr.Credentials = CredentialCache.DefaultCredentials;
                     wr.Proxy = WebRequest.DefaultWebProxy;
-                    WebResponse r = wr.GetResponse();
+                    WebResponse r = await wr.GetResponseAsync();
                     XmlDocument doc = null;
                     using (Stream s = r.GetResponseStream())
                     {
@@ -187,7 +190,7 @@ namespace XmlNotepad
                     }
                     if (!this.disposed)
                     {
-                        ProcessUpdate(doc);
+                        update = ProcessUpdate(doc);
                     }
 
                 }
@@ -195,7 +198,7 @@ namespace XmlNotepad
                 {
                     // try again in a bit...
                     this.retryCount++;
-                    if (this.retryCount < MaxRetries)
+                    if (retry && this.retryCount < MaxRetries)
                     {
                         StartTimer();
                     }
@@ -206,6 +209,7 @@ namespace XmlNotepad
                 }
             }
             busy = false;
+            return update;
         }
 
         void Bootstrap()
@@ -230,7 +234,7 @@ namespace XmlNotepad
             }
         }
 
-        void ProcessUpdate(XmlDocument doc)
+        bool ProcessUpdate(XmlDocument doc)
         {
             Version v = GetType().Assembly.GetName().Version;
             string ver = v.ToString();
@@ -245,7 +249,7 @@ namespace XmlNotepad
                     {
                         string location = uri.IsFile ? uri.LocalPath : uri.AbsoluteUri;
                         SetUpdateLocation(location);
-                        return; // page has been moved - start over!
+                        return false; // page has been moved - start over!
                     }
                 }
                 catch (Exception e)
@@ -301,7 +305,7 @@ namespace XmlNotepad
                 }
             }
 
-            FireUpdate(newVersion);
+            return newVersion;
         }
 
         public void FireUpdate(bool newVersion)
@@ -334,13 +338,14 @@ namespace XmlNotepad
             }
         }
 
-        public void CheckNow()
+        public async Task<bool> CheckNow()
         {
             StopTimer();
             if (this.updateUri != null)
             {
-                Task.Run(CheckForUpdate);
+                return await CheckForUpdate(false);
             }
+            return false;
         }
     }
 }

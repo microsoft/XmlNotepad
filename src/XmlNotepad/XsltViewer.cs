@@ -33,11 +33,15 @@ namespace XmlNotepad
             this.OutputFileName.KeyDown += new KeyEventHandler(OnOutputFileNameKeyDown);
 
             this.xsltControl.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
-            this.xsltControl.DisableOutputFile = false;
 
             TransformButton.SizeChanged += TransformButton_SizeChanged;
 
             xsltControl.LoadCompleted += OnXsltLoadCompleted;
+        }
+
+        public void OnClosed()
+        {
+            this.xsltControl.OnClosed();
         }
 
         private void OnXsltLoadCompleted(object sender, PerformanceInfo info)
@@ -93,7 +97,7 @@ namespace XmlNotepad
             string filename = this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);
             if (!string.IsNullOrEmpty(filename))
             {
-                this.OutputFileName.Text = MakeRelative(filename);
+                // this.OutputFileName.Text = MakeRelative(filename);
             }
         }
 

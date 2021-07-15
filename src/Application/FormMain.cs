@@ -215,7 +215,6 @@ namespace XmlNotepad
         private ToolStripMenuItem sampleToolStripMenuItem;
         private ToolStripMenuItem changeToElementContextMenuItem;
         private StatusStrip statusStrip1;
-        private StatusStrip statusStrip2;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private string redoLabel;
 
@@ -271,7 +270,6 @@ namespace XmlNotepad
 
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DynamicHelp.xslt";
             this.dynamicHelpViewer.DisableOutputFile = true;
-
             model.FileChanged += new EventHandler(OnFileChanged);
             model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
 
@@ -653,6 +651,7 @@ namespace XmlNotepad
 
         protected override void OnClosing(CancelEventArgs e) {
             this.xmlTreeView1.Commit();
+            this.xsltViewer.OnClosed();
             if (this.model.Dirty){
                 SelectTreeView();
                 DialogResult rc = MessageBox.Show(this, SR.SaveChangesPrompt, SR.SaveChangesCaption, 
@@ -696,7 +695,7 @@ namespace XmlNotepad
             Size s = this.ClientSize;
             int w = s.Width;
             int h = s.Height;
-            this.toolStrip1.Size = new Size(w, 24);
+            this.toolStrip1.Size = new Size(w, this.toolStrip1.Size.Height);
             int top = this.toolStrip1.Bottom;
             int sbHeight = 0;
             if (this.statusStrip1.Visible) {
@@ -992,7 +991,6 @@ namespace XmlNotepad
             this.taskList = new XmlNotepad.TaskList();
             this.dynamicHelpViewer = new XmlNotepad.XsltControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusStrip2 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenu1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -1000,7 +998,7 @@ namespace XmlNotepad
             this.tabControlViews.SuspendLayout();
             this.tabPageTreeView.SuspendLayout();
             this.tabPageHtmlView.SuspendLayout();
-            this.statusStrip2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // changeToElementContextMenuItem
@@ -2173,22 +2171,16 @@ namespace XmlNotepad
             resources.ApplyResources(this.dynamicHelpViewer, "dynamicHelpViewer");
             this.dynamicHelpViewer.BaseUri = null;
             this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
-            this.dynamicHelpViewer.DisableOutputFile = true;
             this.dynamicHelpViewer.IgnoreDTD = false;
             this.dynamicHelpViewer.Name = "dynamicHelpViewer";
             this.helpProvider1.SetShowHelp(this.dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
             resources.ApplyResources(this.statusStrip1, "statusStrip1");
             this.statusStrip1.Name = "statusStrip1";
-            // 
-            // statusStrip2
-            // 
-            this.statusStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
-            resources.ApplyResources(this.statusStrip2, "statusStrip2");
-            this.statusStrip2.Name = "statusStrip2";
             // 
             // toolStripStatusLabel1
             // 
@@ -2198,8 +2190,7 @@ namespace XmlNotepad
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.Controls.Add(this.statusStrip2);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;            
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.comboBoxLocation);
             this.Controls.Add(this.tabControlViews);
@@ -2217,23 +2208,30 @@ namespace XmlNotepad
             this.tabControlViews.ResumeLayout(false);
             this.tabPageTreeView.ResumeLayout(false);
             this.tabPageHtmlView.ResumeLayout(false);
-            this.statusStrip2.ResumeLayout(false);
-            this.statusStrip2.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         const string HideUpdateButtonAction = "HideUpdateButton";
 
-        private void checkUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void checkUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.delayedActions.CancelDelayedAction(HideUpdateButtonAction);
-            this.updater.CheckNow();
+            ShowStatus("Checking for updates...");
+            bool update = await this.updater.CheckNow();
+            OnUpdateRequired(this, update);
+            string line = this.toolStripMenuItemUpdate.Text.Split('\r')[0];
+            ShowStatus(line);
         }
 
         protected virtual void TabControlViews_Selected(object sender, NoBorderTabControlEventArgs e) {
             if (e.TabPage == this.tabPageHtmlView) {
                 this.DisplayXsltResults();
+            } else
+            {
+                this.xsltViewer.OnClosed(); // good time to cleanup temp files.
             }
         }
 
@@ -2691,9 +2689,11 @@ namespace XmlNotepad
             CheckAnalytics();
         }
 
+        public bool AllowAnalytics { get; set; }
+
         private void CheckAnalytics()
         {
-            if ((string)this.Settings["AnalyticsClientId"] == "")
+            if ((string)this.Settings["AnalyticsClientId"] == "" && AllowAnalytics)
             {
                 // have not yet asked for permission!                
                 this.Settings["AnalyticsClientId"] = Guid.NewGuid().ToString();
@@ -2709,7 +2709,7 @@ namespace XmlNotepad
                 }
             }
 
-            analytics = new Analytics((string)this.Settings["AnalyticsClientId"], (bool)this.Settings["AllowAnalytics"]);
+            analytics = new Analytics((string)this.Settings["AnalyticsClientId"], (bool)this.Settings["AllowAnalytics"] && this.AllowAnalytics);
             analytics.RecordAppLaunched();
         }
 

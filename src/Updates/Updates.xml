@@ -9,6 +9,12 @@
 		<history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
 		<frequency>1.00:00:00</frequency>
 	</application>
+  <version number="2.8.0.38">
+    <bug>
+      Fix bug in rendering large documents using default stylesheet.
+      Fix layout bug of toolbar on high DPI screens.      
+    </bug>
+  </version>
   <version number="2.8.0.36">
     <bug>
       Fix bug in support for non webview2 case.

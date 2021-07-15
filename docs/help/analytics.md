@@ -20,12 +20,19 @@ be prompted again. Analytics can be enabled or disabled any time using the `Allo
 in the [Options dialog](options.md).
 
 If you want to disable analytics before installing XML Notepad (perhaps in an enterprise wide
-distribution) then you can create this file before running the installer:
+distribution) then you can set this environment system wide on the end user's machine:
+
+```
+set XML_NOTEPAD_DISABLE_ANALYTICS=1
+```
+
+You can also disable the Analytics UI option from appearing in the [Options dialog](options.md)
+by setting the `AnalyticsClientId` to disabled in the default XmlNotepad.settings file located here:
 
 ```
 %LOCALAPPDATA%\Microsoft\Xml Notepad\XmlNotepad.settings
 ```
-containing the following:
+as follows:
 ```xml
 <Settings>
   <AnalyticsClientId>disabled</AnalyticsClientId>
@@ -33,6 +40,4 @@ containing the following:
 </Settings>
 ```
 
-This will disable analytics and avoid the first time prompt. The `disabled` option here for
-`AnalyticsClientId` causes the `Analytics` option in the Options Dialog to be hidden so the user
-cannot enable analytics later.
+This ensures the user cannot enable analytics after starting XML notepad.

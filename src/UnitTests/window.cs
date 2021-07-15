@@ -531,11 +531,18 @@ namespace UnitTests
             disposed = true;
             if (p != null && !p.HasExited)
             {
-                this.Close();
-                Sleep(1000);
+                for (int i = 0; i < 5; i++)
+                {
+                    this.Close();
+                    Sleep(500);
+                    if (p.HasExited)
+                    {
+                        break;
+                    }
+                }
                 if (!p.HasExited)
                 {
-                    p.Kill();
+                    throw new Exception("Application is not terminating!");
                 }
             }
         }

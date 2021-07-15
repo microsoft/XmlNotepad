@@ -29,11 +29,7 @@ namespace XmlNotepad
         string defaultSSResource = "XmlNotepad.DefaultSS.xslt";
         IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
         bool webInitialized;
-        /// <summary>
-        /// Performs in-memory xslt transform only.  Note that file based transforms
-        /// work better if you want local includes to work with that file (css, images, etc).
-        /// </summary>
-        public bool DisableOutputFile { get; set; }
+        string tempFile;
 
         public XsltControl()
         {
@@ -42,6 +38,30 @@ namespace XmlNotepad
             resolver = new XmlUrlResolver();
             this.webBrowser2.CoreWebView2InitializationCompleted += OnCoreWebView2InitializationCompleted;
             this.Load += XsltControl_Load;
+        }
+
+        /// <summary>
+        /// Performs in-memory xslt transform only.  Note that file based transforms
+        /// work better if you want local includes to work with that file (css, images, etc).
+        /// </summary>
+        public bool DisableOutputFile { get; set; }
+
+        public void OnClosed()
+        {
+            CleanupTempFile();
+        }
+
+        void CleanupTempFile() 
+        { 
+            if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
+            {
+                try
+                {
+                    File.Delete(tempFile);
+                }
+                catch { }
+            }
+            this.tempFile = null;
         }
 
         private async void XsltControl_Load(object sender, EventArgs e)
@@ -81,14 +101,24 @@ namespace XmlNotepad
             if (this.webBrowser2.CoreWebView2 != null)
             {
                 this.webBrowser2.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
+                this.webBrowser2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
                 this.webBrowser2.Visible = true;
                 this.webBrowser1.Visible = false;
+                this.webBrowser2.ZoomFactor = 1.25;
             }
             else
             {
                 WebBrowserFallback();
             }
             webInitialized = true;
+        }
+
+        private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (!e.IsSuccess && !DisableOutputFile)
+            {
+                Debug.WriteLine(e.WebErrorStatus);
+            }
         }
 
         void WebBrowserFallback()
@@ -125,7 +155,15 @@ namespace XmlNotepad
             }
             else
             {
-                this.webBrowser2.Source = new Uri(filename);
+                var uri = new Uri(filename);
+                if (this.webBrowser2.Source == uri)
+                {
+                    this.webBrowser2.Reload();
+                }
+                else
+                {
+                    this.webBrowser2.Source = uri;
+                }
             }
         }
 
@@ -147,6 +185,7 @@ namespace XmlNotepad
 
         private void Display(string content)
         {
+            CleanupTempFile();
             if (content != this.html && webInitialized)
             {
                 urlWatch.Reset();
@@ -157,6 +196,11 @@ namespace XmlNotepad
                 }
                 else
                 {
+                    if (content.Length > 1000000)
+                    {
+                        content = content.Substring(0, 1000000) + "<h1>content truncated...";
+                    }
+                    // this has a 1mb limit for some unknown reason.
                     this.webBrowser2.NavigateToString(content);
                 }
                 this.html = content;
@@ -187,6 +231,7 @@ namespace XmlNotepad
         /// <returns>The output file name or null if DisableOutputFile is true</returns>
         public string DisplayXsltResults(XmlDocument context, string xsltfilename, string outpath = null)
         {
+            this.CleanupTempFile();
             Uri resolved = null;
             try
             {
@@ -218,21 +263,31 @@ namespace XmlNotepad
                     transform = xslt;
                 }
 
-                if (string.IsNullOrEmpty(outpath) && !DisableOutputFile)
+                if (string.IsNullOrEmpty(outpath))
                 {
-                    if (!string.IsNullOrEmpty(xsltfilename))
+                    if (!DisableOutputFile)
                     {
-                        // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
-                        // XslCompiledTransform doesn't give us that so we need to get it outselves.
+                        if (!string.IsNullOrEmpty(xsltfilename))
+                        {
+                            // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
+                            // XslCompiledTransform doesn't give us that so we need to get it outselves.
 
-                        var ext = GetDefaultOutputExtension();
-                        outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
+                            var ext = GetDefaultOutputExtension();
+                            outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
 
-                        var safeUri = GetWritableBaseUri(outpath);
-                        outpath = new Uri(safeUri, outpath).LocalPath;
+                            var safeUri = GetWritableBaseUri(outpath);
+                            this.tempFile = outpath;
+                        }
+                        else
+                        {
+                            // default stylesheet produces html
+                            var safeUri = new Uri(Path.GetTempPath());
+                            outpath = new Uri(safeUri, "xmlnotepaddefaultoutput.htm").LocalPath;
+                            this.tempFile = outpath;
+                        }
                     }
                 }
-                else if (!string.IsNullOrEmpty(outpath))
+                else
                 {
                     outpath = new Uri(baseUri, outpath).LocalPath;
                 }
@@ -243,8 +298,9 @@ namespace XmlNotepad
                     settings.XmlResolver = new XmlProxyResolver(this.site);
                     settings.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
                     var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri);
-                    if (DisableOutputFile || string.IsNullOrEmpty(outpath))
+                    if (string.IsNullOrEmpty(outpath))
                     {
+
                         StringWriter writer = new StringWriter();
                         transform.Transform(xmlReader, null, writer);
                         this.xsltUri = resolved;

@@ -16,16 +16,13 @@
     <StartupObject>XmlNotepad.Program</StartupObject>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MyKeyFile)</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <FileUpgradeFlags></FileUpgradeFlags>
+    <UpgradeBackupLocation></UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
     <PublishUrl>d:\git\lovettchris\XmlNotepad\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -44,8 +41,6 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>readme.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>35</ApplicationRevision>
-    <ApplicationVersion>2.8.0.35</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -148,8 +143,7 @@
     <Compile Include="FormSearch.Designer.cs">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs">
-    </Compile>
+    <Compile Include="Program.cs"></Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Resources\XmlReportStyles.css" />
     <EmbeddedResource Include="FormAbout.resx">
@@ -278,80 +272,64 @@
   <ItemGroup>
     <PublishFile Include="Samples\basket.xml">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\basket.xsd">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xml">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xsd">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Hamlet.xml">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rss.xml">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rsspretty.xsl">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\willy.xsl">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
@@ -380,7 +358,7 @@
     <PreBuildEvent>copy "$(SolutionDir)\FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="SyncVersionsTarget">
-    <SyncVersions MasterVersionFile="$(SolutionDir)Version\Version.props" CSharpVersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" />
+    <SyncVersions MasterVersionFile="$(SolutionDir)Version\Version.props" CSharpVersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" ApplicationProjectFile="$(ProjectPath)" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" />
   </Target>
   <PropertyGroup>
     <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncVersionsTarget</CoreBuildDependsOn>

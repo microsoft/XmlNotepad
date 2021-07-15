@@ -870,7 +870,7 @@ namespace UnitTests {
                 Sleep(333); // so we can see it!
             }
 
-            popup.SendKeystrokes("%O");            
+            popup.DismissPopUp("%O");
             bool passed = true;
 
             // Close the app.
@@ -896,7 +896,27 @@ namespace UnitTests {
             }
 
             // restore the original settings.
-            File.Copy(backupSettings, originalSettings, true);
+            bool ok = false;
+            for (int i = 5; i > 0; i--)
+            {
+                try
+                {
+                    File.Copy(backupSettings, originalSettings, true);
+                    ok = true;
+                    break;
+                }
+                catch (Exception)
+                {
+                    i--;
+                }
+            }
+
+            if (!ok)
+            {
+                throw new ApplicationException("Why is this file '" + originalSettings + "' still locked ?");
+            }
+            
+
             DeleteFile(backupSettings);
 
             if (!passed) {

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.36" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
+  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.38" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallFinalize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
     <MediaTemplate />
@@ -32,6 +32,9 @@
       </Component>
       <Component Id="Microsoft.XmlNotepad.dll" Guid="5F934F76-70C8-4BFE-AA5A-05DC5AAB838C">
         <File Id="Microsoft.XmlNotepad.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="XmlNotepad.Model.dll" Guid="b3f2fe58-5137-4646-bd24-191e2e73f5d3">
+        <File Id="XmlNotepad.Model.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="Microsoft.mshtml.dll" Guid="60F2839E-6DC2-4A7E-9B00-AC277FF03E80">
         <File Id="Microsoft.mshtml.dll" KeyPath="yes" Checksum="yes" />
@@ -247,9 +250,6 @@
       <Component Id="willy.xsl" Guid="bece5b74-a8f2-4bfb-a146-6647170f014a">
         <File Id="willy.xsl" KeyPath="yes" />
       </Component>
-      <Component Id="rsspretty_output.htm" Guid="83f4a2fe-70d6-48a8-98d9-2e22dcd6b838">
-        <File Id="rsspretty_output.htm" KeyPath="yes" />
-      </Component>
       <Component Id="rss_output.htm" Guid="549bba71-0c45-401c-8402-cbdb34ca7583">
         <File Id="rss_output.htm" KeyPath="yes" />
       </Component>
@@ -275,6 +275,7 @@
       <ComponentRef Id="XmlNotepad.exe.manifest" />
       <ComponentRef Id="XmlNotepad.exe.config" />
       <ComponentRef Id="Microsoft.XmlNotepad.dll" />
+      <ComponentRef Id="XmlNotepad.Model.dll"/>
       <ComponentRef Id="Microsoft.mshtml.dll" />
       <ComponentRef Id="XmlDiffPatch.dll" />
       <ComponentRef Id="XmlDiffPatch.View.dll" />
@@ -333,7 +334,6 @@
       <ComponentRef Id="rss.xml" />
       <ComponentRef Id="rsspretty.xsl" />
       <ComponentRef Id="willy.xsl" />
-      <ComponentRef Id="rsspretty_output.htm" />
       <ComponentRef Id="rss_output.htm" />
       <ComponentRef Id="willy_output.htm" />
       <ComponentRef Id="foo.htm" />

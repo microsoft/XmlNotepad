@@ -18,6 +18,7 @@ namespace XmlNotepad {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             FormMain form = new FormMain();
+            form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
             form.Show();
             Application.DoEvents();
             foreach(string arg in args){

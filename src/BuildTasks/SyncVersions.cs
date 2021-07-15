@@ -21,6 +21,9 @@ namespace XmlNotepadBuildTasks
         public string WixFile { get; set; }
 
         [Required]
+        public string ApplicationProjectFile { get; set; }
+
+        [Required]
         public string AppManifestFile { get; set; }
 
         [Required]
@@ -59,6 +62,7 @@ namespace XmlNotepadBuildTasks
             bool result = UpdateCSharpVersion(v);
             result &= UpdateWixDoc(v);
             result &= UpdatePackageManifest(v);
+            result &= UpdateApplicationProjectFile(v);
             result &= CheckUpdatesFile(v);
             return result;
         }
@@ -101,6 +105,57 @@ namespace XmlNotepadBuildTasks
             // return that there is no error.
             return true;
         }
+
+        private bool UpdateApplicationProjectFile(Version v)
+        {
+            if (!System.IO.File.Exists(this.ApplicationProjectFile))
+            {
+                Log.LogError("ApplicationProjectFile file not found: " + this.ApplicationProjectFile);
+                return false;
+            }
+            try
+            {
+                bool changed = false;
+                XDocument doc = XDocument.Load(this.ApplicationProjectFile);
+                var ns = doc.Root.Name.Namespace;
+
+                // ClickOnce is wrongly editing the project file to "add" these items, when in reality
+                // they need to be inherited from version.props.
+                List<XElement> toRemove = new List<XElement>();
+                foreach (var e in doc.Root.Elements(ns + "PropertyGroup"))
+                {
+                    foreach (var f in e.Elements(ns + "ApplicationRevision"))
+                    {
+                        toRemove.Add(f);
+                    }
+                    foreach (var f in e.Elements(ns + "ApplicationVersion"))
+                    {
+                        toRemove.Add(f);
+                    }
+                }
+
+                foreach (var e in toRemove)
+                {
+                    e.Remove();
+                    changed = true;
+                }
+
+                if (changed)
+                {
+                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.ApplicationProjectFile);
+                    doc.Save(this.ApplicationProjectFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("file '" + this.AppManifestFile + "' edit failed: " + ex.Message);
+                return false;
+            }
+
+            // return that there is no error.
+            return true;
+        }
+
 
         private bool UpdatePackageManifest(Version v)
         {

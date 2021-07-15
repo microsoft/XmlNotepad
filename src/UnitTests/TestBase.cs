@@ -66,6 +66,7 @@ namespace UnitTests {
             info.FileName = "\"" + exeFileName + "\"";
             info.Arguments = args;
             info.EnvironmentVariables.Add("XML_NOTEPAD_DISABLE_HIGH_DPI", "1");
+            info.EnvironmentVariables.Add("XML_NOTEPAD_DISABLE_ANALYTICS", "1");
             info.UseShellExecute = false;
 
             Process p = new Process();
