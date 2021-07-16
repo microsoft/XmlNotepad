@@ -799,16 +799,65 @@ namespace UnitTests {
             }
         }
 
+        class ResetSettings : IDisposable
+        {
+            string backupSettings;
+            string originalSettings;
+
+            public ResetSettings()
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                originalSettings = System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
+                backupSettings = Path.GetTempPath() + "XmlNotepad.settings";
+                File.Copy(originalSettings, backupSettings, true);
+            }
+
+            public XmlDocument LoadSettings()
+            {
+                XmlDocument doc = new XmlDocument();
+                if (File.Exists(originalSettings))
+                {
+                    doc.Load(originalSettings);
+                }
+                return doc;
+            }
+
+            public void Dispose()
+            {
+                // restore the original settings.
+                bool ok = false;
+                for (int i = 5; i > 0; i--)
+                {
+                    try
+                    {
+                        File.Copy(backupSettings, originalSettings, true);
+                        ok = true;
+                        break;
+                    }
+                    catch (Exception)
+                    {
+                        i--;
+                    }
+                }
+
+                if (!ok)
+                {
+                    throw new ApplicationException("Why is this file '" + originalSettings + "' still locked ?");
+                }
+
+                if (File.Exists(backupSettings))
+                    File.Delete(backupSettings);
+            }
+        }
+
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestOptionsDialog() {
             Trace.WriteLine("TestOptionsDialog==========================================================");
-            
+
             // Save original settings.
-            string originalSettings = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            string backupSettings = Path.GetTempPath() + "XmlNotepad.settings";
-            File.Copy(originalSettings, backupSettings, true);
+            using var rs = new ResetSettings();
 
             var w = LaunchNotepad();
 
@@ -875,54 +924,27 @@ namespace UnitTests {
 
             // Close the app.
             w.Dispose();
-            Sleep(1000); // give it time to write out the new settings.
+
+            Sleep(2000); // give it time to write out the new settings.
 
             // verify persisted colors.
-            if (File.Exists(originalSettings)) {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(originalSettings);
-                for (int i = 0, n = names.Length; i<n; i++){
-                    string ename = names[i];
-                    XmlNode node = doc.SelectSingleNode("Settings/Colors/" + ename);
-                    if (node != null) {
-                        string expected = values[i];
-                        string actual = node.InnerText;
-                        if (expected != actual) {
-                            Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
-                            passed = false;
-                        }
+            XmlDocument doc = rs.LoadSettings();
+            for (int i = 0, n = names.Length; i<n; i++){
+                string ename = names[i];
+                XmlNode node = doc.SelectSingleNode("Settings/Colors/" + ename);
+                if (node != null) {
+                    string expected = values[i];
+                    string actual = node.InnerText;
+                    if (expected != actual) {
+                        Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
+                        passed = false;
                     }
                 }
             }
 
-            // restore the original settings.
-            bool ok = false;
-            for (int i = 5; i > 0; i--)
-            {
-                try
-                {
-                    File.Copy(backupSettings, originalSettings, true);
-                    ok = true;
-                    break;
-                }
-                catch (Exception)
-                {
-                    i--;
-                }
-            }
-
-            if (!ok)
-            {
-                throw new ApplicationException("Why is this file '" + originalSettings + "' still locked ?");
-            }
-            
-
-            DeleteFile(backupSettings);
-
             if (!passed) {
                 throw new ApplicationException("Unexpected colors found in XmlNotepad.settings file.");
             }
-            
         }
 
         [TestMethod]
@@ -939,10 +961,24 @@ namespace UnitTests {
             string testFile = TestDir + "UnitTests\\supply.xml";
             var w = LaunchNotepad(testFile);
 
+            // Window/NewWindow!
+            Trace.WriteLine("Window/NewWindow");
+            w.InvokeAsyncMenuItem("newWindowToolStripMenuItem");
+            Window popup = w.WaitForPopup();
+            Debug.WriteLine("Found popup " + popup.GetWindowText());
+            popup.DismissPopUp("%{F4}"); // close second window!
+
+            if (!Window.GetForegroundWindowText().StartsWith("XML Notepad"))
+            {
+                w.Activate(); // alt-f4 sometimes sends focus to another window (namely, the VS process running this test!)
+                Sleep(500);
+            }
+            Sleep(1000);
+
             // About...
             Trace.WriteLine("About...");
             w.InvokeAsyncMenuItem("aboutXMLNotepadToolStripMenuItem");
-            Window popup = w.WaitForPopup();
+            popup = w.WaitForPopup();
             popup.DismissPopUp("{ENTER}");
 
             // hide/show status bar
@@ -985,18 +1021,6 @@ namespace UnitTests {
             popup = w.WaitForPopup();
             popup.DismissPopUp("%{F4}");
             
-            // Window/NewWindow!
-            Trace.WriteLine("Window/NewWindow");
-            w.InvokeAsyncMenuItem("newWindowToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("%{F4}"); // close second window!
-            
-            if (!Window.GetForegroundWindowText().StartsWith("XML Notepad")) {
-                w.Activate(); // alt-f4 sometimes sends focus to another window (namely, the VS process running this test!)
-                Sleep(500);
-            }
-            Sleep(1000);
-           
             // Test SaveIfDirty
             Trace.WriteLine("make simple edit");
             FocusTreeView();
@@ -1019,7 +1043,10 @@ namespace UnitTests {
             popup = w.WaitForPopup();
             popup.DismissPopUp("{ENTER}");
             w.SendKeystrokes("{ESC}");
-            Undo();            
+            Undo();
+
+            // XmlDocument lazily creates namespace nodes causing this test to "modify" the document!
+            Save("out.xml");
         }
 
 
@@ -1322,30 +1349,17 @@ namespace UnitTests {
 
             var w = LaunchNotepad();
 
-            Trace.WriteLine("Click in the combo box location field");
-            AutomationWrapper comboBoxLocation = w.FindDescendant("comboBoxLocation");
-            Rectangle bounds = comboBoxLocation.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
-
-            Trace.WriteLine("Load RSS from disk");
-            w.SendKeystrokes("{END}+{HOME}" + TestDir + "Application\\Samples\\rss.xml" + "{ENTER}");
-
-            Trace.WriteLine("Wait for rss to be loaded");
-            WaitForText("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-
-            //w.SendWait("{DOWN}");
-            //this.CheckOuterXml("<?xml-stylesheet type='text/xsl' href='rsspretty.xsl' version='1.0'?>");
+            MainWindowWrapper xw = new MainWindowWrapper(w);
+            xw.LoadXmlAddress(TestDir + "Application\\Samples\\rss.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
             Trace.WriteLine("Show XSLT");
-            AutomationWrapper tabControl = w.FindDescendant("tabControlViews");
-            AutomationWrapper xslOutputTab = tabControl.FindDescendant("XSL Output");
-            bounds = xslOutputTab.Bounds;
-            Trace.WriteLine("Select tabPageHtmlView ");
-            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
-            Sleep(1000);
+            xw.ShowXslt();
+
+            xw.CopyHtml();
+            this.CheckClipboard(new Regex(@"RSS Feed for MSDN Just Published"));
 
             Trace.WriteLine("Enter custom XSL with script code.");
-            this.EnterXslFilename(TestDir + "UnitTests\\rss.xsl");
+            xw.EnterXslFilename(TestDir + "UnitTests\\rss.xsl");
             Window popup = w.WaitForPopup();
             string title = Window.GetForegroundWindowText();
             if (title != "Untrusted Script Code") {
@@ -1355,61 +1369,48 @@ namespace UnitTests {
             popup.DismissPopUp("%Y");
 
             Trace.WriteLine("Make sure it executed");
-            CopyHtml();
+            xw.CopyHtml();
 
             this.CheckClipboard(new Regex(@"Found [\d]* RSS items. The script executed successfully."));
 
             Trace.WriteLine("Try xslt with error");
-            this.EnterXslFilename(TestDir + "UnitTests\\bad.xsl");
+            xw.EnterXslFilename(TestDir + "UnitTests\\bad.xsl");
             Sleep(2000);            
-            CopyHtml();
+            xw.CopyHtml();
             this.CheckClipboard(@"Error Transforming XML 
 Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Back to tree view");
-            Mouse.MouseClick(new Point(bounds.Left + 20, bounds.Top + 5), MouseButtons.Left);
+            xw.ShowXmlTree();
 
-            Sleep(1000);
-            Save("out.xml");
-        }
+            // test http transforms
+            w.InvokeAsyncMenuItem("toolStripButtonNew");
+            Trace.WriteLine("Make sure we can transform XML from HTTP locations");
+            xw.LoadXmlAddress("https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
-        void WaitForText(string value) {            
-            int retries = 20;
-            string clip = null;
-            while (retries-- > 0) {
-                this.window.SendKeystrokes("^c");
-                clip = Clipboard.GetText();
-                Trace.WriteLine("clip=" + clip);
-                if (clip == value)
-                    return;
-                Sleep(2000);
+            Trace.WriteLine("Show XSLT");
+            xw.ShowXslt();
+
+            xw.CopyHtml();
+            this.CheckClipboard(new Regex(@"Microsoft XML Notepad - Change History"));
+
+            string outputFilename = "updates.htm";
+            var tempOutput = Path.Combine(Path.GetTempPath(), outputFilename);
+            if (File.Exists(tempOutput))
+            {
+                File.Delete(tempOutput);
             }
-            throw new Exception("Not finding expected text '" + value + "', instead we got '" + clip + "'");
+
+            Trace.WriteLine("Make sure we can transform to local temp file");
+            xw.EnterXmlOutputFilename(outputFilename);
+
+            xw.InvokeTransformButton();
+
+            var output = File.ReadAllText(tempOutput);
+            Assert.IsTrue(output.Contains("Microsoft XML Notepad - Change History"));
+
+            // make sure we can exit without any save changes dialog, since none of this should have edited any XML.
         }
-
-        void EnterXslFilename(string filename) {
-            AutomationWrapper s = this.window.FindDescendant("SourceFileName");
-            Rectangle bounds = s.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
-            Sleep(500);
-            this.window.SendKeystrokes("{END}+{HOME}" + filename + "{ENTER}");            
-        }
-
-        string CopyHtml() {
-            AutomationWrapper xsltViewer = this.window.FindDescendant("xsltViewer");
-            Rectangle bounds = xsltViewer.Bounds;
-            // click in HTML view
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
-
-            // select all the text
-            Sleep(1000);
-            this.window.SendKeystrokes("^a");
-            
-            Sleep(1000);
-            this.window.SendKeystrokes("^c");
-            return Clipboard.GetText();
-        }
-
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]

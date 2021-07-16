@@ -690,4 +690,126 @@ namespace UnitTests {
         }
     }
 
+    class MainWindowWrapper
+    {
+        Window window;
+        AutomationWrapper xslOutputTab;
+        AutomationWrapper xmlTreeViewTab;
+        AutomationWrapper xsltViewer;
+
+        public MainWindowWrapper(Window w)
+        {
+            this.window = w;
+        }
+
+        public void LoadXmlAddress(string url, string expectedXmlPrefix)
+        {
+            Trace.WriteLine("Click in the combo box location field");
+            AutomationWrapper comboBoxLocation = this.window.FindDescendant("comboBoxLocation");
+            Rectangle bounds = comboBoxLocation.Bounds;
+            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+
+            Trace.WriteLine("Loading: " + url);
+            this.window.SendKeystrokes("{END}+{HOME}" + url + "{ENTER}");
+
+            Trace.WriteLine("Wait for rss to be loaded");
+            WaitForText("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        }
+
+        void WaitForText(string value)
+        {
+            int retries = 20;
+            string clip = null;
+            while (retries-- > 0)
+            {
+                this.window.SendKeystrokes("^c");
+                clip = Clipboard.GetText();
+                Trace.WriteLine("clip=" + clip);
+                if (clip == value)
+                    return;
+                Sleep(2000);
+            }
+            throw new Exception("Not finding expected text '" + value + "', instead we got '" + clip + "'");
+        }
+
+        public AutomationWrapper GetXsltViewer()
+        {
+            if (xsltViewer == null)
+            {
+                xsltViewer = this.window.FindDescendant("xsltViewer");
+            }
+            return xsltViewer;
+        }
+
+        public void EnterXslFilename(string filename)
+        {
+            AutomationWrapper s = GetXsltViewer().FindDescendant("SourceFileName");
+            Rectangle bounds = s.Bounds;
+            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            Sleep(500);
+            this.window.SendKeystrokes("{END}+{HOME}" + filename + "{ENTER}");
+        }
+
+        internal void EnterXmlOutputFilename(string filename)
+        {
+            AutomationWrapper s = GetXsltViewer().FindDescendant("OutputFileName");
+            Rectangle bounds = s.Bounds;
+            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            Sleep(500);
+            this.window.SendKeystrokes("{END}+{HOME}" + filename);
+        }
+
+        internal void InvokeTransformButton()
+        {
+            AutomationWrapper s = GetXsltViewer().FindDescendant("TransformButton");
+            s.Invoke();
+        }
+
+        public string CopyHtml()
+        {
+            Rectangle bounds = GetXsltViewer().Bounds;
+            // click in HTML view
+            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+
+            // select all the text
+            Sleep(1000);
+            this.window.SendKeystrokes("^a");
+
+            Sleep(1000);
+            this.window.SendKeystrokes("^c");
+            return Clipboard.GetText();
+        }
+
+        public void Sleep(int ms)
+        {
+            Thread.Sleep(ms);
+        }
+
+        public void ShowXslt()
+        {
+            if (xslOutputTab == null)
+            {
+                AutomationWrapper tabControl = this.window.FindDescendant("tabControlViews");
+                xslOutputTab = tabControl.FindDescendant("XSL Output");
+            }
+            var bounds = xslOutputTab.Bounds;
+            Trace.WriteLine("Select XSL output tab");
+            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
+            Sleep(1000);
+        }
+
+        internal void ShowXmlTree()
+        {
+            if (xmlTreeViewTab == null)
+            {
+                AutomationWrapper tabControl = this.window.FindDescendant("tabControlViews");
+                xmlTreeViewTab = tabControl.FindDescendant("Tree View");
+            }
+            var bounds = xmlTreeViewTab.Bounds;
+            Trace.WriteLine("Select XML tree view tab");
+            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
+            Sleep(100);
+        }
+    }
+
 }

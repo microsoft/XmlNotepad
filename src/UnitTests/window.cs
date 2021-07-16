@@ -54,7 +54,14 @@ namespace UnitTests
                 int retries = 20;
                 while (retries-- > 0 && this.acc == null)
                 {
-                    this.acc = FindWindowForProcessId(id, className, rootElementName);
+                    try
+                    {
+                        this.acc = FindWindowForProcessId(id, className, rootElementName);
+                    } 
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error finding window for process id : " + ex.Message);
+                    }
                     Sleep(1000);
                 }
                 if (this.acc == null)
@@ -349,15 +356,15 @@ namespace UnitTests
             Screen s = Screen.FromHandle(this.Handle);
             int x = wb.Left;
             int y = wb.Top;
-            if (wb.Left + cx > s.WorkingArea.Width)
+            if (wb.Left + cx > s.WorkingArea.Right)
             {
                 // move window left so it stays on screen.
-                x = s.WorkingArea.Width - cx;
+                x = s.WorkingArea.Right - cx;
             }
-            if (wb.Top + cy > s.WorkingArea.Height)
+            if (wb.Top + cy > s.WorkingArea.Bottom)
             {
                 // move window left so it stays on screen.
-                y = s.WorkingArea.Height - cy;
+                y = s.WorkingArea.Bottom - cy;
             }
             SetWindowPos(this.handle, IntPtr.Zero, x, y, cx, cy, 0);
         }

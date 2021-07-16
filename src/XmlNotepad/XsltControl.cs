@@ -276,7 +276,7 @@ namespace XmlNotepad
                             outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
 
                             var safeUri = GetWritableBaseUri(outpath);
-                            this.tempFile = outpath;
+                            this.tempFile = outpath = new Uri(safeUri, outpath).LocalPath;
                         }
                         else
                         {
@@ -289,7 +289,8 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    outpath = new Uri(baseUri, outpath).LocalPath;
+                    var safeUri = GetWritableBaseUri(outpath);
+                    this.tempFile = outpath = new Uri(safeUri, outpath).LocalPath;
                 }
 
                 if (null != transform)
@@ -366,6 +367,20 @@ namespace XmlNotepad
 
         private Uri GetWritableBaseUri(string fileName)
         {
+            try
+            {
+                Uri test = new Uri(fileName, UriKind.RelativeOrAbsolute);
+                if (test.IsAbsoluteUri && test.Scheme == "file")
+                {
+                    string dir = Path.GetDirectoryName(fileName);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+                    return test;
+                }
+            } catch (Exception) { }
+
             if (this.baseUri.Scheme != "file")
             {
                 return new Uri(Path.GetTempPath());

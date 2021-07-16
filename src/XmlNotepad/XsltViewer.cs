@@ -94,11 +94,7 @@ namespace XmlNotepad
         {
             string xpath = this.SourceFileName.Text.Trim();
             string output = this.OutputFileName.Text.Trim();
-            string filename = this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);
-            if (!string.IsNullOrEmpty(filename))
-            {
-                // this.OutputFileName.Text = MakeRelative(filename);
-            }
+            this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);            
         }
 
 
