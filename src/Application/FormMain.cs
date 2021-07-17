@@ -18,7 +18,8 @@ namespace XmlNotepad
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
-    public class FormMain : Form, ISite {
+    public class FormMain : Form, ISite
+    {
 
         UndoManager undoManager;
         Settings settings;
@@ -327,7 +328,7 @@ namespace XmlNotepad
 
             this.settings["SchemaCache"] = this.model.SchemaCache;
 
-            _ = AsyncSetup();            
+            _ = AsyncSetup();
         }
 
         private void DispatchAction(Action action)
@@ -456,38 +457,45 @@ namespace XmlNotepad
         }
 
         public FormMain(string[] args)
-            : this() {
+            : this()
+        {
             this.args = args;
         }
 
         public Settings Settings => settings;
 
-        public XmlCache Model {
+        public XmlCache Model
+        {
             get { return model; }
             set { model = value; }
         }
 
-        public PaneResizer Resizer {
+        public PaneResizer Resizer
+        {
             get { return resizer; }
             set { resizer = value; }
         }
 
-        public NoBorderTabControl TabControlLists {
+        public NoBorderTabControl TabControlLists
+        {
             get { return tabControlLists; }
             set { tabControlLists = value; }
         }
 
-        public NoBorderTabControl TabControlViews {
+        public NoBorderTabControl TabControlViews
+        {
             get { return this.tabControlViews; }
             set { tabControlViews = value; }
         }
 
-        public XmlTreeView XmlTreeView {
+        public XmlTreeView XmlTreeView
+        {
             get { return xmlTreeView1; }
             set { xmlTreeView1 = value; }
         }
 
-        void InitializeTreeView() {
+        void InitializeTreeView()
+        {
             // Now remove the WinForm designer generated tree view and call the virtual CreateTreeView method
             // so a subclass of this form can plug in their own tree view.
             this.tabPageTreeView.Controls.Remove(this.xmlTreeView1);
@@ -513,7 +521,8 @@ namespace XmlNotepad
 
         }
 
-        protected virtual void InitializeHelp(HelpProvider hp) {
+        protected virtual void InitializeHelp(HelpProvider hp)
+        {
             hp.SetHelpNavigator(this, HelpNavigator.TableOfContents);
             hp.Site = this;
             // in case subclass has already set HelpNamespace
@@ -524,38 +533,48 @@ namespace XmlNotepad
             }
         }
 
-        void FocusNextPanel(bool reverse) {
+        void FocusNextPanel(bool reverse)
+        {
             Control[] panels = new Control[] { this.xmlTreeView1.TreeView, this.xmlTreeView1.NodeTextView, this.tabControlLists.SelectedTab.Controls[0] };
-            for (int i = 0; i < panels.Length; i++) {
+            for (int i = 0; i < panels.Length; i++)
+            {
                 Control c = panels[i];
-                if (c.ContainsFocus) {
+                if (c.ContainsFocus)
+                {
                     int j = i + 1;
-                    if (reverse) {
+                    if (reverse)
+                    {
                         j = i - 1;
                         if (j < 0) j = panels.Length - 1;
-                    } else if (j >= panels.Length) {
+                    }
+                    else if (j >= panels.Length)
+                    {
                         j = 0;
                     }
                     SelectTreeView();
                     panels[j].Focus();
                     break;
                 }
-            }            
+            }
         }
 
-        void treeView1_KeyDown(object sender, KeyEventArgs e) {
+        void treeView1_KeyDown(object sender, KeyEventArgs e)
+        {
             // Note if e.SuppressKeyPress is true, then this event is bubbling up from
             // the TextEditorOverlay - so we have to be careful not to interfere with
             // intellisense editing here unless we really want to.  Turns out the following
             // keystrokes all want to interrupt intellisense. 
             if (e.Handled) return;
-            switch (e.KeyCode) {
+            switch (e.KeyCode)
+            {
                 case Keys.Space:
-                    if ((e.Modifiers & Keys.Control) == Keys.Control) {
+                    if ((e.Modifiers & Keys.Control) == Keys.Control)
+                    {
                         this.xmlTreeView1.Commit();
                         Rectangle r = this.xmlTreeView1.TreeView.Bounds;
                         XmlTreeNode node = this.xmlTreeView1.SelectedNode;
-                        if (node != null) {
+                        if (node != null)
+                        {
                             r = node.LabelBounds;
                             r.Offset(this.xmlTreeView1.TreeView.ScrollPosition);
                         }
@@ -564,7 +583,8 @@ namespace XmlNotepad
                     }
                     break;
                 case Keys.F3:
-                    if (this.search != null) {
+                    if (this.search != null)
+                    {
                         this.search.FindAgain(e.Shift);
                         e.Handled = true;
                     }
@@ -576,8 +596,10 @@ namespace XmlNotepad
             }
         }
 
-        void taskList_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyCode) {
+        void taskList_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
                 case Keys.F6:
                     FocusNextPanel((e.Modifiers & Keys.Shift) != 0);
                     break;
@@ -587,7 +609,8 @@ namespace XmlNotepad
             }
         }
 
-        protected override void OnLoad(EventArgs e) {
+        protected override void OnLoad(EventArgs e)
+        {
             this.updater = new Updater(this.settings, this.delayedActions);
             this.updater.Title = this.Caption;
             this.updater.UpdateRequired += new EventHandler<bool>(OnUpdateRequired);
@@ -607,7 +630,8 @@ namespace XmlNotepad
             }
         }
 
-        void OnUpdateRequired(object sender, bool updateAvailable) {
+        void OnUpdateRequired(object sender, bool updateAvailable)
+        {
             if (this.Disposing)
             {
                 return;
@@ -619,7 +643,7 @@ namespace XmlNotepad
                 this.toolStripMenuItemUpdate.ToolTipText = string.Format(SR.UpdateAvailableTooltip, this.caption, updater.Version) + "\r\n" +
                     SR.ShowInstallPage;
                 this.menuStrip1.ShowItemToolTips = true;
-            } 
+            }
             else
             {
                 this.toolStripMenuItemUpdate.Text = SR.UpToDate;
@@ -628,13 +652,14 @@ namespace XmlNotepad
                 this.menuStrip1.ShowItemToolTips = true;
             }
             this.toolStripMenuItemUpdate.Visible = true;
-            this.delayedActions.StartDelayedAction(HideUpdateButtonAction, () => {
+            this.delayedActions.StartDelayedAction(HideUpdateButtonAction, () =>
+            {
                 this.toolStripMenuItemUpdate.Visible = false;
             }, TimeSpan.FromSeconds(30));
         }
-        
-        void toolStripMenuItemUpdate_Click(object sender, EventArgs e) 
-        {       
+
+        void toolStripMenuItemUpdate_Click(object sender, EventArgs e)
+        {
             if (this.toolStripMenuItemUpdate.Tag is bool updateAvailable && updateAvailable)
             {
                 Utilities.OpenUrl(this.Handle, this.updater.InstallerLocation);
@@ -649,30 +674,37 @@ namespace XmlNotepad
             }
         }
 
-        protected override void OnClosing(CancelEventArgs e) {
+        protected override void OnClosing(CancelEventArgs e)
+        {
             this.xmlTreeView1.Commit();
             this.xsltViewer.OnClosed();
-            if (this.model.Dirty){
+            if (this.model.Dirty)
+            {
                 SelectTreeView();
-                DialogResult rc = MessageBox.Show(this, SR.SaveChangesPrompt, SR.SaveChangesCaption, 
+                DialogResult rc = MessageBox.Show(this, SR.SaveChangesPrompt, SR.SaveChangesCaption,
                     MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
-                if (rc == DialogResult.Yes){
+                if (rc == DialogResult.Yes)
+                {
                     this.Save();
-                } else if (rc == DialogResult.Cancel){
+                }
+                else if (rc == DialogResult.Cancel)
+                {
                     e.Cancel = true;
                     return;
                 }
             }
             this.delayedActions.Close();
             SaveConfig();
-            base.OnClosing (e);
+            base.OnClosing(e);
         }
 
-        protected override void OnClosed(EventArgs e) {
+        protected override void OnClosed(EventArgs e)
+        {
             this.xmlTreeView1.Close();
             base.OnClosed(e);
             CleanupTempFiles();
-            if (this.updater != null) {
+            if (this.updater != null)
+            {
                 this.updater.Dispose();
             }
             this.delayedActions.Close();
@@ -698,7 +730,8 @@ namespace XmlNotepad
             this.toolStrip1.Size = new Size(w, this.toolStrip1.Size.Height);
             int top = this.toolStrip1.Bottom;
             int sbHeight = 0;
-            if (this.statusStrip1.Visible) {
+            if (this.statusStrip1.Visible)
+            {
                 sbHeight = this.statusStrip1.Height;
                 this.statusStrip1.Size = new Size(w, sbHeight);
             }
@@ -717,37 +750,45 @@ namespace XmlNotepad
             base.OnLayout(levent);
         }
 
-        
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing ) {
-            if( disposing ) {
-                if (components != null) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
                     components.Dispose();
                 }
-                if (this.settings != null) {
+                if (this.settings != null)
+                {
                     this.settings.Dispose();
                     this.settings = null;
                 }
-                if (this.model != null) {
+                if (this.model != null)
+                {
                     this.model.Dispose();
                     this.model = null;
                 }
                 IDisposable d = this.ip as IDisposable;
-                if (d != null) {
+                if (d != null)
+                {
                     d.Dispose();
                 }
                 this.ip = null;
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
-        protected virtual XmlTreeView CreateTreeView() {
+        protected virtual XmlTreeView CreateTreeView()
+        {
             return new XmlTreeView();
         }
 
-        protected virtual void CreateTabControl() {
+        protected virtual void CreateTabControl()
+        {
             // 
             // tabPageTaskList
             // 
@@ -797,17 +838,20 @@ namespace XmlNotepad
             this.tabControlLists.Size = new System.Drawing.Size(736, 90);
             this.tabControlLists.TabIndex = 9;
             this.tabControlLists.Selected += new NoBorderTabControlEventHandler(TabControlLists_Selected);
-            
+
             this.Controls.Add(this.tabControlLists);
 
         }
 
-        void dynamicHelpViewer_VisibleChanged(object sender, EventArgs e) {
+        void dynamicHelpViewer_VisibleChanged(object sender, EventArgs e)
+        {
             this.DisplayHelp();
         }
 
-        protected virtual void TabControlLists_Selected(object sender, NoBorderTabControlEventArgs e) {
-            if (e.TabPage == this.tabPageDynamicHelp) {
+        protected virtual void TabControlLists_Selected(object sender, NoBorderTabControlEventArgs e)
+        {
+            if (e.TabPage == this.tabPageDynamicHelp)
+            {
                 this.DisplayHelp();
             }
         }
@@ -818,7 +862,8 @@ namespace XmlNotepad
         /// the contents of this method with the code editor.
         /// </summary>
         [STAThread]
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.changeToElementContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2190,7 +2235,7 @@ namespace XmlNotepad
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;            
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.comboBoxLocation);
             this.Controls.Add(this.tabControlViews);
@@ -2218,18 +2263,89 @@ namespace XmlNotepad
 
         private async void checkUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var saved = this.statusStrip1.BackColor;
+            this.statusStrip1.BackColor = this.toolStripMenuItemUpdate.BackColor;
+            this.toolStripMenuItemUpdate.Visible = false;
             this.delayedActions.CancelDelayedAction(HideUpdateButtonAction);
             ShowStatus("Checking for updates...");
-            bool update = await this.updater.CheckNow();
-            OnUpdateRequired(this, update);
-            string line = this.toolStripMenuItemUpdate.Text.Split('\r')[0];
-            ShowStatus(line);
+            try
+            {
+                bool update = await this.updater.CheckNow();
+
+                string line = this.toolStripMenuItemUpdate.Text.Split('\r')[0];
+                ShowStatus(line);
+
+                AnimateUpdateButton(update);
+            }
+            catch
+            {
+            }
+            this.statusStrip1.BackColor = saved;
         }
 
-        protected virtual void TabControlViews_Selected(object sender, NoBorderTabControlEventArgs e) {
-            if (e.TabPage == this.tabPageHtmlView) {
+        private void AnimateUpdateButton(bool updateAvailable)
+        {
+            string caption = updateAvailable ? SR.UpdateAvailableCaption : SR.UpToDate;
+            // 
+            // animationCanvas1
+            // 
+            var animationCanvas1 = new XmlNotepad.AnimationCanvas();
+            animationCanvas1.Dock = System.Windows.Forms.DockStyle.Fill;
+            animationCanvas1.Location = new System.Drawing.Point(0, 0);
+            animationCanvas1.Margin = new System.Windows.Forms.Padding(0);
+            animationCanvas1.Name = "animationCanvas1";
+            animationCanvas1.Size = this.Size;
+            animationCanvas1.TabIndex = 0;
+            this.Controls.Add(animationCanvas1);
+
+            // give the AnimationCanvas the background image of the current state of this application so
+            // that the animation looks like it is floating over this form.  Using transparent Controls
+            // doesn't work nicely with double buffered controls, and does an inefficient amount of repainting
+            // and DrawToBitmap simply doesn't work at all for WebBrowser controls.
+            Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
+            animationCanvas1.InitializeBackgroundFromScreen(screenRectangle.X, screenRectangle.Y + menuStrip1.Height + toolStrip1.Height);
+
+            int buttonWidth = 100;
+            using (var g = this.CreateGraphics())
+            {
+                var size = g.MeasureString(caption, toolStripMenuItemUpdate.Font, this.Width);
+                buttonWidth = (int)size.Width + (4 * 2);
+            }
+
+            RectangleShape shape = new RectangleShape()
+            {
+                Fill = new System.Drawing.SolidBrush(this.toolStripMenuItemUpdate.BackColor),
+                Label = caption,
+                Font = this.Font,
+                Foreground = new System.Drawing.SolidBrush(this.ForeColor)
+            };
+
+            var animation = new BoundsAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(1),
+                End = new Rectangle(this.Width - 100, 0, 100, 30),
+                Start = new Rectangle(0, this.Height - 30, this.Width, 30),
+                TargetProperty = "Bounds",
+                Function = new AnimationEaseInFunction()
+            };
+            animation.Completed += (s, e) =>
+            {
+                this.Controls.Remove(animationCanvas1);
+                OnUpdateRequired(this, updateAvailable);
+            };
+
+            shape.BeginAnimation(animation);
+            animationCanvas1.Shapes.Add(shape);
+            animationCanvas1.BringToFront();
+        }
+
+        protected virtual void TabControlViews_Selected(object sender, NoBorderTabControlEventArgs e)
+        {
+            if (e.TabPage == this.tabPageHtmlView)
+            {
                 this.DisplayXsltResults();
-            } else
+            }
+            else
             {
                 this.xsltViewer.OnClosed(); // good time to cleanup temp files.
             }
@@ -2237,31 +2353,37 @@ namespace XmlNotepad
 
         #endregion
 
-        void EnableFileMenu(){
+        void EnableFileMenu()
+        {
             bool hasFile = (model.FileName != null);
             this.toolStripButtonSave.Enabled = this.saveToolStripMenuItem.Enabled = true;
             this.reloadToolStripMenuItem.Enabled = hasFile;
             this.saveAsToolStripMenuItem.Enabled = true;
         }
 
-        public virtual void DisplayXsltResults() {
+        public virtual void DisplayXsltResults()
+        {
             this.xsltViewer.DisplayXsltResults();
             this.analytics.RecordXsltView();
         }
 
-        void SelectTreeView() {
-            if (tabControlViews.SelectedIndex != 0) {
+        void SelectTreeView()
+        {
+            if (tabControlViews.SelectedIndex != 0)
+            {
                 tabControlViews.SelectedIndex = 0;
             }
-            if (!xmlTreeView1.ContainsFocus) {
+            if (!xmlTreeView1.ContainsFocus)
+            {
                 xmlTreeView1.Focus();
             }
         }
 
-        public virtual void New(){
+        public virtual void New()
+        {
             SelectTreeView();
             if (!SaveIfDirty(true))
-                return;  
+                return;
             model.Clear();
             includesExpanded = false;
             EnableFileMenu();
@@ -2269,60 +2391,88 @@ namespace XmlNotepad
             UpdateMenuState();
         }
 
-        protected virtual IIntellisenseProvider CreateIntellisenseProvider(XmlCache model, ISite site) {
+        protected virtual IIntellisenseProvider CreateIntellisenseProvider(XmlCache model, ISite site)
+        {
             return new XmlIntellisenseProvider(this.model, site);
         }
 
-        protected override object GetService(Type service) {
-            if (service == typeof(UndoManager)){
+        protected override object GetService(Type service)
+        {
+            if (service == typeof(UndoManager))
+            {
                 return this.undoManager;
-            } else if (service == typeof(SchemaCache)) {
+            }
+            else if (service == typeof(SchemaCache))
+            {
                 return this.model.SchemaCache;
-            } else if (service == typeof(TreeView)) {
+            }
+            else if (service == typeof(TreeView))
+            {
                 XmlTreeView view = (XmlTreeView)GetService(typeof(XmlTreeView));
                 return view.TreeView;
-            } else if (service == typeof(XmlTreeView)) {
-                if (this.xmlTreeView1 == null) {
+            }
+            else if (service == typeof(XmlTreeView))
+            {
+                if (this.xmlTreeView1 == null)
+                {
                     this.xmlTreeView1 = this.CreateTreeView();
                 }
                 return this.xmlTreeView1;
-            } else if (service == typeof(XmlCache)) {
+            }
+            else if (service == typeof(XmlCache))
+            {
                 if (null == this.model)
                 {
                     this.model = new XmlCache((IServiceProvider)this, this.delayedActions);
                 }
                 return this.model;
-            } else if (service == typeof(Settings)){
+            }
+            else if (service == typeof(Settings))
+            {
                 return this.settings;
-            } else if (service == typeof(IIntellisenseProvider)) {
+            }
+            else if (service == typeof(IIntellisenseProvider))
+            {
                 if (this.ip == null) this.ip = CreateIntellisenseProvider(this.model, this);
                 return this.ip;
-            } else if (service == typeof(HelpProvider)) {
+            }
+            else if (service == typeof(HelpProvider))
+            {
                 return this.helpProvider1;
-            } else if (service == typeof(WebProxyService)) {
+            }
+            else if (service == typeof(WebProxyService))
+            {
                 if (this.proxyService == null)
                     this.proxyService = new WebProxyService((IServiceProvider)this);
                 return this.proxyService;
-            } else if (service == typeof(UserSettings)) {
+            }
+            else if (service == typeof(UserSettings))
+            {
                 return new UserSettings(this.settings);
-            } else if (service == typeof(DelayedActions)) {
+            }
+            else if (service == typeof(DelayedActions))
+            {
                 return this.delayedActions;
             }
-            return base.GetService (service);
+            return base.GetService(service);
         }
 
-        public OpenFileDialog OpenFileDialog {
+        public OpenFileDialog OpenFileDialog
+        {
             get { return this.od; }
         }
 
-        public virtual void OpenDialog(string dir = null) {
+        public virtual void OpenDialog(string dir = null)
+        {
             SelectTreeView();
             if (!SaveIfDirty(true))
                 return;
             if (od == null) od = new OpenFileDialog();
-            if (model.FileName != null) {
+            if (model.FileName != null)
+            {
                 Uri uri = new Uri(model.FileName);
-                if (uri.Scheme == "file"){
+                if (uri.Scheme == "file")
+                {
                     od.FileName = model.FileName;
                 }
             }
@@ -2334,19 +2484,23 @@ namespace XmlNotepad
             od.Filter = filter;
             string[] parts = filter.Split('|');
             int index = -1;
-            for (int i = 1, n = parts.Length; i < n; i += 2 ) {
-                if (parts[i] == "*.*") {
-                    index = (i / 2)+1;
+            for (int i = 1, n = parts.Length; i < n; i += 2)
+            {
+                if (parts[i] == "*.*")
+                {
+                    index = (i / 2) + 1;
                     break;
                 }
             }
             od.FilterIndex = index;
-            if (od.ShowDialog(this) == DialogResult.OK){
+            if (od.ShowDialog(this) == DialogResult.OK)
+            {
                 Open(od.FileName);
             }
         }
 
-        public virtual void ShowStatus(string msg) {
+        public virtual void ShowStatus(string msg)
+        {
             this.toolStripStatusLabel1.Text = msg;
             this.delayedActions.StartDelayedAction("ClearStatus", ClearStatus, TimeSpan.FromSeconds(20));
         }
@@ -2356,8 +2510,10 @@ namespace XmlNotepad
             this.toolStripStatusLabel1.Text = "";
         }
 
-        public virtual void Open(string filename) {
-            try {
+        public virtual void Open(string filename)
+        {
+            try
+            {
                 // Make sure you've called SaveIfDirty before calling this method.
                 string ext = System.IO.Path.GetExtension(filename).ToLowerInvariant();
                 switch (ext)
@@ -2373,10 +2529,13 @@ namespace XmlNotepad
                         InternalOpen(filename);
                         break;
                 }
-            } catch (Exception e){
+            }
+            catch (Exception e)
+            {
                 if (MessageBox.Show(this,
                     string.Format(SR.LoadErrorPrompt, filename, e.Message),
-                    SR.LoadErrorCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes) {
+                    SR.LoadErrorCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                {
                     OpenNotepad(filename);
                 }
             }
@@ -2444,9 +2603,10 @@ namespace XmlNotepad
             }
         }
 
-        private void InternalOpen(string filename) {
+        private void InternalOpen(string filename)
+        {
             includesExpanded = false;
-            DateTime start = DateTime.Now;            
+            DateTime start = DateTime.Now;
             this.model.Load(filename);
             DateTime finish = DateTime.Now;
             TimeSpan diff = finish - start;
@@ -2459,10 +2619,13 @@ namespace XmlNotepad
             SelectTreeView();
         }
 
-        bool CheckXIncludes() {
-            if (includesExpanded) {
+        bool CheckXIncludes()
+        {
+            if (includesExpanded)
+            {
                 if (MessageBox.Show(this, SR.SaveExpandedIncludesPrompt, SR.SaveExpandedIncludesCaption,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No) {
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+                {
                     return false;
                 }
                 includesExpanded = false;
@@ -2470,39 +2633,54 @@ namespace XmlNotepad
             return true;
         }
 
-        public virtual bool SaveIfDirty(bool prompt) {
-            if (model.Dirty){
-                if (prompt){
+        public virtual bool SaveIfDirty(bool prompt)
+        {
+            if (model.Dirty)
+            {
+                if (prompt)
+                {
                     SelectTreeView();
                     DialogResult rc = MessageBox.Show(this, SR.SaveChangesPrompt,
-                        SR.SaveChangesCaption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);                
-                    if (rc == DialogResult.Cancel){
+                        SR.SaveChangesCaption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+                    if (rc == DialogResult.Cancel)
+                    {
                         return false;
-                    } else if (rc == DialogResult.Yes){
+                    }
+                    else if (rc == DialogResult.Yes)
+                    {
                         return Save();
                     }
-                } else {
+                }
+                else
+                {
                     return Save();
                 }
             }
             return true;
         }
 
-        public virtual bool Save() {
+        public virtual bool Save()
+        {
             this.xmlTreeView1.Commit();
-            if (!CheckXIncludes()) return false;                
+            if (!CheckXIncludes()) return false;
             string fname = model.FileName;
-            if (fname == null){
+            if (fname == null)
+            {
                 SaveAs();
-            } else {
+            }
+            else
+            {
                 try
                 {
                     this.xmlTreeView1.BeginSave();
-                    if (CheckReadOnly(fname)) {
+                    if (CheckReadOnly(fname))
+                    {
                         model.Save();
                         ShowStatus(SR.SavedStatus);
                     }
-                } catch (Exception e){
+                }
+                catch (Exception e)
+                {
                     MessageBox.Show(this, e.Message, SR.SaveErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 finally
@@ -2513,29 +2691,38 @@ namespace XmlNotepad
             return true;
         }
 
-        public bool CheckReadOnly(string fname) {
-            if (model.IsReadOnly(fname)) {
+        public bool CheckReadOnly(string fname)
+        {
+            if (model.IsReadOnly(fname))
+            {
                 SelectTreeView();
                 if (MessageBox.Show(this, string.Format(SR.ReadOnly, fname),
-                    SR.ReadOnlyCaption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation) == DialogResult.Yes) {
+                    SR.ReadOnlyCaption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                {
                     model.MakeReadWrite(fname);
                     return true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
-            return true;    
+            return true;
         }
 
-        public virtual void Save(string newName) {
+        public virtual void Save(string newName)
+        {
             this.xmlTreeView1.Commit();
             this.xmlTreeView1.BeginSave();
-            try {
+            try
+            {
                 bool hasFile = (model.FileName != null);
-                if (!hasFile && string.IsNullOrEmpty(newName)) {
+                if (!hasFile && string.IsNullOrEmpty(newName))
+                {
                     SaveAs();
                 }
-                if (CheckReadOnly(newName)) {
+                if (CheckReadOnly(newName))
+                {
                     model.Save(newName);
                     UpdateCaption();
                     ShowStatus(SR.SavedStatus);
@@ -2543,8 +2730,10 @@ namespace XmlNotepad
                     EnableFileMenu();
                     this.recentFiles.AddRecentFile(model.Location);
                 }
-            } catch (Exception e){
-                MessageBox.Show(this, e.Message, SR.SaveErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);                
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(this, e.Message, SR.SaveErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -2552,14 +2741,17 @@ namespace XmlNotepad
             }
         }
 
-        public virtual void SaveAs() {
+        public virtual void SaveAs()
+        {
             SelectTreeView();
             SaveFileDialog sd = new SaveFileDialog();
             if (model.IsFile) sd.FileName = model.FileName;
             sd.Filter = SR.SaveAsFilter;
-            if (sd.ShowDialog(this) == DialogResult.OK){
+            if (sd.ShowDialog(this) == DialogResult.OK)
+            {
                 string fname = sd.FileName;
-                if (CheckReadOnly(fname)) {
+                if (CheckReadOnly(fname))
+                {
                     Save(fname);
                 }
             }
@@ -2567,47 +2759,60 @@ namespace XmlNotepad
 
         string caption = null;
 
-        public string Caption {
-            get {
+        public string Caption
+        {
+            get
+            {
                 if (string.IsNullOrEmpty(caption))
                     caption = SR.MainFormTitle;
-                return caption; }
+                return caption;
+            }
             set { caption = value; }
         }
 
-        public virtual void UpdateCaption() {
+        public virtual void UpdateCaption()
+        {
             string caption = this.Caption + " - " + model.FileName;
-            if (this.model.Dirty){
+            if (this.model.Dirty)
+            {
                 caption += "*";
-            }            
+            }
             this.Text = caption;
             sourceToolStripMenuItem.Enabled = this.model.FileName != null;
         }
 
-        void OnFileChanged(object sender, EventArgs e) {
+        void OnFileChanged(object sender, EventArgs e)
+        {
             if (!prompting) OnFileChanged();
         }
 
         bool prompting = false;
 
-        protected virtual void OnFileChanged() {
+        protected virtual void OnFileChanged()
+        {
             prompting = true;
-            try {
-                if (this.WindowState == FormWindowState.Minimized) {
+            try
+            {
+                if (this.WindowState == FormWindowState.Minimized)
+                {
                     this.WindowState = FormWindowState.Normal;
                 }
                 SelectTreeView();
-                if (MessageBox.Show(this, SR.FileChagedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) {
+                if (MessageBox.Show(this, SR.FileChagedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
                     string location = this.model.Location.LocalPath;
                     this.model.Clear();
-                    this.Open(location);                                                     
+                    this.Open(location);
                 }
-            } finally {
+            }
+            finally
+            {
                 prompting = false;
             }
         }
 
-        private void undoManager_StateChanged(object sender, EventArgs e) {
+        private void undoManager_StateChanged(object sender, EventArgs e)
+        {
             this.undoToolStripMenuItem.Enabled = toolStripButtonUndo.Enabled = this.undoManager.CanUndo;
             this.redoToolStripMenuItem.Enabled = toolStripButtonRedo.Enabled = this.undoManager.CanRedo;
             Command cmd = this.undoManager.Peek();
@@ -2616,8 +2821,10 @@ namespace XmlNotepad
             this.redoToolStripMenuItem.Text = this.redoLabel + " " + (cmd == null ? "" : cmd.Name);
         }
 
-        public virtual string ConfigFile {
-            get { 
+        public virtual string ConfigFile
+        {
+            get
+            {
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 Debug.Assert(!string.IsNullOrEmpty(path));
                 return System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
@@ -2634,7 +2841,8 @@ namespace XmlNotepad
             }
         }
 
-        public virtual void LoadConfig() {
+        public virtual void LoadConfig()
+        {
             string path = null;
             try
             {
@@ -2680,7 +2888,7 @@ namespace XmlNotepad
                         }
                     }
                 }
-            } 
+            }
             finally
             {
                 this.loading = false;
@@ -2713,7 +2921,8 @@ namespace XmlNotepad
             analytics.RecordAppLaunched();
         }
 
-        public virtual void SaveConfig() {
+        public virtual void SaveConfig()
+        {
             this.settings.StopWatchingFileChanges();
             Rectangle r = (this.WindowState == FormWindowState.Normal) ? this.Bounds : this.RestoreBounds;
             this.settings["WindowBounds"] = r;
@@ -2729,43 +2938,54 @@ namespace XmlNotepad
         }
 
         #region  ISite implementation
-        IComponent ISite.Component{
+        IComponent ISite.Component
+        {
             get { return this; }
         }
 
         public static Type ResourceType { get { return typeof(SR); } }
 
-        string ISite.Name {
+        string ISite.Name
+        {
             get { return this.Name; }
-            set { this.Name = value; } 
+            set { this.Name = value; }
         }
 
-        IContainer ISite.Container {
+        IContainer ISite.Container
+        {
             get { return this.Container; }
         }
 
-        bool ISite.DesignMode {
-            get { return this.DesignMode;}
+        bool ISite.DesignMode
+        {
+            get { return this.DesignMode; }
         }
-        object IServiceProvider.GetService(Type serviceType) {
+        object IServiceProvider.GetService(Type serviceType)
+        {
             return this.GetService(serviceType);
         }
         #endregion
 
-        void OnModelChanged(object sender, ModelChangedEventArgs e) {
-            if (e.ModelChangeType == ModelChangeType.Reloaded) {
+        void OnModelChanged(object sender, ModelChangedEventArgs e)
+        {
+            if (e.ModelChangeType == ModelChangeType.Reloaded)
+            {
                 this.undoManager.Clear();
                 this.taskList.Clear();
             }
-            if (e.ModelChangeType == ModelChangeType.BeginBatchUpdate) {
+            if (e.ModelChangeType == ModelChangeType.BeginBatchUpdate)
+            {
                 batch++;
-            } else if (e.ModelChangeType == ModelChangeType.EndBatchUpdate) {
+            }
+            else if (e.ModelChangeType == ModelChangeType.EndBatchUpdate)
+            {
                 batch--;
             }
             if (batch == 0) OnModelChanged();
         }
 
-        protected virtual void OnModelChanged() {
+        protected virtual void OnModelChanged()
+        {
             TaskHandler handler = new TaskHandler(this.taskList);
             handler.Start();
             this.model.ValidateModel(handler);
@@ -2773,8 +2993,10 @@ namespace XmlNotepad
             UpdateCaption();
         }
 
-        protected virtual void OnSettingsChanged(object sender, string name) {        
-            switch (name){
+        protected virtual void OnSettingsChanged(object sender, string name)
+        {
+            switch (name)
+            {
                 case "File":
                     this.settings.Reload(); // just do it!!                    
                     break;
@@ -2795,73 +3017,90 @@ namespace XmlNotepad
                     break;
                 case "TreeViewSize":
                     int pos = (int)this.settings["TreeViewSize"];
-                    if (pos != 0) {
+                    if (pos != 0)
+                    {
                         this.xmlTreeView1.ResizerPosition = pos;
                     }
                     break;
                 case "TaskListSize":
                     int height = (int)this.settings["TaskListSize"];
-                    if (height != 0) {
+                    if (height != 0)
+                    {
                         this.tabControlLists.Height = height;
-                    } 
+                    }
                     break;
                 case "Font":
                     this.Font = (Font)this.settings["Font"];
                     break;
                 case "RecentFiles":
                     Uri[] files = (Uri[])this.settings["RecentFiles"];
-                    if (files != null) {
+                    if (files != null)
+                    {
                         this.recentFiles.SetFiles(files);
                     }
                     break;
             }
         }
 
-        public void SaveErrors(string filename) {
+        public void SaveErrors(string filename)
+        {
             this.taskList.Save(filename);
         }
 
-        void OnRecentFileSelected(object sender, RecentFileEventArgs e) {
+        void OnRecentFileSelected(object sender, RecentFileEventArgs e)
+        {
             if (!this.SaveIfDirty(true))
-                return;                                       
+                return;
             string fileName = e.FileName.OriginalString;
             Open(fileName);
         }
 
-        private void treeView1_SelectionChanged(object sender, EventArgs e) {
+        private void treeView1_SelectionChanged(object sender, EventArgs e)
+        {
             UpdateMenuState();
             DisplayHelp();
         }
 
-        private void DisplayHelp() {
+        private void DisplayHelp()
+        {
             // display documentation
-            if (null == xmlTreeView1.SelectedNode) {
+            if (null == xmlTreeView1.SelectedNode)
+            {
                 this.dynamicHelpViewer.DisplayXsltResults(new XmlDocument(), null);
                 return;
             }
             XmlDocument xmlDoc = xmlTreeView1.SelectedNode.GetDocumentation();
-            if (this.dynamicHelpViewer.Visible) {
+            if (this.dynamicHelpViewer.Visible)
+            {
                 helpAvailableHint = false;
-                if (null == xmlDoc) {
+                if (null == xmlDoc)
+                {
                     xmlDoc = new XmlDocument();
-                    if (taskList.Count > 0) {
+                    if (taskList.Count > 0)
+                    {
                         xmlDoc.AppendChild(xmlDoc.CreateElement("errors"));
-                    } else {
+                    }
+                    else
+                    {
                         xmlDoc.AppendChild(xmlDoc.CreateElement("nothing"));
                     }
                 }
                 this.dynamicHelpViewer.DisplayXsltResults(xmlDoc, null);
-            } else if (helpAvailableHint && xmlDoc != null) {
+            }
+            else if (helpAvailableHint && xmlDoc != null)
+            {
                 helpAvailableHint = false;
                 ShowStatus(SR.DynamicHelpAvailable);
             }
         }
 
-        private void treeView1_NodeChanged(object sender, NodeChangeEventArgs e) {
+        private void treeView1_NodeChanged(object sender, NodeChangeEventArgs e)
+        {
             UpdateMenuState();
         }
 
-        protected virtual void UpdateMenuState() {
+        protected virtual void UpdateMenuState()
+        {
 
             XmlTreeNode node = this.xmlTreeView1.SelectedNode as XmlTreeNode;
             XmlNode xnode = (node != null) ? node.Node : null;
@@ -2909,14 +3148,17 @@ namespace XmlNotepad
                 this.ctxPIChildToolStripMenuItem, this.PIChildToolStripMenuItem);
         }
 
-        void EnableNodeItems(XmlNodeType nt, ToolStripMenuItem c1, ToolStripMenuItem m1, ToolStripMenuItem c2, ToolStripMenuItem m2, ToolStripMenuItem c3, ToolStripMenuItem m3){
+        void EnableNodeItems(XmlNodeType nt, ToolStripMenuItem c1, ToolStripMenuItem m1, ToolStripMenuItem c2, ToolStripMenuItem m2, ToolStripMenuItem c3, ToolStripMenuItem m3)
+        {
             c1.Enabled = m1.Enabled = this.xmlTreeView1.CanInsertNode(InsertPosition.Before, nt);
             c2.Enabled = m2.Enabled = this.xmlTreeView1.CanInsertNode(InsertPosition.After, nt);
             c3.Enabled = m3.Enabled = this.xmlTreeView1.CanInsertNode(InsertPosition.Child, nt);
         }
 
-        protected virtual void OpenNotepad(string path) {
-            if (this.SaveIfDirty(true)){
+        protected virtual void OpenNotepad(string path)
+        {
+            if (this.SaveIfDirty(true))
+            {
                 if (path.StartsWith("http://") || path.StartsWith("https://") || path.StartsWith("ftp://"))
                 {
                     path = System.IO.Path.GetTempFileName();
@@ -2928,49 +3170,61 @@ namespace XmlNotepad
                     string sysdir = Environment.SystemDirectory;
                     notepad = Path.Combine(sysdir, "notepad.exe");
                 }
-                if (File.Exists(notepad)) {
+                if (File.Exists(notepad))
+                {
                     ProcessStartInfo pi = new ProcessStartInfo(notepad, "\"" + path + "\"");
                     Process.Start(pi);
                 }
             }
         }
 
-		void treeView1_ClipboardChanged(object sender, EventArgs e) {
-			CheckClipboard();
-		}
+        void treeView1_ClipboardChanged(object sender, EventArgs e)
+        {
+            CheckClipboard();
+        }
 
-		void CheckClipboard() {
+        void CheckClipboard()
+        {
             this.toolStripButtonPaste.Enabled = this.pasteToolStripMenuItem.Enabled = this.ctxMenuItemPaste.Enabled = TreeData.HasData;
-		}
+        }
 
 
-		protected override void OnActivated(EventArgs e) {
-			CheckClipboard();
-            if (firstActivate) {
+        protected override void OnActivated(EventArgs e)
+        {
+            CheckClipboard();
+            if (firstActivate)
+            {
                 this.comboBoxLocation.Focus();
                 firstActivate = false;
             }
-            if (this.xmlTreeView1.TreeView.IsEditing) {
+            if (this.xmlTreeView1.TreeView.IsEditing)
+            {
                 this.xmlTreeView1.TreeView.Focus();
-            } else if (this.xmlTreeView1.NodeTextView.IsEditing) {
+            }
+            else if (this.xmlTreeView1.NodeTextView.IsEditing)
+            {
                 this.xmlTreeView1.NodeTextView.Focus();
             }
-		}
+        }
 
-        void taskList_Navigate(object sender, Task task) {
+        void taskList_Navigate(object sender, Task task)
+        {
             XmlNode node = task.Data as XmlNode;
-            if (node != null) {
+            if (node != null)
+            {
                 XmlTreeNode tn = this.xmlTreeView1.FindNode(node);
-                if (tn != null) {
+                if (tn != null)
+                {
                     this.xmlTreeView1.SelectedNode = tn;
                     this.SelectTreeView();
                 }
             }
         }
 
-        private void Form1_DragOver(object sender, DragEventArgs e) {
+        private void Form1_DragOver(object sender, DragEventArgs e)
+        {
             IDataObject data = e.Data;
-            if (data.GetDataPresent(DataFormats.FileDrop) || 
+            if (data.GetDataPresent(DataFormats.FileDrop) ||
                 data.GetDataPresent(this.urlFormat.Name) ||
                 data.GetDataPresent("UniformResourceLocator"))
             {
@@ -2987,30 +3241,42 @@ namespace XmlNotepad
         }
 
 
-        private void Form1_DragDrop(object sender, DragEventArgs e) {
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
             IDataObject data = e.Data;
-            if (data.GetDataPresent(DataFormats.FileDrop)){
+            if (data.GetDataPresent(DataFormats.FileDrop))
+            {
                 Array a = data.GetData(DataFormats.FileDrop) as Array;
-                if (a != null){
-                    if (a.Length>0 && a.GetValue(0) is string){
+                if (a != null)
+                {
+                    if (a.Length > 0 && a.GetValue(0) is string)
+                    {
                         string filename = (string)a.GetValue(0);
                         if (!this.SaveIfDirty(true))
                             return;
                         this.Open(filename);
                     }
                 }
-            } else if (data.GetDataPresent(this.urlFormat.Name)){
+            }
+            else if (data.GetDataPresent(this.urlFormat.Name))
+            {
                 Stream stm = data.GetData(this.urlFormat.Name) as Stream;
-                if (stm != null) {
-                    try {
+                if (stm != null)
+                {
+                    try
+                    {
                         // Note: for some reason sr.ReadToEnd doesn't work right.
                         StreamReader sr = new StreamReader(stm, Encoding.Unicode);
                         StringBuilder sb = new StringBuilder();
-                        while (true) {
+                        while (true)
+                        {
                             int i = sr.Read();
-                            if (i != 0) {
+                            if (i != 0)
+                            {
                                 sb.Append(Convert.ToChar(i));
-                            } else {
+                            }
+                            else
+                            {
                                 break;
                             }
                         }
@@ -3018,7 +3284,9 @@ namespace XmlNotepad
                         if (!this.SaveIfDirty(true))
                             return;
                         this.Open(url);
-                    } catch (Exception){
+                    }
+                    catch (Exception)
+                    {
                     }
                 }
             }
@@ -3032,205 +3300,253 @@ namespace XmlNotepad
             }
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.CancelEdit();
             New();
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.CancelEdit();
             OpenDialog();
         }
 
-        private void reloadToolStripMenuItem_Click(object sender, EventArgs e) {
-            SelectTreeView(); 
-            if (model.Dirty) {                
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SelectTreeView();
+            if (model.Dirty)
+            {
                 if (MessageBox.Show(this, SR.DiscardChanges, SR.DiscardChangesCaption,
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel) {
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+                {
                     return;
-                }                    
+                }
             }
             Open(this.model.FileName);
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.Commit();
             Save();
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.Commit();
             SaveAs();
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.Commit();
             this.Close();
         }
 
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
-            try {
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 this.xmlTreeView1.CancelEdit();
                 this.undoManager.Undo();
                 SelectTreeView();
                 UpdateMenuState();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show(this, ex.Message, SR.UndoError, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void redoToolStripMenuItem_Click(object sender, EventArgs e) {
-            try {
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 if (this.xmlTreeView1.Commit())
                     this.undoManager.Redo();
                 SelectTreeView();
                 UpdateMenuState();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show(this, ex.Message, SR.RedoError, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void cutToolStripMenuItem_Click(object sender, EventArgs e) {
-            if (this.xmlTreeView1.Commit()) 
+        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.Cut();
             UpdateMenuState();
             SelectTreeView();
         }
 
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.Commit();
             this.xmlTreeView1.Copy();
             SelectTreeView();
         }
 
-        private void pasteToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.Paste(InsertPosition.Child);
             UpdateMenuState();
             SelectTreeView();
         }
 
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             DeleteSelectedNode();
         }
 
-        void DeleteSelectedNode() {
+        void DeleteSelectedNode()
+        {
             this.xmlTreeView1.Commit();
             this.xmlTreeView1.Delete();
             UpdateMenuState();
             SelectTreeView();
         }
 
-        private void repeatToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void repeatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.RepeatSelectedNode();
         }
 
-        void RepeatSelectedNode() {
+        void RepeatSelectedNode()
+        {
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.Insert();
             UpdateMenuState();
             SelectTreeView();
         }
 
-        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             DuplicateSelectedNode();
         }
 
-        void DuplicateSelectedNode() {
-            try {
+        void DuplicateSelectedNode()
+        {
+            try
+            {
                 if (this.xmlTreeView1.Commit())
                     this.xmlTreeView1.Duplicate();
                 UpdateMenuState();
                 SelectTreeView();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show(this, ex.Message, SR.DuplicateErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }            
+            }
         }
 
-        private void upToolStripMenuItem_Click(object sender, EventArgs e) {
-            if (this.xmlTreeView1.Commit())                    
+        private void upToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.NudgeNode(this.xmlTreeView1.SelectedNode, NudgeDirection.Up);
             SelectTreeView();
         }
 
-        private void downToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void downToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.NudgeNode(this.xmlTreeView1.SelectedNode, NudgeDirection.Down);
             SelectTreeView();
         }
 
-        private void leftToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void leftToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.NudgeNode(this.xmlTreeView1.SelectedNode, NudgeDirection.Left);
             SelectTreeView();
         }
 
-        private void rightToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void rightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.NudgeNode(this.xmlTreeView1.SelectedNode, NudgeDirection.Right);
             SelectTreeView();
         }
 
-        private void findToolStripMenuItem_Click(object sender, EventArgs e) {            
+        private void findToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             Search(false);
         }
 
-        private void replaceToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void replaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             Search(true);
         }
 
-        void Search(bool replace) {
-            if (this.tabControlViews.SelectedTab == this.tabPageHtmlView) {
+        void Search(bool replace)
+        {
+            if (this.tabControlViews.SelectedTab == this.tabPageHtmlView)
+            {
                 // TBD...
                 return;
             }
 
-            if (search == null || !search.Visible) {
+            if (search == null || !search.Visible)
+            {
                 search = new FormSearch(search, (ISite)this);
                 search.Owner = this;
                 this.analytics.RecordFormSearch();
-            } else {
+            }
+            else
+            {
                 search.Activate();
             }
             search.Target = new XmlTreeViewFindTarget(this.xmlTreeView1);
             search.ReplaceMode = replace;
 
-            if (!search.Visible) {
+            if (!search.Visible)
+            {
                 search.Show(this); // modeless
             }
         }
 
-        private void expandToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void expandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             XmlTreeNode s = this.xmlTreeView1.SelectedNode;
-            if (s != null) {
+            if (s != null)
+            {
                 s.ExpandAll();
             }
         }
 
-        private void collapseToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void collapseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             XmlTreeNode s = this.xmlTreeView1.SelectedNode;
-            if (s != null) {
+            if (s != null)
+            {
                 s.CollapseAll();
             }
         }
 
-        private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void expandAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.xmlTreeView1.ExpandAll();
         }
 
-        private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.xmlTreeView1.CollapseAll();
         }
 
-        private void statusBarToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void statusBarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             bool visible = !statusBarToolStripMenuItem.Checked;
             statusBarToolStripMenuItem.Checked = visible;
             int h = this.ClientSize.Height - this.toolStrip1.Bottom - 2;
-            if (visible) {
+            if (visible)
+            {
                 h -= this.statusStrip1.Height;
             }
             this.tabControlViews.Height = h;
@@ -3238,250 +3554,297 @@ namespace XmlNotepad
             this.PerformLayout();
         }
 
-        private void sourceToolStripMenuItem_Click(object sender, EventArgs e) {
-            if (this.tabControlViews.SelectedTab == this.tabPageHtmlView) {
+        private void sourceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.tabControlViews.SelectedTab == this.tabPageHtmlView)
+            {
                 // TBD
-            } else {
+            }
+            else
+            {
                 OpenNotepad(this.model.FileName);
             }
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             string oldLocation = (string)settings["UpdateLocation"];
             FormOptions options = new FormOptions();
             options.Owner = this;
             options.Site = this;
-            if (options.ShowDialog(this) == DialogResult.OK) {
+            if (options.ShowDialog(this) == DialogResult.OK)
+            {
                 this.updater.OnUserChange(oldLocation);
             }
             analytics.RecordFormOptions();
         }
 
 
-        private void contentsToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             Help.ShowHelp(this, this.helpProvider1.HelpNamespace, HelpNavigator.TableOfContents);
         }
 
-        private void indexToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void indexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             Help.ShowHelp(this, this.helpProvider1.HelpNamespace, HelpNavigator.Index);
         }
 
-        private void aboutXMLNotepadToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void aboutXMLNotepadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             FormAbout frm = new FormAbout();
             frm.ShowDialog(this);
         }
 
-        private void toolStripButtonNew_Click(object sender, EventArgs e) {
+        private void toolStripButtonNew_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.CancelEdit();
             this.New();
         }
 
-        private void toolStripButtonOpen_Click(object sender, EventArgs e) {
+        private void toolStripButtonOpen_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.CancelEdit();
             this.OpenDialog();
         }
 
-        private void toolStripButtonSave_Click(object sender, EventArgs e) {
+        private void toolStripButtonSave_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.Commit();
             this.Save();
         }
 
-        private void toolStripButtonUndo_Click(object sender, EventArgs e) {
+        private void toolStripButtonUndo_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.undoManager.Undo();
             UpdateMenuState();
         }
 
-        private void toolStripButtonRedo_Click(object sender, EventArgs e) {
+        private void toolStripButtonRedo_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.undoManager.Redo();
             UpdateMenuState();
         }
 
-        private void toolStripButtonCut_Click(object sender, EventArgs e) {
+        private void toolStripButtonCut_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.xmlTreeView1.Cut();
             UpdateMenuState();
         }
 
-        private void toolStripButtonCopy_Click(object sender, EventArgs e) {
+        private void toolStripButtonCopy_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.xmlTreeView1.Copy();
         }
 
-        private void toolStripButtonPaste_Click(object sender, EventArgs e) {
+        private void toolStripButtonPaste_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.xmlTreeView1.Paste(InsertPosition.Child);
             UpdateMenuState();
         }
 
-        private void toolStripButtonDelete_Click(object sender, EventArgs e) {
+        private void toolStripButtonDelete_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.xmlTreeView1.CancelEdit();
             this.xmlTreeView1.Delete();
             UpdateMenuState();
         }
 
-        private void toolStripButtonNudgeUp_Click(object sender, EventArgs e) {
+        private void toolStripButtonNudgeUp_Click(object sender, EventArgs e)
+        {
             this.upToolStripMenuItem_Click(sender, e);
         }
 
-        private void toolStripButtonNudgeDown_Click(object sender, EventArgs e) {
+        private void toolStripButtonNudgeDown_Click(object sender, EventArgs e)
+        {
             this.downToolStripMenuItem_Click(sender, e);
         }
 
-        private void toolStripButtonNudgeLeft_Click(object sender, EventArgs e) {
+        private void toolStripButtonNudgeLeft_Click(object sender, EventArgs e)
+        {
             this.leftToolStripMenuItem_Click(sender, e);
         }
 
-        private void toolStripButtonNudgeRight_Click(object sender, EventArgs e) {
+        private void toolStripButtonNudgeRight_Click(object sender, EventArgs e)
+        {
             this.rightToolStripMenuItem_Click(sender, e);
         }
 
         // Insert Menu Items.
 
-        private void elementAfterToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void elementAfterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.After, XmlNodeType.Element);
         }
 
-        private void elementBeforeToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void elementBeforeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Before, XmlNodeType.Element);
         }
 
-        private void elementChildToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void elementChildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.Element);
         }
 
-        private void attributeBeforeToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void attributeBeforeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Before, XmlNodeType.Attribute);
         }
 
-        private void attributeAfterToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void attributeAfterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.After, XmlNodeType.Attribute);
         }
 
-        private void attributeChildToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void attributeChildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.Attribute);
         }
 
-        private void textBeforeToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void textBeforeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Before, XmlNodeType.Text);
         }
 
-        private void textAfterToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void textAfterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.After, XmlNodeType.Text);
         }
 
-        private void textChildToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void textChildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.Text);
         }
 
-        private void commentBeforeToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void commentBeforeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Before, XmlNodeType.Comment);
         }
 
-        private void commentAfterToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void commentAfterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.After, XmlNodeType.Comment);
         }
 
-        private void commentChildToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void commentChildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.Comment);
         }
 
-        private void cdataBeforeToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void cdataBeforeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Before, XmlNodeType.CDATA);
         }
 
-        private void cdataAfterToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void cdataAfterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.After, XmlNodeType.CDATA);
         }
 
-        private void cdataChildToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void cdataChildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.CDATA);
         }
 
-        private void PIBeforeToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void PIBeforeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Before, XmlNodeType.ProcessingInstruction);
         }
 
-        private void PIAfterToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void PIAfterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.After, XmlNodeType.ProcessingInstruction);
         }
 
-        private void PIChildToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void PIChildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             if (this.xmlTreeView1.Commit())
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.ProcessingInstruction);
         }
 
-        void Launch(string exeFileName, string args) {
+        void Launch(string exeFileName, string args)
+        {
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = exeFileName;
             info.Arguments = "/offset " + args;
             Process p = new Process();
             p.StartInfo = info;
-            if (!p.Start()) {
+            if (!p.Start())
+            {
                 MessageBox.Show(this, string.Format(SR.ErrorCreatingProcessPrompt, exeFileName), SR.LaunchErrorPrompt, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }            
+            }
         }
 
-        private void newWindowToolStripMenuItem_Click(object sender, EventArgs e){
+        private void newWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.SaveIfDirty(true);
             this.OpenNewWindow(this.model.FileName);
         }
 
 
-        private void schemasToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void schemasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             FormSchemas frm = new FormSchemas();
             frm.Owner = this;
             frm.Site = this;
-            if (frm.ShowDialog(this) == DialogResult.OK) {
+            if (frm.ShowDialog(this) == DialogResult.OK)
+            {
                 OnModelChanged();
             }
             this.analytics.RecordFormSchemas();
         }
 
-        private void nextErrorToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void nextErrorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.taskList.NavigateNextError();
         }
 
-        private void compareXMLFilesToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void compareXMLFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (string.IsNullOrEmpty(this.model.FileName))
             {
                 MessageBox.Show(this, SR.XmlDiffEmptyPrompt, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -3492,7 +3855,7 @@ namespace XmlNotepad
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = SR.SaveAsFilter;
             bool retry = true;
-            while (retry && ofd.ShowDialog(this) == DialogResult.OK) 
+            while (retry && ofd.ShowDialog(this) == DialogResult.OK)
             {
                 string secondFile = ofd.FileName;
                 if (secondFile.ToUpperInvariant() == this.model.FileName.ToUpperInvariant())
@@ -3536,7 +3899,8 @@ namespace XmlNotepad
         private void SideBySideXmlNotepadHeader(
             string sourceXmlFile,
             string changedXmlFile,
-            TextWriter resultHtml) {
+            TextWriter resultHtml)
+        {
 
             // this initializes the html
             resultHtml.WriteLine("<html><head>");
@@ -3555,14 +3919,19 @@ namespace XmlNotepad
 
         }
 
-        void CleanupTempFiles() {
-            try {
+        void CleanupTempFiles()
+        {
+            try
+            {
                 this.tempFiles.Delete();
-            } catch {
+            }
+            catch
+            {
             }
         }
 
-        private void DoCompare(string changed) {
+        private void DoCompare(string changed)
+        {
             CleanupTempFiles();
 
             // todo: add UI for setting XmlDiffOptions.
@@ -3619,7 +3988,8 @@ namespace XmlNotepad
 
             XmlDocument doc = new XmlDocument();
             settings = model.GetReaderSettings();
-            using (XmlReader reader = XmlReader.Create(changed, settings)) {
+            using (XmlReader reader = XmlReader.Create(changed, settings))
+            {
                 doc.Load(reader);
             }
 
@@ -3638,21 +4008,23 @@ namespace XmlNotepad
                 isEqual = diff.Compare(original, doc, diffWriter);
             }
 
-            if (isEqual) {
+            if (isEqual)
+            {
                 //This means the files were identical for given options.
                 MessageBox.Show(this, SR.FilesAreIdenticalPrompt, SR.FilesAreIdenticalCaption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return; 
+                return;
             }
 
             string tempFile = Path.Combine(Path.GetTempPath(),
                 Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + ".htm");
             tempFiles.AddFile(tempFile, false);
-            
-            using (XmlReader diffGram = XmlReader.Create(diffFile, settings)) {
+
+            using (XmlReader diffGram = XmlReader.Create(diffFile, settings))
+            {
                 XmlDiffView diffView = new XmlDiffView();
                 using (var reader = new XmlTextReader(filename))
-                { 
+                {
                     diffView.Load(reader, diffGram);
                     using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8))
                     {
@@ -3665,11 +4037,14 @@ namespace XmlNotepad
 
             Utilities.OpenUrl(this.Handle, tempFile);
         }
-        
-        string ApplicationPath {
-            get {
+
+        string ApplicationPath
+        {
+            get
+            {
                 string path = Application.ExecutablePath;
-                if (path.EndsWith("vstesthost.exe", StringComparison.CurrentCultureIgnoreCase)) {
+                if (path.EndsWith("vstesthost.exe", StringComparison.CurrentCultureIgnoreCase))
+                {
                     // must be running UnitTests
                     Uri baseUri = new Uri(this.GetType().Assembly.Location);
                     Uri resolved = new Uri(baseUri, @"..\..\..\Application\bin\debug\XmlNotepad.exe");
@@ -3679,25 +4054,35 @@ namespace XmlNotepad
             }
         }
 
-        public virtual void OpenNewWindow(string path){
-            if (!string.IsNullOrEmpty(path)) {
+        public virtual void OpenNewWindow(string path)
+        {
+            if (!string.IsNullOrEmpty(path))
+            {
                 Uri uri = new Uri(path);
-                if (uri.IsFile) {
+                if (uri.IsFile)
+                {
                     path = uri.LocalPath;
-                    if (!File.Exists(path)) {
+                    if (!File.Exists(path))
+                    {
                         DialogResult dr = MessageBox.Show(
                             String.Format(SR.CreateFile, path), SR.CreateNodeFileCaption,
                             MessageBoxButtons.OKCancel);
-                        if (dr.Equals(DialogResult.OK)) {
-                            try {
+                        if (dr.Equals(DialogResult.OK))
+                        {
+                            try
+                            {
                                 XmlDocument include = new XmlDocument();
                                 include.InnerXml = "<root/>";
                                 include.Save(path);
-                            } catch (Exception e) {
+                            }
+                            catch (Exception e)
+                            {
                                 MessageBox.Show(this, e.Message, SR.SaveErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             return;
                         }
                     }
@@ -3706,7 +4091,8 @@ namespace XmlNotepad
             Launch(this.ApplicationPath, "\"" + path + "\"");
         }
 
-        private void GotoDefinition() {
+        private void GotoDefinition()
+        {
             SelectTreeView();
             this.SaveIfDirty(true);
 
@@ -3715,107 +4101,132 @@ namespace XmlNotepad
 
             string ipath = node.GetDefinition();
 
-            if (!string.IsNullOrEmpty(ipath)) {
+            if (!string.IsNullOrEmpty(ipath))
+            {
                 OpenNewWindow(ipath);
             }
-            
+
         }
 
-        private void gotoDefinitionToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void gotoDefinitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.GotoDefinition();
         }
 
-        private void ctxGotoDefinitionToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void ctxGotoDefinitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.GotoDefinition();
         }
 
-        private void expandXIncludesToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void expandXIncludesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SelectTreeView();
             this.model.ExpandIncludes();
             includesExpanded = true;
         }
 
-        private void exportErrorsToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void exportErrorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             SaveAsErrors();
         }
 
-        void SaveAsErrors() {
+        void SaveAsErrors()
+        {
             SaveFileDialog sd = new SaveFileDialog();
             sd.Filter = SR.SaveAsFilter;
             sd.Title = SR.SaveErrorsCaption;
-            if (sd.ShowDialog(this) == DialogResult.OK) {
+            if (sd.ShowDialog(this) == DialogResult.OK)
+            {
                 string fname = sd.FileName;
-                if (CheckReadOnly(fname)) {
+                if (CheckReadOnly(fname))
+                {
                     SaveErrors(fname);
                 }
             }
         }
 
-        private void changeToAttributeToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void changeToAttributeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Attribute);
         }
 
-        private void changeToTextToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void changeToTextToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Text);
         }
 
-        private void changeToCDATAToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void changeToCDATAToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.CDATA);
         }
 
-        private void changeToCommentToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void changeToCommentToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Comment);
         }
 
-        private void changeToProcessingInstructionToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void changeToProcessingInstructionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.ProcessingInstruction);
         }
 
-        private void changeToElementContextMenuItem_Click(object sender, EventArgs e) {
+        private void changeToElementContextMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Element);
         }
 
-        private void changeToAttributeContextMenuItem_Click(object sender, EventArgs e) {
+        private void changeToAttributeContextMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Attribute);
         }
 
-        private void changeToTextToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void changeToTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Text);
         }
 
-        private void changeToCDATAContextMenuItem_Click(object sender, EventArgs e) {
+        private void changeToCDATAContextMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.CDATA);
         }
 
-        private void changeToCommentContextMenuItem_Click(object sender, EventArgs e) {
+        private void changeToCommentContextMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.Comment);
         }
 
-        private void changeToProcessingInstructionContextMenuItem_Click(object sender, EventArgs e) {
+        private void changeToProcessingInstructionContextMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.ChangeTo(XmlNodeType.ProcessingInstruction);
         }
 
-        private void incrementalSearchToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void incrementalSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.StartIncrementalSearch();
         }
 
-        private void renameToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void renameToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.BeginEditNodeName();
         }
 
-        private void renameToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             this.xmlTreeView1.BeginEditNodeName();
         }
 
-        private void insertToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void insertToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.RepeatSelectedNode();
         }
 
-        private void deleteToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.DeleteSelectedNode();
         }
 
-        private void duplicateToolStripMenuItem1_Click(object sender, EventArgs e) {
+        private void duplicateToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             this.DuplicateSelectedNode();
         }
 
@@ -3824,7 +4235,7 @@ namespace XmlNotepad
             try
             {
                 FileAssociation.AddXmlProgids(Application.ExecutablePath);
-            } 
+            }
             catch (Exception)
             {
             }
@@ -3846,7 +4257,7 @@ namespace XmlNotepad
             }
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
-            
+
             var temp = Path.GetTempPath();
             var scratch = Path.Combine(temp, "XmlNotepad");
             Directory.CreateDirectory(scratch);
@@ -3862,7 +4273,7 @@ namespace XmlNotepad
 
             // need proper utf-8 encoding of the file name which can't be done with "cmd /k" command line.
             using (TextWriter cmdFile = new StreamWriter(fileNameFile, false, Encoding.UTF8))
-            {               
+            {
                 cmdFile.WriteLine(this.model.FileName);
             }
 

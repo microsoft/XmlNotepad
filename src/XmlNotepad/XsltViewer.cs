@@ -112,6 +112,7 @@ namespace XmlNotepad
                     g.FillRectangle(brush, r);
                 }
             }
+            base.OnPaint(e);
         }
 
         public void SetSite(ISite site)

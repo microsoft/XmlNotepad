@@ -31,6 +31,8 @@ namespace XmlNotepad {
             tabs.SelectedIndexChanged += new EventHandler(OnTabsSelectedIndexChanged);
         }
 
+        public TabControl Tabs => tabs;
+
         public int SelectedIndex {
             get { return tabs.SelectedIndex; }
             set { tabs.SelectedIndex = value; }

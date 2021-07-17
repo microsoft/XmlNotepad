@@ -101,6 +101,9 @@
     <Compile Include="..\Version\Version.cs">
       <Link>Version.cs</Link>
     </Compile>
+    <Compile Include="AnimationCanvas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -128,7 +131,6 @@
     <Compile Include="NodeTextView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PerfTimer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
