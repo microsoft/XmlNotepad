@@ -96,7 +96,6 @@ namespace XmlNotepad
         private ToolStripMenuItem CDATAToolStripMenuItem;
         private ToolStripMenuItem PIToolStripMenuItem;
         private ToolStripMenuItem contentsToolStripMenuItem;
-        private ToolStripMenuItem indexToolStripMenuItem;
         private ToolStripSeparator toolStripMenuItem10;
         private ToolStripMenuItem aboutXMLNotepadToolStripMenuItem;
         private ToolStrip toolStrip1;
@@ -1000,8 +999,7 @@ namespace XmlNotepad
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();            
             this.sampleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
@@ -1962,7 +1960,6 @@ namespace XmlNotepad
             resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
-            this.indexToolStripMenuItem,
             this.sampleToolStripMenuItem,
             this.checkUpdatesToolStripMenuItem,
             this.toolStripMenuItem10,
@@ -1974,12 +1971,6 @@ namespace XmlNotepad
             resources.ApplyResources(this.contentsToolStripMenuItem, "contentsToolStripMenuItem");
             this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
             this.contentsToolStripMenuItem.Click += new System.EventHandler(this.contentsToolStripMenuItem_Click);
-            // 
-            // indexToolStripMenuItem
-            // 
-            resources.ApplyResources(this.indexToolStripMenuItem, "indexToolStripMenuItem");
-            this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Click += new System.EventHandler(this.indexToolStripMenuItem_Click);
             // 
             // sampleToolStripMenuItem
             // 
@@ -3583,11 +3574,6 @@ namespace XmlNotepad
         private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Help.ShowHelp(this, this.helpProvider1.HelpNamespace, HelpNavigator.TableOfContents);
-        }
-
-        private void indexToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Help.ShowHelp(this, this.helpProvider1.HelpNamespace, HelpNavigator.Index);
         }
 
         private void aboutXMLNotepadToolStripMenuItem_Click(object sender, EventArgs e)
