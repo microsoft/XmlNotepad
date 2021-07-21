@@ -1278,7 +1278,6 @@ namespace UnitTests {
         [Timeout(TestMethodTimeout)]
         public void TestXPathFind() {
             Trace.WriteLine("TestXPathFind==========================================================");
-            // Give view source something to show.
             string testFile = TestDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
                        
@@ -1322,11 +1321,15 @@ namespace UnitTests {
             
             Trace.WriteLine("test edit path and find node.");
             fd.Window.SendKeystrokes("/Root{ENTER}");
+            Sleep(100);
             fd.Window.DismissPopUp("{ESC}");
+            Sleep(100);
 
             Trace.WriteLine("test 'id' attribute path generation.");
             this.TreeView.SetFocus();
-            w.SendKeystrokes("{ESC}{DOWN}");
+            w.SendKeystrokes("{ESC}");
+            Sleep(100);
+            w.SendKeystrokes("{DOWN}");
             fd = OpenFindDialog();
             AssertNormalizedEqual(fd.FindString, "/Root/@id");
             fd.Window.DismissPopUp("{ESC}");
@@ -1414,18 +1417,17 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestFindReplace() {
+        public void TestFind() {
 
             ResetFindOptions();
 
-            Trace.WriteLine("TestFindReplace==========================================================");
-            // Give view source something to show.
+            Trace.WriteLine("TestFind==========================================================");
             string testFile = TestDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             Trace.WriteLine("Test auto-move of Find Window to reveal what was found");
             Rectangle treeBounds = this.XmlTreeView.Bounds;
-            
+
             var findDialog = OpenFindDialog();
             findDialog.ClearFindCheckBoxes();
             var wrapper = findDialog.Window.AccessibleObject;
@@ -1434,7 +1436,7 @@ Prefix 'user' is not defined. ");
             Point treeCenter = treeBounds.Center();
             Point findCenter = findBounds.Center();
             Point start = new Point(findBounds.Left + (findBounds.Width / 2), findBounds.Top + 15);
-            Point end = new Point(start.X + treeCenter.X - findCenter.X, 
+            Point end = new Point(start.X + treeCenter.X - findCenter.X,
                                   start.Y + treeCenter.Y - findCenter.Y);
             Mouse.MouseClick(start, MouseButtons.Left);
             Mouse.MouseDragTo(start, end, 5, MouseButtons.Left);
@@ -1443,7 +1445,7 @@ Prefix 'user' is not defined. ");
             // Refocus the combo box...
             Sleep(500);
             findDialog.FocusFindString();
-            
+
             Sleep(500);
             // check we can find attribute values!
             findDialog.Window.SendKeystrokes("foo{ENTER}");
@@ -1454,7 +1456,7 @@ Prefix 'user' is not defined. ");
             CheckClipboard("foo");
             Sleep(200);
             w.SendKeystrokes("^{HOME}");
-            
+
             Trace.WriteLine("Test find error dialog");
             findDialog = OpenFindDialog();
             findDialog.Window.SendKeystrokes("will not find{ENTER}");
@@ -1508,8 +1510,22 @@ Prefix 'user' is not defined. ");
             w.SendKeystrokes("^c");
             CheckClipboard("<!--last comment-->");
 
+            ResetFindOptions();
+            // find should not modify the document, so we should be able to exit without saveas dialog.
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestReplace()
+        {
+            ResetFindOptions();
+
+            Trace.WriteLine("TestReplace==========================================================");
+            string testFile = TestDir + "UnitTests\\test1.xml";
+            var w = LaunchNotepad(testFile);
+
             w.SendKeystrokes("{HOME}");
-            findDialog = OpenReplaceDialog();
+            var findDialog = OpenReplaceDialog();
 
             Trace.WriteLine("Toggle dialog using ctrl+f & ctrl+h");
             findDialog.Window.SendKeystrokes("^f");            
@@ -1531,17 +1547,82 @@ Prefix 'user' is not defined. ");
             w.SendKeystrokes("^c"); 
             CheckClipboard(expected);
 
+            Trace.WriteLine("Check compound undo.");
+            Undo();
+            var original = @"
+    The XML markup in this version is Copyright © 1999 Jon Bosak.
+    This work may freely be distributed on condition that it not be
+    modified or altered in any way.
+    ";
+            CheckOuterXml(original);
+
             Trace.WriteLine("Failed replace, via replace button");
             w.SendKeystrokes("{HOME}");
             findDialog = OpenReplaceDialog();
             findDialog.Window.SendKeystrokes("will not find%r");
-            popup = findDialog.Window.ExpectingPopup("Find Error");
+            var popup = findDialog.Window.ExpectingPopup("Find Error");
             popup.DismissPopUp("{ENTER}");
+
+            Trace.WriteLine("Test we can replace 2 things in sequence");
+            w.SendKeystrokes("{HOME}");
+            findDialog.Window.SendKeystrokes("XML{TAB}XXXXX%w%r");
+            findDialog.Window.SendKeystrokes("%r"); // make the first change
+            findDialog.Window.SendKeystrokes("%r"); // make the second change
+            popup = findDialog.Window.ExpectingPopup("Replace Complete");
+            popup.DismissPopUp("{ENTER}");
+
+            CheckOuterXml(@"
+    The XXXXX markup in this version is Copyright © 1999 Jon Bosak.
+    This work may freely be distributed on condition that it not be
+    modified or altered in any way.
+    ");
             findDialog.Window.DismissPopUp("{ESC}");
 
-            Trace.WriteLine("Check compound undo.");
+            Undo(); 
+            Undo(); // should move us back to the previous paragraph
+            Redo(); // check that this replace operation actually worked.
+            CheckOuterXml(@"XXXXX version by Jon Bosak, 1996-1999.");
+
+            Sleep(1000);
+            Save("out.xml");
+
+            w.Dispose();
+            Sleep(2000);
+            ResetFindOptions();
+
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestReplaceBackwards()
+        {
+            ResetFindOptions();
+
+            Trace.WriteLine("TestReplaceBackwards==========================================================");
+            string testFile = TestDir + "UnitTests\\test1.xml";
+            var w = LaunchNotepad(testFile);
+
+            w.SendKeystrokes("{HOME}");
+            var findDialog = OpenReplaceDialog();
+
+            Trace.WriteLine("Test we can replace 2 things in backwards sequence");
+            w.SendKeystrokes("{HOME}");
+            findDialog.Window.SendKeystrokes("XML{TAB}XXXXX%m%w%u%r");
+            findDialog.Window.SendKeystrokes("%r"); // make the first change
+            findDialog.Window.SendKeystrokes("%r"); // make the second change
+            var popup = findDialog.Window.ExpectingPopup("Replace Complete");
+            popup.DismissPopUp("{ENTER}");
+            findDialog.Window.DismissPopUp("{ESC}");
+            CheckOuterXml(@"XXXXX version by Jon Bosak, 1996-1999.");
+
             Undo();
-            CheckOuterXml(original);
+            Undo(); // should move us back to the previous paragraph
+            Redo(); // check that this replace operation actually worked.
+            CheckOuterXml(@"
+    The XXXXX markup in this version is Copyright © 1999 Jon Bosak.
+    This work may freely be distributed on condition that it not be
+    modified or altered in any way.
+    ");
 
             Sleep(1000);
             Save("out.xml");

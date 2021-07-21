@@ -19,12 +19,15 @@ namespace XmlNotepad {
         SearchFilter filter;
         XmlNamespaceManager nsmgr;
         XmlDocument doc;
-        ArrayList list;
+        List<XmlNodeMatch> list;
         XmlTreeNode current;
         Regex regex;
         StringComparison comp;
         XmlNodeMatch match;
         IEditableView ev;
+        int position; // current position in the list.
+        int start; // this is the start position in the list around which we can wrap the find.
+        bool resetPosition; // model has changed 'list' needs updating, but we don't want to forget our position either.
 
         public XmlTreeViewFindTarget(XmlTreeView view) {
             this.view = view;
@@ -37,6 +40,7 @@ namespace XmlNotepad {
         bool WholeWord { get { return (this.flags & FindFlags.WholeWord) != 0; } }
 
         void FindNodes() {
+
             XmlDocument doc = this.view.Model.Document;
             if (this.doc != doc) {
                 this.doc = doc;
@@ -57,7 +61,7 @@ namespace XmlNotepad {
 
             this.comp = MatchCase ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
 
-            list = new ArrayList();
+            this.list = new List<XmlNodeMatch>();
 
             foreach (XmlNode node in this.doc.SelectNodes(expr, this.nsmgr)) {
                 MatchNode(node);
@@ -96,13 +100,18 @@ namespace XmlNotepad {
 
         void OnModelChanged(object sender, ModelChangedEventArgs e) {
             // Then the list of matching nodes we found might now be invalid!
-            this.list = null;
+            ResetPosition();
+        }
+
+        private void ResetPosition()
+        {
+            this.resetPosition = true;
         }
 
         object[] a = new object[1];
         char[] ws = new char[] { ' ', '\t', '\n', '\r', '.', ',', ';', '!', '\'', '"', '+', '=', '-', '<', '>', '(', ')' };
 
-        void MatchStrings(ArrayList list, XmlNode node, string value, bool name) {
+        void MatchStrings(List<XmlNodeMatch> list, XmlNode node, string value, bool name) {
             if (string.IsNullOrEmpty(value)) 
                 return;
 
@@ -164,18 +173,39 @@ namespace XmlNotepad {
                 return FindResult.None;
 
             if (this.list == null) {
-                FindNodes();
+                FindNodes(); 
+                this.position = -1;
+                this.start = -1; // we have not yet moved to one of the found nodes.
             }
+            else if (this.resetPosition)
+            {
+                this.resetPosition = false;
+                FindNodes();
+                if (this.start >= list.Count)
+                {
+                    this.start = list.Count - 1;
+                }
+                if (this.position >= list.Count)
+                {
+                    this.position = list.Count - 1;
+                }
+            }
+
+            int s = this.start;
+            bool first = (this.start == -1);
             
-            // In case user changed the selection since the last find.
-            int pos = FindSelectedNode();
-            int wrap = -1;
-            bool first = true;
-            bool hasSomething = this.list.Count > 0;
-            while (this.list != null && hasSomething && 
-                (first || pos != wrap)) {
-                first = false;
-                if (wrap == -1) wrap = pos;
+            var rc = FindSelectedNode();
+            int pos = rc.Item1;
+            bool exact = rc.Item2;
+
+            if (pos != this.position)
+            {
+                // user has moved the selection somewhere else, so start the find ring over again.
+                first = true;
+            }
+
+            bool hasSomething = this.list != null && this.list.Count > 0;
+            while (hasSomething) {
                 if (this.Backwards) {
                     pos--;
                     if (pos < 0) pos = list.Count - 1;
@@ -183,6 +213,18 @@ namespace XmlNotepad {
                     pos++;
                     if (pos >= list.Count) pos = 0;
                 }
+
+                if (first)
+                {
+                    this.start = s = pos;
+                }
+                else if (pos == this.start)
+                {
+                    // we have wrapped around!
+                    break;
+                }
+
+                this.position = pos;
 
                 XmlNodeMatch m = list[pos] as XmlNodeMatch;
                 XmlNode node = m.Node;
@@ -204,12 +246,16 @@ namespace XmlNotepad {
                 }
                 return FindResult.Found;
             }
+            
+            this.start = -1; // get ready for another cycle around.
             return hasSomething ? FindResult.NoMore : FindResult.None;
         }
 
-        int FindSelectedNode() {
-            // Now find where the selectedNode is in the matching list so we can start there.
-            int pos = -1;
+        /// <summary>
+        /// Now find item in the list that is the selectedNode or immediately before it so that
+        /// we can start the first FindNext operation with the item that is closest to the selected node.
+        /// </summary>
+        (int,bool) FindSelectedNode() {
             XmlNode selectedNode = null;
             bool treeFocused = this.view.TreeView.ContainsFocus;
             bool textViewFocused = this.view.NodeTextView.ContainsFocus;
@@ -233,26 +279,57 @@ namespace XmlNotepad {
                 if (selectedNode != null) {
                     // I'm not using XPathNavigator.ComparePosition because it is returning XmlNodeOrder.Unknown
                     // sometimes which is not very useful!
-                    foreach (XmlNodeMatch m in list) {
-                        XmlNode node = m.Node;
-                        if (node == selectedNode) {
-                            if (m.IsName && treeFocused)
+                    if (Backwards)
+                    {
+                        for (int pos = list.Count - 1; pos >= 0 ; pos--)
+                        {
+                            XmlNodeMatch m = list[pos];
+                            XmlNode node = m.Node;
+                            if (node == selectedNode)
                             {
-                                return ++pos; // selected node is the node name.
+                                if (m.IsName && treeFocused)
+                                {
+                                    return (pos, true); // selected node is the node name.
+                                }
+                                else if (!m.IsName && m.Index >= start)
+                                {
+                                    return (pos, true); // selected node is one of the matching nodes.
+                                }
                             }
-                            else if (!m.IsName && m.Index >= start)
+                            else if (!IsNodeAfter(selectedNode, node))
                             {
-                                return ++pos; // selected node is one of the matching nodes.
+                                return (pos + 1, false);
                             }
-                        } else if (IsNodeAfter(selectedNode, node)) {
-                            break;
                         }
-                        pos++;
+                    }
+                    else
+                    {
+                        for (int pos = 0; pos < list.Count; pos++)
+                        {
+                            XmlNodeMatch m = list[pos];
+                            XmlNode node = m.Node;
+                            if (node == selectedNode)
+                            {
+                                if (m.IsName && treeFocused)
+                                {
+                                    return (pos, true); // selected node is the node name.
+                                }
+                                else if (!m.IsName && m.Index >= start)
+                                {
+                                    return (pos, true); // selected node is one of the matching nodes.
+                                }
+                            }
+                            else if (IsNodeAfter(selectedNode, node))
+                            {
+                                return (pos, false);
+                            }
+                        }
                     }
                 } 
             }
-            if (Backwards) pos++;
-            return pos;
+
+            // then simply start at the beginning.
+            return (this.Backwards ? list.Count : -1, false);
         }
 
         // returns true if the match node comes after the selected node in document order.
@@ -333,8 +410,8 @@ namespace XmlNotepad {
 
         public bool ReplaceCurrent( string replaceWith) {
             if (this.ev != null && this.ev.IsEditing && this.match != null) {
-                this.list.Remove(this.match);
                 this.ev.ReplaceText(this.match.Index, this.match.Length, replaceWith);
+                ResetPosition();
                 return true;
             }
             return false;

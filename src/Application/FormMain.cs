@@ -999,7 +999,7 @@ namespace XmlNotepad
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();            
+            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sampleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
@@ -2501,7 +2501,7 @@ namespace XmlNotepad
             this.toolStripStatusLabel1.Text = "";
         }
 
-        public virtual void Open(string filename)
+        public virtual void Open(string filename, bool recentFile = false)
         {
             try
             {
@@ -2523,11 +2523,21 @@ namespace XmlNotepad
             }
             catch (Exception e)
             {
-                if (MessageBox.Show(this,
-                    string.Format(SR.LoadErrorPrompt, filename, e.Message),
-                    SR.LoadErrorCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                if (recentFile)
                 {
-                    OpenNotepad(filename);
+                    if (MessageBox.Show(this, SR.RecentFileNotFoundMessage, SR.RecentFileNotFoundCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        this.recentFiles.RemoveRecentFile(new Uri(filename));
+                    }
+                }
+                else
+                {
+                    if (MessageBox.Show(this,
+                        string.Format(SR.LoadErrorPrompt, filename, e.Message),
+                        SR.LoadErrorCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                    {
+                        OpenNotepad(filename);
+                    }
                 }
             }
         }
@@ -3043,17 +3053,7 @@ namespace XmlNotepad
             if (!this.SaveIfDirty(true))
                 return;
             string fileName = e.FileName.OriginalString;
-            if (!File.Exists(fileName))
-            {
-                if (MessageBox.Show(this, SR.RecentFileNotFoundMessage, SR.RecentFileNotFoundCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    recentFiles.RemoveRecentFile(e.FileName);
-                }
-            }
-            else
-            {
-                Open(fileName);
-            }
+            Open(fileName, true);
         }
 
         private void treeView1_SelectionChanged(object sender, EventArgs e)

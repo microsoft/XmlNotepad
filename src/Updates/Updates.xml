@@ -9,6 +9,12 @@
 		<history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
 		<frequency>1.00:00:00</frequency>
 	</application>
+  <version number="2.8.0.40">
+    <bug>Fix handling of files in recent files list that no longer exist.</bug>
+    <bug>Fix handling of files that are renamed to .bak by another editor.</bug>
+    <bug>Fix bugs in Find/Replace clicking Replace repeatedly was broken.  Added unit tests to cover this case.</bug>
+    <bug>Remove Help/Index since it went to the same place as Help/Content.</bug>
+  </version>
   <version number="2.8.0.39">
     <bug>
       Fix bug in XSL transform of documents fetched from http location.
@@ -18,12 +24,14 @@
   <version number="2.8.0.38">
     <bug>
       Fix bug in rendering large documents using default stylesheet.
+    </bug><bug>
       Fix layout bug of toolbar on high DPI screens.      
     </bug>
   </version>
   <version number="2.8.0.36">
     <bug>
-      Fix bug in support for non webview2 case.
+      Fix bug in support for non webview2 case.</bug>
+    <bug>
       Automatically register XML notepad with Open With dialog.
     </bug>
   </version>
@@ -35,8 +43,11 @@
 	</version>
 	<version number="2.8.0.33">
 		<bug>
-			Ctrl+A short cut for SaveAs interferes with text editing, so removed Ctrl+A shortcut from SaveAs.
-			One more fix to "openFileDialog1" default file name on schema dialog.
+			Ctrl+A short cut for SaveAs interferes with text editing, so removed Ctrl+A shortcut from SaveAs.</bug>
+    <bug>
+      One more fix to "openFileDialog1" default file name on schema dialog.
+    </bug>
+    <bug>
 			Fix tooltip in options dialog Default Text Editor option.
 		</bug>
 	</version>
@@ -45,13 +56,15 @@
 			Add user settable default text editor option for View Source.
 		</feature>
 		<bug>
-			Fix Schema dialog so it doesn't set filename to "openFileDialog1".
+			Fix Schema dialog so it doesn't set filename to "openFileDialog1".</bug>
+  <bug>
 			Fix View/Source on http files (uses temp file).
 		</bug>
 	</version>
 	<version number="2.8.0.31">
 		<bug>
-			Fix memory usage bug to do with loading huge XML files.
+			Fix memory usage bug to do with loading huge XML files.</bug>
+  <bug>
 			Report XSLT transform times in the status bar.
 		</bug>
 	</version>
