@@ -476,13 +476,19 @@ namespace XmlNotepad
 
         private void watcher_Renamed(object sender, RenamedEventArgs e)
         {
+            // Some editors rename the file to *.bak then save the new version and
+            // in that case we do not want XmlNotepad to switch to the .bak file.
             if (IsSamePath(this.filename, e.OldFullPath))
             {
-                StopFileWatch();
-                this.filename = e.FullPath;
-                StartFileWatch();
-                StartReload();
+                // switch to UI thread
+                actions.StartDelayedAction("renamed", OnRenamed, TimeSpan.FromMilliseconds(1));
             }
+        }
+
+        private void OnRenamed()
+        {
+            this.dirty = true;
+            FireModelChanged(ModelChangeType.Renamed, this.doc);
         }
 
         static bool IsSamePath(string a, string b)
@@ -591,6 +597,7 @@ namespace XmlNotepad
         NamespaceChanged,
         BeginBatchUpdate,
         EndBatchUpdate,
+        Renamed,
     }
 
     public class ModelChangedEventArgs : EventArgs
