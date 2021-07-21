@@ -86,6 +86,15 @@ namespace XmlNotepad {
             }
         }
 
+        public void RemoveRecentFile(Uri fileName)
+        {
+            if (this.recentFiles.Contains(fileName))
+            {
+                this.recentFiles.Remove(fileName);
+                SyncRecentFilesUI();
+            }
+        }
+
         public void AddRecentFile(Uri fileName) {
             try
             {
@@ -194,5 +203,6 @@ namespace XmlNotepad {
         {
             return s.Trim().Trim('"');
         }
+
     }
 }

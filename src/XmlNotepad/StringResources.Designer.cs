@@ -840,7 +840,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The text in this node contains some very long lines which may make editing this string very slow.  
+        ///   Looks up a localized string similar to The text in this node contains some very long lines which may make editing this string very slow.
         ///Would you like to reformat the text into multiple lines?.
         /// </summary>
         public static string LongLinePrompt {
@@ -1071,6 +1071,24 @@ namespace XmlNotepad {
         public static string ReadOnlyCaption {
             get {
                 return ResourceManager.GetString("ReadOnlyCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File not found.
+        /// </summary>
+        public static string RecentFileNotFoundCaption {
+            get {
+                return ResourceManager.GetString("RecentFileNotFoundCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to remove it from recent files list?.
+        /// </summary>
+        public static string RecentFileNotFoundMessage {
+            get {
+                return ResourceManager.GetString("RecentFileNotFoundMessage", resourceCulture);
             }
         }
         
@@ -1718,7 +1736,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This stylesheet contains untrusted script code.  
+        ///   Looks up a localized string similar to This stylesheet contains untrusted script code.
         ///Do you want to enable execution of this script code?.
         /// </summary>
         public static string XslScriptCodePrompt {

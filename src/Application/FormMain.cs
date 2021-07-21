@@ -3043,7 +3043,17 @@ namespace XmlNotepad
             if (!this.SaveIfDirty(true))
                 return;
             string fileName = e.FileName.OriginalString;
-            Open(fileName);
+            if (!File.Exists(fileName))
+            {
+                if (MessageBox.Show(this, SR.RecentFileNotFoundMessage, SR.RecentFileNotFoundCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    recentFiles.RemoveRecentFile(e.FileName);
+                }
+            }
+            else
+            {
+                Open(fileName);
+            }
         }
 
         private void treeView1_SelectionChanged(object sender, EventArgs e)

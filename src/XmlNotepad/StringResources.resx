@@ -131,6 +131,14 @@ Reason:
     <value>Open File Dialog</value>
     <comment>Tooltip</comment>
   </data>
+  <data name="RecentFileNotFoundMessage" xml:space="preserve">
+    <value>Do you want to remove it from recent files list?</value>
+    <comment>Message box message</comment>
+  </data>
+  <data name="RecentFileNotFoundCaption" xml:space="preserve">
+    <value>File not found</value>
+    <comment>Message box caption</comment>
+  </data>
   <data name="ColorPickerLabel" xml:space="preserve">
     <value>&amp;Color picker...</value>
     <comment>Button label</comment>
