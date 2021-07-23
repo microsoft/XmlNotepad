@@ -1343,7 +1343,7 @@
     <value>elementChildToolStripMenuItem</value>
   </data>
   <data name="elementChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+Ins</value>
+    <value>Control+Insert</value>
   </data>
   <data name="elementChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>151, 22</value>
@@ -1379,7 +1379,7 @@
     <value>attributeChildToolStripMenuItem</value>
   </data>
   <data name="attributeChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+Ins</value>
+    <value>Alt+Insert</value>
   </data>
   <data name="attributeChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>147, 22</value>
