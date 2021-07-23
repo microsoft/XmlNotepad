@@ -10,6 +10,11 @@ The data is collected using Google Analytics and shared only with members of the
 development team. The data is used to prioritize future work to improve the features that are most
 popular.
 
+As a teaser, here is a map of countries where XML Notepad was used in July 2021.  That's super cool to see a healthy community of users
+and this motivates the team to keep XML notepad in tip-top shape.
+
+![map](../assets/images/map.png)
+
 The first time you install XML Notepad on your computer you will be prompted with the following
 dialog:
 
