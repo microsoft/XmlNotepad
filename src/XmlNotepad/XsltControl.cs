@@ -471,7 +471,7 @@ namespace XmlNotepad
             string method = "xml"; // the default.
             var mgr = new XmlNamespaceManager(xsltdoc.NameTable);
             mgr.AddNamespace("xsl", ns);
-            XmlElement e = (XmlElement)xsltdoc.SelectSingleNode("//xsl:ouput", mgr);
+            XmlElement e = xsltdoc.SelectSingleNode("//xsl:output", mgr) as XmlElement;
             if (e != null)
             {
                 var specifiedMethod = e.GetAttribute("method");

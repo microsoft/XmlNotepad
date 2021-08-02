@@ -31,7 +31,7 @@ namespace UnitTests {
             // Have to fix the location field to show the right thing.
             XmlDocument doc = new XmlDocument();
             doc.Load(TestDir + @"UnitTests\TestUpdates.xml");
-            XmlElement e = (XmlElement)doc.SelectSingleNode("updates/application/location");
+            XmlElement e = doc.SelectSingleNode("updates/application/location") as XmlElement;
             string target = TestDir + @"XmlNotepad\bin\Debug\Updates.xml";
             e.InnerText = target;
             doc.Save(target);
