@@ -36,7 +36,7 @@ There have been over 3 million downloads since then - so thanks to everyone who 
 - [Intellisense](help/intellisense.md) based on expected elements and attributes and enumerated simple type values.
 - Support for [custom editors](help/customeditors.md) for date, dateTime and time datatypes and other types like color.
 - Handy nudge tool bar buttons for quick movement of nodes up and down the tree.
-- Inplace HTML viewer for processing `<?xml-stylesheets` instructions.
+- [Inplace HTML viewer](xslt.md) for processing `<?xml-stylesheets` instructions.
 - Built-in XML Diff tool.
 - Support for XInclude.
 - Handy "XML statistics" tool to summarize info about your XML documents.

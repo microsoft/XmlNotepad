@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -68,7 +69,11 @@ namespace XmlNotepad
         {
             try
             {
-                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder: WebViewUserCache);
+                CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
+                {
+                    AllowSingleSignOnUsingOSPrimaryAccount = true
+                };
+                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
                 await this.webBrowser2.EnsureCoreWebView2Async(environment);
             } catch
             {
@@ -471,7 +476,7 @@ namespace XmlNotepad
             string method = "xml"; // the default.
             var mgr = new XmlNamespaceManager(xsltdoc.NameTable);
             mgr.AddNamespace("xsl", ns);
-            XmlElement e = (XmlElement)xsltdoc.SelectSingleNode("//xsl:ouput", mgr);
+            XmlElement e = xsltdoc.SelectSingleNode("//xsl:output", mgr) as XmlElement;
             if (e != null)
             {
                 var specifiedMethod = e.GetAttribute("method");

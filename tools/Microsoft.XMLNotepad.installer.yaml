@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.0.0.schema.json
 
 PackageIdentifier: Microsoft.XMLNotepad
-PackageVersion: $(VERSION)
+PackageVersion: 2.8.0.40
 FileExtensions:
 - xml
 InstallModes:
@@ -17,9 +17,9 @@ Installers:
   Architecture: neutral
   InstallerType: msix
   Scope: user
-  InstallerUrl: https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad.Net/$(VERSION)/XmlNotepadPackage_$(VERSION)_Test/XmlNotepadPackage_$(VERSION)_AnyCPU.msixbundle
-  InstallerSha256: $(Sha256)
-  SignatureSha256: $(SignatureSha256)
+  InstallerUrl: https://github.com/microsoft/XmlNotepad/releases/download/2.8.0.41/XmlNotepadPackage_2.8.0.41_AnyCPU.msixbundle
+  InstallerSha256: 8f2a014b78e38709bc44766274a94eb99564ac7ba99dec2f35ea790aa34a5e18
+  SignatureSha256: d60165368abc4524e030f442ac630a456ccfb8dbe66af8fb721239ff933cc50e
   PackageFamilyName: 5632ff08-aa93-439a-b09f-677eb3664250_b2j8apzf1bbh6
   UpgradeBehavior: install
 ManifestType: installer

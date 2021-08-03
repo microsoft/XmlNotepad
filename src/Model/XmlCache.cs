@@ -515,7 +515,7 @@ namespace XmlNotepad
             if (pi.Name == "xml-stylesheet") {
                 if (e.Action == XmlNodeChangedAction.Remove) {
                     // see if there's another!
-                    pi = (XmlProcessingInstruction)this.doc.SelectSingleNode("processing-instruction('xml-stylesheet')");
+                    pi = this.doc.SelectSingleNode("processing-instruction('xml-stylesheet')") as XmlProcessingInstruction;
                 }
                 if (pi != null) {
                     this.xsltFilename = DomLoader.ParseXsltArgs(pi.Data);

@@ -4,6 +4,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
+using Microsoft.Win32;
 
 namespace XmlNotepad
 {
@@ -28,7 +29,6 @@ namespace XmlNotepad
             }
             return true;
         }
-
 
         public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp) {
             settings.CheckCharacters = false;
