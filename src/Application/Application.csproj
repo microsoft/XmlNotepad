@@ -375,7 +375,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902-prerelease\runtimes\win-arm64\native\WebView2Loader.dll">
-      <Link>runtimes\win-arm64\native\\%(Filename)%(Extension)</Link>
+      <Link>runtimes\win-arm64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
