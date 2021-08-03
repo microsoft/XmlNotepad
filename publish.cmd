@@ -17,6 +17,9 @@ if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
 if EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip del src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip
 if "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%" == "" goto :nokey
 
+where wingetcreate > nul 2>&1
+if ERRORLEVEL 1 winget install wingetcreate
+
 copy /y src\Updates\Updates.xml publish\
 if ERRORLEVEL 1 goto :eof
 copy /y src\Updates\Updates.xslt publish\
@@ -42,33 +45,39 @@ echo Uploading ClickOnce installer to XmlNotepad
 AzurePublishClickOnce %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
 if ERRORLEVEL 1 goto :eof
 
-echo Uploading MSIX installer to XmlNotepad.Net
-AzurePublishClickOnce %APPX_DROPS% downloads/XmlNotepad.Net "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
-if ERRORLEVEL 1 goto :eof
-
 if "%WINGET%"=="0" goto :eof
 
 :winget
+echo Syncing winget master branch
+pushd d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad
+git checkout master
+git pull
+git fetch upstream master
+git merge upstream/master
+git push
+popd
+
 echo Preparing winget package
-mkdir d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%
-for /f "usebackq tokens=1,2 delims=: " %%i in (`winget hash -m src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle`) do (
-    set %%i=%%j
-)
+set TARGET=d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\
+if not exist %TARGET% mkdir %TARGET%
+copy /y tools\Microsoft.XMLNotepad*.yaml  %TARGET%
+wingetcreate update Microsoft.XMLNotepad --version %VERSION% -o d:\git\lovettchris\winget-pkgs -u https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+if ERRORLEVEL 1 goto :eof
 
-set SEDFILE=%TEMP%\patterns.txt
-echo s/$(VERSION)/%VERSION%/g > %SEDFILE%
-echo s/$(Sha256)/%Sha256%/g >> %SEDFILE%
-echo s/$(SignatureSha256)/%SignatureSha256%/g >> %SEDFILE%
-sed -f %SEDFILE% tools\Microsoft.XMLNotepad.installer.yaml > ..\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\Microsoft.XMLNotepad.installer.yaml
-sed -f %SEDFILE% tools\Microsoft.XMLNotepad.locale.en-US.yaml > ..\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\Microsoft.XMLNotepad.locale.en-US.yaml
-sed -f %SEDFILE% tools\Microsoft.XMLNotepad.yaml > ..\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\Microsoft.XMLNotepad.yaml
-
-pushd d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\
+pushd %TARGET%
 winget validate .
 winget install -m .
 if ERRORLEVEL 1 goto :installfailed
-echo ===========================================================================
-echo Please create pull request for new winget package.
+
+git checkout -b "clovett/xmlnotepad_%VERSION%
+git add *
+git commit -m "new XML Noteapd version %VERSION%"
+
+echo =============================================================================================================
+echo Please create github release, then commit these local changes and create pull request for new winget package.
+echo Please verify the github release contains this link:
+echo https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+call gitweb
 goto :eof
 
 :nobits
