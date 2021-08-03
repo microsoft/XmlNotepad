@@ -33,3 +33,12 @@ Or use this command line if you have the [winget cli](https://github.com/microso
 winget install XmlNotepad
 ```
 
+<div>
+<a href="https://docs.microsoft.com/en-us/DeployOffice/webview2-install" class="btn btn-primary mt-20 mr-30" target="_blank"> webview2</a>
+<br/>
+<br/>
+</div>
+
+WebView2 is an optional component that you can install from Microsoft. XML Notepad will use this component as the HTML rendering engine
+behind the [XSLT Output tab](help/xslt.md).  WebView2 provides a
+significant performance boost on large XSLT outputs.
