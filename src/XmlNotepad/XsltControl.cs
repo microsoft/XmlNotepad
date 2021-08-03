@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -64,11 +65,49 @@ namespace XmlNotepad
             this.tempFile = null;
         }
 
+        private static string GetBrowserExecutablePath()
+        {
+            try
+            {
+                using (var key = Registry.ClassesRoot.OpenSubKey(@"MSEdgeHTM\shell\open\command", false))
+                {
+                    if (key != null)
+                    {
+                        string path = (string)key.GetValue(null);
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            char quote = path[0];
+                            if (quote == '\"')
+                            {
+                                int pos = 1;
+                                int end = path.IndexOf(quote, pos);
+                                if (end > 0)
+                                {
+                                    path = path.Substring(pos, end - pos);
+                                }
+                            }
+                            else
+                            {
+                                path = path.Split(' ')[0];
+                            }
+                            if (File.Exists(path))
+                            {
+                                return Path.GetDirectoryName(path);
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+            return null;
+        }
+
         private async void XsltControl_Load(object sender, EventArgs e)
         {
             try
             {
-                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder: WebViewUserCache);
+                var edge = GetBrowserExecutablePath();
+                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(browserExecutableFolder: edge, userDataFolder: WebViewUserCache);
                 await this.webBrowser2.EnsureCoreWebView2Async(environment);
             } catch
             {
