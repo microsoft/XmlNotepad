@@ -56,6 +56,7 @@ nav:
     - Intellisense:  help/intellisense.md
     - Schemas:  help/schemas.md
     - Validation:  help/validation.md
+    - Xslt:  help/xslt.md
     - Custom Editors:  help/customeditors.md
     - Clipboard:  help/clipboard.md
     - Updates:  help/updates.md

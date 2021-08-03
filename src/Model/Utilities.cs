@@ -30,43 +30,6 @@ namespace XmlNotepad
             return true;
         }
 
-        public static string GetEdgeBrowserExecutablePath()
-        {
-            try
-            {
-                using (var key = Registry.ClassesRoot.OpenSubKey(@"MSEdgeHTM\shell\open\command", false))
-                {
-                    if (key != null)
-                    {
-                        string path = (string)key.GetValue(null);
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            char quote = path[0];
-                            if (quote == '\"')
-                            {
-                                int pos = 1;
-                                int end = path.IndexOf(quote, pos);
-                                if (end > 0)
-                                {
-                                    path = path.Substring(pos, end - pos);
-                                }
-                            }
-                            else
-                            {
-                                path = path.Split(' ')[0];
-                            }
-                            if (File.Exists(path))
-                            {
-                                return Path.GetDirectoryName(path);
-                            }
-                        }
-                    }
-                }
-            }
-            catch { }
-            return null;
-        }
-
         public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp) {
             settings.CheckCharacters = false;
             settings.Indent = true;

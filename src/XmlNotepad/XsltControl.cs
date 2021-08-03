@@ -69,8 +69,11 @@ namespace XmlNotepad
         {
             try
             {
-                var edge = Utilities.GetEdgeBrowserExecutablePath();
-                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(browserExecutableFolder: edge, userDataFolder: WebViewUserCache);
+                CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
+                {
+                    AllowSingleSignOnUsingOSPrimaryAccount = true
+                };
+                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
                 await this.webBrowser2.EnsureCoreWebView2Async(environment);
             } catch
             {
