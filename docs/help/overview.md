@@ -17,7 +17,7 @@ The toolbar provides some shortcuts for commonly used menu commands, hover over 
 The current file being edited. This is also a convenient place to enter an HTTP address for editing an online XML file.
 
 ### XSL Output Tab
-This tab contains a web browser rendered view of the HTML output from an associated XSLT transformation. XSLT transforms are defined when your XML documents contains an `xml-stylesheet` processing instruction.
+The [XSLT Output tab](xslt.md) contains a web browser rendered view of the HTML output from an associated XSLT transformation. XSLT transforms are defined when your XML documents contains an `xml-stylesheet` processing instruction.
 
 ### Node Values
 The view on the right shows the text value of the adjacent node in the tree view. For element nodes that have children it shows a light blue band because the text is in the child nodes.
