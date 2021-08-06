@@ -33,7 +33,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
+        languages: csharp
 
     - name: Build the application
       run: msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal
