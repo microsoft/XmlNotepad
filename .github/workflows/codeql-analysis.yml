@@ -2,8 +2,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
+    branches: [ master ]
   schedule:
     - cron: '40 14 * * 6'
 
@@ -33,10 +34,11 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
+        queries: security-and-quality
         languages: csharp
 
     - name: Build the application
-      run: msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal
+      run: msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal /p:UseSharedCompilation=False
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
