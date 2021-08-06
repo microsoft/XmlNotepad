@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace XmlNotepad {
     public class RecentFileEventArgs : EventArgs {
@@ -101,13 +102,12 @@ namespace XmlNotepad {
                 Uri trimmed = new Uri(RemoveQuotes(fileName.OriginalString), UriKind.RelativeOrAbsolute);
                 AddRecentFileName(fileName);
                 SyncRecentFilesUI();
-            } 
-            catch (Exception)
+            }
+            catch (Exception ex) 
             {
-                // ignore bad filenames.
+                Debug.WriteLine(string.Format("Ignoring bad recent file: {0}: {1}", fileName, ex.Message));
             }
         }
-
         void SyncRecentFilesUI() 
         {
             // Synchronize menu items.

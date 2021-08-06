@@ -162,9 +162,11 @@ namespace XmlNotepad
             }
             if (Stroke != null && StrokeThickness > 0)
             {
-                Pen pen = new Pen(Stroke, StrokeThickness);
-                pen.DashStyle = this.DashStyle;
-                g.DrawRectangle(pen, Bounds);
+                using (Pen pen = new Pen(Stroke, StrokeThickness))
+                {
+                    pen.DashStyle = this.DashStyle;
+                    g.DrawRectangle(pen, Bounds);
+                }
 
             }
 

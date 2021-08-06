@@ -18,15 +18,13 @@ namespace XmlNotepad
         
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.FontDialog fontDialog1;
-        private System.Windows.Forms.ColorDialog colorDialog1;
         private PropertyGrid propertyGrid1;
         private Button buttonReset;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private readonly System.ComponentModel.Container components = null;
 
 		public FormOptions()
 		{
@@ -94,8 +92,6 @@ namespace XmlNotepad
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormOptions));
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.fontDialog1 = new System.Windows.Forms.FontDialog();
-            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.buttonReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -105,7 +101,7 @@ namespace XmlNotepad
             resources.ApplyResources(this.buttonOK, "buttonOK");
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.OnButtonOKClick);
             // 
             // buttonCancel
             // 
@@ -123,7 +119,7 @@ namespace XmlNotepad
             resources.ApplyResources(this.buttonReset, "buttonReset");
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.UseVisualStyleBackColor = true;
-            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
+            this.buttonReset.Click += new System.EventHandler(this.OnButtonResetClick);
             // 
             // FormOptions
             // 
@@ -168,12 +164,12 @@ namespace XmlNotepad
             }
         }
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void OnButtonOKClick(object sender, System.EventArgs e) {
             this.userSettings.Apply();
             this.Close();
         }
 
-        private void buttonReset_Click(object sender, EventArgs e) {
+        private void OnButtonResetClick(object sender, EventArgs e) {
             if (DialogResult.OK == MessageBox.Show(this, SR.ResetOptionsPrompt, SR.ResetOptionsPromptCaption, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation)) {
                 this.userSettings.Reset();
                 this.propertyGrid1.SelectedObject = null;
@@ -187,9 +183,9 @@ namespace XmlNotepad
     // It also provides localizable strings for the property grid.
     public class UserSettings
     {
-        Settings settings;
+        readonly Settings settings;
         Font font;
-        string fontName;
+        readonly string fontName;
         ColorTheme theme;
         Hashtable lightColors;
         Hashtable darkColors;

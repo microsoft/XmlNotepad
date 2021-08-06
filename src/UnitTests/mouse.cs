@@ -107,7 +107,7 @@ namespace UnitTests {
             // Interpolate and move mouse smoothly over to given location.                
             int dx = end.X - start.X;
             int dy = end.Y - start.Y;
-            int length = (int)Math.Sqrt((dx * dx) + (dy * dy));
+            int length = (int)Math.Sqrt((double)((dx * dx) + (dy * dy)));
             step = Math.Abs(step);
             int s = Timeout;
             Timeout = 10;

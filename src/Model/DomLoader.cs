@@ -202,8 +202,9 @@ namespace XmlNotepad
                     return root.GetAttribute("href");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("Error parsing XSLT args: " + ex.Message);
             }
             return null;
         }
@@ -302,8 +303,9 @@ namespace XmlNotepad
                 Uri resolved = new Uri(new Uri(reader.BaseURI), fname);
                 this.doc.Schemas.Add(null, resolved.AbsoluteUri);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("Error loading schema: " + ex.Message);
             }
         }
 

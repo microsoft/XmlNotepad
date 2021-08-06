@@ -288,6 +288,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please go to Windows Settings for &apos;Default Apps&apos; and select &apos;Choose default apps by file type&apos; add XML Notepad for each file type you want associated with it..
+        /// </summary>
+        public static string ConfigureDefaultApps {
+            get {
+                return ResourceManager.GetString("ConfigureDefaultApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Container background.
         /// </summary>
         public static string ContainerBackgroundColor {

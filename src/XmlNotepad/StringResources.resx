@@ -845,4 +845,7 @@ Do you want to enable execution of this script code?</value>
     <value>Default text editor</value>
     <comment>Property grid name</comment>
   </data>
+  <data name="ConfigureDefaultApps">
+    <value>Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.</value>
+  </data>
 </root>

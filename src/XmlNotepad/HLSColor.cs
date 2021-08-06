@@ -10,16 +10,16 @@ namespace XmlNotepad {
     public struct HLSColor {
         private const int ShadowAdj         = -333;
         private const int HilightAdj        = 500;
-        private const int WatermarkAdj      = -50;
+        // private const int WatermarkAdj      = -50;
 
         private const int Range = 240;
         private const int HLSMax = Range;
         private const int RGBMax = 255;
         private const int Undefined = HLSMax*2/3;
 
-        private int hue;
-        private int saturation;
-        private int luminosity;
+        private readonly int hue;
+        private readonly int saturation;
+        private readonly int luminosity;
 
         /// <include file='doc\ControlPaint.uex' path='docs/doc[@for="ControlPaint.HLSColor.HLSColor"]/*' />
         /// <devdoc>
@@ -169,9 +169,9 @@ namespace XmlNotepad {
 
             if (saturation == 0) {                /* achromatic case */
                 r = g = b = (byte)((luminosity * RGBMax) / HLSMax);
-                if (hue != Undefined) {
-                    /* ERROR */
-                }
+                //if (hue != Undefined) {
+                //    /* ERROR */
+                //}
             }
             else {                         /* chromatic case */
                 /* set up magic numbers */

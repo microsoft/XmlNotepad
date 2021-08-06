@@ -148,8 +148,9 @@ namespace XmlNotepad
                 this.SourceFileName.Text = model.XsltFileName;
                 this.xsltControl.IgnoreDTD = model.GetSettingBoolean("IgnoreDTD");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("XsltViewer.OnModelChanged exception " + ex.Message);
             }
         }
 
@@ -162,21 +163,25 @@ namespace XmlNotepad
 
         private void BrowseButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = SR.XSLFileFilter;
-            if (ofd.ShowDialog(this) == DialogResult.OK)
+            using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                this.SourceFileName.Text = MakeRelative(ofd.FileName);
+                ofd.Filter = SR.XSLFileFilter;
+                if (ofd.ShowDialog(this) == DialogResult.OK)
+                {
+                    this.SourceFileName.Text = MakeRelative(ofd.FileName);
+                }
             }
         }
 
         private void BrowseOutputButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = this.xsltControl.GetOutputFileFilter(this.SourceFileName.Text.Trim());
-            if (ofd.ShowDialog(this) == DialogResult.OK)
+            using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                this.OutputFileName.Text = MakeRelative(ofd.FileName);
+                ofd.Filter = this.xsltControl.GetOutputFileFilter(this.SourceFileName.Text.Trim());
+                if (ofd.ShowDialog(this) == DialogResult.OK)
+                {
+                    this.OutputFileName.Text = MakeRelative(ofd.FileName);
+                }
             }
         }
 

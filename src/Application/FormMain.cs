@@ -21,11 +21,11 @@ namespace XmlNotepad
     public class FormMain : Form, ISite
     {
 
-        UndoManager undoManager;
+        readonly UndoManager undoManager;
         Settings settings;
-        string[] args;
-        DataFormats.Format urlFormat;
-        RecentFilesMenu recentFiles;
+        readonly string[] args;
+        readonly DataFormats.Format urlFormat;
+        readonly RecentFilesMenu recentFiles;
         TaskList taskList;
         XsltControl dynamicHelpViewer;
         FormSearch search;
@@ -39,8 +39,8 @@ namespace XmlNotepad
         bool helpAvailableHint = true;
         Analytics analytics;
         Updater updater;
-        DelayedActions delayedActions;
-        System.CodeDom.Compiler.TempFileCollection tempFiles = new System.CodeDom.Compiler.TempFileCollection();
+        readonly DelayedActions delayedActions;
+        readonly System.CodeDom.Compiler.TempFileCollection tempFiles = new System.CodeDom.Compiler.TempFileCollection();
         private ContextMenuStrip contextMenu1;
         private ToolStripSeparator ctxMenuItem20;
         private ToolStripSeparator ctxMenuItem23;
@@ -175,7 +175,7 @@ namespace XmlNotepad
         private XmlTreeView xmlTreeView1;
         private XsltViewer xsltViewer;
 
-        private string undoLabel;
+        readonly private string undoLabel;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripMenuItem ctxGotoDefinitionToolStripMenuItem;
         private ToolStripMenuItem gotoDefinitionToolStripMenuItem;
@@ -216,8 +216,7 @@ namespace XmlNotepad
         private ToolStripMenuItem changeToElementContextMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
-        private string redoLabel;
-
+        readonly private string redoLabel;
 
         public FormMain()
         {
@@ -368,19 +367,21 @@ namespace XmlNotepad
         {
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                System.Net.WebClient client = new System.Net.WebClient();
-                client.UseDefaultCredentials = true;
-                try
+                using (System.Net.WebClient client = new System.Net.WebClient())
                 {
-                    string html = client.DownloadString(Utilities.HelpBaseUri);
-                    if (html.Contains("XML Notepad"))
+                    client.UseDefaultCredentials = true;
+                    try
                     {
-                        this.BeginInvoke(new Action(FoundOnlineHelp));
+                        string html = client.DownloadString(Utilities.HelpBaseUri);
+                        if (html.Contains("XML Notepad"))
+                        {
+                            this.BeginInvoke(new Action(FoundOnlineHelp));
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    // online help is not reachable
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("online help is not reachable " + ex.Message);
+                    }
                 }
             }
 
@@ -2745,15 +2746,17 @@ namespace XmlNotepad
         public virtual void SaveAs()
         {
             SelectTreeView();
-            SaveFileDialog sd = new SaveFileDialog();
-            if (model.IsFile) sd.FileName = model.FileName;
-            sd.Filter = SR.SaveAsFilter;
-            if (sd.ShowDialog(this) == DialogResult.OK)
+            using (SaveFileDialog sd = new SaveFileDialog())
             {
-                string fname = sd.FileName;
-                if (CheckReadOnly(fname))
+                if (model.IsFile) sd.FileName = model.FileName;
+                sd.Filter = SR.SaveAsFilter;
+                if (sd.ShowDialog(this) == DialogResult.OK)
                 {
-                    Save(fname);
+                    string fname = sd.FileName;
+                    if (CheckReadOnly(fname))
+                    {
+                        Save(fname);
+                    }
                 }
             }
         }
@@ -2844,7 +2847,7 @@ namespace XmlNotepad
 
         public virtual void LoadConfig()
         {
-            string path = null;
+            string path;
             try
             {
                 this.loading = true;
@@ -3267,18 +3270,20 @@ namespace XmlNotepad
                     try
                     {
                         // Note: for some reason sr.ReadToEnd doesn't work right.
-                        StreamReader sr = new StreamReader(stm, Encoding.Unicode);
                         StringBuilder sb = new StringBuilder();
-                        while (true)
+                        using (StreamReader sr = new StreamReader(stm, Encoding.Unicode))
                         {
-                            int i = sr.Read();
-                            if (i != 0)
+                            while (true)
                             {
-                                sb.Append(Convert.ToChar(i));
-                            }
-                            else
-                            {
-                                break;
+                                int i = sr.Read();
+                                if (i != 0)
+                                {
+                                    sb.Append(Convert.ToChar(i));
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
                         }
                         string url = sb.ToString();
@@ -3286,8 +3291,9 @@ namespace XmlNotepad
                             return;
                         this.Open(url);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("Error reading drag/drop data: " + ex.Message);
                     }
                 }
             }
@@ -3848,26 +3854,28 @@ namespace XmlNotepad
             }
 
             SelectTreeView();
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = SR.SaveAsFilter;
-            bool retry = true;
-            while (retry && ofd.ShowDialog(this) == DialogResult.OK)
+            using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                string secondFile = ofd.FileName;
-                if (secondFile.ToUpperInvariant() == this.model.FileName.ToUpperInvariant())
+                ofd.Filter = SR.SaveAsFilter;
+                bool retry = true;
+                while (retry && ofd.ShowDialog(this) == DialogResult.OK)
                 {
-                    MessageBox.Show(this, SR.XmlDiffSameFilePrompt, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    retry = false;
-                    try
+                    string secondFile = ofd.FileName;
+                    if (secondFile.ToUpperInvariant() == this.model.FileName.ToUpperInvariant())
                     {
-                        DoCompare(secondFile);
+                        MessageBox.Show(this, SR.XmlDiffSameFilePrompt, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show(this, ex.Message, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        retry = false;
+                        try
+                        {
+                            DoCompare(secondFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(this, ex.Message, SR.XmlDiffErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
@@ -3881,8 +3889,10 @@ namespace XmlNotepad
                 {
                     throw new Exception(string.Format("You have a build problem: resource '{0} not found", name));
                 }
-                StreamReader sr = new StreamReader(stream);
-                return sr.ReadToEnd();
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    return sr.ReadToEnd();
+                }
             }
         }
 
@@ -3988,8 +3998,7 @@ namespace XmlNotepad
             {
                 doc.Load(reader);
             }
-
-            string startupPath = Application.StartupPath;
+            
             //output diff file.
             string diffFile = Path.Combine(Path.GetTempPath(),
                 Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + ".xml");
@@ -4128,15 +4137,17 @@ namespace XmlNotepad
 
         void SaveAsErrors()
         {
-            SaveFileDialog sd = new SaveFileDialog();
-            sd.Filter = SR.SaveAsFilter;
-            sd.Title = SR.SaveErrorsCaption;
-            if (sd.ShowDialog(this) == DialogResult.OK)
+            using (SaveFileDialog sd = new SaveFileDialog())
             {
-                string fname = sd.FileName;
-                if (CheckReadOnly(fname))
+                sd.Filter = SR.SaveAsFilter;
+                sd.Title = SR.SaveErrorsCaption;
+                if (sd.ShowDialog(this) == DialogResult.OK)
                 {
-                    SaveErrors(fname);
+                    string fname = sd.FileName;
+                    if (CheckReadOnly(fname))
+                    {
+                        SaveErrors(fname);
+                    }
                 }
             }
         }
@@ -4232,11 +4243,12 @@ namespace XmlNotepad
             {
                 FileAssociation.AddXmlProgids(Application.ExecutablePath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("Error adding XmlProgids: " + ex.Message);
             }
 
-            var message = string.Format("Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.", this.Text);
+            var message = StringResources.ConfigureDefaultApps;
             MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 

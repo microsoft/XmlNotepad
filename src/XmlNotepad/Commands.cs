@@ -2054,27 +2054,30 @@ namespace XmlNotepad
                     else {
                         r = new XmlTextReader(this.stm, XmlNodeType.Element, pcontext);
                     }
-                    r.WhitespaceHandling = WhitespaceHandling.Significant;
-
-                    // TODO: add multi-select support, so we can insert multiple nodes also.
-                    // And find valid nodes (for example, don't attempt to insert Xml declaration
-                    // if target node is not at the top of the document, etc).
-                    // For now we just favor XML elements over other node types.
-                    ArrayList list = new ArrayList();
-                    while (true)
+                    using (r)
                     {
-                        XmlNode rn = owner.ReadNode(r);
-                        if (rn == null)
-                            break;
-                        if (rn is XmlElement)
+                        r.WhitespaceHandling = WhitespaceHandling.Significant;
+
+                        // TODO: add multi-select support, so we can insert multiple nodes also.
+                        // And find valid nodes (for example, don't attempt to insert Xml declaration
+                        // if target node is not at the top of the document, etc).
+                        // For now we just favor XML elements over other node types.
+                        ArrayList list = new ArrayList();
+                        while (true)
                         {
-                            xn = rn;
-                            NormalizeNamespaces((XmlElement)rn, nsmgr);
+                            XmlNode rn = owner.ReadNode(r);
+                            if (rn == null)
+                                break;
+                            if (rn is XmlElement)
+                            {
+                                xn = rn;
+                                NormalizeNamespaces((XmlElement)rn, nsmgr);
+                            }
+                            list.Add(rn);
                         }
-                        list.Add(rn);
+                        if (xn == null && list.Count > 0)
+                            xn = list[0] as XmlNode;
                     }
-                    if (xn == null && list.Count > 0)
-                        xn = list[0] as XmlNode;
                 }
                 node.Node = xn;
 

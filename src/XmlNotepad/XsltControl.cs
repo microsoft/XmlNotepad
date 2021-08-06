@@ -1,5 +1,4 @@
 ﻿using Microsoft.Web.WebView2.Core;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +14,7 @@ namespace XmlNotepad
 {
     public partial class XsltControl : UserControl
     {
-        Stopwatch urlWatch = new Stopwatch();
+        readonly Stopwatch urlWatch = new Stopwatch();
         string html;
         DateTime loaded;
         Uri baseUri;
@@ -24,11 +23,11 @@ namespace XmlNotepad
         XmlDocument xsltdoc;
         XslCompiledTransform defaultss;
         Uri xsltUri;
-        XsltSettings settings;
+        readonly XsltSettings settings;
         ISite site;
         XmlUrlResolver resolver;
         string defaultSSResource = "XmlNotepad.DefaultSS.xslt";
-        IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
+        readonly IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
         bool webInitialized;
         string tempFile;
 
@@ -261,7 +260,7 @@ namespace XmlNotepad
                         xslt = new XslCompiledTransform();
                         this.loaded = DateTime.Now;
                         settings.EnableScript = (trusted.ContainsKey(resolved));
-                        XmlReaderSettings rs = new XmlReaderSettings();
+                        var rs = new XmlReaderSettings();
                         rs.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
                         rs.XmlResolver = resolver;
                         using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
@@ -308,17 +307,18 @@ namespace XmlNotepad
 
                 if (null != transform)
                 {
-                    XmlReaderSettings settings = new XmlReaderSettings();
+                    var settings = new XmlReaderSettings();
                     settings.XmlResolver = new XmlProxyResolver(this.site);
                     settings.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
                     var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri);
                     if (string.IsNullOrEmpty(outpath))
                     {
-
-                        StringWriter writer = new StringWriter();
-                        transform.Transform(xmlReader, null, writer);
-                        this.xsltUri = resolved;
-                        Display(writer.ToString());
+                        using (StringWriter writer = new StringWriter())
+                        {
+                            transform.Transform(xmlReader, null, writer);
+                            this.xsltUri = resolved;
+                            Display(writer.ToString());
+                        }
                     }
                     else
                     {
@@ -331,11 +331,12 @@ namespace XmlNotepad
                         if (noBom)
                         {
                             // cache to an inmemory stream so we can strip the BOM.
-                            MemoryStream ms = new MemoryStream();
-                            transform.Transform(xmlReader, null, ms);
-
-                            ms.Seek(0, SeekOrigin.Begin);
-                            Utilities.WriteFileWithoutBOM(ms, outpath);
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                transform.Transform(xmlReader, null, ms);
+                                ms.Seek(0, SeekOrigin.Begin);
+                                Utilities.WriteFileWithoutBOM(ms, outpath);
+                            }
                         }
                         else
                         {
@@ -392,7 +393,11 @@ namespace XmlNotepad
                     }
                     return test;
                 }
-            } catch (Exception) { }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("XsltControl.GetWritableBaseUri exception " + ex.Message);
+            }
 
             if (this.baseUri.Scheme != "file")
             {
@@ -464,8 +469,9 @@ namespace XmlNotepad
                     ext = ".txt";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("XsltControl.GetDefaultOutputExtension exception " + ex.Message);
             }
             return ext;
         }
@@ -516,16 +522,18 @@ namespace XmlNotepad
 
         private void WriteError(Exception e)
         {
-            StringWriter writer = new StringWriter();
-            writer.WriteLine("<html><body><h3>");
-            writer.WriteLine(SR.TransformErrorCaption);
-            writer.WriteLine("</h3></body></html>");
-            while (e != null)
+            using (StringWriter writer = new StringWriter())
             {
-                writer.WriteLine(e.Message);
-                e = e.InnerException;
+                writer.WriteLine("<html><body><h3>");
+                writer.WriteLine(SR.TransformErrorCaption);
+                writer.WriteLine("</h3></body></html>");
+                while (e != null)
+                {
+                    writer.WriteLine(e.Message);
+                    e = e.InnerException;
+                }
+                Display(writer.ToString());
             }
-            Display(writer.ToString());
         }
 
         XslCompiledTransform GetDefaultStylesheet()

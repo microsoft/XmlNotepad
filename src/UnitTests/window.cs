@@ -13,16 +13,16 @@ namespace UnitTests
 {
     public class Window : IDisposable
     {
-        Process p;
-        IntPtr handle;
+        readonly Process p;
+        readonly IntPtr handle;
         bool closed;
         TestBase test;
-        AutomationWrapper acc;
+        readonly AutomationWrapper acc;
         Dictionary<string, AutomationWrapper> menuItems;
-        Window parent;
+        readonly Window parent;
         bool disposed;
 
-        static int delay = 100;
+        static readonly int delay = 100;
 
         public Window(Window parent, IntPtr handle)
         {
@@ -87,8 +87,7 @@ namespace UnitTests
             IntPtr hwnd = GetWindow(GetDesktopWindow(), GetWindowOptions.Child);
             while (hwnd != IntPtr.Zero)
             {
-                int procid;
-                int thread = GetWindowThreadProcessId(hwnd, out procid);
+                GetWindowThreadProcessId(hwnd, out int procid);
                 if (procid == id)
                 {
                     AutomationWrapper acc = AutomationWrapper.AccessibleObjectForWindow(hwnd);
@@ -118,7 +117,7 @@ namespace UnitTests
                                  new PropertyCondition(AutomationElement.ControlTypeProperty, controlType)));
             if (e == null)
             {
-                throw new Exception(string.Format("Control of type {0}  named '{1}' not found", controlType, name));
+                throw new Exception(string.Format("Control of type {0} named '{1}' not found", controlType.LocalizedControlType, name));
             }
             return new AutomationWrapper(e);
         }
@@ -129,7 +128,7 @@ namespace UnitTests
                 new PropertyCondition(AutomationElement.ControlTypeProperty, controlType));
             if (e == null)
             {
-                throw new Exception(string.Format("Control of type {0}  not found", controlType));
+                throw new Exception(string.Format("Control of type {0} not found", controlType.LocalizedControlType));
             }
             return new AutomationWrapper(e);
         }
@@ -433,15 +432,14 @@ namespace UnitTests
             ShowWindow(this.handle, (int)ShowWindowFlags.SW_SHOW);
         }
 
-        const uint OBJID_CLIENT = 0xFFFFFFFC;
+        // const uint OBJID_CLIENT = 0xFFFFFFFC;
 
         public void InvokeMenuItem(string menuItemName)
         {
             this.ReloadMenuItems(menuItemName);
             Sleep(30);
             this.WaitForIdle(2000);
-            AutomationWrapper item;
-            if (!this.menuItems.TryGetValue(menuItemName, out item))
+            if (!this.menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
             {
                 throw new Exception(string.Format("Menu item '{0}' not found", menuItemName));
             }
@@ -456,8 +454,7 @@ namespace UnitTests
             Sleep(delay);
             this.WaitForIdle(2000);
 
-            AutomationWrapper item;
-            if (!this.menuItems.TryGetValue(menuItemName, out item))
+            if (!this.menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
             {
                 throw new Exception(string.Format("Menu item '{0}' not found", menuItemName));
             }
@@ -471,11 +468,11 @@ namespace UnitTests
             item.Invoke();
         }
 
-        Point Center(Rectangle bounds)
-        {
-            return new Point(bounds.Left + (bounds.Width / 2),
-                bounds.Top + (bounds.Height / 2));
-        }
+        //Point Center(Rectangle bounds)
+        //{
+        //    return new Point(bounds.Left + (bounds.Width / 2),
+        //        bounds.Top + (bounds.Height / 2));
+        //}
 
 
         void TypeShortcut(AccessibleObject item)
@@ -526,8 +523,7 @@ namespace UnitTests
 
         public Rectangle GetWindowBounds()
         {
-            RECT r;
-            GetWindowRect(this.handle, out r);
+            GetWindowRect(this.handle, out RECT r);
             return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
         }
 
