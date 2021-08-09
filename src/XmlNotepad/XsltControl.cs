@@ -508,7 +508,8 @@ namespace XmlNotepad
                         {
                             if (subnode is XmlElement grandchild)
                             {
-                                if (string.IsNullOrEmpty(grandchild.NamespaceURI) && string.Compare(grandchild.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
+                                if ((string.IsNullOrEmpty(grandchild.NamespaceURI) || grandchild.NamespaceURI.Contains("xhtml"))
+                                    && string.Compare(grandchild.LocalName, "html", StringComparison.OrdinalIgnoreCase) == 0)
                                 {
                                     return "html";
                                 }
