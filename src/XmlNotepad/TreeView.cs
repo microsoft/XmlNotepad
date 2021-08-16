@@ -22,9 +22,9 @@ namespace XmlNotepad {
         Color lineColor = SystemColors.ControlDark;
         int treeIndent = 30;
         TypeToFindHandler ttf;
-        private TextEditorOverlay editor;
+        private readonly TextEditorOverlay editor;
         internal TreeViewDropFeedback dff;
-        Timer timer = new Timer();
+        readonly Timer timer = new Timer();
         int mouseDownEditDelay = 400;
         Point scrollPosition;
         AccessibleTree acc;
@@ -154,7 +154,7 @@ namespace XmlNotepad {
                 TreeNodeCollection col = (node.Parent == null) ? this.Nodes : node.Parent.Children;
                 if (col != null) {
                     int count = col.Count;
-                    TreeNode selected = null;
+                    TreeNode selected;
                     if (node.Index == count - 1) {
                         selected = node.PrevVisibleNode;
                     } else {
@@ -304,7 +304,7 @@ namespace XmlNotepad {
             if (left && hitNode != null) {
                 int dx = pt.X - mouseDown.X;
                 int dy = pt.Y - mouseDown.Y;
-                if (Math.Sqrt(dx * dx + dy * dy) > DragThreshold) {
+                if (Math.Sqrt((double)(dx * dx + dy * dy)) > DragThreshold) {
                     if (this.ItemDrag != null) {
                         this.ItemDrag(this, new ItemDragEventArgs(e.Button, hitNode));
                     }
@@ -918,7 +918,7 @@ namespace XmlNotepad {
 
         static Rectangle GetBoxBounds(int margin, int y, int height, int depth, int indent) {
             int x = margin + (depth * indent) - (BoxWidth / 2);
-            y = y + (height - BoxHeight) / 2; // center it vertically.
+            y += (height - BoxHeight) / 2; // center it vertically.
             return new Rectangle(x, y, BoxWidth, BoxHeight);
         }
 
@@ -1194,7 +1194,7 @@ namespace XmlNotepad {
                     this.view = null;
                 }
                 pc.Remove(this);
-                if (parent != null && parent.Children.Count() == 0 && this.parent.IsExpanded) {
+                if (parent != null && parent.Children.Count == 0 && this.parent.IsExpanded) {
                     this.parent.Collapse();
                 }
             } finally {
@@ -1292,7 +1292,7 @@ namespace XmlNotepad {
             }
             string text = this.Label;
             if (text != null && view != null) {
-                Brush brush = null;
+                Brush brush;
                 if (selected && view.IsEditing) {
                     return;
                 }
@@ -1499,8 +1499,8 @@ namespace XmlNotepad {
     public enum TreeViewAction { None, Expanded, Collapsed }
 
     public class TreeViewEventArgs : EventArgs {
-        TreeNode node;
-        TreeViewAction action;
+        readonly TreeNode node;
+        readonly TreeViewAction action;
 
         public TreeViewEventArgs(TreeNode node, TreeViewAction action) {
             this.node = node;
@@ -1511,7 +1511,8 @@ namespace XmlNotepad {
     }    
 
     class AccessibleTree : Control.ControlAccessibleObject {
-        TreeView tree;
+        readonly TreeView tree;
+
         public AccessibleTree(TreeView view) : base(view) {
             this.tree = view;
         }
@@ -1616,7 +1617,7 @@ namespace XmlNotepad {
     }
 
     class AccessibleNode : AccessibleObject {
-        TreeNode node;
+        readonly TreeNode node;
         public AccessibleNode(TreeNode node) {
             this.node = node;
         }
@@ -2089,9 +2090,9 @@ namespace XmlNotepad {
 
     public class TypeToFindHandler : IDisposable {
         int start;
-        Control control;
+        readonly Control control;
         string typedSoFar;
-        int resetDelay;
+        readonly int resetDelay;
         TypeToFindEventHandler handler;
         bool started;
         Cursor cursor;
@@ -2104,8 +2105,8 @@ namespace XmlNotepad {
         public TypeToFindHandler(Control c, int resetDelayInMilliseconds) {
             this.control = c;
             this.resetDelay = resetDelayInMilliseconds;
-            this.control.KeyPress += new KeyPressEventHandler(control_KeyPress);
-            this.control.KeyDown += new KeyEventHandler(control_KeyDown);
+            this.control.KeyPress += new KeyPressEventHandler(OnControlKeyPress);
+            this.control.KeyDown += new KeyEventHandler(OnControlKeyDown);
         }
 
         ~TypeToFindHandler() {
@@ -2119,7 +2120,7 @@ namespace XmlNotepad {
             }
         }
 
-        void control_KeyDown(object sender, KeyEventArgs e) {
+        void OnControlKeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyCode) {
                 case Keys.I:
                     if ((e.Modifiers & Keys.Control) != 0) {
@@ -2171,7 +2172,7 @@ namespace XmlNotepad {
             typedSoFar = "";
         }
 
-        void control_KeyPress(object sender, KeyPressEventArgs e) {
+        void OnControlKeyPress(object sender, KeyPressEventArgs e) {
             if (started) {
                 char ch = e.KeyChar;
                 if (ch < 0x20) return; // don't process control characters
@@ -2190,6 +2191,7 @@ namespace XmlNotepad {
 
         public void Dispose() {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion

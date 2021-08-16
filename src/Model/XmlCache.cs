@@ -285,16 +285,18 @@ namespace XmlNotepad
             Encoding result = null;
             if (xmldecl != null)
             {
+                string name = "";
                 try
                 {
-                    string e = xmldecl.Encoding;
-                    if (!string.IsNullOrEmpty(e))
+                    name = xmldecl.Encoding;
+                    if (!string.IsNullOrEmpty(name))
                     {
-                        result = Encoding.GetEncoding(e);
+                        result = Encoding.GetEncoding(name);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine(string.Format("Error getting encoding '{0}': {1}", name, ex.Message));
                 }
             }
             if (result == null)
@@ -560,12 +562,12 @@ namespace XmlNotepad
 
         public void Dispose() {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing) {
             this.actions.CancelDelayedAction("reload");
             StopFileWatch();
-            GC.SuppressFinalize(this);
         }
 
         public bool GetSettingBoolean(string settingName)

@@ -21,7 +21,7 @@ namespace UnitTests {
     public class UnitTest1 : TestBase
     {
         const int TestMethodTimeout = 300000; // 5 minutes
-        string TestDir;
+        readonly string TestDir;
                 
         public UnitTest1() {
             Uri baseUri = new Uri(this.GetType().Assembly.Location);
@@ -120,13 +120,10 @@ namespace UnitTests {
             w.SetWindowSize(800, 600);
 
             Stack<bool> hasChildren = new Stack<bool>();
-            List<NodeInfo> nodes = new List<NodeInfo>();
-            string dir = Directory.GetCurrentDirectory();
             XmlReader reader = XmlReader.Create(testFile);
             bool openElement = true;
             int commands = 0;
             bool readyForText = false;
-            IntPtr hwnd = w.Handle;
 
             using (reader) {
                 while (reader.Read()) {
@@ -138,7 +135,6 @@ namespace UnitTests {
                     Trace.WriteLine(string.Format("Adding node type {0} with name {1} and value {2}",
                         reader.NodeType.ToString(), reader.Name, reader.Value));
                     
-                    nodes.Add(new NodeInfo(reader));
                     bool children = false;
                     Trace.WriteLine(reader.NodeType + " " + reader.Name + "["+reader.Value+"]");
                     switch (reader.NodeType) {
@@ -340,13 +336,13 @@ namespace UnitTests {
             }
             string value = mode;
             this.window.SendKeystrokes(value + "{ENTER}");
-            clip = string.Format(clip, name, value);
+            var result = string.Format(clip, name, value);
             this.window.InvokeMenuItem("toolStripButtonCopy");
-            CheckClipboard(clip);
+            CheckClipboard(result);
             Clipboard.SetText("error");
             UndoRedo(2);
             this.window.InvokeMenuItem("toolStripButtonCopy");
-            CheckClipboard(clip);
+            CheckClipboard(result);
 
             nodeIndex++;            
         }
@@ -393,8 +389,6 @@ namespace UnitTests {
         public void TestIntellisense() {
             Trace.WriteLine("TestIntellisense==========================================================");
             var w = LaunchNotepad();
-
-            string outFile = TestDir + "UnitTests\\out.xml";
 
             Trace.WriteLine("Add <Basket>");
             w.InvokeMenuItem("elementChildToolStripMenuItem");
@@ -665,8 +659,7 @@ namespace UnitTests {
             openDialog = w.WaitForPopup();            
             openDialog.SendKeystrokes(TestDir + "UnitTests\\test5.xml{ENTER}");
 
-            Window browser = w.WaitForPopup();
-            text = browser.GetWindowText();
+            Window browser = w.WaitForPopup();            
             browser.DismissPopUp("%{F4}");
 
             Undo();
@@ -801,8 +794,8 @@ namespace UnitTests {
 
         class ResetSettings : IDisposable
         {
-            string backupSettings;
-            string originalSettings;
+            readonly string backupSettings;
+            readonly string originalSettings;
 
             public ResetSettings()
             {
@@ -1430,7 +1423,6 @@ Prefix 'user' is not defined. ");
 
             var findDialog = OpenFindDialog();
             findDialog.ClearFindCheckBoxes();
-            var wrapper = findDialog.Window.AccessibleObject;
 
             Rectangle findBounds = findDialog.Window.GetScreenBounds();
             Point treeCenter = treeBounds.Center();
@@ -1481,7 +1473,6 @@ Prefix 'user' is not defined. ");
             w.SendKeystrokes("^c");
             // make sure we are on the right node.
             this.CheckClipboard(new Regex(@".*Copyright © 1999 Jon Bosak.*"));
-            var original = Clipboard.GetText();
 
             Trace.WriteLine("Test illegal regular expressions.");
             findDialog = OpenFindDialog();
@@ -1969,7 +1960,7 @@ Prefix 'user' is not defined. ");
             node.AddToSelection();
 
             // test edit of node name using accessibility.
-            this.SetNodeName(node, "MyOffice");
+            this.SetNodeName("MyOffice");
             CheckNodeValue("MyOffice");  // confirm via copy operation
 
             // Test that "right arrow" moves over to the nodeTextView.
@@ -2110,7 +2101,6 @@ Prefix 'user' is not defined. ");
             CheckNodeName(emp, "Employee");
             Assert.AreEqual(emp.Name, tree.GetSelectedChild().Name);
 
-            string state = emp.Status;
             emp.IsExpanded = true;
             AutomationWrapper node = emp.FirstChild;
             
@@ -2257,7 +2247,7 @@ Prefix 'user' is not defined. ");
             // set the node name
             w.SendKeystrokes("{LEFT}");
 
-            SetNodeName(node, "foo");
+            SetNodeName("foo");
             CheckNodeName(node, "foo");
             Undo();
             CheckNodeName(node, "Country");
@@ -2265,7 +2255,7 @@ Prefix 'user' is not defined. ");
             Save("out.xml");
         }
 
-        private void SetNodeName(AutomationWrapper node, string text)
+        private void SetNodeName(string text)
         { 
             // must not be a leaf node then, unfortunately the mapping from IAccessible to AutomationElement
             // don't add ValuePattern on ListItems that have children, so we have to get the value the hard way.
@@ -2471,7 +2461,7 @@ Prefix 'user' is not defined. ");
             foreach (XmlElement e in doc.SelectNodes("test/case")) {
                 Uri input = new Uri(baseUri, e.GetAttribute("input"));
                 Uri output = new Uri(baseUri, e.GetAttribute("results"));
-                using (XmlIncludeReader r = XmlIncludeReader.CreateIncludeReader(input.LocalPath, settings)) {
+                using (var r = XmlIncludeReader.CreateIncludeReader(input.LocalPath, settings)) {
                     CompareResults(ReadNodes(r), output.LocalPath);
                 }
             }

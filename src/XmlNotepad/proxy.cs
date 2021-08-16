@@ -14,7 +14,7 @@ using SR = XmlNotepad.StringResources;
 namespace XmlNotepad {
 
     public class XmlProxyResolver : XmlUrlResolver {
-        WebProxyService ps;
+        readonly WebProxyService ps;
 
         public XmlProxyResolver(IServiceProvider site) {
             ps = site.GetService(typeof(WebProxyService)) as WebProxyService;
@@ -69,7 +69,7 @@ namespace XmlNotepad {
 
 
     public class WebProxyService {
-        private IServiceProvider site;
+        private readonly IServiceProvider site;
         private NetworkCredential cachedCredentials;
         private string currentProxyUrl;
 
@@ -201,7 +201,7 @@ namespace XmlNotepad {
         /// </summary>
         /// <param name="proxyUrl">The proxy url for which credentials are retrieved.</param>
         /// <returns>The credentails for the proxy.</returns>
-        private NetworkCredential GetCachedCredentials(string proxyUrl) {
+        private static NetworkCredential GetCachedCredentials(string proxyUrl) {
             return Credentials.GetCachedCredentials(proxyUrl);
         }
 
@@ -216,8 +216,7 @@ namespace XmlNotepad {
             while (prompt) {
                 prompt = false;
 
-                NetworkCredential cred;
-                dialogResult = Credentials.PromptForCredentials(proxyUrl, out cred);
+                dialogResult = Credentials.PromptForCredentials(proxyUrl, out NetworkCredential cred);
                 if (DialogResult.OK == dialogResult) {
                     if (cred != null) {
                         cachedCredentials = cred;
@@ -249,14 +248,12 @@ namespace XmlNotepad {
         /// DialogResult.Cancel = if user cancelled the prompt dialog.
         /// </returns>
         public static DialogResult PromptForCredentials(string target, out NetworkCredential credential) {
-            DialogResult dr = DialogResult.Cancel;
+            DialogResult dr;
             credential = null;
-            string username;
-            string password;
 
             IntPtr hwndOwner = IntPtr.Zero;
             // Show the OS credential dialog.
-            dr = ShowOSCredentialDialog(target, hwndOwner, out username, out password);
+            dr = ShowOSCredentialDialog(target, hwndOwner, out string username, out string password);
             // Create the NetworkCredential object.
             if (dr == DialogResult.OK) {
                 credential = CreateCredentials(username, password, target);
@@ -276,11 +273,8 @@ namespace XmlNotepad {
         public static NetworkCredential GetCachedCredentials(string target) {
             NetworkCredential cred = null;
 
-            string username;
-            string password;
-
             // Retrieve credentials from the OS credential store.
-            if (ReadOSCredentials(target, out username, out password)) {
+            if (ReadOSCredentials(target, out string username, out string password)) {
                 // Create the NetworkCredential object if we successfully
                 // retrieved the credentails from the OS store.
                 cred = CreateCredentials(username, password, target);
@@ -310,7 +304,7 @@ namespace XmlNotepad {
         /// DialogResult.Cancel = if user cancelled the prompt dialog.
         /// </returns>
         private static DialogResult ShowOSCredentialDialog(string target, IntPtr hwdOwner, out string userName, out string password) {
-            DialogResult retValue = DialogResult.Cancel;
+            DialogResult retValue;
             userName = string.Empty;
             password = string.Empty;
 
@@ -374,9 +368,7 @@ namespace XmlNotepad {
                         // it will store credentials with credential type as DOMAIN_PASSWORD. For DOMAIN_PASSWORD
                         // credential type we can only retrive the user name. As a workaround, we store the credentials
                         // as credential type as GENERIC.
-                        string storedUserName;
-                        string storedPassword;
-                        bool successfullyReadCredentials = ReadOSCredentials(target, out storedUserName, out storedPassword);
+                        bool successfullyReadCredentials = ReadOSCredentials(target, out string storedUserName, out string storedPassword);
                         if (!successfullyReadCredentials ||
                             !string.Equals(userName, storedUserName, StringComparison.Ordinal) ||
                             !string.Equals(password, storedPassword, StringComparison.Ordinal)) {
@@ -432,9 +424,7 @@ namespace XmlNotepad {
             NetworkCredential cred = null;
 
             if ((!string.IsNullOrEmpty(username)) && (!string.IsNullOrEmpty(password))) {
-                string domain;
-                string user;
-                if (ParseUsername(username, targetServer, out user, out domain)) {
+                if (ParseUsername(username, targetServer, out string user, out string domain)) {
                     if (string.IsNullOrEmpty(domain)) {
                         cred = new NetworkCredential(user, password);
                     } else {
@@ -462,7 +452,7 @@ namespace XmlNotepad {
                 return false;
             }
 
-            bool successfullyParsed = true;
+            bool successfullyParsed;
 
             StringBuilder strUser = new StringBuilder(Convert.ToInt32(NativeMethods.CREDUI_MAX_USERNAME_LENGTH));
             StringBuilder strDomain = new StringBuilder(Convert.ToInt32(NativeMethods.CREDUI_MAX_DOMAIN_TARGET_LENGTH));
@@ -613,8 +603,6 @@ namespace XmlNotepad {
     static class NativeMethods {
         private const string advapi32Dll = "advapi32.dll";
         private const string credUIDll = "credui.dll";
-        private const string user32Dll = "User32.dll";
-        private const string sensapiDll = "sensapi.dll";
 
         public const int
         ERROR_INVALID_FLAGS = 1004,  // Invalid flags.
@@ -660,9 +648,6 @@ namespace XmlNotepad {
 
             protected virtual void Dispose(bool disposing) {
 
-                if (disposing) {
-                    // Release managed resources.
-                }
                 // Free the unmanaged resource ...
                 hwndParentCERParent = IntPtr.Zero;
                 hbmBannerCERHandle = IntPtr.Zero;

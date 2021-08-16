@@ -622,7 +622,10 @@ namespace XmlNotepad {
 
         public static XmlSchema LoadSchema(string filename) {
             if (string.IsNullOrEmpty(filename)) return null;
-            return XmlSchema.Read(new XmlTextReader(filename, new NameTable()), null);
+            using (var r = new XmlTextReader(filename, new NameTable()))
+            {
+                return XmlSchema.Read(r, null);
+            }
         }
     }
 

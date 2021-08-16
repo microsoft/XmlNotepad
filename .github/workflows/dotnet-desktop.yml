@@ -68,14 +68,12 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    # Restore the application
     - name: Restore the application
       run: nuget restore ./src/XmlNotepad.sln
 
-    # Build the application to populate the obj folder with RuntimeIdentifiers
-    # mshtml COM component is causing problems on github action, weird it works fine locally though.
+    # Build the application
     - name: Build the application
       run: msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration /verbosity:minimal
       env:
         Configuration: ${{ matrix.configuration }}
-

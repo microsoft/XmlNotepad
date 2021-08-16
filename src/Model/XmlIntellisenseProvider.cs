@@ -2,19 +2,19 @@ using System;
 using System.Xml;
 using System.Xml.Schema;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace XmlNotepad {
     public class XmlIntellisenseProvider : IIntellisenseProvider, IDisposable {
-        Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
-        XmlCache model;
+        readonly Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
+        readonly XmlCache model;
         IXmlTreeNode node;
         XmlNode xn;
         Checker checker;
-        ISite site;
+        readonly ISite site;
 
         const string vsIntellisense = "http://schemas.microsoft.com/Visual-Studio-Intellisense";
 
@@ -24,7 +24,7 @@ namespace XmlNotepad {
         }
 
         public virtual Uri BaseUri {
-            get { return this.model != null ? this.model.Location : null;  }
+            get { return this.model?.Location;  }
         }
 
         public virtual bool IsNameEditable { get { return true; } }
@@ -125,10 +125,9 @@ namespace XmlNotepad {
         }
 
         public XmlIntellisenseList GetNamespaceList(XmlNode node) {
-            XmlIntellisenseList list = new XmlIntellisenseList();
+            var list = new XmlIntellisenseList();
             list.IsOpen = true;
-
-            Dictionary<string, string> map = new Dictionary<string, string>();
+            
             foreach (XmlNode a in node.SelectNodes("namespace::*")) {
                 string tns = a.Value;
                 list.Add(tns, null);
@@ -283,11 +282,12 @@ namespace XmlNotepad {
                         if (a != null) {
                             t = a.GetType(typeName);
                         }
-                    } catch (Exception) {
-                        throw new Exception("??????????");
-                        // System.Windows.Forms.MessageBox.Show(string.Format(SR.AssemblyLoadError, assembly, e.Message),
-                        // SR.AssemblyLoadCaption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    } catch (Exception ex) {
+                        t = null;
+                        Debug.WriteLine(string.Format("Error loading assembly '{0}': {1}", assembly, ex.Message));
                     }
+                    // System.Windows.Forms.MessageBox.Show(string.Format(SR.AssemblyLoadError, assembly, e.Message),
+                    // SR.AssemblyLoadCaption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
             if (t != null) {
@@ -305,7 +305,7 @@ namespace XmlNotepad {
 
         public string GetQualifiedName(XmlSchemaAttribute a) {
             string name = a.Name;
-            string nsuri = null;
+            string nsuri;
             if (a.QualifiedName != null) {
                 name = a.QualifiedName.Name;
                 nsuri = a.QualifiedName.Namespace;
@@ -326,7 +326,7 @@ namespace XmlNotepad {
 
         public string GetQualifiedName(XmlSchemaElement e) {
             string name = e.Name;
-            string nsuri = null;
+            string nsuri;
             if (e.QualifiedName != null) {
                 name = e.QualifiedName.Name;
                 nsuri = e.QualifiedName.Namespace;
@@ -382,8 +382,9 @@ namespace XmlNotepad {
                 return string.Compare(x.name, y.name);
             }
         }
-        Dictionary<string, Entry> unique = new Dictionary<string, Entry>();
-        List<Entry> items = new List<Entry>();
+
+        readonly Dictionary<string, Entry> unique = new Dictionary<string, Entry>();
+        readonly List<Entry> items = new List<Entry>();
         bool isOpen;
 
         public XmlIntellisenseList() {

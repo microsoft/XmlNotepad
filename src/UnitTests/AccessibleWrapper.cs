@@ -88,7 +88,7 @@ namespace UnitTests {
 
         public string Help { get { return e.Current.HelpText; } }
 
-        public string Role { get { return e.Current.ControlType.ToString(); } }
+        public string Role { get { return e.Current.ControlType.LocalizedControlType; } }
 
         public string Status { get { return e.Current.ItemStatus; } }
 
@@ -132,8 +132,7 @@ namespace UnitTests {
         {
             get
             {
-                object o = null;
-                if (e.TryGetCurrentPattern(ValuePattern.Pattern, out o))
+                if (e.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
                 {
                     ValuePattern vp = (ValuePattern)o;
                     return vp.Current.Value;
@@ -155,8 +154,7 @@ namespace UnitTests {
             }
             set
             {
-                object o = null;
-                if (e.TryGetCurrentPattern(ValuePattern.Pattern, out o))
+                if (e.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
                 {
                     ValuePattern vp = (ValuePattern)o;
                     vp.SetValue(value);
@@ -421,9 +419,6 @@ namespace UnitTests {
 
         public IntPtr Hwnd { get { return new IntPtr(this.e.Current.NativeWindowHandle); } }
 
-
-        public string ControlTypeName { get { return this.e.Current.ControlType.ToString(); } }
-
         #region DPI scaling
 
         public Point LogicalToPhysicalPoint(Point logical)
@@ -444,7 +439,7 @@ namespace UnitTests {
                 x = physical.X,
                 y = physical.Y
             };
-            var rc = NativeMethods.PhysicalToLogicalPointForPerMonitorDPI(this.Hwnd, ref pt);
+            NativeMethods.PhysicalToLogicalPointForPerMonitorDPI(this.Hwnd, ref pt);
             return new Point(pt.x, pt.y);
         }
 

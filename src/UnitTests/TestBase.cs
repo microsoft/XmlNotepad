@@ -15,9 +15,10 @@ namespace UnitTests {
     public class TestBase {
 
         public class NodeInfo {
-            XmlNodeType nt;
-            string name;
-            string value;
+            readonly XmlNodeType nt;
+            readonly string name;
+            readonly string value;
+
             public NodeInfo(XmlReader r) {
                 this.nt = r.NodeType;
                 this.name = r.Name;
@@ -78,7 +79,7 @@ namespace UnitTests {
                 throw new Exception(msg);
             }
             if (p.HasExited) {
-                throw new Exception(string.Format("Failed to launch '{0'}, exit code {1}", exeFileName, p.ExitCode.ToString()));
+                throw new Exception(string.Format("Failed to launch '{0}', exit code {1}", exeFileName, p.ExitCode.ToString()));
             }
             Window w = new Window(p, null, rootElementName);
             w.TestBase = this;
@@ -104,7 +105,6 @@ namespace UnitTests {
             int pos = 0;
             XmlReader reader = XmlReader.Create(outFile);
             IXmlLineInfo li = (IXmlLineInfo)reader;
-            XmlNodeType previousNodeType = XmlNodeType.None;
             using (reader) {
                 while (reader.Read()) {
                     if (reader.NodeType == XmlNodeType.Whitespace ||
@@ -122,7 +122,6 @@ namespace UnitTests {
                                 string.Format("Mismatching nodes at line {0},{1}",
                                 li.LineNumber, li.LinePosition));
                     }
-                    previousNodeType = node.NodeType;
                 }
             }
         }

@@ -1,0 +1,44 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '40 14 * * 6'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup NuGet.exe
+      uses: NuGet/setup-nuget@v1
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore the application
+      run: nuget restore ./src/XmlNotepad.sln
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        queries: security-and-quality
+        languages: csharp
+
+    - name: Build the application
+      run: msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal /p:UseSharedCompilation=False
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
