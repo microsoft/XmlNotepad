@@ -11,21 +11,15 @@ namespace XmlNotepad
 	/// <summary>
 	/// Summary description for FormOptions.
 	/// </summary>
-	public class FormOptions : System.Windows.Forms.Form
+	public partial class FormOptions : System.Windows.Forms.Form
     {
         private Settings settings;
         UserSettings userSettings;
-        
+
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private PropertyGrid propertyGrid1;
         private Button buttonReset;
-
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private readonly System.ComponentModel.Container components = null;
-
 		public FormOptions()
 		{
 			//
@@ -36,7 +30,7 @@ namespace XmlNotepad
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-        
+
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
             if (hp != null && Utilities.DynamicHelpEnabled)
             {
@@ -44,7 +38,7 @@ namespace XmlNotepad
             }
 
             // now let the user resize it.
-            this.AutoSize = false; 
+            this.AutoSize = false;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -66,81 +60,6 @@ namespace XmlNotepad
                 return base.ProcessDialogKey(keyData);
             }
         }
-
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
-
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormOptions));
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.buttonReset = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
-            // buttonOK
-            // 
-            resources.ApplyResources(this.buttonOK, "buttonOK");
-            this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Click += new System.EventHandler(this.OnButtonOKClick);
-            // 
-            // buttonCancel
-            // 
-            resources.ApplyResources(this.buttonCancel, "buttonCancel");
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Name = "buttonCancel";
-            // 
-            // propertyGrid1
-            // 
-            resources.ApplyResources(this.propertyGrid1, "propertyGrid1");
-            this.propertyGrid1.Name = "propertyGrid1";
-            // 
-            // buttonReset
-            // 
-            resources.ApplyResources(this.buttonReset, "buttonReset");
-            this.buttonReset.Name = "buttonReset";
-            this.buttonReset.UseVisualStyleBackColor = true;
-            this.buttonReset.Click += new System.EventHandler(this.OnButtonResetClick);
-            // 
-            // FormOptions
-            // 
-            this.AcceptButton = this.buttonOK;
-            resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.White;
-            this.CancelButton = this.buttonCancel;
-            this.Controls.Add(this.buttonReset);
-            this.Controls.Add(this.propertyGrid1);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.buttonOK);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.HelpButton = true;
-            this.Name = "FormOptions";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.ResumeLayout(false);
-
-        }
-		#endregion        
 
         public override ISite Site {
             get {
@@ -223,7 +142,7 @@ namespace XmlNotepad
 
         public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
 
-        public UserSettings(Settings s) {            
+        public UserSettings(Settings s) {
             this.settings = s;
 
             this.font = (Font)this.settings["Font"];
@@ -340,7 +259,7 @@ namespace XmlNotepad
             this.settings["Font"] = this.font;
 
             this.settings["Theme"] = this.theme;
-            
+
             SaveColors();
             this.settings["LightColors"] = this.lightColors;
             this.settings["DarkColors"] = this.darkColors;
@@ -397,9 +316,9 @@ namespace XmlNotepad
             this.allowAnalytics = false;
         }
 
-        [SRCategoryAttribute("ThemeCategory")]
+        [SRCategory("ThemeCategory")]
         [LocDisplayName("Theme")]
-        [SRDescriptionAttribute("ThemeDescription")]
+        [SRDescription("ThemeDescription")]
         public ColorTheme Theme
         {
             get
@@ -417,9 +336,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("ElementColor")]
-        [SRDescriptionAttribute("ElementColorDescription")]        
+        [SRDescription("ElementColorDescription")]
         public Color ElementColor {
             get {
                 return this.elementColor;
@@ -429,9 +348,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("AttributeColor")]
-        [SRDescriptionAttribute("AttributeColorDescription")]
+        [SRDescription("AttributeColorDescription")]
         public Color AttributeColor {
             get {
                 return this.attributeColor;
@@ -441,9 +360,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("CommentColor")]
-        [SRDescriptionAttribute("CommentColorDescription")]
+        [SRDescription("CommentColorDescription")]
         public Color CommentColor {
             get {
                 return this.commentColor;
@@ -452,9 +371,9 @@ namespace XmlNotepad
                 this.commentColor = value;
             }
         }
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("PiColor")]
-        [SRDescriptionAttribute("PiColorDescription")]
+        [SRDescription("PiColorDescription")]
         public Color PiColor {
             get {
                 return this.piColor;
@@ -463,9 +382,9 @@ namespace XmlNotepad
                 this.piColor = value;
             }
         }
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("TextColor")]
-        [SRDescriptionAttribute("TextColorDescription")]
+        [SRDescription("TextColorDescription")]
         public Color TextColor {
             get {
                 return this.textColor;
@@ -474,9 +393,9 @@ namespace XmlNotepad
                 this.textColor = value;
             }
         }
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("CDataColor")]
-        [SRDescriptionAttribute("CDataColorDescription")]
+        [SRDescription("CDataColorDescription")]
         public Color CDataColor {
             get {
                 return this.cdataColor;
@@ -485,9 +404,9 @@ namespace XmlNotepad
                 this.cdataColor = value;
             }
         }
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("BackgroundColor")]
-        [SRDescriptionAttribute("BackgroundColorDescription")]
+        [SRDescription("BackgroundColorDescription")]
         public Color BackgroundColor {
             get {
                 return this.backgroundColor;
@@ -497,9 +416,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("ContainerBackgroundColor")]
-        [SRDescriptionAttribute("ContainerBackgroundColorDescription")]
+        [SRDescription("ContainerBackgroundColorDescription")]
         public Color ContainerBackgroundColor
         {
             get
@@ -512,9 +431,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("ColorCategory")]
+        [SRCategory("ColorCategory")]
         [LocDisplayName("EditorBackgroundColor")]
-        [SRDescriptionAttribute("EditorBackgroundColorDescription")]
+        [SRDescription("EditorBackgroundColorDescription")]
         public Color EditorBackgroundColor
         {
             get
@@ -528,9 +447,9 @@ namespace XmlNotepad
         }
 
 
-        [SRCategoryAttribute("FontCategory")]
+        [SRCategory("FontCategory")]
         [LocDisplayName("FontPropertyName")]
-        [SRDescriptionAttribute("FontDescription")]
+        [SRDescription("FontDescription")]
         public Font Font {
             get {
                 return this.font;
@@ -540,9 +459,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("LanguageCategory")]
+        [SRCategory("LanguageCategory")]
         [LocDisplayName("LanguagePropertyName")]
-        [SRDescriptionAttribute("LanguageDescription")]
+        [SRDescription("LanguageDescription")]
         public string Language
         {
             get
@@ -555,9 +474,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("AnalyticsCategory")]
+        [SRCategory("AnalyticsCategory")]
         [LocDisplayName("AllowAnalytics")]
-        [SRDescriptionAttribute("AllowAnalyticsDescription")]
+        [SRDescription("AllowAnalyticsDescription")]
         public bool AllowAnalytics
         {
             get
@@ -570,9 +489,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("UpdateCategory")]
+        [SRCategory("UpdateCategory")]
         [LocDisplayName("EnableUpdate")]
-        [SRDescriptionAttribute("EnableUpdateDescription")]
+        [SRDescription("EnableUpdateDescription")]
         public bool EnableUpdate {
             get {
                 return this.enableUpdate;
@@ -582,9 +501,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("UpdateCategory")]
+        [SRCategory("UpdateCategory")]
         [LocDisplayName("UpdateLocation")]
-        [SRDescriptionAttribute("UpdateLocationDescription")]
+        [SRDescription("UpdateLocationDescription")]
         public string UpdateLocation {
             get {
                 return this.updateLocation;
@@ -594,9 +513,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("FormatCategory")]
+        [SRCategory("FormatCategory")]
         [LocDisplayName("AutoFormatOnSave")]
-        [SRDescriptionAttribute("AutoFormatOnSaveDescription")]
+        [SRDescription("AutoFormatOnSaveDescription")]
         public bool AutoFormatOnSave {
             get {
                 return this.autoFormatOnSave;
@@ -605,9 +524,9 @@ namespace XmlNotepad
                 this.autoFormatOnSave = value;
             }
         }
-        [SRCategoryAttribute("FormatCategory")]
+        [SRCategory("FormatCategory")]
         [LocDisplayName("IndentLevel")]
-        [SRDescriptionAttribute("IndentLevelDescription")]
+        [SRDescription("IndentLevelDescription")]
         public int IndentLevel {
             get {
                 return this.indentLevel;
@@ -616,9 +535,9 @@ namespace XmlNotepad
                 this.indentLevel = value;
             }
         }
-        [SRCategoryAttribute("FormatCategory")]
+        [SRCategory("FormatCategory")]
         [LocDisplayName("IndentChar")]
-        [SRDescriptionAttribute("IndentCharDescription")]
+        [SRDescription("IndentCharDescription")]
         public IndentChar IndentChar {
             get {
                 return this.indentChar;
@@ -628,9 +547,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("FormatCategory")]
+        [SRCategory("FormatCategory")]
         [LocDisplayName("NewLineChars")]
-        [SRDescriptionAttribute("NewLineCharsDescription")]
+        [SRDescription("NewLineCharsDescription")]
         public string NewLineChars {
             get {
                 return this.newLineChars;
@@ -640,9 +559,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("FormatCategory")]
+        [SRCategory("FormatCategory")]
         [LocDisplayName("NoByteOrderMark")]
-        [SRDescriptionAttribute("NoByteOrderMarkDescription")]
+        [SRDescription("NoByteOrderMarkDescription")]
         public bool NoByteOrderMark
         {
             get
@@ -655,9 +574,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("LongLineCategory")]
+        [SRCategory("LongLineCategory")]
         [LocDisplayName("MaximumLineLengthProperty")]
-        [SRDescriptionAttribute("MaximumLineLengthDescription")]
+        [SRDescription("MaximumLineLengthDescription")]
         public int MaximumLineLength
         {
             get
@@ -670,9 +589,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("LongLineCategory")]
+        [SRCategory("LongLineCategory")]
         [LocDisplayName("MaximumValueLengthProperty")]
-        [SRDescriptionAttribute("MaximumValueLengthDescription")]
+        [SRDescription("MaximumValueLengthDescription")]
         public int MaximumValueLength
         {
             get
@@ -685,9 +604,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("LongLineCategory")]
+        [SRCategory("LongLineCategory")]
         [LocDisplayName("AutoFormatLongLinesProperty")]
-        [SRDescriptionAttribute("AutoFormatLongLinesDescription")]
+        [SRDescription("AutoFormatLongLinesDescription")]
         public bool AutoFormatLongLines
         {
             get
@@ -700,9 +619,9 @@ namespace XmlNotepad
             }
         }
 
-        [SRCategoryAttribute("Validation")]
+        [SRCategory("Validation")]
         [LocDisplayName("IgnoreDTDProperty")]
-        [SRDescriptionAttribute("IgnoreDTDDescription")]
+        [SRDescription("IgnoreDTDDescription")]
         public bool IgnoreDTD
         {
             get
@@ -716,9 +635,9 @@ namespace XmlNotepad
         }
 
 
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreChildOrderProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnoreChildOrderDescription")]
+        [SRDescription("XmlDiffIgnoreChildOrderDescription")]
         public bool XmlDiffIgnoreChildOrder
         {
             get
@@ -730,66 +649,66 @@ namespace XmlNotepad
                 this.xmlDiffIgnoreChildOrder = value;
             }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreCommentsProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnoreCommentsDescription")]
+        [SRDescription("XmlDiffIgnoreCommentsDescription")]
         public bool XmlDiffIgnoreComments
         {
             get { return this.xmlDiffIgnoreComments; }
             set { this.xmlDiffIgnoreComments = value; }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnorePIProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnorePIDescription")]
+        [SRDescription("XmlDiffIgnorePIDescription")]
         public bool XmlDiffIgnorePI
         {
             get { return this.xmlDiffIgnorePI; }
             set { this.xmlDiffIgnorePI = value; }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreWhitespaceProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnoreWhitespaceDescription")]
+        [SRDescription("XmlDiffIgnoreWhitespaceDescription")]
         public bool XmlDiffIgnoreWhitespace
         {
             get { return this.xmlDiffIgnoreWhitespace; }
             set { this.xmlDiffIgnoreWhitespace = value; }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreNamespacesProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnoreNamespacesDescription")]
+        [SRDescription("XmlDiffIgnoreNamespacesDescription")]
         public bool XmlDiffIgnoreNamespaces
         {
             get { return this.xmlDiffIgnoreNamespaces; }
             set { this.xmlDiffIgnoreNamespaces = value; }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnorePrefixesProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnorePrefixesDescription")]
+        [SRDescription("XmlDiffIgnorePrefixesDescription")]
         public bool XmlDiffIgnorePrefixes
         {
             get { return this.xmlDiffIgnorePrefixes; }
             set { this.xmlDiffIgnorePrefixes = value; }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreXmlDeclProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnoreXmlDeclDescription")]
+        [SRDescription("XmlDiffIgnoreXmlDeclDescription")]
         public bool XmlDiffIgnoreXmlDecl
         {
             get { return this.xmlDiffIgnoreXmlDecl; }
             set { this.xmlDiffIgnoreXmlDecl = value; }
         }
-        [SRCategoryAttribute("XmlDiff")]
+        [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreDtdProperty")]
-        [SRDescriptionAttribute("XmlDiffIgnoreDtdDescription")]
+        [SRDescription("XmlDiffIgnoreDtdDescription")]
         public bool XmlDiffIgnoreDtd
         {
             get { return this.xmlDiffIgnoreDtd; }
             set { this.xmlDiffIgnoreDtd = value; }
         }
 
-        [SRCategoryAttribute("EditingCategory")]
+        [SRCategory("EditingCategory")]
         [LocDisplayName("TextEditorProperty")]
-        [SRDescriptionAttribute("TextEditorDescription")]
+        [SRDescription("TextEditorDescription")]
         public string Editor
         {
             get
@@ -872,7 +791,7 @@ namespace XmlNotepad
             var list = new List<EventDescriptor>(master.Count);
             foreach (EventDescriptor evt in master)
             {
-                if (!hidden.Contains(evt.Name)) 
+                if (!hidden.Contains(evt.Name))
                     list.Add(evt);
             }
             return new EventDescriptorCollection(list.ToArray());
@@ -893,7 +812,7 @@ namespace XmlNotepad
             var list = new List<PropertyDescriptor>(master.Count);
             foreach (PropertyDescriptor prop in master)
             {
-                if (!hidden.Contains(prop.Name)) 
+                if (!hidden.Contains(prop.Name))
                     list.Add(prop);
             }
             return new PropertyDescriptorCollection(list.ToArray());
