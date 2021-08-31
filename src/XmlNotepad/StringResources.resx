@@ -830,7 +830,7 @@ Do you want to enable execution of this script code?</value>
     <value>You have the latest version: {0}</value>
   </data>
   <data name="TransformedTimeStatus" xml:space="preserve">
-    <value>Transformed in {0} ms and browser loaded in {1} ms</value>
+    <value>Transformed in {0} ms and {2} loaded in {1} ms</value>
     <comment>status text</comment>
   </data>
   <data name="EditingCategory" xml:space="preserve">
@@ -847,5 +847,9 @@ Do you want to enable execution of this script code?</value>
   </data>
   <data name="ConfigureDefaultApps">
     <value>Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.</value>
+  </data>
+
+  <data name="InvalidFileName" xml:space="preserve">
+    <value>Invalid file name '{0}'</value>
   </data>
 </root>

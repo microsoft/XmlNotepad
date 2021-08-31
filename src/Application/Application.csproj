@@ -134,8 +134,20 @@
     <Compile Include="FormSchemas.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAnalytics.Designer.cs">
+      <DependentUpon>FormAnalytics.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSchemas.Designer.cs">
       <DependentUpon>FormSchemas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormOptions.Designer.cs">
+      <DependentUpon>FormOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="FormSearch.cs">
       <SubType>Form</SubType>

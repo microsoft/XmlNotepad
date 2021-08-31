@@ -227,6 +227,8 @@ namespace XmlNotepad
     {
         public long XsltMilliseconds;
         public long BrowserMilliseconds;
+
+        public string BrowserName { get; set; }
     }
 
 }

@@ -142,6 +142,7 @@ namespace XmlNotepad
             if (LoadCompleted != null && this.info != null)
             {
                 this.info.BrowserMilliseconds = this.urlWatch.ElapsedMilliseconds;
+                this.info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
                 LoadCompleted(this, this.info);
             }
         }
@@ -185,14 +186,6 @@ namespace XmlNotepad
             }
 
             return this.baseUri;
-        }
-
-        public Control VisibleBrowser
-        {
-            get
-            {
-                return this.webBrowser1.Visible ? (Control)this.webBrowser1 : (Control)this.webBrowser2;
-            }
         }
 
         private void Display(string content)

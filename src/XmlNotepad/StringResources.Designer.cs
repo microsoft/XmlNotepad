@@ -756,6 +756,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid file name &apos;{0}&apos;.
+        /// </summary>
+        public static string InvalidFileName {
+            get {
+                return ResourceManager.GetString("InvalidFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to InternalError: ISite has not been provided, so model cannot be found.
         /// </summary>
         public static string ISiteMissing {
@@ -1401,7 +1410,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transformed in {0} ms and browser loaded in {1} ms.
+        ///   Looks up a localized string similar to Transformed in {0} ms and {2} loaded in {1} ms.
         /// </summary>
         public static string TransformedTimeStatus {
             get {

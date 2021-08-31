@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad {
     public class RecentFileEventArgs : EventArgs {
@@ -186,7 +186,19 @@ namespace XmlNotepad {
                 e.SuppressKeyPress = true;
                 if (!string.IsNullOrEmpty(this.location.Text))
                 {
-                    this.RecentFileSelected(sender, new RecentFileEventArgs(new Uri(this.location.Text)));
+                    Uri uri = null;
+                    try
+                    {
+                        var filename = this.location.Text.Trim('\"');
+                        this.location.Text = filename;
+                        uri = new Uri(filename);
+                        this.RecentFileSelected(sender, new RecentFileEventArgs(uri));
+                    } 
+                    catch
+                    {
+                        var msg = string.Format(SR.InvalidFileName, this.location.Text);
+                        MessageBox.Show(msg, SR.LoadErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else if (this.location.SelectedItem is ComboFileItem item && item != null)
                 {
@@ -204,5 +216,9 @@ namespace XmlNotepad {
             return s.Trim().Trim('"');
         }
 
+        public bool Contains(Uri uri)
+        {
+            return recentFiles.Contains(uri);
+        }
     }
 }
