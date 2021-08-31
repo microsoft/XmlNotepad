@@ -72,7 +72,7 @@ namespace XmlNotepad
                     this.userSettings = value.GetService(typeof(UserSettings)) as UserSettings;
 
                     string[] hiddenProperties = new string[0];
-                    if ((string)this.settings["AnalyticsClientId"] == "disabled")
+                    if (this.settings.GetString("AnalyticsClientId") == "disabled")
                     {
                         hiddenProperties = new string[] { "AllowAnalytics" };
                     }
@@ -95,6 +95,12 @@ namespace XmlNotepad
                 this.propertyGrid1.SelectedObject = userSettings;
             }
         }
+    }
+
+    public enum WebBrowserVersion
+    {
+        WinformsWebBrowser,
+        WebView2,
     }
 
     // This class keeps s a local snapshot of the settings until the user clicks the Ok button,
@@ -129,6 +135,8 @@ namespace XmlNotepad
         int maximumValueLength;
         bool autoFormatLongLines;
         bool ignoreDTD;
+        bool enableXsltScripts;
+        WebBrowserVersion webBrowser;
         bool xmlDiffIgnoreChildOrder;
         bool xmlDiffIgnoreComments;
         bool xmlDiffIgnorePI;
@@ -151,28 +159,30 @@ namespace XmlNotepad
             lightColors = (Hashtable)this.settings["LightColors"];
             darkColors = (Hashtable)this.settings["DarkColors"];
             LoadColors();
-            updateLocation = (string)this.settings["UpdateLocation"];
-            enableUpdate = (bool)this.settings["UpdateEnabled"];
-            autoFormatOnSave = (bool)this.settings["AutoFormatOnSave"];
-            noByteOrderMark = (bool)this.settings["NoByteOrderMark"];
-            indentLevel = (int)this.settings["IndentLevel"];
+            updateLocation = this.settings.GetString("UpdateLocation");
+            enableUpdate = this.settings.GetBoolean("UpdateEnabled");
+            autoFormatOnSave = this.settings.GetBoolean("AutoFormatOnSave");
+            noByteOrderMark = this.settings.GetBoolean("NoByteOrderMark");
+            indentLevel = this.settings.GetInteger("IndentLevel");
             indentChar = (IndentChar)this.settings["IndentChar"];
-            newLineChars = (string)this.settings["NewLineChars"];
-            language = (string)this.settings["Language"];
-            maximumLineLength = (int)this.settings["MaximumLineLength"];
-            autoFormatLongLines = (bool)this.settings["AutoFormatLongLines"];
-            ignoreDTD = (bool)this.settings["IgnoreDTD"];
+            newLineChars = this.settings.GetString("NewLineChars");
+            language = this.settings.GetString("Language");
+            maximumLineLength = this.settings.GetInteger("MaximumLineLength");
+            autoFormatLongLines = this.settings.GetBoolean("AutoFormatLongLines");
+            ignoreDTD = this.settings.GetBoolean("IgnoreDTD");
+            enableXsltScripts = this.settings.GetBoolean("EnableXsltScripts");
+            webBrowser = (this.settings.GetString("BrowserVersion") == "WebBrowser") ? WebBrowserVersion.WinformsWebBrowser : WebBrowserVersion.WebView2;
 
-            this.xmlDiffIgnoreChildOrder = (bool)this.settings["XmlDiffIgnoreChildOrder"];
-            this.xmlDiffIgnoreComments = (bool)this.settings["XmlDiffIgnoreComments"];
-            this.xmlDiffIgnorePI = (bool)this.settings["XmlDiffIgnorePI"];
-            this.xmlDiffIgnoreWhitespace = (bool)this.settings["XmlDiffIgnoreWhitespace"];
-            this.xmlDiffIgnoreNamespaces = (bool)this.settings["XmlDiffIgnoreNamespaces"];
-            this.xmlDiffIgnorePrefixes = (bool)this.settings["XmlDiffIgnorePrefixes"];
-            this.xmlDiffIgnoreXmlDecl = (bool)this.settings["XmlDiffIgnoreXmlDecl"];
-            this.xmlDiffIgnoreDtd = (bool)this.settings["XmlDiffIgnoreDtd"];
-            this.allowAnalytics = (bool)this.settings["AllowAnalytics"];
-            this.textEditor = (string)this.settings["TextEditor"];
+            this.xmlDiffIgnoreChildOrder = this.settings.GetBoolean("XmlDiffIgnoreChildOrder");
+            this.xmlDiffIgnoreComments = this.settings.GetBoolean("XmlDiffIgnoreComments");
+            this.xmlDiffIgnorePI = this.settings.GetBoolean("XmlDiffIgnorePI");
+            this.xmlDiffIgnoreWhitespace = this.settings.GetBoolean("XmlDiffIgnoreWhitespace");
+            this.xmlDiffIgnoreNamespaces = this.settings.GetBoolean("XmlDiffIgnoreNamespaces");
+            this.xmlDiffIgnorePrefixes = this.settings.GetBoolean("XmlDiffIgnorePrefixes");
+            this.xmlDiffIgnoreXmlDecl = this.settings.GetBoolean("XmlDiffIgnoreXmlDecl");
+            this.xmlDiffIgnoreDtd = this.settings.GetBoolean("XmlDiffIgnoreDtd");
+            this.allowAnalytics = this.settings.GetBoolean("AllowAnalytics");
+            this.textEditor = this.settings.GetString("TextEditor");
         }
 
         private void LoadColors()
@@ -278,6 +288,9 @@ namespace XmlNotepad
             this.settings["MaximumValueLength"] = this.maximumValueLength;
             this.settings["AutoFormatLongLines"] = this.autoFormatLongLines;
             this.settings["IgnoreDTD"] = this.ignoreDTD;
+
+            this.settings["EnableXsltScripts"] = this.enableXsltScripts;
+            this.settings["BrowserVersion"] = (this.webBrowser == WebBrowserVersion.WinformsWebBrowser) ? "WebBrowser" : "WebView2";
 
             this.settings["XmlDiffIgnoreChildOrder"] = this.xmlDiffIgnoreChildOrder;
             this.settings["XmlDiffIgnoreComments"] = this.xmlDiffIgnoreComments;
@@ -634,6 +647,36 @@ namespace XmlNotepad
             }
         }
 
+
+        [SRCategory("XsltCategory")]
+        [LocDisplayName("EnableXsltScriptsPropertyName")]
+        [SRDescription("EnableXsltScriptsDescription")]
+        public bool EnableXsltScripts
+        {
+            get
+            {
+                return this.enableXsltScripts;
+            }
+            set
+            {
+                this.enableXsltScripts = value;
+            }
+        }
+        
+        [SRCategory("XsltCategory")]
+        [LocDisplayName("WebBrowserPropertyName")]
+        [SRDescription("WebBrowserDescription")]
+        public WebBrowserVersion WebBrowserVersion
+        {
+            get
+            {
+                return this.webBrowser;
+            }
+            set
+            {
+                this.webBrowser = value;
+            }
+        }
 
         [SRCategory("XmlDiff")]
         [LocDisplayName("XmlDiffIgnoreChildOrderProperty")]

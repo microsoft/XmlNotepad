@@ -120,9 +120,11 @@ namespace XmlNotepad {
             // xsltControl
             // 
             this.xsltControl.BaseUri = null;
+            this.xsltControl.BrowserVersion = null;
             this.xsltControl.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
             this.xsltControl.DisableOutputFile = false;
             resources.ApplyResources(this.xsltControl, "xsltControl");
+            this.xsltControl.EnableScripts = false;
             this.xsltControl.IgnoreDTD = false;
             this.xsltControl.Name = "xsltControl";
             // 

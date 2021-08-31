@@ -1,0 +1,3 @@
+Make use of WebView2 a user specified option under new XSLT options section of Options dialog.
+Add better error handling if WebView2 doesn't work.
+Update the version on some dependent packages.

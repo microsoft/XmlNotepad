@@ -20,7 +20,7 @@ namespace XmlNotepad
     /// </summary>
     public partial class FormMain : Form, ISite
     {
-
+        private bool settingsLoaded;
         readonly UndoManager undoManager;
         Settings settings;
         readonly string[] args;
@@ -82,10 +82,6 @@ namespace XmlNotepad
 
             this.undoLabel = this.undoToolStripMenuItem.Text;
             this.redoLabel = this.redoToolStripMenuItem.Text;
-
-            this.xsltViewer.SetSite(this);
-            this.xsltViewer.Completed += OnXsltComplete;
-            this.dynamicHelpViewer.SetSite(this);
 
             CreateTabControl();
 
@@ -264,6 +260,11 @@ namespace XmlNotepad
             this.settings["MaximumValueLength"] = (int)short.MaxValue;
             this.settings["AutoFormatLongLines"] = false;
             this.settings["IgnoreDTD"] = false;
+
+            // XSLT options
+            this.settings["BrowserVersion"] = "";
+            this.settings["EnableXsltScripts"] = true;
+            this.settings["WebView2Exception"] = "";
 
             // XmlDiff options
             this.settings["XmlDiffIgnoreChildOrder"] = false;
@@ -1231,6 +1232,7 @@ namespace XmlNotepad
         }
 
         bool prompting = false;
+        private bool showingOptions;
 
         protected virtual void OnFileChanged()
         {
@@ -1310,6 +1312,7 @@ namespace XmlNotepad
                     if (File.Exists(path))
                     {
                         settings.Load(path);
+                        this.settingsLoaded = true;
 
                         UserSettings.AddDefaultColors(settings, "LightColors", ColorTheme.Light);
                         UserSettings.AddDefaultColors(settings, "DarkColors", ColorTheme.Dark);
@@ -1339,6 +1342,24 @@ namespace XmlNotepad
             }
 
             CheckAnalytics();
+            InitializeXsltViewer();
+        }
+
+        private void InitializeXsltViewer()
+        {
+            // now that we have loaded the settings, we can finish initializing the XsltControls.
+            this.xsltViewer.SetSite(this);
+            this.xsltViewer.Completed += OnXsltComplete;
+            this.xsltViewer.GetXsltControl().WebBrowserException += OnWebBrowserException;
+            this.dynamicHelpViewer.SetSite(this);
+        }
+
+        private void OnWebBrowserException(object sender, Exception e)
+        {
+            if (this.showingOptions && e is WebView2Exception)
+            {
+                MessageBox.Show(this, string.Format(SR.WebView2Error, e.Message), "WebView2 Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public bool AllowAnalytics { get; set; }
@@ -2019,10 +2040,12 @@ namespace XmlNotepad
             FormOptions options = new FormOptions();
             options.Owner = this;
             options.Site = this;
+            this.showingOptions = true;
             if (options.ShowDialog(this) == DialogResult.OK)
             {
                 this.updater.OnUserChange(oldLocation);
             }
+            this.showingOptions = false;
             analytics.RecordFormOptions();
         }
 

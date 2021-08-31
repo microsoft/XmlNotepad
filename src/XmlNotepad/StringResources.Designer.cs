@@ -558,6 +558,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow execution of script blocks in XSLT stylesheets..
+        /// </summary>
+        public static string EnableXsltScriptsDescription {
+            get {
+                return ResourceManager.GetString("EnableXsltScriptsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Scripts.
+        /// </summary>
+        public static string EnableXsltScriptsPropertyName {
+            get {
+                return ResourceManager.GetString("EnableXsltScriptsPropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error launching &apos;{0}&apos;.
         /// </summary>
         public static string ErrorCreatingProcessPrompt {
@@ -1518,6 +1536,35 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select which version of Web Browser to use to render XSLT output..
+        /// </summary>
+        public static string WebBrowserDescription {
+            get {
+                return ResourceManager.GetString("WebBrowserDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Browser Version.
+        /// </summary>
+        public static string WebBrowserPropertyName {
+            get {
+                return ResourceManager.GetString("WebBrowserPropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error initializing WebView2 component. Please install WebView2 from https://developer.microsoft.com/en-us/microsoft-edge/webview2/ and check if you need to do a full reboot.
+        ///
+        ///{0}.
+        /// </summary>
+        public static string WebView2Error {
+            get {
+                return ResourceManager.GetString("WebView2Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td title=&apos;{0}&apos;&gt;&lt;b&gt; File in editor : {1}&lt;/b&gt;&lt;/td&gt;
         ///  &lt;td title=&apos;{2}&apos;&gt;&lt;b&gt; File to compare : {3}&lt;/b&gt;&lt;/td&gt;
         ///&lt;/tr&gt;.
@@ -1760,6 +1807,15 @@ namespace XmlNotepad {
         public static string XslScriptCodePrompt {
             get {
                 return ResourceManager.GetString("XslScriptCodePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XSLT.
+        /// </summary>
+        public static string XsltCategory {
+            get {
+                return ResourceManager.GetString("XsltCategory", resourceCulture);
             }
         }
     }

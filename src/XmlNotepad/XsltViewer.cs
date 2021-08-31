@@ -39,6 +39,11 @@ namespace XmlNotepad
             xsltControl.LoadCompleted += OnXsltLoadCompleted;
         }
 
+        public XsltControl GetXsltControl()
+        {
+            return this.xsltControl;
+        }
+
         public void OnClosed()
         {
             this.xsltControl.OnClosed();
@@ -97,7 +102,6 @@ namespace XmlNotepad
             this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);            
         }
 
-
         protected override void OnPaint(PaintEventArgs e)
         {
             if (this.xsltControl.Top > 0 && this.Width > 0)
@@ -146,7 +150,6 @@ namespace XmlNotepad
                     }
                 }
                 this.SourceFileName.Text = model.XsltFileName;
-                this.xsltControl.IgnoreDTD = model.GetSettingBoolean("IgnoreDTD");
             }
             catch (Exception ex)
             {

@@ -12,10 +12,16 @@ using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
+    public class WebView2Exception : Exception
+    {
+        public WebView2Exception(string msg) : base(msg) { }
+    }
+
     public partial class XsltControl : UserControl
     {
         readonly Stopwatch urlWatch = new Stopwatch();
         string html;
+        private string filename;
         DateTime loaded;
         Uri baseUri;
         PerformanceInfo info = null;
@@ -23,21 +29,21 @@ namespace XmlNotepad
         XmlDocument xsltdoc;
         XslCompiledTransform defaultss;
         Uri xsltUri;
-        readonly XsltSettings settings;
         ISite site;
         XmlUrlResolver resolver;
+        private Settings settings;
         string defaultSSResource = "XmlNotepad.DefaultSS.xslt";
         readonly IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
         bool webInitialized;
+        bool webView2Supported;
         string tempFile;
+
+        public event EventHandler<Exception> WebBrowserException;
 
         public XsltControl()
         {
             InitializeComponent();
-            settings = new XsltSettings(true, true);
             resolver = new XmlUrlResolver();
-            this.webBrowser2.CoreWebView2InitializationCompleted += OnCoreWebView2InitializationCompleted;
-            this.Load += XsltControl_Load;
         }
 
         /// <summary>
@@ -64,20 +70,52 @@ namespace XmlNotepad
             this.tempFile = null;
         }
 
-        private async void XsltControl_Load(object sender, EventArgs e)
+        private async void InitializeBrowser(string version)
         {
             try
             {
-                CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
+                this.BrowserVersion = version;
+                if (version == "WebView2")
                 {
-                    AllowSingleSignOnUsingOSPrimaryAccount = true
-                };
-                CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
-                await this.webBrowser2.EnsureCoreWebView2Async(environment);
-            } catch
+                    if (!this.webView2Supported)
+                    {
+                        this.webBrowser2.CoreWebView2InitializationCompleted -= OnCoreWebView2InitializationCompleted;
+                        this.webBrowser2.CoreWebView2InitializationCompleted += OnCoreWebView2InitializationCompleted;
+                        CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
+                        {
+                            AllowSingleSignOnUsingOSPrimaryAccount = true
+                        };
+                        CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
+                        await this.webBrowser2.EnsureCoreWebView2Async(environment);
+                    }
+                }
+                else
+                {
+                    WebBrowserFallback();
+                }
+
+                Reload();
+            } 
+            catch (Exception ex)
             {
                 // fall back on old web browser control
+                RaiseBrowserException(new WebView2Exception(ex.Message));
+                this.BrowserVersion = "WebBrowser";
+                this.settings["BrowserVersion"] = "WebBrowser";
                 WebBrowserFallback();
+                this.settings["WebView2Exception"] = ex.Message;
+            }
+        }
+
+        private void Reload()
+        {
+            if (!string.IsNullOrEmpty(this.filename))
+            {
+                DisplayFile(filename);
+            }
+            else if (!string.IsNullOrEmpty(html))
+            {
+                Display(html);
             }
         }
 
@@ -96,12 +134,21 @@ namespace XmlNotepad
             if (LoadCompleted != null && this.info != null)
             {
                 this.info.BrowserMilliseconds = this.urlWatch.ElapsedMilliseconds;
+                this.info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
                 LoadCompleted(this, this.info);
             }
         }
 
         private void OnCoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
+            if (!e.IsSuccess)
+            {
+                if (e.InitializationException != null)
+                {
+                    // save this error someplace so we can show it to the user later when they try and enable WebView2.
+                    RaiseBrowserException(new WebView2Exception(e.InitializationException.Message));
+                }
+            }
             if (this.webBrowser2.CoreWebView2 != null)
             {
                 this.webBrowser2.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
@@ -109,6 +156,7 @@ namespace XmlNotepad
                 this.webBrowser2.Visible = true;
                 this.webBrowser1.Visible = false;
                 this.webBrowser2.ZoomFactor = 1.25;
+                this.webView2Supported = true;
             }
             else
             {
@@ -129,11 +177,10 @@ namespace XmlNotepad
         {
             // WebView2 is not installed, so fall back on the old WebBrowser component.
             this.webBrowser2.Visible = false;
+            this.webBrowser1.Visible = true;
             this.webBrowser1.ScriptErrorsSuppressed = true;
             this.webBrowser1.WebBrowserShortcutsEnabled = true;
             this.webBrowser1.DocumentCompleted += OnWebDocumentCompleted;
-
-            this.webBrowser1.Visible = true;
             this.webInitialized = true; // no callback from this guy.
         }
 
@@ -149,25 +196,59 @@ namespace XmlNotepad
 
         public event EventHandler<PerformanceInfo> LoadCompleted;
 
+        private bool UseWebView2()
+        {
+            return this.webView2Supported && this.BrowserVersion == "WebView2";
+        }
+
         public void DisplayFile(string filename)
         {
+            if (!this.webInitialized)
+            {
+                return;
+            }
             this.html = null;
+            this.filename = filename;
             urlWatch.Reset();
             urlWatch.Start();
-            if (this.webBrowser1.Visible)
-            {
-                this.webBrowser1.Navigate(filename);
-            }
-            else
+
+            this.webBrowser2.Visible = UseWebView2();
+            this.webBrowser1.Visible = !UseWebView2();
+
+            if (UseWebView2())
             {
                 var uri = new Uri(filename);
-                if (this.webBrowser2.Source == uri)
+                try
                 {
-                    this.webBrowser2.Reload();
+                    if (this.webBrowser2.Source == uri)
+                    {
+                        this.webBrowser2.Reload();
+                    }
+                    else
+                    {
+                        this.webBrowser2.Source = uri;
+                    }
+                } 
+                catch (Exception e)
+                {
+                    RaiseBrowserException(e);
+                    // revert, did user uninstall WebView2?
+                    this.webView2Supported = false;
+                    WebBrowserFallback();
                 }
-                else
+            }
+
+            // fallback on webbrowser 1
+            if (this.webBrowser1.Visible)
+            {
+                try
                 {
-                    this.webBrowser2.Source = uri;
+                    this.webBrowser1.Navigate(filename);
+                } 
+                catch (Exception e)
+                {
+                    // tell the user?
+                    RaiseBrowserException(e);
                 }
             }
         }
@@ -195,24 +276,64 @@ namespace XmlNotepad
             {
                 urlWatch.Reset();
                 urlWatch.Start();
+
+                this.webBrowser2.Visible = UseWebView2();
+                this.webBrowser1.Visible = !UseWebView2();
+
+                if (UseWebView2())
+                {
+                    try
+                    {
+                        if (content.Length > 1000000)
+                        {
+                            content = content.Substring(0, 1000000) + "<h1>content truncated...";
+                        }
+                        // this has a 1mb limit for some unknown reason.
+                        this.webBrowser2.NavigateToString(content);
+                        this.html = content;
+                        this.filename = null;
+                        return;
+                    } 
+                    catch (Exception e)
+                    {
+                        RaiseBrowserException(e);
+                        // revert, did user uninstall WebView2?
+                        this.webBrowser2.Visible = false;
+                        this.webBrowser1.Visible = true;
+                        this.webView2Supported = false;
+
+                    }
+                }
+                // Fallback in case webBrowser2 fails.
                 if (this.webBrowser1.Visible)
                 {
-                    this.webBrowser1.DocumentText = content;
-                }
-                else
-                {
-                    if (content.Length > 1000000)
+                    try
                     {
-                        content = content.Substring(0, 1000000) + "<h1>content truncated...";
+                        this.webBrowser1.DocumentText = content;
+                    } 
+                    catch (Exception e)
+                    {
+                        RaiseBrowserException(e);
                     }
-                    // this has a 1mb limit for some unknown reason.
-                    this.webBrowser2.NavigateToString(content);
+                    this.html = content;
+                    this.filename = null;
                 }
-                this.html = content;
+            }
+        }
+
+        private void RaiseBrowserException(Exception e)
+        {
+            if (WebBrowserException != null)
+            {
+                WebBrowserException(this, e);
             }
         }
 
         public bool IgnoreDTD { get; set; }
+
+        public bool EnableScripts { get; set; }
+
+        public string BrowserVersion { get; set; }
 
         public string DefaultStylesheetResource
         {
@@ -225,6 +346,29 @@ namespace XmlNotepad
             this.site = site;
             IServiceProvider sp = (IServiceProvider)site;
             this.resolver = new XmlProxyResolver(sp);
+            this.settings = (Settings)sp.GetService(typeof(Settings));
+            this.settings.Changed += OnSettingsChanged;
+
+            // initial settings.
+            this.IgnoreDTD = this.settings.GetBoolean("IgnoreDTD");
+            this.EnableScripts = this.settings.GetBoolean("EnableXsltScripts");
+            this.InitializeBrowser(this.settings.GetString("BrowserVersion"));
+        }
+
+        private void OnSettingsChanged(object sender, string name)
+        {
+            if (name == "IgnoreDTD")
+            {
+                this.IgnoreDTD = this.settings.GetBoolean("IgnoreDTD");
+            }
+            else if (name == "EnableXsltScripts")
+            {
+                this.EnableScripts = this.settings.GetBoolean("EnableXsltScripts");
+            }
+            else if (name == "BrowserVersion")
+            {
+                this.InitializeBrowser(this.settings.GetString("BrowserVersion"));
+            }
         }
 
         /// <summary>
@@ -236,6 +380,11 @@ namespace XmlNotepad
         /// <returns>The output file name or null if DisableOutputFile is true</returns>
         public string DisplayXsltResults(XmlDocument context, string xsltfilename, string outpath = null)
         {
+            if (!this.webInitialized)
+            {
+                return null;
+            }
+
             this.CleanupTempFile();
             Uri resolved = null;
             try
@@ -252,6 +401,7 @@ namespace XmlNotepad
                     {
                         xslt = new XslCompiledTransform();
                         this.loaded = DateTime.Now;
+                        var settings = new XsltSettings(true, this.EnableScripts);
                         settings.EnableScript = (trusted.ContainsKey(resolved));
                         var rs = new XmlReaderSettings();
                         rs.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;

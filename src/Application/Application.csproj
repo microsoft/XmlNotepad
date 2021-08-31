@@ -260,25 +260,15 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
       <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
@@ -376,17 +366,17 @@
     <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncVersionsTarget</CoreBuildDependsOn>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902-prerelease\runtimes\win-x86\native\WebView2Loader.dll">
+    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902.49\runtimes\win-x86\native\WebView2Loader.dll">
       <Link>runtimes\win-x86\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902-prerelease\runtimes\win-x64\native\WebView2Loader.dll">
+    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902.49\runtimes\win-x64\native\WebView2Loader.dll">
       <Link>runtimes\win-x64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902-prerelease\runtimes\win-arm64\native\WebView2Loader.dll">
+    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.902.49\runtimes\win-arm64\native\WebView2Loader.dll">
       <Link>runtimes\win-arm64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -398,7 +398,36 @@ namespace XmlNotepad
         //================================================================================
         // Strong typed settings
         //================================================================================
-        
+        public bool GetBoolean(string settingName, bool defaultValue = false)
+        {
+            object settingValue = this[settingName];
+            if (settingValue is bool)
+            {
+                return (bool)settingValue;
+            }
+            return defaultValue;
+        }
+
+        public int GetInteger(string settingName, int defaultValue = 0)
+        {
+            object settingValue = this[settingName];
+            if (settingValue is int)
+            {
+                return (int)settingValue;
+            }
+            return defaultValue;
+        }
+
+        public string GetString(string settingName, string defaultValue = "")
+        {
+            object settingValue = this[settingName];
+            if (settingValue != null)
+            {
+                return settingValue.ToString();
+            }
+            return defaultValue;
+        }
+
     }
 
     /// <summary>

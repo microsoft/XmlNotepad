@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using XmlNotepadBuildTasks;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using Moq;
 using System.Diagnostics;
 
