@@ -527,17 +527,7 @@ namespace UnitTests
             return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
         }
 
-        internal void Kill()
-        {
-            if (p != null && !p.HasExited)
-            {
-                p.Kill();
-            }
-        }
-
-        #region IDisposable Members
-
-        public void Dispose()
+        public void Dispose(bool terminating)
         {
             disposed = true;
             if (p != null && !p.HasExited)
@@ -553,9 +543,24 @@ namespace UnitTests
                 }
                 if (!p.HasExited)
                 {
-                    throw new Exception("Application is not terminating!");
+                    if (terminating)
+                    {
+                        p.Kill();
+                    }
+                    else
+                    {
+                        throw new Exception("Application is not terminating!");
+                    }
                 }
             }
+        }
+
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            Dispose(false);
         }
 
         #endregion
