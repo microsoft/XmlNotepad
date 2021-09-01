@@ -430,22 +430,18 @@ namespace XmlNotepad
                             var ext = GetDefaultOutputExtension();
                             outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
 
-                            var safeUri = GetWritableBaseUri(outpath);
-                            this.tempFile = outpath = new Uri(safeUri, outpath).LocalPath;
+                            outpath = GetWritableFileName(outpath);
                         }
                         else
                         {
                             // default stylesheet produces html
-                            var safeUri = new Uri(Path.GetTempPath());
-                            outpath = new Uri(safeUri, "xmlnotepaddefaultoutput.htm").LocalPath;
-                            this.tempFile = outpath;
+                            this.tempFile = outpath = GetWritableFileName("DefaultXsltOutput.htm");
                         }
                     }
                 }
                 else
                 {
-                    var safeUri = GetWritableBaseUri(outpath);
-                    this.tempFile = outpath = new Uri(safeUri, outpath).LocalPath;
+                    outpath = GetWritableFileName(outpath);
                 }
 
                 if (null != transform)
@@ -522,10 +518,11 @@ namespace XmlNotepad
             return outpath;
         }
 
-        private Uri GetWritableBaseUri(string fileName)
+        private string GetWritableFileName(string fileName)
         {
             try
             {
+                // if the fileName is a full path then honor that request.
                 Uri test = new Uri(fileName, UriKind.RelativeOrAbsolute);
                 if (test.IsAbsoluteUri && test.Scheme == "file")
                 {
@@ -534,7 +531,8 @@ namespace XmlNotepad
                     {
                         Directory.CreateDirectory(dir);
                     }
-                    return test;
+
+                    return new Uri(test, fileName).LocalPath;
                 }
             }
             catch (Exception ex)
@@ -542,35 +540,43 @@ namespace XmlNotepad
                 Debug.WriteLine("XsltControl.GetWritableBaseUri exception " + ex.Message);
             }
 
+            // If the XML file is from HTTP then put XSLT output in the %TEMP% folder.
             if (this.baseUri.Scheme != "file")
             {
-                return new Uri(Path.GetTempPath());
+                Uri baseUri = new Uri(Path.GetTempPath());
+                this.tempFile = new Uri(baseUri, fileName).LocalPath;
+                return this.tempFile;
             }
 
             if (string.IsNullOrEmpty(fileName))
             {
-                fileName = "__temp_xslt_test";
+                var ext = GetDefaultOutputExtension();
+                string basePath = Path.GetFileNameWithoutExtension(this.baseUri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped));
+                fileName = basePath + "_output" + ext;
             }
 
-            string testPath = new Uri(this.baseUri, fileName).LocalPath;
+            var resolved = new Uri(this.baseUri, fileName);
+            string testPath = resolved.LocalPath;
 
             try
             {
                 using (FileStream fs = new FileStream(testPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                 {
-                    fs.Write(new byte[] { 0 }, 0, 1);
+                    var test = System.Text.UTF8Encoding.UTF8.GetBytes("test");
+                    fs.Write(test, 0, test.Length);
                 }
 
                 // we can create the file then!
-                File.Delete(testPath);
             }
             catch
             {
                 // We don't have write permissions
-                return new Uri(Path.GetTempPath());
+                Uri baseUri = new Uri(Path.GetTempPath());
+                this.tempFile = new Uri(baseUri, fileName).LocalPath;
+                return this.tempFile;
             }
 
-            return this.baseUri;
+            return testPath;
         }
 
         public string GetOutputFileFilter(string customFileName = null)
