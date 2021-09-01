@@ -72,15 +72,20 @@ namespace UnitTests {
 
         public static void MouseDoubleClick(Point pt, MouseButtons buttons) {
             MouseClick(pt, buttons);
+            Thread.Sleep(1);
             MouseClick(pt, buttons);
         }
 
-        public static void MouseMoveBy(int dx, int dy, MouseButtons buttons) {
+        public static void MouseMoveTo(int x, int y, MouseButtons buttons) {
             MouseInput input = new MouseInput();
             input.type = (int)(InputType.INPUT_MOUSE);
-            input.dx = dx;
-            input.dy = dy;
-            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE;
+            int screenX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+            int screenY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+            input.dx = x * 65535 / screenX;
+            input.dy = y * 65535 / screenY;
+            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE + 
+                            (int)MouseFlags.MOUSEEVENTF_ABSOLUTE +
+                            (int)MouseFlags.MOUSEEVENTF_VIRTUALDESK;
             SendInput(input);
             Application.DoEvents();
         }
@@ -93,6 +98,7 @@ namespace UnitTests {
             Thread.Sleep(200);
             MouseDragTo(start, end, step, buttons);
             Thread.Sleep(200);
+            
             MouseUp(end, buttons);
             Application.DoEvents();
             Thread.Sleep(200);
@@ -112,28 +118,16 @@ namespace UnitTests {
             int s = Timeout;
             Timeout = 10;
             Application.DoEvents();
-            int lastx = start.X;
-            int lasty = start.Y;
-            Point pos;
             for (int i = 0; i < length; i += step) {
                 int tx = start.X + (dx * i) / length;
                 int ty = start.Y + (dy * i) / length;
-                int mx = tx - lastx;
-                int my = ty - lasty;
-                if (mx != 0 || my != 0) {
-                    MouseMoveBy(mx, my, buttons);
-                }
+                MouseMoveTo(tx, ty, buttons);
 
                 // Now calibrate movement based on current mouse position.
                 Application.DoEvents();
-                pos = Control.MousePosition;
-                lastx = pos.X;
-                lasty = pos.Y;
             }
-            pos = Control.MousePosition;
-            dx = pos.X - end.X;
-            dy = pos.Y - end.Y;
-            MouseMoveBy(dx, dy, buttons);
+
+            MouseMoveTo(end.X, end.Y, buttons);
             Application.DoEvents();
 
             Timeout = s;
@@ -232,6 +226,14 @@ namespace UnitTests {
         [DllImport("user32.dll")]
         public static extern int GetSystemMetrics(int metric);
 
+        [DllImport("user32.dll")]
+        public static extern int GetDoubleClickTime();
+
+        internal static void AvoidDoubleClick()
+        {
+            int sleep = GetDoubleClickTime();
+            Thread.Sleep(sleep * 2);
+        }
     }
 
 }

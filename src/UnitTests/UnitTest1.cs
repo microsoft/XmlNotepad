@@ -1986,9 +1986,11 @@ Prefix 'user' is not defined. ");
             CheckNodeName(node, "Country");
 
             Trace.WriteLine("Drag/drop country up 3 items");
-            Sleep(1000); // avoid double click by delaying next click
+            Mouse.AvoidDoubleClick(); // avoid double click by delaying next click
 
-            Point endPt = new Point(pt.X, pt.Y - (int)(3 * itemHeight) - (itemHeight/2));
+            bounds = node.Bounds;
+            pt = bounds.Center();
+            Point endPt = new Point(pt.X, pt.Y - (int)(3 * itemHeight));
             // Drag the node up three slots.
             Mouse.MouseDragDrop(pt, endPt, 5, MouseButtons.Left);
 
