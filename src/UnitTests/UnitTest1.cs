@@ -53,7 +53,7 @@ namespace UnitTests {
         public void MyTestCleanup() 
         {
             if (this.window != null) {
-                this.window.Dispose();
+                this.window.Kill();
             }
         }
 

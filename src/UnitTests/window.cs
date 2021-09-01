@@ -527,6 +527,14 @@ namespace UnitTests
             return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
         }
 
+        internal void Kill()
+        {
+            if (p != null && !p.HasExited)
+            {
+                p.Kill();
+            }
+        }
+
         #region IDisposable Members
 
         public void Dispose()

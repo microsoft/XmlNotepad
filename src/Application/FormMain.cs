@@ -20,7 +20,6 @@ namespace XmlNotepad
     /// </summary>
     public partial class FormMain : Form, ISite
     {
-        private bool settingsLoaded;
         readonly UndoManager undoManager;
         Settings settings;
         readonly string[] args;
@@ -1312,7 +1311,6 @@ namespace XmlNotepad
                     if (File.Exists(path))
                     {
                         settings.Load(path);
-                        this.settingsLoaded = true;
 
                         UserSettings.AddDefaultColors(settings, "LightColors", ColorTheme.Light);
                         UserSettings.AddDefaultColors(settings, "DarkColors", ColorTheme.Dark);
