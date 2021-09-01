@@ -69,9 +69,10 @@ winget validate .
 winget install -m .
 if ERRORLEVEL 1 goto :installfailed
 
-git checkout -b "clovett/xmlnotepad_%VERSION%
+git checkout -b "clovett/xmlnotepad_%VERSION%"
 git add *
 git commit -m "new XML Noteapd version %VERSION%"
+git push -u origin "clovett/xmlnotepad_%VERSION%"
 
 echo =============================================================================================================
 echo Please create github release, then commit these local changes and create pull request for new winget package.
