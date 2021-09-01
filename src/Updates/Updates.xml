@@ -9,6 +9,11 @@
 		<history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
 		<frequency>1.00:00:00</frequency>
 	</application>
+  <version number="2.8.0.44">
+    <bug>XSLT output files were being deleted too agressively.  They are only deleted now if they 
+    have to be written to the %TEMP% folder.  Also show generated output file name in the xslt output 
+    text box and only if the user changes this name will the previous generated file be deleted.</bug>
+  </version>
   <version number="2.8.0.43">
     <feature>Make use of WebView2 a user specified option under new XSLT options section of Options dialog.</feature>
     <bug>Add better error handling if WebView2 doesn't work.</bug>

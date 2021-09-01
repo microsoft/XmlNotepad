@@ -37,6 +37,7 @@ namespace XmlNotepad
         bool webInitialized;
         bool webView2Supported;
         string tempFile;
+        string previousOutputFile;
 
         public event EventHandler<Exception> WebBrowserException;
 
@@ -191,6 +192,22 @@ namespace XmlNotepad
                 this.info.BrowserMilliseconds = this.urlWatch.ElapsedMilliseconds;
                 this.info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
                 LoadCompleted(this, this.info);
+            }
+        }
+
+        internal void DeletePreviousOutput()
+        {
+            if (!string.IsNullOrEmpty(this.previousOutputFile) && this.tempFile != this.previousOutputFile)
+            {
+                if (File.Exists(this.previousOutputFile))
+                {
+                    try
+                    {
+                        File.Delete(this.previousOutputFile);
+                        this.previousOutputFile = null;
+                    }
+                    catch { }
+                }
             }
         }
 
@@ -446,6 +463,11 @@ namespace XmlNotepad
 
                 if (null != transform)
                 {
+                    var dir = Path.GetDirectoryName(outpath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
                     var settings = new XmlReaderSettings();
                     settings.XmlResolver = new XmlProxyResolver(this.site);
                     settings.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
@@ -515,6 +537,7 @@ namespace XmlNotepad
                 WriteError(x);
             }
 
+            this.previousOutputFile = outpath;
             return outpath;
         }
 
@@ -526,13 +549,14 @@ namespace XmlNotepad
                 Uri test = new Uri(fileName, UriKind.RelativeOrAbsolute);
                 if (test.IsAbsoluteUri && test.Scheme == "file")
                 {
-                    string dir = Path.GetDirectoryName(fileName);
+                    var fullPath = new Uri(test, fileName).LocalPath;
+                    string dir = Path.GetDirectoryName(fullPath);
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
 
-                    return new Uri(test, fileName).LocalPath;
+                    return fullPath;
                 }
             }
             catch (Exception ex)
@@ -560,6 +584,11 @@ namespace XmlNotepad
 
             try
             {
+                var dir = Path.GetDirectoryName(testPath);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
                 using (FileStream fs = new FileStream(testPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                 {
                     var test = System.Text.UTF8Encoding.UTF8.GetBytes("test");

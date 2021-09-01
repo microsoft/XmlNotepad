@@ -347,7 +347,8 @@ namespace XmlNotepadBuildTasks
             XElement theDir = (from e in product.Elements(ns + "DirectoryRef") where refid == (string)e.Attribute("Id") select e).FirstOrDefault();
             if (theDir == null)
             {
-                var relpath = new Uri(this.DropDir + "/").MakeRelative(new Uri(dirname));
+                var reluri = new Uri(this.DropDir + "/").MakeRelativeUri(new Uri(dirname));
+                var relpath = Uri.UnescapeDataString(reluri.ToString());
                 Debug.WriteLine("Adding new directory: " + dirname);
                 theDir = new XElement(ns + "DirectoryRef",
                     new XAttribute("Id", refid),

@@ -98,7 +98,8 @@ namespace XmlNotepad
             if (baseUri != null) {
                 try {
                     Uri uri = new Uri(s, UriKind.RelativeOrAbsolute);
-                    return baseUri.MakeRelative(uri);
+                    Uri rel = baseUri.MakeRelativeUri(uri);
+                    return rel.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped);
                 } catch (UriFormatException) {
                     return s;
                 }

@@ -99,7 +99,11 @@ namespace XmlNotepad
         {
             string xpath = this.SourceFileName.Text.Trim();
             string output = this.OutputFileName.Text.Trim();
-            this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);            
+            output = this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);
+            if (!string.IsNullOrEmpty(output))
+            {
+                this.OutputFileName.Text = MakeRelative(output);
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -159,9 +163,17 @@ namespace XmlNotepad
 
         private string MakeRelative(string path)
         {
+            if (path.StartsWith(System.IO.Path.GetTempPath()))
+            {
+                return path; // don't relativize temp dir.
+            }
             var uri = new Uri(path);
             var relative = this.xsltControl.BaseUri.MakeRelativeUri(uri);
-            return relative.OriginalString;
+            if (relative.IsAbsoluteUri)
+            {
+                return relative.LocalPath;
+            }
+            return relative.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -190,6 +202,7 @@ namespace XmlNotepad
 
         private void TransformButton_Click(object sender, EventArgs e)
         {
+            this.xsltControl.DeletePreviousOutput();
             this.DisplayXsltResults();
         }
     }
