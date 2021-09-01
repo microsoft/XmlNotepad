@@ -1636,6 +1636,7 @@ Prefix 'user' is not defined. ");
             RemoveNode(doc, "//SearchWholeWord");
             RemoveNode(doc, "//SearchRegex");
             RemoveNode(doc, "//SearchMatchCase");
+            RemoveNode(doc, "//SearchXPath");            
             RemoveNode(doc, "//FindMode");
             doc.Save(path);
         }
