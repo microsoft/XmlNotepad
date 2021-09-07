@@ -1354,6 +1354,10 @@ namespace UnitTests {
             xw.CopyHtml();
             this.CheckClipboard(new Regex(@"RSS Feed for MSDN Just Published"));
 
+            // make sure "xsl-output" tag was honored.
+            string path = xw.GetXmlOutputFilename();
+            Assert.AreEqual(Path.GetFileName(path), "rss.htm");
+
             Trace.WriteLine("Enter custom XSL with script code.");
             xw.EnterXslFilename(TestDir + "UnitTests\\rss.xsl");
             Window popup = w.WaitForPopup();
@@ -1366,7 +1370,6 @@ namespace UnitTests {
 
             Trace.WriteLine("Make sure it executed");
             xw.CopyHtml();
-
             this.CheckClipboard(new Regex(@"Found [\d]* RSS items. The script executed successfully."));
 
             Trace.WriteLine("Try xslt with error");

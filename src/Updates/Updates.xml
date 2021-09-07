@@ -9,6 +9,15 @@
 		<history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
 		<frequency>1.00:00:00</frequency>
 	</application>
+  <version number="2.8.0.45">
+    <feature>
+    Add support for &lt;?xsl-output default="path"?&gt; as a way to provide a default output
+    filename to use the XSLT stylesheet.  You put this in the XML document along side the
+    &lt;?xml-stylesheet ...?&gt; instruction.  The path can include a folder and the file
+    extension will be overridden by the &lt;xsl:output method="..."&gt; information from the
+    stylesheet, so can specify "*" as the file extension, for example: &lt;?xsl-output default="hamlet.*"?&gt;
+  </feature>
+  </version>
   <version number="2.8.0.44">
     <bug>XSLT output files were being deleted too agressively.  They are only deleted now if they 
     have to be written to the %TEMP% folder.  Also show generated output file name in the xslt output 

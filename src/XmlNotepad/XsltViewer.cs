@@ -13,6 +13,7 @@ namespace XmlNotepad
     {
         ISite site;
         XmlCache model;
+        bool userSpecifiedOutput;
 
         public XsltViewer()
         {
@@ -93,12 +94,20 @@ namespace XmlNotepad
             {
                 this.DisplayXsltResults();
             }
+            else
+            {
+                userSpecifiedOutput = true;
+            }
         }
 
         public void DisplayXsltResults()
         {
             string xpath = this.SourceFileName.Text.Trim();
             string output = this.OutputFileName.Text.Trim();
+            if (!userSpecifiedOutput && !string.IsNullOrEmpty(this.model.XsltDefaultOutput))
+            {
+                output = this.model.XsltDefaultOutput;
+            }
             output = this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);
             if (!string.IsNullOrEmpty(output))
             {
@@ -131,15 +140,14 @@ namespace XmlNotepad
             this.model = (XmlCache)site.GetService(typeof(XmlCache));
             this.model.ModelChanged -= new EventHandler<ModelChangedEventArgs>(OnModelChanged);
             this.model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
-            OnModelChanged();
         }
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
         {
-            OnModelChanged();
+            OnModelChanged(e);
         }
 
-        void OnModelChanged()
+        void OnModelChanged(ModelChangedEventArgs e)
         {
             var doc = model.Document;
             try
@@ -151,6 +159,7 @@ namespace XmlNotepad
                     {
                         this.xsltControl.BaseUri = uri;
                         this.OutputFileName.Text = ""; // reset it since the file type might need to change...
+                        userSpecifiedOutput = false;
                     }
                 }
                 this.SourceFileName.Text = model.XsltFileName;
@@ -167,7 +176,11 @@ namespace XmlNotepad
             {
                 return path; // don't relativize temp dir.
             }
-            var uri = new Uri(path);
+            var uri = new Uri(path, UriKind.RelativeOrAbsolute);
+            if (!uri.IsAbsoluteUri)
+            {
+                return path;
+            }
             var relative = this.xsltControl.BaseUri.MakeRelativeUri(uri);
             if (relative.IsAbsoluteUri)
             {

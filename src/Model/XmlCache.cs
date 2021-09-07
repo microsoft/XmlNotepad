@@ -21,7 +21,6 @@ namespace XmlNotepad
     public class XmlCache : IDisposable
     {
         string filename;
-        string xsltFilename;
         bool dirty;
         DomLoader loader;
         XmlDocument doc;
@@ -70,13 +69,12 @@ namespace XmlNotepad
         /// <summary>
         /// File path to (optionally user-specified) xslt file.
         /// </summary>
-        public string XsltFileName
-        {
-            get {
-                return this.xsltFilename;
-            }
-            set { this.xsltFilename = value; }
-        }
+        public string XsltFileName { get; set; }
+
+        /// <summary>
+        /// File path to (optionally user-specified) to use for xslt output.
+        /// </summary>
+        public string XsltDefaultOutput { get; set; }
 
         public bool Dirty => this.dirty; 
 
@@ -204,7 +202,8 @@ namespace XmlNotepad
             StartFileWatch();
 
             this.Document = loader.Load(reader);
-            this.xsltFilename = this.loader.XsltFileName;
+            this.XsltFileName = this.loader.XsltFileName;
+            this.XsltDefaultOutput = this.loader.XsltDefaultOutput;
 
             // calling this event will cause the XmlTreeView to populate
             FireModelChanged(ModelChangeType.Reloaded, this.doc);
@@ -514,7 +513,27 @@ namespace XmlNotepad
                     pi = this.doc.SelectSingleNode("processing-instruction('xml-stylesheet')") as XmlProcessingInstruction;
                 }
                 if (pi != null) {
-                    this.xsltFilename = DomLoader.ParseXsltArgs(pi.Data);
+                    this.XsltFileName = DomLoader.ParseXsltArgs(pi.Data);
+                }
+                else
+                {
+                    this.XsltFileName = null;
+                }
+            }
+            else if (pi.Name == "xsl-output")
+            {
+                if (e.Action == XmlNodeChangedAction.Remove)
+                {
+                    // see if there's another!
+                    pi = this.doc.SelectSingleNode("processing-instruction('xsl-output')") as XmlProcessingInstruction;
+                }
+                if (pi != null)
+                {
+                    this.XsltDefaultOutput = DomLoader.ParseXsltOutputArgs(pi.Data);
+                }
+                else
+                {
+                    this.XsltDefaultOutput = null;
                 }
             }
         }

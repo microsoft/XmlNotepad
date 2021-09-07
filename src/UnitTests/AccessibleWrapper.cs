@@ -754,6 +754,12 @@ namespace UnitTests {
             this.window.SendKeystrokes("{END}+{HOME}" + filename);
         }
 
+        internal string GetXmlOutputFilename()
+        {
+            AutomationWrapper s = GetXsltViewer().FindDescendant("OutputFileName");
+            return s.Value;
+        }
+
         internal void InvokeTransformButton()
         {
             AutomationWrapper s = GetXsltViewer().FindDescendant("TransformButton");

@@ -158,8 +158,11 @@ namespace XmlNotepad
                         AddToTable(node);
                         if (string.IsNullOrEmpty(this.xsltFileName) && r.Name == "xml-stylesheet")
                         {
-                            string href = ParseXsltArgs(((XmlProcessingInstruction)node).Data);
-                            if (!string.IsNullOrEmpty(href)) this.xsltFileName = href;
+                            this.xsltFileName = ParseXsltArgs(((XmlProcessingInstruction)node).Data);
+                        }
+                        else if (string.IsNullOrEmpty(this.xsltDefaultOutput) && r.Name == "xsl-output")
+                        {
+                            this.xsltDefaultOutput = ParseXsltOutputArgs(((XmlProcessingInstruction)node).Data);
                         }
                         break;
 
@@ -209,6 +212,22 @@ namespace XmlNotepad
             return null;
         }
 
+        public static string ParseXsltOutputArgs(string data)
+        {
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml("<xsl " + data + "/>");
+                XmlElement root = doc.DocumentElement;
+                return root.GetAttribute("default");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error parsing <?xsl-output args: " + ex.Message);
+            }
+            return null;
+        }
+
 
         private void ReadAttributes(XmlReader r, XmlElement element)
         {
@@ -225,10 +244,18 @@ namespace XmlNotepad
             }
         }
         string xsltFileName = null;
+        string xsltDefaultOutput = null;
+
         public string XsltFileName
         {
             get { return this.xsltFileName; }
         }
+
+        public string XsltDefaultOutput
+        {
+            get { return this.xsltDefaultOutput; }
+        }
+
         private XmlAttribute LoadAttributeNode()
         {
             Debug.Assert(reader.NodeType == XmlNodeType.Attribute);

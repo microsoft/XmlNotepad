@@ -397,7 +397,8 @@ namespace XmlNotepad
             if (baseUri == null) return s;
             if (string.IsNullOrEmpty(s)) return s;
             Uri uri = new Uri(s);
-            return this.baseUri.MakeRelative(uri);
+            Uri rel = this.baseUri.MakeRelativeUri(uri);
+            return rel.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped);
         }
     }
 

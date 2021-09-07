@@ -440,14 +440,8 @@ namespace XmlNotepad
                     if (!DisableOutputFile)
                     {
                         if (!string.IsNullOrEmpty(xsltfilename))
-                        {
-                            // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
-                            // XslCompiledTransform doesn't give us that so we need to get it outselves.
-
-                            var ext = GetDefaultOutputExtension();
-                            outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
-
-                            outpath = GetWritableFileName(outpath);
+                        {                            
+                            outpath = this.GetXsltOutputFileName(xsltfilename);
                         }
                         else
                         {
@@ -458,6 +452,9 @@ namespace XmlNotepad
                 }
                 else
                 {
+                    var ext = GetDefaultOutputExtension();
+                    var basePath = Path.Combine(Path.GetDirectoryName(outpath), Path.GetFileNameWithoutExtension(outpath));
+                    outpath = basePath + ext;
                     outpath = GetWritableFileName(outpath);
                 }
 
@@ -468,6 +465,7 @@ namespace XmlNotepad
                     {
                         Directory.CreateDirectory(dir);
                     }
+
                     var settings = new XmlReaderSettings();
                     settings.XmlResolver = new XmlProxyResolver(this.site);
                     settings.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
@@ -541,71 +539,76 @@ namespace XmlNotepad
             return outpath;
         }
 
+        private string GetXsltOutputFileName(string xsltfilename)
+        {
+            // pick a good default filename ... this means we need to know the <xsl:output method> and unfortunately 
+            // XslCompiledTransform doesn't give us that so we need to get it outselves.
+            var ext = GetDefaultOutputExtension();
+            string outpath = null;
+            if (string.IsNullOrEmpty(xsltfilename))
+            {
+                var basePath = Path.GetFileNameWithoutExtension(this.baseUri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped));
+                outpath = basePath + "_output" + ext;
+            }
+            else 
+            {
+                outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
+            }
+            return GetWritableFileName(outpath);
+        }
+
         private string GetWritableFileName(string fileName)
         {
             try
             {
-                // if the fileName is a full path then honor that request.
-                Uri test = new Uri(fileName, UriKind.RelativeOrAbsolute);
-                if (test.IsAbsoluteUri && test.Scheme == "file")
+                if (string.IsNullOrEmpty(fileName))
                 {
-                    var fullPath = new Uri(test, fileName).LocalPath;
-                    string dir = Path.GetDirectoryName(fullPath);
-                    if (!Directory.Exists(dir))
-                    {
-                        Directory.CreateDirectory(dir);
-                    }
-
-                    return fullPath;
+                    fileName = GetXsltOutputFileName(null);
                 }
+
+                // if the fileName is a full path then honor that request.
+                Uri uri = new Uri(fileName, UriKind.RelativeOrAbsolute);
+                var resolved = new Uri(this.baseUri, uri);
+
+                // If the XML file is from HTTP then put XSLT output in the %TEMP% folder.
+                if (resolved.Scheme != "file")
+                {
+                    uri = new Uri(Path.GetTempPath());
+                    this.tempFile = new Uri(uri, fileName).LocalPath;
+                    return this.tempFile;
+                }
+
+                string path = resolved.LocalPath;
+                if (resolved == this.baseUri)
+                {
+                    // can't write to the same location as the XML file or we will lose the XML file!
+                    path = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_output" + Path.GetExtension(path));
+                }
+
+                var dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                // make sure we can write to the location.
+                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
+                {
+                    var test = System.Text.UTF8Encoding.UTF8.GetBytes("test");
+                    fs.Write(test, 0, test.Length);
+                }
+
+                return path;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("XsltControl.GetWritableBaseUri exception " + ex.Message);
             }
 
-            // If the XML file is from HTTP then put XSLT output in the %TEMP% folder.
-            if (this.baseUri.Scheme != "file")
-            {
-                Uri baseUri = new Uri(Path.GetTempPath());
-                this.tempFile = new Uri(baseUri, fileName).LocalPath;
-                return this.tempFile;
-            }
-
-            if (string.IsNullOrEmpty(fileName))
-            {
-                var ext = GetDefaultOutputExtension();
-                string basePath = Path.GetFileNameWithoutExtension(this.baseUri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped));
-                fileName = basePath + "_output" + ext;
-            }
-
-            var resolved = new Uri(this.baseUri, fileName);
-            string testPath = resolved.LocalPath;
-
-            try
-            {
-                var dir = Path.GetDirectoryName(testPath);
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                using (FileStream fs = new FileStream(testPath, FileMode.Create, FileAccess.Write, FileShare.Read))
-                {
-                    var test = System.Text.UTF8Encoding.UTF8.GetBytes("test");
-                    fs.Write(test, 0, test.Length);
-                }
-
-                // we can create the file then!
-            }
-            catch
-            {
-                // We don't have write permissions
-                Uri baseUri = new Uri(Path.GetTempPath());
-                this.tempFile = new Uri(baseUri, fileName).LocalPath;
-                return this.tempFile;
-            }
-
-            return testPath;
+            // We don't have write permissions?
+            Uri baseUri = new Uri(Path.GetTempPath());
+            this.tempFile = new Uri(baseUri, fileName).LocalPath;
+            return this.tempFile;
         }
 
         public string GetOutputFileFilter(string customFileName = null)

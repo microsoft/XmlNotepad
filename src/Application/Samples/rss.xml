@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type='text/xsl' href='rsspretty.xsl' version='1.0'?>
+<?xsl-output default="rss.htm"?>
 <rss xmlns:mscomdomain="http://msdn.microsoft.com/aboutmsdn/rss/domains" xmlns:mscom="http://msdn.microsoft.com/aboutmsdn/rss/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
   <channel>
     <title>MSDN Just Published</title>
