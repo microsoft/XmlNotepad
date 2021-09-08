@@ -42,8 +42,7 @@
 		<xsl:template match="errors">
 		<font color="rgb(43,145,175)">
 			Dynamic help displays the xsd:annotations for the selected node but
-			this only works when you do not have validation errors.  See the
-			Task List for the error information.
+			this may not work when you do not have validation errors in the Error List.
 		</font>
   </xsl:template>
 </xsl:stylesheet>

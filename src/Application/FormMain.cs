@@ -237,6 +237,7 @@ namespace XmlNotepad
             this._settings["RecentFiles"] = new Uri[0];
             this._settings["SearchWindowLocation"] = new Point(0, 0);
             this._settings["SearchSize"] = new Size(0, 0);
+            this._settings["DynamicHelpVisible"] = false;
             this._settings["FindMode"] = false;
             this._settings["SearchXPath"] = false;
             this._settings["SearchWholeWord"] = false;
@@ -681,7 +682,12 @@ namespace XmlNotepad
         {
             if (e.TabPage == this.tabPageDynamicHelp)
             {
+                this._settings["DynamicHelpVisible"] = true;
                 this.DisplayHelp();
+            }
+            else
+            {
+                this._settings["DynamicHelpVisible"] = false;
             }
         }
 
@@ -1338,6 +1344,7 @@ namespace XmlNotepad
 
             CheckAnalytics();
             InitializeXsltViewer();
+            InitializeHelpViewer();
         }
 
         private void InitializeXsltViewer()
@@ -1346,7 +1353,15 @@ namespace XmlNotepad
             this.xsltViewer.SetSite(this);
             this.xsltViewer.Completed += OnXsltComplete;
             this.xsltViewer.GetXsltControl().WebBrowserException += OnWebBrowserException;
+        }
+
+        private void InitializeHelpViewer() 
+        { 
             this._dynamicHelpViewer.SetSite(this);
+            if (this._settings.GetBoolean("DynamicHelpVisible", false))
+            {
+                this.tabControlLists.SelectedTab = this.tabPageDynamicHelp;
+            }
         }
 
         private void OnWebBrowserException(object sender, Exception e)
@@ -1530,9 +1545,8 @@ namespace XmlNotepad
                 return;
             }
             XmlDocument xmlDoc = xmlTreeView1.SelectedNode.GetDocumentation();
-            if (this._dynamicHelpViewer.Visible)
+            if (this.tabControlLists.SelectedTab == this.tabPageDynamicHelp)
             {
-                _helpAvailableHint = false;
                 if (null == xmlDoc)
                 {
                     xmlDoc = new XmlDocument();
