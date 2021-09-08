@@ -43,14 +43,17 @@ namespace XmlNotepad
 
         private XmlCache model;
 
-        readonly private string undoLabel;        readonly private string redoLabel;
+        readonly private string undoLabel; readonly private string redoLabel;
 
         public FormMain()
         {
-            this.settings = new Settings();
-            this.settings.StartupPath = Application.StartupPath;
-            this.settings.ExecutablePath = Application.ExecutablePath;
-            this.settings.Resolver = new XmlProxyResolver(this);
+            this.DoubleBuffered = true;
+            this.settings = new Settings
+            {
+                StartupPath = Application.StartupPath,
+                ExecutablePath = Application.ExecutablePath,
+                Resolver = new XmlProxyResolver(this)
+            };
 
             this.delayedActions = settings.DelayedActions = new DelayedActions((action) =>
             {
@@ -183,10 +186,10 @@ namespace XmlNotepad
             // install Xml notepad as an available editor for .xml files.
             FileAssociation.AddXmlProgids(Application.ExecutablePath);
 
-            CheckNetwork();
+            await CheckNetwork();
         }
 
-        private void CheckNetwork()
+        private async System.Threading.Tasks.Task CheckNetwork()
         {
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
@@ -195,7 +198,7 @@ namespace XmlNotepad
                     client.UseDefaultCredentials = true;
                     try
                     {
-                        string html = client.DownloadString(Utilities.HelpBaseUri);
+                        string html = await client.DownloadStringTaskAsync(Utilities.HelpBaseUri);
                         if (html.Contains("XML Notepad"))
                         {
                             this.BeginInvoke(new Action(FoundOnlineHelp));
@@ -575,7 +578,7 @@ namespace XmlNotepad
             //this.taskList.Location = new Point(0, top + this.xmlTreeView1.Height + this.resizer.Height);
             this.tabControlLists.Size = new Size(w, this.tabControlLists.Height);
             this.tabControlLists.Location = new Point(0, top + this.tabControlViews.Height + this.resizer.Height);
-            base.OnLayout(levent);
+            //base.OnLayout(levent);
         }
 
 

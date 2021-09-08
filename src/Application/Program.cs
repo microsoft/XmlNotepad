@@ -17,9 +17,10 @@ namespace XmlNotepad {
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            FormMain form = new FormMain();
-            form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
-            form.Show();
+            FormMain form = new FormMain
+            {
+                AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1"
+            };
             Application.DoEvents();
             foreach(string arg in args){
                 if (!string.IsNullOrEmpty(arg)) {
@@ -35,6 +36,7 @@ namespace XmlNotepad {
                     }
                 }
             }
+            form.Show();
             Application.Run(form);
         }
     }

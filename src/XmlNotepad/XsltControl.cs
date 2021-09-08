@@ -461,7 +461,7 @@ namespace XmlNotepad
                 if (null != transform)
                 {
                     var dir = Path.GetDirectoryName(outpath);
-                    if (!Directory.Exists(dir))
+                    if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
