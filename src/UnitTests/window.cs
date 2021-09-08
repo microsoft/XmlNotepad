@@ -13,27 +13,27 @@ namespace UnitTests
 {
     public class Window : IDisposable
     {
-        readonly Process p;
-        readonly IntPtr handle;
-        bool closed;
-        TestBase test;
-        readonly AutomationWrapper acc;
-        Dictionary<string, AutomationWrapper> menuItems;
-        readonly Window parent;
-        bool disposed;
+        private readonly Process _process;
+        private readonly IntPtr _handle;
+        private bool _closed;
+        private TestBase _test;
+        private readonly AutomationWrapper _acc;
+        private Dictionary<string, AutomationWrapper> _menuItems;
+        private readonly Window _parent;
+        private bool _disposed;
 
-        static readonly int delay = 100;
+        private const int MenuDelay = 100;
 
         public Window(Window parent, IntPtr handle)
         {
-            this.parent = parent;
-            this.handle = handle;
-            this.acc = AutomationWrapper.AccessibleObjectForWindow(handle);
+            this._parent = parent;
+            this._handle = handle;
+            this._acc = AutomationWrapper.AccessibleObjectForWindow(handle);
         }
 
         public Window(Process p, string className, string rootElementName)
         {
-            this.p = p;
+            this._process = p;
             IntPtr h = p.Handle;
             while (h == IntPtr.Zero || !p.Responding)
             {
@@ -48,34 +48,34 @@ namespace UnitTests
             p.WaitForInputIdle();
             p.Exited += new EventHandler(OnExited);
             int id = p.Id;
-            if (this.acc == null)
+            if (this._acc == null)
             {
                 // p.MainWindowHandle always returns 0 for some unknown reason...
                 int retries = 20;
-                while (retries-- > 0 && this.acc == null)
+                while (retries-- > 0 && this._acc == null)
                 {
                     try
                     {
-                        this.acc = FindWindowForProcessId(id, className, rootElementName);
-                    } 
+                        this._acc = FindWindowForProcessId(id, className, rootElementName);
+                    }
                     catch (Exception ex)
                     {
                         Debug.WriteLine("Error finding window for process id : " + ex.Message);
                     }
                     Sleep(1000);
                 }
-                if (this.acc == null)
+                if (this._acc == null)
                 {
                     throw new Exception("Process as no window handle");
                 }
 
-                this.handle = this.acc.Hwnd;
+                this._handle = this._acc.Hwnd;
             }
         }
 
         void OnExited(object sender, EventArgs e)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 throw new Exception("Process exited.");
             }
@@ -107,12 +107,12 @@ namespace UnitTests
 
         public AutomationWrapper FindDescendant(string name)
         {
-            return this.acc.FindDescendant(name);
+            return this._acc.FindDescendant(name);
         }
 
         public AutomationWrapper FindDescendant(string name, ControlType controlType)
         {
-            AutomationElement e = this.acc.AutomationElement.FindFirst(TreeScope.Descendants,
+            AutomationElement e = this._acc.AutomationElement.FindFirst(TreeScope.Descendants,
                 new AndCondition(new PropertyCondition(AutomationElement.NameProperty, name),
                                  new PropertyCondition(AutomationElement.ControlTypeProperty, controlType)));
             if (e == null)
@@ -124,7 +124,7 @@ namespace UnitTests
 
         public AutomationWrapper FindDescendant(ControlType controlType)
         {
-            AutomationElement e = this.acc.AutomationElement.FindFirst(TreeScope.Descendants,
+            AutomationElement e = this._acc.AutomationElement.FindFirst(TreeScope.Descendants,
                 new PropertyCondition(AutomationElement.ControlTypeProperty, controlType));
             if (e == null)
             {
@@ -205,7 +205,7 @@ namespace UnitTests
 
         public string GetWindowText()
         {
-            return GetWindowText(this.handle);
+            return GetWindowText(this._handle);
         }
 
         public static string GetWindowText(IntPtr hwnd)
@@ -229,7 +229,7 @@ namespace UnitTests
             Sleep(1000);
             this.Activate();
 
-            IntPtr h = this.handle;
+            IntPtr h = this._handle;
             IntPtr popup = GetLastActivePopup(h);
             string current = GetWindowText(popup);
             Trace.WriteLine("Dismissing: " + GetForegroundWindowText());
@@ -285,49 +285,49 @@ namespace UnitTests
         {
             get
             {
-                return this.acc;
+                return this._acc;
             }
         }
 
         public AutomationWrapper FindMenuItem(string name)
         {
             ReloadMenuItems(name);
-            return menuItems[name];
+            return _menuItems[name];
         }
 
         void ReloadMenuItems(string name)
         {
-            if (menuItems == null)
+            if (_menuItems == null)
             {
-                menuItems = new Dictionary<string, AutomationWrapper>();
+                _menuItems = new Dictionary<string, AutomationWrapper>();
             }
 
-            if (menuItems.Count == 0 || !menuItems.ContainsKey(name))
+            if (_menuItems.Count == 0 || !_menuItems.ContainsKey(name))
             {
                 int retries = 5;
-                while (retries-- > 0 && menuItems.Count == 0)
+                while (retries-- > 0 && _menuItems.Count == 0)
                 {
                     // load the menu items
-                    foreach (var menuItem in this.acc.AutomationElement.FindAll(TreeScope.Descendants,
+                    foreach (var menuItem in this._acc.AutomationElement.FindAll(TreeScope.Descendants,
                         new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
                     {
                         AutomationElement e = menuItem as AutomationElement;
                         if (e != null)
                         {
-                            menuItems[e.Current.Name] = new AutomationWrapper(e);
+                            _menuItems[e.Current.Name] = new AutomationWrapper(e);
                         }
                     }
                     // and the toolbar buttons
-                    foreach (var button in this.acc.AutomationElement.FindAll(TreeScope.Descendants,
+                    foreach (var button in this._acc.AutomationElement.FindAll(TreeScope.Descendants,
                         new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button)))
                     {
                         AutomationElement e = button as AutomationElement;
                         if (e != null)
                         {
-                            menuItems[e.Current.Name] = new AutomationWrapper(e);
+                            _menuItems[e.Current.Name] = new AutomationWrapper(e);
                         }
                     }
-                    if (menuItems.Count == 0)
+                    if (_menuItems.Count == 0)
                     {
                         Sleep(500);
                     }
@@ -339,14 +339,14 @@ namespace UnitTests
         {
             get
             {
-                return handle;
+                return _handle;
             }
         }
 
         public TestBase TestBase
         {
-            get { return test; }
-            set { test = value; }
+            get { return _test; }
+            set { _test = value; }
         }
 
         public void SetWindowSize(int cx, int cy)
@@ -365,26 +365,26 @@ namespace UnitTests
                 // move window left so it stays on screen.
                 y = s.WorkingArea.Bottom - cy;
             }
-            SetWindowPos(this.handle, IntPtr.Zero, x, y, cx, cy, 0);
+            SetWindowPos(this._handle, IntPtr.Zero, x, y, cx, cy, 0);
         }
 
         public void SetWindowPosition(int x, int y)
         {
-            SetWindowPos(this.handle, IntPtr.Zero, x, y, 0, 0, (uint)SetWindowPosFlags.SWP_NOSIZE);
+            SetWindowPos(this._handle, IntPtr.Zero, x, y, 0, 0, (uint)SetWindowPosFlags.SWP_NOSIZE);
         }
 
         public void WaitForIdle(int timeout)
         {
-            if (parent != null)
-                parent.WaitForIdle(timeout);
-            else if (p != null && !p.HasExited)
-                p.WaitForInputIdle();
+            if (_parent != null)
+                _parent.WaitForIdle(timeout);
+            else if (_process != null && !_process.HasExited)
+                _process.WaitForInputIdle();
         }
 
         public bool Closed
         {
-            get { return closed; }
-            set { closed = value; }
+            get { return _closed; }
+            set { _closed = value; }
         }
 
         public void Sleep(int ms)
@@ -394,12 +394,12 @@ namespace UnitTests
 
         public void Close()
         {
-            if (!closed)
+            if (!_closed)
             {
-                PostMessage(this.handle, (uint)WindowsMessages.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-                Sleep(delay);
+                PostMessage(this._handle, (uint)WindowsMessages.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                Sleep(MenuDelay);
             }
-            closed = true;
+            _closed = true;
         }
 
         public Window OpenDialog(string menuCommand, string formName)
@@ -410,8 +410,8 @@ namespace UnitTests
 
         public void SendKeystrokes(string keys)
         {
-            if (Window.GetForegroundWindow() != this.handle &&
-                Window.GetLastActivePopup(Window.GetForegroundWindow()) != this.handle)
+            if (Window.GetForegroundWindow() != this._handle &&
+                Window.GetLastActivePopup(Window.GetForegroundWindow()) != this._handle)
             {
                 Activate();
                 Sleep(1000);
@@ -426,10 +426,10 @@ namespace UnitTests
         {
 
             Debug.WriteLine("Activating window");
-            ShowWindow(this.handle, (int)ShowWindowFlags.SW_SHOW);
-            SetActiveWindow(this.handle);
-            SetForegroundWindow(this.handle);
-            ShowWindow(this.handle, (int)ShowWindowFlags.SW_SHOW);
+            ShowWindow(this._handle, (int)ShowWindowFlags.SW_SHOW);
+            SetActiveWindow(this._handle);
+            SetForegroundWindow(this._handle);
+            ShowWindow(this._handle, (int)ShowWindowFlags.SW_SHOW);
         }
 
         // const uint OBJID_CLIENT = 0xFFFFFFFC;
@@ -439,7 +439,7 @@ namespace UnitTests
             this.ReloadMenuItems(menuItemName);
             Sleep(30);
             this.WaitForIdle(2000);
-            if (!this.menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
+            if (!this._menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
             {
                 throw new Exception(string.Format("Menu item '{0}' not found", menuItemName));
             }
@@ -451,10 +451,10 @@ namespace UnitTests
         public void InvokeAsyncMenuItem(string menuItemName)
         {
             this.ReloadMenuItems(menuItemName);
-            Sleep(delay);
+            Sleep(MenuDelay);
             this.WaitForIdle(2000);
 
-            if (!this.menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
+            if (!this._menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
             {
                 throw new Exception(string.Format("Menu item '{0}' not found", menuItemName));
             }
@@ -491,7 +491,8 @@ namespace UnitTests
             {
                 SendShortcut(shortcut);
             }
-            else {
+            else
+            {
                 throw new NotImplementedException("InvokeAsyncMenuItem can't work without menu item shortcuts");
             }
 
@@ -513,7 +514,7 @@ namespace UnitTests
         {
             WINDOWINFO wi = new WINDOWINFO();
             wi.cbSize = Marshal.SizeOf(wi);
-            if (GetWindowInfo(this.handle, ref wi))
+            if (GetWindowInfo(this._handle, ref wi))
             {
                 RECT r = wi.rcWindow;
                 return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
@@ -523,29 +524,29 @@ namespace UnitTests
 
         public Rectangle GetWindowBounds()
         {
-            GetWindowRect(this.handle, out RECT r);
+            GetWindowRect(this._handle, out RECT r);
             return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
         }
 
         public void Dispose(bool terminating)
         {
-            disposed = true;
-            if (p != null && !p.HasExited)
+            _disposed = true;
+            if (_process != null && !_process.HasExited)
             {
                 for (int i = 0; i < 5; i++)
                 {
                     this.Close();
                     Sleep(500);
-                    if (p.HasExited)
+                    if (_process.HasExited)
                     {
                         break;
                     }
                 }
-                if (!p.HasExited)
+                if (!_process.HasExited)
                 {
                     if (terminating)
                     {
-                        p.Kill();
+                        _process.Kill();
                     }
                     else
                     {

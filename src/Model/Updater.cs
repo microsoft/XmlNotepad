@@ -11,84 +11,84 @@ namespace XmlNotepad
 {
     public class Updater : IDisposable
     {
-        Settings settings;
-        DateTime lastCheck = DateTime.MinValue;
-        TimeSpan updateFrequency = TimeSpan.MaxValue;
-        Uri updateUri;
-        DelayedActions delayedActions;
-        const string RetryAction = "Retry";
-        const int DefaultDelay = 5000;
-        string download;
-        string installer;
-        string history;
-        string title;
-        string version;
-        bool enabled = true;
-        WebRequest req;
-        bool disposed;
-        int retryCount;
-        const int MaxRetries = 10;
-        TimeSpan MinimumUpdateFrequency = TimeSpan.FromSeconds(5);
+        private Settings _settings;
+        private DateTime _lastCheck = DateTime.MinValue;
+        private TimeSpan _updateFrequency = TimeSpan.MaxValue;
+        private Uri _updateUri;
+        private DelayedActions _delayedActions;
+        private const string RetryAction = "Retry";
+        private const int DefaultDelay = 5000;
+        private string _download;
+        private string _installer;
+        private string _history;
+        private string _title;
+        private string _version;
+        private bool _enabled = true;
+        private WebRequest _req;
+        private bool _disposed;
+        private int _retryCount;
+        private const int MaxRetries = 10;
+        private TimeSpan _minimumUpdateFrequency = TimeSpan.FromSeconds(5);
 
         public event EventHandler<bool> UpdateRequired;
 
         public Updater(Settings s, DelayedActions handler)
         {
-            this.settings = s;
-            this.delayedActions = handler;
-            s["LastUpdateCheck"] = lastCheck;
-            s["UpdateFrequency"] = updateFrequency;
+            this._settings = s;
+            this._delayedActions = handler;
+            s["LastUpdateCheck"] = _lastCheck;
+            s["UpdateFrequency"] = _updateFrequency;
             s["UpdateLocation"] = "";
-            s["UpdateEnabled"] = enabled;
+            s["UpdateEnabled"] = _enabled;
             s.Changed += new SettingsEventHandler(OnSettingChanged);
             StartTimer();
         }
 
         void StartTimer(int milliseconds = DefaultDelay)
         {
-            if (this.enabled && !this.disposed)
+            if (this._enabled && !this._disposed)
             {
-                this.delayedActions.StartDelayedAction(RetryAction, OnTimerTick, TimeSpan.FromMilliseconds(milliseconds));
+                this._delayedActions.StartDelayedAction(RetryAction, OnTimerTick, TimeSpan.FromMilliseconds(milliseconds));
             }
         }
 
         void StopTimer()
         {
-            this.delayedActions.CancelDelayedAction(RetryAction);
+            this._delayedActions.CancelDelayedAction(RetryAction);
         }
 
-        public string DownloadPage { get { return this.download; } }
-        public string Title { get { return this.title; } set { this.title = value; } }
-        public string Version { get { return this.version; } set { this.version = value; } }
-        public Uri UpdateLocation { get { return this.updateUri; } }
-        public string InstallerLocation { get { return this.installer; } }
-        public string InstallerHistory { get { return this.history; } }
+        public string DownloadPage { get { return this._download; } }
+        public string Title { get { return this._title; } set { this._title = value; } }
+        public string Version { get { return this._version; } set { this._version = value; } }
+        public Uri UpdateLocation { get { return this._updateUri; } }
+        public string InstallerLocation { get { return this._installer; } }
+        public string InstallerHistory { get { return this._history; } }
 
         void OnSettingChanged(object sender, string name)
         {
             switch (name)
             {
                 case "LastUpdateCheck":
-                    this.lastCheck = (DateTime)settings["LastUpdateCheck"];
+                    this._lastCheck = (DateTime)_settings["LastUpdateCheck"];
                     break;
                 case "UpdateFrequency":
-                    SetUpdateFrequency((TimeSpan)settings["UpdateFrequency"]);
+                    SetUpdateFrequency((TimeSpan)_settings["UpdateFrequency"]);
                     break;
                 case "UpdateLocation":
-                    SetUpdateLocation((string)settings["UpdateLocation"]);
+                    SetUpdateLocation((string)_settings["UpdateLocation"]);
                     break;
                 case "UpdateEnabled":
-                    SetEnabled((bool)settings["UpdateEnabled"]);
+                    SetEnabled((bool)_settings["UpdateEnabled"]);
                     break;
             }
         }
 
         void SetEnabled(bool e)
         {
-            if (this.enabled != e)
+            if (this._enabled != e)
             {
-                this.enabled = e;
-                if (e && !this.disposed)
+                this._enabled = e;
+                if (e && !this._disposed)
                 {
                     StartTimer();
                 }
@@ -101,15 +101,15 @@ namespace XmlNotepad
 
         void SetUpdateFrequency(TimeSpan ts)
         {
-            if (ts == TimeSpan.MaxValue || ts < MinimumUpdateFrequency)
+            if (ts == TimeSpan.MaxValue || ts < _minimumUpdateFrequency)
             {
-                ts = MinimumUpdateFrequency;
+                ts = _minimumUpdateFrequency;
             }
-            this.updateFrequency = ts;
-            TimeSpan f = (TimeSpan)settings["UpdateFrequency"];
+            this._updateFrequency = ts;
+            TimeSpan f = (TimeSpan)_settings["UpdateFrequency"];
             if (f != ts)
             {
-                settings["UpdateFrequency"] = ts;
+                _settings["UpdateFrequency"] = ts;
             }
             StartTimer();
         }
@@ -118,13 +118,13 @@ namespace XmlNotepad
         {
             if (string.IsNullOrEmpty(location)) return;
             Uri uri = new Uri(location);
-            if (uri != this.updateUri)
+            if (uri != this._updateUri)
             {
-                this.retryCount = 0;
-                this.updateUri = uri;
-                if ((string)settings["UpdateLocation"] != location)
+                this._retryCount = 0;
+                this._updateUri = uri;
+                if ((string)_settings["UpdateLocation"] != location)
                 {
-                    settings["UpdateLocation"] = location;
+                    _settings["UpdateLocation"] = location;
                 }
                 // Location has just changed, so we need to download the new update information.
                 StartTimer();
@@ -133,25 +133,25 @@ namespace XmlNotepad
 
         public void OnUserChange(string oldUri)
         {
-            if ((string)settings["UpdateLocation"] != oldUri)
+            if ((string)_settings["UpdateLocation"] != oldUri)
             {
                 // then this user changed the location, so we need to ping the new
                 // location right away.
-                this.retryCount = 0;
-                this.lastCheck = DateTime.MinValue;
+                this._retryCount = 0;
+                this._lastCheck = DateTime.MinValue;
                 StartTimer();
             }
         }
 
         async void OnTimerTick()
         {
-            if (this.updateUri == null)
+            if (this._updateUri == null)
             {
                 Bootstrap();
             }
-            else if (this.lastCheck == DateTime.MinValue ||
-              this.updateFrequency == TimeSpan.MaxValue ||
-              this.lastCheck + this.updateFrequency < DateTime.Now)
+            else if (this._lastCheck == DateTime.MinValue ||
+              this._updateFrequency == TimeSpan.MaxValue ||
+              this._lastCheck + this._updateFrequency < DateTime.Now)
             {
                 bool update = await CheckForUpdate();
                 FireUpdate(update);
@@ -168,17 +168,17 @@ namespace XmlNotepad
             }
             bool update = false;
             busy = true;
-            if (this.updateUri != null)
+            if (this._updateUri != null)
             {
                 try
                 {
                     // assume success in this request so we don't create DOS attacks on the server!
-                    this.lastCheck = DateTime.Now;
-                    settings["LastUpdateCheck"] = this.lastCheck;
+                    this._lastCheck = DateTime.Now;
+                    _settings["LastUpdateCheck"] = this._lastCheck;
 
                     // now check
-                    WebRequest wr = WebRequest.Create(this.updateUri);
-                    this.req = wr;
+                    WebRequest wr = WebRequest.Create(this._updateUri);
+                    this._req = wr;
                     wr.Credentials = CredentialCache.DefaultCredentials;
                     wr.Proxy = WebRequest.DefaultWebProxy;
                     WebResponse r = await wr.GetResponseAsync();
@@ -188,7 +188,7 @@ namespace XmlNotepad
                         doc = new XmlDocument();
                         doc.Load(s);
                     }
-                    if (!this.disposed)
+                    if (!this._disposed)
                     {
                         update = ProcessUpdate(doc);
                     }
@@ -197,15 +197,15 @@ namespace XmlNotepad
                 catch (Exception)
                 {
                     // try again in a bit...
-                    this.retryCount++;
-                    if (retry && this.retryCount < MaxRetries)
+                    this._retryCount++;
+                    if (retry && this._retryCount < MaxRetries)
                     {
                         StartTimer();
                     }
                 }
                 finally
                 {
-                    this.req = null;
+                    this._req = null;
                 }
             }
             busy = false;
@@ -245,7 +245,7 @@ namespace XmlNotepad
                 try
                 {
                     Uri uri = new Uri(loc.InnerText);
-                    if (uri != this.updateUri)
+                    if (uri != this._updateUri)
                     {
                         string location = uri.IsFile ? uri.LocalPath : uri.AbsoluteUri;
                         SetUpdateLocation(location);
@@ -261,19 +261,19 @@ namespace XmlNotepad
             XmlElement de = doc.SelectSingleNode("updates/application/download") as XmlElement;
             if (de != null)
             {
-                this.download = de.InnerText;
+                this._download = de.InnerText;
             }
 
             XmlElement ie = doc.SelectSingleNode("updates/application/installer") as XmlElement;
             if (ie != null)
             {
-                this.installer = ie.InnerText;
+                this._installer = ie.InnerText;
             }
 
             XmlElement ih = doc.SelectSingleNode("updates/application/history") as XmlElement;
             if (ih != null)
             {
-                this.history = ih.InnerText;
+                this._history = ih.InnerText;
             }
 
             XmlElement f = doc.SelectSingleNode("updates/application/frequency") as XmlElement;
@@ -298,7 +298,7 @@ namespace XmlNotepad
                     if (v2 > v)
                     {
                         // new version is available!
-                        this.version = n;
+                        this._version = n;
                         newVersion = true;
                         break;
                     }
@@ -314,7 +314,7 @@ namespace XmlNotepad
             var handler = this.UpdateRequired;
             if (handler != null)
             {
-                this.delayedActions.StartDelayedAction("UpdateRequired", () =>
+                this._delayedActions.StartDelayedAction("UpdateRequired", () =>
                 {
                     handler(this, newVersion);
                 }, TimeSpan.FromMilliseconds(1));
@@ -323,9 +323,9 @@ namespace XmlNotepad
 
         public void Dispose()
         {
-            this.disposed = true;
+            this._disposed = true;
             StopTimer();
-            WebRequest r = this.req;
+            WebRequest r = this._req;
             if (r != null)
             {
                 try
@@ -341,7 +341,7 @@ namespace XmlNotepad
         public async Task<bool> CheckNow()
         {
             StopTimer();
-            if (this.updateUri != null)
+            if (this._updateUri != null)
             {
                 return await CheckForUpdate(false);
             }

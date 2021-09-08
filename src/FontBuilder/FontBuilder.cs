@@ -7,7 +7,8 @@ using System.Drawing;
 using System.Xml.Schema;
 using XmlNotepad;
 
-namespace Microsoft {    
+namespace Microsoft
+{
     /// <summary>
     /// This is a custom builder for editing font values using the FontDialog.
     /// You can specify this builder using the following annotation in your schema:
@@ -15,37 +16,47 @@ namespace Microsoft {
     ///     vs:assembly="FontBuilder"
     /// where xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense"
     /// </summary>
-    class FontBuilder : IXmlBuilder {
-        FontDialog fd = new FontDialog();
-        ISite site;
-        IIntellisenseProvider owner;
+    class FontBuilder : IXmlBuilder
+    {
+        private FontDialog _fd = new FontDialog();
+        private ISite _site;
+        private IIntellisenseProvider _owner;
 
-        public IIntellisenseProvider Owner {
-            get { return this.owner; }
-            set { this.owner = value; }
+        public IIntellisenseProvider Owner
+        {
+            get { return this._owner; }
+            set { this._owner = value; }
         }
 
-        public ISite Site {
-            get { return this.site; }
-            set { this.site = value; }
+        public ISite Site
+        {
+            get { return this._site; }
+            set { this._site = value; }
         }
 
         public string Caption { get { return "&Font picker..."; } }
 
-        public bool EditValue(IHostWindow owner, XmlSchemaType type, string input, out string output) {
+        public bool EditValue(IHostWindow owner, XmlSchemaType type, string input, out string output)
+        {
             output = input;
             FontConverter fc = new FontConverter();
             Font f = null;
-            try {
+            try
+            {
                 f = (Font)fc.ConvertFromString(input);
-                fd.Font = f;
-            } catch {
+                _fd.Font = f;
             }
-            
-            if (fd.ShowDialog(owner as IWin32Window) == DialogResult.OK) {
-                output = fc.ConvertToString(fd.Font);
+            catch
+            {
+            }
+
+            if (_fd.ShowDialog(owner as IWin32Window) == DialogResult.OK)
+            {
+                output = fc.ConvertToString(_fd.Font);
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }

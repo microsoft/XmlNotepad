@@ -4,26 +4,26 @@ namespace XmlNotepad
 {
     public class XmlName
     {
-        private string prefix;
-        private string localName;
-        private string namespaceUri;
+        private string _prefix;
+        private string _localName;
+        private string _namespaceUri;
 
         public string Prefix
         {
-            get { return prefix; }
-            set { prefix = value; }
+            get { return _prefix; }
+            set { _prefix = value; }
         }
 
         public string LocalName
         {
-            get { return localName; }
-            set { localName = value; }
+            get { return _localName; }
+            set { _localName = value; }
         }
 
         public string NamespaceUri
         {
-            get { return namespaceUri; }
-            set { namespaceUri = value; }
+            get { return _namespaceUri; }
+            set { _namespaceUri = value; }
         }
     }
 

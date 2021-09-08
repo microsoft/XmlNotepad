@@ -11,20 +11,19 @@ namespace XmlNotepad
     /// </summary>
     public class XmlIncludeReader : XmlReader, IXmlLineInfo
     {
-
-        XmlReaderSettings settings;
-        XmlReader reader; // current reader 
-        Stack<XmlReader> stack = new Stack<XmlReader>();
-        Stack<Uri> baseUris = new Stack<Uri>();
-        Uri baseUri;
+        private XmlReaderSettings _settings;
+        private XmlReader _reader; // current reader 
+        private Stack<XmlReader> _stack = new Stack<XmlReader>();
+        private Stack<Uri> _baseUris = new Stack<Uri>();
+        private Uri _baseUri;
 
         public const string XIncludeNamespaceUri = "http://www.w3.org/2001/XInclude";
 
         public static XmlIncludeReader CreateIncludeReader(string url, XmlReaderSettings settings)
         {
             XmlIncludeReader r = new XmlIncludeReader();
-            r.reader = XmlReader.Create(url, settings);
-            r.settings = settings;
+            r._reader = XmlReader.Create(url, settings);
+            r._settings = settings;
             return r;
         }
 
@@ -53,36 +52,36 @@ namespace XmlNotepad
         public static XmlIncludeReader CreateIncludeReader(XmlDocument doc, XmlReaderSettings settings, string baseUri)
         {
             XmlIncludeReader r = new XmlIncludeReader();
-            r.reader = new XmlNodeReader(doc);
-            r.settings = settings;
-            r.baseUri = new Uri(baseUri);
+            r._reader = new XmlNodeReader(doc);
+            r._settings = settings;
+            r._baseUri = new Uri(baseUri);
             return r;
         }
 
         public override XmlNodeType NodeType
         {
-            get { return reader.NodeType; }
+            get { return _reader.NodeType; }
         }
 
         public override string LocalName
         {
-            get { return reader.LocalName; }
+            get { return _reader.LocalName; }
         }
         public override string NamespaceURI
         {
-            get { return reader.NamespaceURI; }
+            get { return _reader.NamespaceURI; }
         }
         public override string Prefix
         {
-            get { return reader.Prefix; }
+            get { return _reader.Prefix; }
         }
         public override bool HasValue
         {
-            get { return reader.HasValue; }
+            get { return _reader.HasValue; }
         }
         public override string Value
         {
-            get { return reader.Value; }
+            get { return _reader.Value; }
         }
         public override string BaseURI
         {
@@ -95,15 +94,15 @@ namespace XmlNotepad
         }
         public Uri GetBaseUri()
         {
-            string s = reader.BaseURI;
+            string s = _reader.BaseURI;
             if (string.IsNullOrEmpty(s))
             {
-                if (baseUris.Count > 0)
+                if (_baseUris.Count > 0)
                 {
-                    Uri curi = baseUris.Peek();
+                    Uri curi = _baseUris.Peek();
                     if (curi != null) return curi;
                 }
-                return this.baseUri;
+                return this._baseUri;
             }
             else
             {
@@ -113,80 +112,80 @@ namespace XmlNotepad
 
         public override bool IsEmptyElement
         {
-            get { return reader.IsEmptyElement; }
+            get { return _reader.IsEmptyElement; }
         }
         public override int AttributeCount
         {
-            get { return reader.AttributeCount; }
+            get { return _reader.AttributeCount; }
         }
         public override string GetAttribute(int i)
         {
-            return reader.GetAttribute(i);
+            return _reader.GetAttribute(i);
         }
         public override string GetAttribute(string name)
         {
-            return reader.GetAttribute(name);
+            return _reader.GetAttribute(name);
         }
         public override string GetAttribute(string name, string namespaceURI)
         {
-            return reader.GetAttribute(name, namespaceURI);
+            return _reader.GetAttribute(name, namespaceURI);
         }
         public override bool MoveToAttribute(string name)
         {
-            return reader.MoveToAttribute(name);
+            return _reader.MoveToAttribute(name);
         }
         public override bool MoveToAttribute(string name, string ns)
         {
-            return reader.MoveToAttribute(name, ns);
+            return _reader.MoveToAttribute(name, ns);
         }
         public override bool MoveToFirstAttribute()
         {
-            return reader.MoveToFirstAttribute();
+            return _reader.MoveToFirstAttribute();
         }
         public override bool MoveToNextAttribute()
         {
-            return reader.MoveToNextAttribute();
+            return _reader.MoveToNextAttribute();
         }
         public override bool ReadAttributeValue()
         {
-            return reader.ReadAttributeValue();
+            return _reader.ReadAttributeValue();
         }
         public override bool EOF
         {
-            get { return reader.EOF; }
+            get { return _reader.EOF; }
         }
         public override void Close()
         {
-            reader.Close();
-            while (stack.Count > 0)
+            _reader.Close();
+            while (_stack.Count > 0)
             {
-                reader = stack.Pop();
-                reader.Close();
+                _reader = _stack.Pop();
+                _reader.Close();
             }
         }
         public override ReadState ReadState
         {
-            get { return reader.ReadState; }
+            get { return _reader.ReadState; }
         }
         public override XmlNameTable NameTable
         {
-            get { return reader.NameTable; }
+            get { return _reader.NameTable; }
         }
         public override string LookupNamespace(string prefix)
         {
-            return reader.LookupNamespace(prefix);
+            return _reader.LookupNamespace(prefix);
         }
         public override void ResolveEntity()
         {
-            reader.ResolveEntity();
+            _reader.ResolveEntity();
         }
         public override int Depth
         {
-            get { return reader.Depth; }
+            get { return _reader.Depth; }
         }
         public override bool MoveToElement()
         {
-            return reader.MoveToElement();
+            return _reader.MoveToElement();
         }
 
         /// <summary>
@@ -198,30 +197,30 @@ namespace XmlNotepad
         /// we have reached the end of the top level document.</returns>
         public override bool Read()
         {
-            bool rc = reader.Read();
+            bool rc = _reader.Read();
         pop:
-            while (!rc && stack.Count > 0)
+            while (!rc && _stack.Count > 0)
             {
-                reader.Close();
-                reader = stack.Pop();
-                rc = reader.Read();
+                _reader.Close();
+                _reader = _stack.Pop();
+                rc = _reader.Read();
             }
             if (!rc) return rc; // we're done!
 
             // Now check if we're on an XInclude element and expand it if we are.
-            while (reader.NamespaceURI == XIncludeNamespaceUri)
+            while (_reader.NamespaceURI == XIncludeNamespaceUri)
             {
-                if (reader.LocalName == "fallback" && reader.NodeType == XmlNodeType.EndElement)
+                if (_reader.LocalName == "fallback" && _reader.NodeType == XmlNodeType.EndElement)
                 {
-                    rc = reader.Read();
+                    rc = _reader.Read();
                 }
-                else if (reader.LocalName == "include")
+                else if (_reader.LocalName == "include")
                 {
                     rc = ExpandInclude();
                 }
                 else
                 {
-                    rc = reader.Read();
+                    rc = _reader.Read();
                 }
                 if (!rc) goto pop;
             }
@@ -230,12 +229,12 @@ namespace XmlNotepad
 
         bool ExpandInclude()
         {
-            string href = reader.GetAttribute("href");
-            string parse = reader.GetAttribute("parse");
-            string xpointer = reader.GetAttribute("xpointer");
-            string encoding = reader.GetAttribute("encoding");
-            string accept = reader.GetAttribute("accept");
-            string acceptLanguage = reader.GetAttribute("accept-language");
+            string href = _reader.GetAttribute("href");
+            string parse = _reader.GetAttribute("parse");
+            string xpointer = _reader.GetAttribute("xpointer");
+            string encoding = _reader.GetAttribute("encoding");
+            string accept = _reader.GetAttribute("accept");
+            string acceptLanguage = _reader.GetAttribute("accept-language");
 
             // todo: support for parse, xpointer, etc.
             if (string.IsNullOrEmpty(href))
@@ -251,19 +250,19 @@ namespace XmlNotepad
                 Uri resolved = new Uri(baseUri, href);
                 // HTTP has a limit of 2 requests per client on a given server, so we
                 // have to cache the entire include to avoid a deadlock.
-                using (XmlReader ir = XmlReader.Create(resolved.AbsoluteUri, settings))
+                using (XmlReader ir = XmlReader.Create(resolved.AbsoluteUri, _settings))
                 {
-                    XmlDocument include = new XmlDocument(reader.NameTable);
+                    XmlDocument include = new XmlDocument(_reader.NameTable);
                     include.Load(ir);
                     if (include.FirstChild.NodeType == XmlNodeType.XmlDeclaration)
                     {
                         // strip XML declarations.
                         include.RemoveChild(include.FirstChild);
                     }
-                    stack.Push(reader);
-                    baseUris.Push(resolved);
-                    reader = new XmlNodeReader(include);
-                    return reader.Read(); // initialize reader to first node in document.
+                    _stack.Push(_reader);
+                    _baseUris.Push(resolved);
+                    _reader = new XmlNodeReader(include);
+                    return _reader.Read(); // initialize reader to first node in document.
                 }
             }
             catch (Exception)
@@ -271,11 +270,11 @@ namespace XmlNotepad
                 // return fall back element.
                 if (fallback != null)
                 {
-                    baseUris.Push(this.GetBaseUri());
-                    stack.Push(reader);
-                    reader = new XmlNodeReader(fallback);
-                    reader.Read(); // initialize reader
-                    return reader.Read(); // consume fallback start tag.
+                    _baseUris.Push(this.GetBaseUri());
+                    _stack.Push(_reader);
+                    _reader = new XmlNodeReader(fallback);
+                    _reader.Read(); // initialize reader
+                    return _reader.Read(); // consume fallback start tag.
                 }
                 else
                 {
@@ -288,25 +287,25 @@ namespace XmlNotepad
 
         XmlElement ReadFallback()
         {
-            XmlDocument fallback = new XmlDocument(reader.NameTable);
-            if (reader.IsEmptyElement)
+            XmlDocument fallback = new XmlDocument(_reader.NameTable);
+            if (_reader.IsEmptyElement)
             {
                 return null;
             }
             else
             {
-                reader.Read();
+                _reader.Read();
             }
-            while (reader.NodeType != XmlNodeType.EndElement)
+            while (_reader.NodeType != XmlNodeType.EndElement)
             {
-                if (reader.NamespaceURI == XIncludeNamespaceUri &&
-                    reader.LocalName == "fallback")
+                if (_reader.NamespaceURI == XIncludeNamespaceUri &&
+                    _reader.LocalName == "fallback")
                 {
-                    fallback.AppendChild(fallback.ReadNode(reader));
+                    fallback.AppendChild(fallback.ReadNode(_reader));
                 }
                 else
                 {
-                    reader.Skip();
+                    _reader.Skip();
                 }
             }
             return fallback.DocumentElement;
@@ -316,7 +315,7 @@ namespace XmlNotepad
 
         public bool HasLineInfo()
         {
-            IXmlLineInfo xi = reader as IXmlLineInfo;
+            IXmlLineInfo xi = _reader as IXmlLineInfo;
             return xi != null ? xi.HasLineInfo() : false;
         }
 
@@ -324,7 +323,7 @@ namespace XmlNotepad
         {
             get
             {
-                IXmlLineInfo xi = reader as IXmlLineInfo;
+                IXmlLineInfo xi = _reader as IXmlLineInfo;
                 if (xi != null) return xi.LineNumber;
                 return 0;
             }
@@ -334,7 +333,7 @@ namespace XmlNotepad
         {
             get
             {
-                IXmlLineInfo xi = reader as IXmlLineInfo;
+                IXmlLineInfo xi = _reader as IXmlLineInfo;
                 if (xi != null) return xi.LinePosition;
                 return 0;
             }

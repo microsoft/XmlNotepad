@@ -17,21 +17,21 @@ namespace Microsoft.Xml
     /// </summary>
     public class XmlStats
     {
-        Hashtable elements = new Hashtable();
-        long elemCount;
-        long emptyCount;
-        long attrCount;
-        long commentCount;
-        long piCount;
-        long elemChars;
-        long attrChars;
-        long commentChars;
-        long whiteChars;
-        long whiteSChars;
-        long piChars;
-        string newLine = "\n";
-        WhitespaceHandling whiteSpace = WhitespaceHandling.All;
-        Stopwatch watch = new Stopwatch();
+        private Dictionary<string, NodeStats> _elements = new Dictionary<string, NodeStats>();
+        private long _elemCount;
+        private long _emptyCount;
+        private long _attrCount;
+        private long _commentCount;
+        private long _piCount;
+        private long _elemChars;
+        private long _attrChars;
+        private long _commentChars;
+        private long _whiteChars;
+        private long _whiteSChars;
+        private long _piChars;
+        private string _newLine = "\n";
+        private WhitespaceHandling _whiteSpace = WhitespaceHandling.All;
+        private Stopwatch _watch = new Stopwatch();
 
         private static void PrintUsage()
         {
@@ -84,13 +84,13 @@ namespace Microsoft.Xml
                             summary = false;
                             break;
                         case "wn":
-                            xs.whiteSpace = WhitespaceHandling.None;
+                            xs._whiteSpace = WhitespaceHandling.None;
                             break;
                         case "ws":
-                            xs.whiteSpace = WhitespaceHandling.Significant;
+                            xs._whiteSpace = WhitespaceHandling.Significant;
                             break;
                         case "wa":
-                            xs.whiteSpace = WhitespaceHandling.All;
+                            xs._whiteSpace = WhitespaceHandling.All;
                             break;
                         case "nologo":
                             logo = false;
@@ -133,7 +133,7 @@ namespace Microsoft.Xml
 
             if (logo)
             {
-                Console.WriteLine("*** XmlStats " + typeof(XmlStats).Assembly.GetName().Version.ToString() + " by Chris Lovett and andreas lang");
+                Console.WriteLine("*** XmlStats " + typeof(XmlStats).Assembly.GetName().Version.ToString() + " by Chris Lovett and Andreas Lang");
                 Console.WriteLine();
             }
 
@@ -168,7 +168,7 @@ namespace Microsoft.Xml
         /// <param name="newLineChar">What kind of newline character to use in the reporting.</param>
         public void ProcessFiles(string[] files, bool summary, TextWriter output, string newLineChar)
         {
-            this.newLine = newLineChar;
+            this._newLine = newLineChar;
 
             int count = 0;
 
@@ -186,9 +186,9 @@ namespace Microsoft.Xml
                 catch (Exception e)
                 {
                     output.Write("+++ error in file '" + file + "':");
-                    output.Write(this.newLine);
+                    output.Write(this._newLine);
                     output.Write(e.Message);
-                    output.Write(this.newLine);
+                    output.Write(this._newLine);
                 }
             }
 
@@ -244,7 +244,7 @@ namespace Microsoft.Xml
                 return;
             }
 
-            r.WhitespaceHandling = this.whiteSpace;
+            r.WhitespaceHandling = this._whiteSpace;
 
             Stack elementStack = new Stack();
             NodeStats currentElement = null;
@@ -258,31 +258,31 @@ namespace Microsoft.Xml
                         {
                             long len = r.Value.Length;
                             currentElement.Chars += len;
-                            this.elemChars += len;
+                            this._elemChars += len;
                             break;
                         }
                     case XmlNodeType.Element:
-                        this.elemCount++;
+                        this._elemCount++;
 
                         if (r.IsEmptyElement)
                         {
-                            this.emptyCount++;
+                            this._emptyCount++;
                         }
 
-                        NodeStats es = CountNode(this.elements, r.Name);
+                        NodeStats es = CountNode(this._elements, r.Name);
                         elementStack.Push(es);
                         currentElement = es;
 
-                        if (es.Attrs == null)
-                        {
-                            es.Attrs = new Hashtable();
-                        }
-
-                        Hashtable attrs = es.Attrs;
-
                         while (r.MoveToNextAttribute())
                         {
-                            this.attrCount++;
+                            if (es.Attrs == null)
+                            {
+                                es.Attrs = new Dictionary<string, NodeStats>();
+                            }
+
+                            var attrs = es.Attrs;
+
+                            this._attrCount++;
 
                             // create a name that makes attributes unique to their parent elements
                             NodeStats ns = CountNode(attrs, r.Name);
@@ -291,7 +291,7 @@ namespace Microsoft.Xml
                             {
                                 long len = r.Value.Length;
                                 ns.Chars += len;
-                                this.attrChars += len;
+                                this._attrChars += len;
                             }
                         }
                         break;
@@ -307,18 +307,18 @@ namespace Microsoft.Xml
                         // or perhaps we should report a list of them!
                         break;
                     case XmlNodeType.ProcessingInstruction:
-                        this.piCount++;
-                        this.piChars += r.Value.Length;
+                        this._piCount++;
+                        this._piChars += r.Value.Length;
                         break;
                     case XmlNodeType.Comment:
-                        this.commentCount++;
-                        this.commentChars += r.Value.Length;
+                        this._commentCount++;
+                        this._commentChars += r.Value.Length;
                         break;
                     case XmlNodeType.SignificantWhitespace:
-                        this.whiteSChars += r.Value.Length;
+                        this._whiteSChars += r.Value.Length;
                         break;
                     case XmlNodeType.Whitespace:
-                        this.whiteChars += r.Value.Length;
+                        this._whiteChars += r.Value.Length;
                         break;
                     case XmlNodeType.None:
                         break;
@@ -356,8 +356,8 @@ namespace Microsoft.Xml
         {
             output.Write("*** " + path);                     // filename or "Summary"
 
-            this.watch.Stop();
-            float time = this.watch.ElapsedMilliseconds;
+            this._watch.Stop();
+            float time = this._watch.ElapsedMilliseconds;
             if (time > 1000)
             {
                 output.Write("   ({0,1:F} secs)", time / 1000f);
@@ -367,87 +367,99 @@ namespace Microsoft.Xml
                 output.Write("   ({0,1:F} msecs)", time);
             }
 
-            output.Write(this.newLine);
-            output.Write(this.newLine);
+            output.Write(this._newLine);
+            output.Write(this._newLine);
 
             // count how many unique attributes
             long attrsCount = 0;
-            foreach (NodeStats ns in this.elements.Values)
+            foreach (NodeStats ns in this._elements.Values)
             {
-                attrsCount += ns.Attrs.Count;
+                if (ns.Attrs != null)
+                {
+                    attrsCount += ns.Attrs.Count;
+                }
             }
 
             // overall stats
             output.Write("elements");
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  unique", this.elements.Count);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  empty", this.emptyCount);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  total", this.elemCount);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  chars", this.elemChars);
-            output.Write(this.newLine);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  unique", this._elements.Count);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  empty", this._emptyCount);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  total", this._elemCount);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  chars", this._elemChars);
+            output.Write(this._newLine);
 
             output.Write("attributes");
-            output.Write(this.newLine);
+            output.Write(this._newLine);
             output.Write("{0,-20} {1,9:D}", "  unique", attrsCount);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  total", this.attrCount);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  chars", this.attrChars);
-            output.Write(this.newLine);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  total", this._attrCount);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  chars", this._attrChars);
+            output.Write(this._newLine);
 
             output.Write("comments");
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  total", this.commentCount);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  chars", this.commentChars);
-            output.Write(this.newLine);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  total", this._commentCount);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  chars", this._commentChars);
+            output.Write(this._newLine);
 
             output.Write("PIs");
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  total", this.piCount);
-            output.Write(this.newLine);
-            output.Write("{0,-20} {1,9:D}", "  chars", this.piChars);
-            output.Write(this.newLine);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  total", this._piCount);
+            output.Write(this._newLine);
+            output.Write("{0,-20} {1,9:D}", "  chars", this._piChars);
+            output.Write(this._newLine);
 
-            if (this.whiteSpace != WhitespaceHandling.None)
+            if (this._whiteSpace != WhitespaceHandling.None)
             {
                 output.Write("whitespace");
-                output.Write(this.newLine);
-                output.Write("{0,-20} {1,9:D}", "  chars", this.whiteChars);
-                output.Write(this.newLine);
-                if (this.whiteSpace == WhitespaceHandling.Significant ||
-                    this.whiteSpace == WhitespaceHandling.All)
+                output.Write(this._newLine);
+                output.Write("{0,-20} {1,9:D}", "  chars", this._whiteChars);
+                output.Write(this._newLine);
+                if (this._whiteSpace == WhitespaceHandling.Significant ||
+                    this._whiteSpace == WhitespaceHandling.All)
                 {
-                    output.Write("{0,-20} {1,9:D}", "  significant", this.whiteSChars);
-                    output.Write(this.newLine);
+                    output.Write("{0,-20} {1,9:D}", "  significant", this._whiteSChars);
+                    output.Write(this._newLine);
                 }
             }
 
             // elem/attr stats
-            output.Write(this.newLine);
-            output.Write(this.newLine);
+            output.Write(this._newLine);
+            output.Write(this._newLine);
             output.Write("elem/attr                count     chars");
-            output.Write(this.newLine);
+            output.Write(this._newLine);
             output.Write("----------------------------------------");
-            output.Write(this.newLine);
+            output.Write(this._newLine);
 
             // sort the list.
-            SortedList slist = new SortedList(this.elements, new NodeStatsComparer());
+            SortedList slist = new SortedList(this._elements, new NodeStatsComparer());
 
             foreach (NodeStats es in slist.Values)
             {
                 output.Write("{0,-20} {1,9:D} {2,9:D}", es.Name, es.Count, es.Chars);
-                output.Write(this.newLine);
-                foreach (NodeStats ns in es.Attrs.Values)
+                output.Write(this._newLine);
+                if (es.Attrs != null)
                 {
-                    output.Write("  @{0,-17} {1,9:D} {2,9:D}", ns.Name, ns.Count, ns.Chars);
-                    output.Write(this.newLine);
+                    var list = new List<NodeStats>(es.Attrs.Values);
+                    list.Sort(new Comparison<NodeStats>((a, b) =>
+                    {
+                        return a.Name.CompareTo(b.Name);
+                    }));
+
+                    foreach (NodeStats ns in list)
+                    {
+                        output.Write("  @{0,-17} {1,9:D} {2,9:D}", ns.Name, ns.Count, ns.Chars);
+                        output.Write(this._newLine);
+                    }
                 }
             }
-            output.Write(this.newLine);
+            output.Write(this._newLine);
         }
 
         /// <summary>
@@ -455,28 +467,28 @@ namespace Microsoft.Xml
         /// </summary>
         public void Reset()
         {
-            this.elements = new Hashtable();
-            this.elemCount = 0;
-            this.emptyCount = 0;
-            this.attrCount = 0;
-            this.commentCount = 0;
-            this.piCount = 0;
-            this.elemChars = 0;
-            this.attrChars = 0;
-            this.commentChars = 0;
-            this.piChars = 0;
-            this.whiteChars = 0;
-            this.whiteSChars = 0;
+            this._elements = new Dictionary<string, NodeStats>();
+            this._elemCount = 0;
+            this._emptyCount = 0;
+            this._attrCount = 0;
+            this._commentCount = 0;
+            this._piCount = 0;
+            this._elemChars = 0;
+            this._attrChars = 0;
+            this._commentChars = 0;
+            this._piChars = 0;
+            this._whiteChars = 0;
+            this._whiteSChars = 0;
 
-            this.watch.Reset();
-            this.watch.Start();
+            this._watch.Reset();
+            this._watch.Start();
         }
 
-        internal static NodeStats CountNode(Hashtable ht, string name)
+        internal static NodeStats CountNode(Dictionary<string, NodeStats> ht, string name)
         {
-            NodeStats es = (NodeStats)ht[name];
-            if (es == null)
-            {
+            NodeStats es = null;
+            if (!ht.TryGetValue(name, out es))
+            {                
                 ht[name] = es = new NodeStats(name);
             }
             else
@@ -492,7 +504,7 @@ namespace Microsoft.Xml
         public string Name;
         public long Count;
         public long Chars;
-        public Hashtable Attrs;
+        public Dictionary<string, NodeStats> Attrs;
 
         public NodeStats(string name)
         {

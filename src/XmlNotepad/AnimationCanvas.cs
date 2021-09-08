@@ -10,9 +10,9 @@ namespace XmlNotepad
 {
     public class AnimationCanvas : UserControl
     {
-        List<Shape> shapes = new List<Shape>();
-        AnimationClock clock = new AnimationClock();
-        System.Windows.Forms.Timer timer;
+        private List<Shape> _shapes = new List<Shape>();
+        private AnimationClock _clock = new AnimationClock();
+        private Timer _timer;
 
         public AnimationCanvas()
         {
@@ -22,7 +22,7 @@ namespace XmlNotepad
             this.SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
-        public List<Shape> Shapes => shapes;
+        public List<Shape> Shapes => _shapes;
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -32,26 +32,28 @@ namespace XmlNotepad
             bool complete = true;
             foreach (var shape in Shapes)
             {
-                complete &= shape.Step(clock);
-                shape.Draw(graphics);                
+                complete &= shape.Step(_clock);
+                shape.Draw(graphics);
             }
             if (!complete)
             {
-                if (timer == null) {
-                    timer = new Timer();
-                    timer.Interval = 1;
-                    timer.Tick += (sender, evt) => {
+                if (_timer == null)
+                {
+                    _timer = new Timer();
+                    _timer.Interval = 1;
+                    _timer.Tick += (sender, evt) =>
+                    {
                         Invalidate();
                     };
-                    timer.Enabled = true;
-                    timer.Start();
-                }                
+                    _timer.Enabled = true;
+                    _timer.Start();
+                }
             }
-            else if (timer != null)
+            else if (_timer != null)
             {
                 Debug.WriteLine("Animation complete");
-                timer.Stop();
-                timer = null;
+                _timer.Stop();
+                _timer = null;
             }
         }
 
@@ -70,42 +72,42 @@ namespace XmlNotepad
 
     public class AnimationClock
     {
-        Stopwatch timer;
-        AnimationClock parent;
-        double start;
+        private Stopwatch _timer;
+        private AnimationClock _parent;
+        private double _start;
 
         public AnimationClock()
         {
-            timer = new Stopwatch();
-            timer.Start();
+            _timer = new Stopwatch();
+            _timer.Start();
         }
 
         public AnimationClock(AnimationClock parent)
         {
-            this.parent = parent;
-            start = parent.Now();
+            this._parent = parent;
+            _start = parent.Now();
         }
 
         public double Now()
         {
-            if (parent != null)
+            if (_parent != null)
             {
-                return parent.Now() -start;
+                return _parent.Now() - _start;
             }
             else
             {
-                return (double)timer.ElapsedTicks / (double)Stopwatch.Frequency;
+                return (double)_timer.ElapsedTicks / (double)Stopwatch.Frequency;
             }
         }
     }
 
     public abstract class Shape
     {
-        Animation animation;
+        private Animation _animation;
 
         public void BeginAnimation(Animation animation)
         {
-            this.animation = animation;
+            this._animation = animation;
             if (animation != null)
             {
                 animation.TargetObject = this;
@@ -114,10 +116,10 @@ namespace XmlNotepad
 
         public bool Step(AnimationClock clock)
         {
-            if (animation != null)
+            if (_animation != null)
             {
-                animation.Step(clock);
-                return animation.IsComplete;
+                _animation.Step(clock);
+                return _animation.IsComplete;
             }
             return true;
         }
@@ -127,14 +129,14 @@ namespace XmlNotepad
 
     public class RectangleShape : Shape
     {
-        Rectangle bounds;
+        private Rectangle _bounds;
 
         public Rectangle Bounds
         {
-            get { return bounds; }
+            get { return _bounds; }
             set
             {
-                bounds = value;
+                _bounds = value;
             }
         }
 
@@ -174,7 +176,7 @@ namespace XmlNotepad
             {
                 var size = g.MeasureString(Label, Font);
                 var position = new PointF(
-                    (float)Bounds.X + ((float)Bounds.Width - size.Width) / 2, 
+                    (float)Bounds.X + ((float)Bounds.Width - size.Width) / 2,
                     (float)Bounds.Y + ((float)Bounds.Height - size.Height) / 2);
                 g.DrawString(Label, Font, Foreground, position);
             }
@@ -240,9 +242,9 @@ namespace XmlNotepad
 
     public abstract class Animation
     {
-        private Shape targetObject;
-        private string targetProperty;
-        private bool completed;
+        private Shape _targetObject;
+        private string _targetProperty;
+        private bool _completed;
 
         public TimeSpan StartTime;
         public TimeSpan Duration;
@@ -253,11 +255,12 @@ namespace XmlNotepad
         public abstract void Step(AnimationClock clock);
         public bool IsComplete
         {
-            get { return completed; }
+            get { return _completed; }
             set
             {
-                completed = value;
-                if (value) {
+                _completed = value;
+                if (value)
+                {
                     var handler = this.Completed;
                     if (handler != null)
                     {
@@ -268,15 +271,15 @@ namespace XmlNotepad
         }
         public Shape TargetObject
         {
-            get { return targetObject; }
-            set { targetObject = value; OnTargetChanged(); }
+            get { return _targetObject; }
+            set { _targetObject = value; OnTargetChanged(); }
         }
         public string TargetProperty
         {
-            get { return targetProperty; }
+            get { return _targetProperty; }
             set
             {
-                targetProperty = value; OnTargetChanged();
+                _targetProperty = value; OnTargetChanged();
             }
         }
 
@@ -285,8 +288,8 @@ namespace XmlNotepad
 
     public class BoundsAnimation : Animation
     {
-        AnimationClock localTime;
-        System.Action<Shape, Rectangle> lambda;
+        private AnimationClock _localTime;
+        private Action<Shape, Rectangle> _lambda;
 
         public Rectangle Start;
         public Rectangle End;
@@ -318,12 +321,12 @@ namespace XmlNotepad
                 var instance = Expression.Parameter(typeof(Shape), "this");
                 var typed = Expression.Convert(instance, TargetObject.GetType());
                 var call = Expression.Call(typed, setter, argument);
-                this.lambda = Expression.Lambda<System.Action<Shape, Rectangle>>(call, instance, argument).Compile();
+                this._lambda = Expression.Lambda<System.Action<Shape, Rectangle>>(call, instance, argument).Compile();
                 Debug.WriteLine("Lambda created");
             }
             else
             {
-                this.lambda = null;
+                this._lambda = null;
             }
         }
 
@@ -331,15 +334,15 @@ namespace XmlNotepad
         {
             Function.Owner = this;
 
-            if (localTime == null)
+            if (_localTime == null)
             {
-                localTime = new AnimationClock(clock);
+                _localTime = new AnimationClock(clock);
             }
 
             // get position between 0 and 1
             double position = this.Function.GetPosition(clock);
 
-            if (this.lambda != null)
+            if (this._lambda != null)
             {
                 // do the interpolation.
                 Rectangle r = new Rectangle(
@@ -348,7 +351,7 @@ namespace XmlNotepad
                     (int)(Start.Width + (End.Width - Start.Width) * position),
                     (int)(Start.Height + (End.Height - Start.Height) * position));
 
-                this.lambda(this.TargetObject, r);
+                this._lambda(this.TargetObject, r);
             }
 
             if (position == 1)

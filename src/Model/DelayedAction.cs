@@ -6,16 +6,15 @@ namespace XmlNotepad
 {
     public delegate void DispatchHandler(Action a);
 
-
     /// <summary>
     /// This class provides a delayed action that has a name.  If the same named action is
     /// started multiple times before the delay if fires the action only once.
     /// </summary>
     public class DelayedActions
     {
-        bool closed;
-        DispatchHandler handler;
-        Dictionary<string, DelayedAction> pending = new Dictionary<string, DelayedAction>();
+        private bool _closed;
+        private DispatchHandler _handler;
+        private Dictionary<string, DelayedAction> _pending = new Dictionary<string, DelayedAction>();
 
         /// <summary>
         /// Construct a new DelayedActions providing the action handler that knows how to switch
@@ -25,22 +24,22 @@ namespace XmlNotepad
         /// <param name="handler"></param>
         public DelayedActions(DispatchHandler handler)
         {
-            this.handler = handler;
+            this._handler = handler;
         }
 
         public void StartDelayedAction(string name, Action action, TimeSpan delay)
         {
-            if (this.closed)
+            if (this._closed)
             {
                 Debug.WriteLine(string.Format("Ignoring delayed action '{0}' because object is closed", name));
                 return;
             }
 
             DelayedAction da;
-            if (!pending.TryGetValue(name, out da))
+            if (!_pending.TryGetValue(name, out da))
             {
-                da = new DelayedAction(this.handler, name);
-                pending[name] = da;
+                da = new DelayedAction(this._handler, name);
+                _pending[name] = da;
             }
 
             da.StartDelayTimer(action, delay);
@@ -49,21 +48,21 @@ namespace XmlNotepad
         public void CancelDelayedAction(string name)
         {
             DelayedAction action;
-            if (pending.TryGetValue(name, out action))
+            if (_pending.TryGetValue(name, out action))
             {
                 action.StopDelayTimer();
-                pending.Remove(name);
+                _pending.Remove(name);
             }
         }
 
         public void Close()
         {
-            this.closed = true;
-            foreach (var pair in pending)
+            this._closed = true;
+            foreach (var pair in _pending)
             {
                 pair.Value.StopDelayTimer();
             }
-            pending.Clear();
+            _pending.Clear();
         }
 
 

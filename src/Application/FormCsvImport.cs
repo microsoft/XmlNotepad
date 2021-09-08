@@ -8,35 +8,35 @@ namespace XmlNotepad
 {
     public partial class FormCsvImport : Form
     {
-        string fileName;
-        static string[] delimiterNames = new string[] { "Comma (,)", "Tab", "Space", "Semicolon (;)", "Colon (:)", "Vertical bar (|)", "Slash (/)" };
-        static char[] delimiters = new char[] { ',', '\t', ' ', ';', ':', '|', '/' };
+        private string _fileName;
+        private static string[] _delimiterNames = new string[] { "Comma (,)", "Tab", "Space", "Semicolon (;)", "Colon (:)", "Vertical bar (|)", "Slash (/)" };
+        private static char[] _delimiters = new char[] { ',', '\t', ' ', ';', ':', '|', '/' };
 
         public FormCsvImport()
         {
             InitializeComponent();
-            
-            // remove the test label we use just for design mode.
-            flowLayoutPanel1.Controls.Remove(labelTest);
 
-            foreach (var delim in delimiterNames)
+            // remove the test label we use just for design mode.
+            this.flowLayoutPanel1.Controls.Remove(this.labelTest);
+
+            foreach (var delim in FormCsvImport._delimiterNames)
             {
-                comboBoxDelimiters.Items.Add(delim);
+                this.comboBoxDelimiters.Items.Add(delim);
             }
-            comboBoxDelimiters.SelectedIndex = 0;
+            this.comboBoxDelimiters.SelectedIndex = 0;
             ShowStatus("");
-            comboBoxDelimiters.TextChanged += ComboBoxDelimiters_TextChanged;
+            this.comboBoxDelimiters.TextChanged += ComboBoxDelimiters_TextChanged;
         }
 
         private void ShowStatus(string msg)
         {
-            labelStatus.Text = msg;
+            this.labelStatus.Text = msg;
         }
 
         public string FileName
         {
-            get { return fileName; }
-            set { fileName = value; SniffHeaders(); }
+            get { return this._fileName; }
+            set { this._fileName = value; SniffHeaders(); }
         }
 
         public char Deliminter { get; set; }
@@ -48,47 +48,47 @@ namespace XmlNotepad
             flowLayoutPanel1.Controls.Clear();
 
             // sniff the file, see if we can figure out the delimiter
-            if (string.IsNullOrEmpty(this.fileName) || !File.Exists(this.fileName))
+            if (string.IsNullOrEmpty(this._fileName) || !File.Exists(this._fileName))
             {
                 return;
             }
 
             string userText = null;
-            if (comboBoxDelimiters.SelectedIndex >= 0)
+            if (this.comboBoxDelimiters.SelectedIndex >= 0)
             {
-                if (comboBoxDelimiters.Text != delimiterNames[comboBoxDelimiters.SelectedIndex])
+                if (this.comboBoxDelimiters.Text != FormCsvImport._delimiterNames[this.comboBoxDelimiters.SelectedIndex])
                 {
                     // user is typing in something new
-                    userText = comboBoxDelimiters.Text;
+                    userText = this.comboBoxDelimiters.Text;
                 }
             }
             else
             {
                 // user is typing in something new
-                userText = comboBoxDelimiters.Text;
+                userText = this.comboBoxDelimiters.Text;
 
             }
             if (userText != null && string.IsNullOrEmpty(userText))
             {
                 return;
             }
-            else if (userText == null && comboBoxDelimiters.SelectedIndex < 0)
+            else if (userText == null && this.comboBoxDelimiters.SelectedIndex < 0)
             {
                 return;
             }
 
             ShowStatus("");
 
-            using (StreamReader reader = new StreamReader(this.fileName))
+            using (StreamReader reader = new StreamReader(this._fileName))
             {
                 CsvReader csvReader = new CsvReader(reader, 8192);
                 if (userText == null)
                 {
-                    Deliminter = delimiters[comboBoxDelimiters.SelectedIndex];
+                    this.Deliminter = FormCsvImport._delimiters[this.comboBoxDelimiters.SelectedIndex];
                 }
-                else 
+                else
                 {
-                    Deliminter = userText[0];
+                    this.Deliminter = userText[0];
                 }
 
                 csvReader.Delimiter = Deliminter;
@@ -105,7 +105,7 @@ namespace XmlNotepad
                         label.ForeColor = Color.White;
                         label.AutoSize = true;
                         label.TextAlign = ContentAlignment.MiddleLeft;
-                        flowLayoutPanel1.Controls.Add(label);
+                        this.flowLayoutPanel1.Controls.Add(label);
                     }
                 }
                 else
@@ -128,16 +128,16 @@ namespace XmlNotepad
 
         private void checkBoxHeadings_CheckedChanged(object sender, EventArgs e)
         {
-            FirstRowIsHeader = checkBoxHeadings.Checked;
+            this.FirstRowIsHeader = this.checkBoxHeadings.Checked;
         }
 
         private void comboBoxDelimiters_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SniffHeaders();
+            this.SniffHeaders();
         }
         private void ComboBoxDelimiters_TextChanged(object sender, EventArgs e)
         {
-            SniffHeaders();
+            this.SniffHeaders();
         }
 
     }

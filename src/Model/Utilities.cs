@@ -12,32 +12,16 @@ namespace XmlNotepad
     {
         private Utilities() { }
 
-        public static bool ExtractEmbeddedResourceAsFile(string name, string path)
+        public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp)
         {
-            using (Stream s = typeof(Utilities).Assembly.GetManifestResourceStream(name))
-            {
-                if (s == null)
-                {
-                    return false;
-                }
-
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    s.CopyTo(fs);
-                }
-            }
-            return true;
-        }
-
-        public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp) {
             settings.CheckCharacters = false;
             settings.Indent = true;
             settings.IndentChars = "  ";
             settings.NewLineChars = "\r\n";
             settings.NewLineHandling = NewLineHandling.Replace;
 
-            if (sp != null) {
+            if (sp != null)
+            {
                 Settings s = (Settings)sp.GetService(typeof(Settings));
                 if (s != null)
                 {
@@ -81,7 +65,7 @@ namespace XmlNotepad
                 {
                     return HelpBaseUri + "index.html";
                 }
-                else 
+                else
                 {
                     return ValidPath(Settings.Instance.StartupPath + "\\Help\\index.html");
                 }
@@ -117,7 +101,7 @@ namespace XmlNotepad
                 }
             }
         }
-        
+
 
         public static string FindHelp
         {
@@ -207,7 +191,8 @@ namespace XmlNotepad
             return nl.Replace("\\r", "\r").Replace("\\n", "\n");
         }
 
-        public static void OpenUrl(IntPtr hwnd, string url) {
+        public static void OpenUrl(IntPtr hwnd, string url)
+        {
             const int SW_SHOWNORMAL = 1;
             ShellExecute(hwnd, "open", url, null, Settings.Instance.StartupPath, SW_SHOWNORMAL);
         }
@@ -219,7 +204,8 @@ namespace XmlNotepad
             string args, string dir, int show);
     }
 
-    public static class CurrentEvent {
+    public static class CurrentEvent
+    {
         public static EventArgs Event;
     }
 

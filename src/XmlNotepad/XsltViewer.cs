@@ -11,9 +11,9 @@ namespace XmlNotepad
 {
     public partial class XsltViewer : UserControl
     {
-        ISite site;
-        XmlCache model;
-        bool userSpecifiedOutput;
+        private ISite _site;
+        private XmlCache _model;
+        private bool _userSpecifiedOutput;
 
         public XsltViewer()
         {
@@ -96,7 +96,7 @@ namespace XmlNotepad
             }
             else
             {
-                userSpecifiedOutput = true;
+                _userSpecifiedOutput = true;
             }
         }
 
@@ -104,11 +104,11 @@ namespace XmlNotepad
         {
             string xpath = this.SourceFileName.Text.Trim();
             string output = this.OutputFileName.Text.Trim();
-            if (!userSpecifiedOutput && !string.IsNullOrEmpty(this.model.XsltDefaultOutput))
+            if (!_userSpecifiedOutput && !string.IsNullOrEmpty(this._model.XsltDefaultOutput))
             {
-                output = this.model.XsltDefaultOutput;
+                output = this._model.XsltDefaultOutput;
             }
-            output = this.xsltControl.DisplayXsltResults(this.model.Document, xpath, output);
+            output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output);
             if (!string.IsNullOrEmpty(output))
             {
                 this.OutputFileName.Text = MakeRelative(output);
@@ -134,12 +134,12 @@ namespace XmlNotepad
 
         public void SetSite(ISite site)
         {
-            this.site = site;
+            this._site = site;
             this.xsltControl.SetSite(site);
             IServiceProvider sp = (IServiceProvider)site;
-            this.model = (XmlCache)site.GetService(typeof(XmlCache));
-            this.model.ModelChanged -= new EventHandler<ModelChangedEventArgs>(OnModelChanged);
-            this.model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
+            this._model = (XmlCache)site.GetService(typeof(XmlCache));
+            this._model.ModelChanged -= new EventHandler<ModelChangedEventArgs>(OnModelChanged);
+            this._model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
         }
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
@@ -149,20 +149,20 @@ namespace XmlNotepad
 
         void OnModelChanged(ModelChangedEventArgs e)
         {
-            var doc = model.Document;
+            var doc = _model.Document;
             try
             {
-                if (!string.IsNullOrEmpty(model.FileName))
+                if (!string.IsNullOrEmpty(_model.FileName))
                 {
-                    var uri = new Uri(model.FileName);
+                    var uri = new Uri(_model.FileName);
                     if (uri != this.xsltControl.BaseUri)
                     {
                         this.xsltControl.BaseUri = uri;
                         this.OutputFileName.Text = ""; // reset it since the file type might need to change...
-                        userSpecifiedOutput = false;
+                        _userSpecifiedOutput = false;
                     }
                 }
-                this.SourceFileName.Text = model.XsltFileName;
+                this.SourceFileName.Text = _model.XsltFileName;
             }
             catch (Exception ex)
             {

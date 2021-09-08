@@ -13,11 +13,11 @@ namespace BuildTaskTests
     {
         delegate void LogMessageHandler(BuildMessageEventArgs e);
         delegate void LogCustomHandler(CustomBuildEventArgs e);
-        delegate void LogErrorHandler(BuildErrorEventArgs e); 
-        delegate void LogWarningHandler(BuildWarningEventArgs e); 
+        delegate void LogErrorHandler(BuildErrorEventArgs e);
+        delegate void LogWarningHandler(BuildWarningEventArgs e);
 
 
-         [TestMethod]
+        [TestMethod]
         public void SimpleTest()
         {
             var location = Path.GetDirectoryName(typeof(BuildTaskUnitTest).Assembly.Location);

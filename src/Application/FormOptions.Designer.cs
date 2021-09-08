@@ -8,10 +8,15 @@ namespace XmlNotepad {
 		/// </summary>
 		private readonly System.ComponentModel.Container components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        private Button buttonOK;
+        private Button buttonCancel;
+        private PropertyGrid propertyGrid1;
+        private Button buttonReset;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

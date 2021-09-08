@@ -14,29 +14,24 @@ namespace XmlNotepad
 
     public class XmlTreeView : System.Windows.Forms.UserControl
     {
-        XmlCache model;
-        Settings settings;
-        bool disposed;
-        const int HScrollIncrement = 5;
-        int updating;
-        bool saving;
+        private XmlCache _model;
+        private Settings _settings;
+        private bool _disposed;
+        private const int HScrollIncrement = 5;
+        private int _updating;
+        private bool _saving;
 
         public event EventHandler<NodeChangeEventArgs> NodeChanged;
         public event EventHandler<NodeChangeEventArgs> NodeInserted;
         public event EventHandler SelectionChanged;
         public event EventHandler ClipboardChanged;
 
-        XmlTreeNode dragged;
-        XmlTreeViewDropFeedback feedback;
-        IntelliTip tip;
-        DelayedActions delayedActions;
-        private NodeTextView nodeTextView;
-        private TreeView myTreeView;
-        private System.Windows.Forms.ImageList imageList1;
-        private System.ComponentModel.IContainer components;
-        private PaneResizer resizer;
-        private System.Windows.Forms.VScrollBar vScrollBar1;
-        private System.Windows.Forms.HScrollBar hScrollBar1;
+        private XmlTreeNode _dragged;
+        private XmlTreeViewDropFeedback _feedback;
+        private IntelliTip _tip;
+        private DelayedActions _delayedActions;
+        private NodeTextView _nodeTextView;
+        private TreeView _myTreeView;
 
         public XmlTreeView()
         {
@@ -49,45 +44,45 @@ namespace XmlNotepad
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
-            myTreeView.AfterLabelEdit += new EventHandler<NodeLabelEditEventArgs>(myTreeView_AfterLabelEdit);
-            myTreeView.AfterCollapse += new EventHandler<TreeViewEventArgs>(myTreeView_AfterCollapse);
-            myTreeView.AfterExpand += new EventHandler<TreeViewEventArgs>(myTreeView_AfterExpand);
-            myTreeView.AfterSelect += new EventHandler<TreeViewEventArgs>(myTreeView_AfterSelect);
-            myTreeView.MouseWheel += new MouseEventHandler(HandleMouseWheel);
-            myTreeView.KeyDown += new KeyEventHandler(myTreeView_KeyDown);
+            _myTreeView.AfterLabelEdit += new EventHandler<NodeLabelEditEventArgs>(myTreeView_AfterLabelEdit);
+            _myTreeView.AfterCollapse += new EventHandler<TreeViewEventArgs>(myTreeView_AfterCollapse);
+            _myTreeView.AfterExpand += new EventHandler<TreeViewEventArgs>(myTreeView_AfterExpand);
+            _myTreeView.AfterSelect += new EventHandler<TreeViewEventArgs>(myTreeView_AfterSelect);
+            _myTreeView.MouseWheel += new MouseEventHandler(HandleMouseWheel);
+            _myTreeView.KeyDown += new KeyEventHandler(myTreeView_KeyDown);
 
-            this.myTreeView.DragDrop += new DragEventHandler(treeViewFeedback_DragDrop);
-            this.myTreeView.DragEnter += new DragEventHandler(treeViewFeedback_DragEnter);
-            this.myTreeView.DragLeave += new EventHandler(treeViewFeedback_DragLeave);
-            this.myTreeView.DragOver += new DragEventHandler(treeViewFeedback_DragOver);
-            this.myTreeView.AllowDrop = true;
-            this.myTreeView.GiveFeedback += new GiveFeedbackEventHandler(myTreeView_GiveFeedback);
-            this.myTreeView.ItemDrag += new ItemDragEventHandler(myTreeView_ItemDrag);
-            this.myTreeView.AfterBatchUpdate += new EventHandler(myTreeView_AfterBatchUpdate);
+            this._myTreeView.DragDrop += new DragEventHandler(treeViewFeedback_DragDrop);
+            this._myTreeView.DragEnter += new DragEventHandler(treeViewFeedback_DragEnter);
+            this._myTreeView.DragLeave += new EventHandler(treeViewFeedback_DragLeave);
+            this._myTreeView.DragOver += new DragEventHandler(treeViewFeedback_DragOver);
+            this._myTreeView.AllowDrop = true;
+            this._myTreeView.GiveFeedback += new GiveFeedbackEventHandler(myTreeView_GiveFeedback);
+            this._myTreeView.ItemDrag += new ItemDragEventHandler(myTreeView_ItemDrag);
+            this._myTreeView.AfterBatchUpdate += new EventHandler(myTreeView_AfterBatchUpdate);
 
-            this.nodeTextView.KeyDown += new KeyEventHandler(nodeTextView_KeyDown);
-            this.nodeTextView.MouseWheel += new MouseEventHandler(HandleMouseWheel);
-            this.nodeTextView.AfterSelect += new EventHandler<TreeViewEventArgs>(nodeTextView_AfterSelect);
-            this.nodeTextView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
+            this._nodeTextView.KeyDown += new KeyEventHandler(nodeTextView_KeyDown);
+            this._nodeTextView.MouseWheel += new MouseEventHandler(HandleMouseWheel);
+            this._nodeTextView.AfterSelect += new EventHandler<TreeViewEventArgs>(nodeTextView_AfterSelect);
+            this._nodeTextView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
 
             this.Disposed += new EventHandler(OnDisposed);
 
-            tip = new IntelliTip(this);
-            tip.AddWatch(this.nodeTextView);
-            tip.AddWatch(this.myTreeView);
-            tip.ShowToolTip += new IntelliTipEventHandler(OnShowToolTip);
+            _tip = new IntelliTip(this);
+            _tip.AddWatch(this._nodeTextView);
+            _tip.AddWatch(this._myTreeView);
+            _tip.ShowToolTip += new IntelliTipEventHandler(OnShowToolTip);
         }
 
         void OnDisposed(object sender, EventArgs e)
         {
-            this.disposed = true;
+            this._disposed = true;
         }
 
         public void Close()
         {
-            this.tip.Close();
-            this.myTreeView.Close();
-            this.nodeTextView.Close();
+            this._tip.Close();
+            this._myTreeView.Close();
+            this._nodeTextView.Close();
         }
 
         [Browsable(false)]
@@ -95,17 +90,17 @@ namespace XmlNotepad
         {
             get
             {
-                return this.myTreeView.SelectedNode as XmlTreeNode;
+                return this._myTreeView.SelectedNode as XmlTreeNode;
             }
             set
             {
-                this.myTreeView.SelectedNode = value;
+                this._myTreeView.SelectedNode = value;
             }
         }
 
         void OnShowToolTip(object sender, IntelliTipEventArgs args)
         {
-            Point pt = this.myTreeView.ApplyScrollOffset(args.Location);
+            Point pt = this._myTreeView.ApplyScrollOffset(args.Location);
             XmlTreeNode tn = this.TreeView.FindNodeAt(20, pt.Y) as XmlTreeNode;
             if (tn != null)
             {
@@ -116,41 +111,41 @@ namespace XmlNotepad
         public void ExpandAll()
         {
             this.SuspendLayout();
-            this.myTreeView.ExpandAll();
+            this._myTreeView.ExpandAll();
             this.ResumeLayout();
         }
 
         public void CollapseAll()
         {
             this.SuspendLayout();
-            this.myTreeView.CollapseAll();
+            this._myTreeView.CollapseAll();
             this.ResumeLayout();
         }
 
         public void SetSite(ISite site)
         {
             base.Site = site;
-            this.nodeTextView.SetSite(site);
-            this.myTreeView.SetSite(site);
+            this._nodeTextView.SetSite(site);
+            this._myTreeView.SetSite(site);
 
             // register our customer builders
             this.IntellisenseProvider.RegisterBuilder("XmlNotepad.ColorBuilder", typeof(ColorBuilder));
             this.IntellisenseProvider.RegisterBuilder("XmlNotepad.UriBuilder", typeof(UriBuilder));
             this.IntellisenseProvider.RegisterEditor("XmlNotepad.DateTimeEditor", typeof(DateTimeEditor));
 
-            this.model = (XmlCache)this.Site.GetService(typeof(XmlCache));
-            this.delayedActions = (DelayedActions)this.Site.GetService(typeof(DelayedActions));
-            if (this.model != null)
+            this._model = (XmlCache)this.Site.GetService(typeof(XmlCache));
+            this._delayedActions = (DelayedActions)this.Site.GetService(typeof(DelayedActions));
+            if (this._model != null)
             {
-                this.model.FileChanged += new EventHandler(OnFileChanged);
-                this.model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
+                this._model.FileChanged += new EventHandler(OnFileChanged);
+                this._model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
             }
-            this.settings = (Settings)this.Site.GetService(typeof(Settings));
-            if (this.settings != null)
+            this._settings = (Settings)this.Site.GetService(typeof(Settings));
+            if (this._settings != null)
             {
-                this.settings.Changed += new SettingsEventHandler(OnSettingsChanged);
+                this._settings.Changed += new SettingsEventHandler(OnSettingsChanged);
             }
-            if (this.model != null) BindTree();
+            if (this._model != null) BindTree();
         }
 
         [Browsable(false)]
@@ -162,7 +157,7 @@ namespace XmlNotepad
                 {
                     throw new ApplicationException("ISite has not been provided, so model cannot be found");
                 }
-                return this.model;
+                return this._model;
             }
         }
 
@@ -175,24 +170,24 @@ namespace XmlNotepad
                 {
                     throw new ApplicationException("ISite has not been provided, so settings cannot be found");
                 }
-                return this.settings;
+                return this._settings;
             }
         }
 
         public NodeTextView NodeTextView
         {
-            get { return nodeTextView; }
-            set { nodeTextView = value; }
+            get { return _nodeTextView; }
+            set { _nodeTextView = value; }
         }
 
         public void CancelEdit()
         {
-            TreeNode n = myTreeView.SelectedNode;
+            TreeNode n = _myTreeView.SelectedNode;
             if (n != null && n.IsEditing)
             {
                 n.EndEdit(true);
             }
-            this.nodeTextView.EndEdit(true);
+            this._nodeTextView.EndEdit(true);
         }
 
 
@@ -238,16 +233,16 @@ namespace XmlNotepad
                 return null;
             }
 
-            if (node.OwnerDocument != this.model.Document)
+            if (node.OwnerDocument != this._model.Document)
             {
                 return null;
             }
 
             parent = FindNode(node.ParentNode);
-            if (parent == null) 
+            if (parent == null)
             {
                 // then the node is a root node.
-                return FindChild(this.myTreeView.Nodes, node);
+                return FindChild(this._myTreeView.Nodes, node);
             }
             else
             {
@@ -259,7 +254,7 @@ namespace XmlNotepad
         {
             foreach (XmlTreeNode xn in nodes)
             {
-                if (xn.Node == node) return xn;                
+                if (xn.Node == node) return xn;
             }
 
             return null;
@@ -267,8 +262,8 @@ namespace XmlNotepad
 
         public bool Commit()
         {
-            this.nodeTextView.EndEdit(false);
-            TreeNode n = myTreeView.SelectedNode;
+            this._nodeTextView.EndEdit(false);
+            TreeNode n = _myTreeView.SelectedNode;
             if (n != null && n.IsEditing)
             {
                 return n.EndEdit(false);
@@ -291,7 +286,7 @@ namespace XmlNotepad
         [Browsable(false)]
         public TreeView TreeView
         {
-            get { return this.myTreeView; }
+            get { return this._myTreeView; }
         }
 
         private void myTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -324,7 +319,7 @@ namespace XmlNotepad
                 if (n == null)
                 {
                     TreeNode parent = e.Node.Parent;
-                    XmlNode context = (parent == null) ? this.model.Document : ((XmlTreeNode)parent).Node;
+                    XmlNode context = (parent == null) ? this._model.Document : ((XmlTreeNode)parent).Node;
                     cmd = this.UndoManager.Peek();
                     try
                     {
@@ -336,7 +331,7 @@ namespace XmlNotepad
                                 inode.XmlNode = inode.CreateNode(context, e.Label);
                                 // Cause selection event to be triggered so that menu state
                                 // is recalculated.
-                                this.myTreeView.SelectedNode = null;
+                                this._myTreeView.SelectedNode = null;
                                 this.OnNodeInserted(inode.NewNode);
                             }
                         }
@@ -345,16 +340,16 @@ namespace XmlNotepad
                     {
                         MessageBox.Show(this, ex.Message,
                             SR.XmlNameErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        this.myTreeView.SelectedNode = e.Node;
+                        this._myTreeView.SelectedNode = e.Node;
                         e.CancelEdit = true;
                         xn.Label = e.Label.Trim();
                         e.Node.BeginEdit();
                         return;
                     }
                     e.Node.Label = e.Label;
-                    this.myTreeView.SelectedNode = e.Node;
-                    this.nodeTextView.Invalidate(e.Node);
-                    this.nodeTextView.FocusBeginEdit(null);
+                    this._myTreeView.SelectedNode = e.Node;
+                    this._nodeTextView.Invalidate(e.Node);
+                    this._nodeTextView.FocusBeginEdit(null);
                     return; // one undoable unit.
                 }
                 switch (n != null ? n.NodeType : XmlNodeType.None)
@@ -389,7 +384,7 @@ namespace XmlNotepad
 
         private void myTreeView_AfterCollapse(object sender, TreeViewEventArgs e)
         {
-            if (!this.myTreeView.InBatchUpdate)
+            if (!this._myTreeView.InBatchUpdate)
             {
                 PerformLayout();
                 Invalidate();
@@ -398,7 +393,7 @@ namespace XmlNotepad
 
         private void myTreeView_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            if (!this.myTreeView.InBatchUpdate)
+            if (!this._myTreeView.InBatchUpdate)
             {
                 PerformLayout();
                 Invalidate();
@@ -410,11 +405,11 @@ namespace XmlNotepad
             TreeNode n = e.Node;
             if (this.TreeView.InBatchUpdate)
             {
-                this.nodeTextView.InternalSelect(n);
+                this._nodeTextView.InternalSelect(n);
             }
             else
             {
-                this.nodeTextView.SelectedNode = n;
+                this._nodeTextView.SelectedNode = n;
                 if (n != null)
                 {
                     ScrollIntoView(n);
@@ -433,29 +428,29 @@ namespace XmlNotepad
 
         void nodeTextView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (this.myTreeView != null)
+            if (this._myTreeView != null)
             {
-                this.myTreeView.SelectedNode = e.Node;
+                this._myTreeView.SelectedNode = e.Node;
             }
         }
 
         public Point ScrollPosition
         {
-            get { return myTreeView.ScrollPosition; }
+            get { return _myTreeView.ScrollPosition; }
             set
             {
-                if (myTreeView.ScrollPosition.Y != value.Y)
+                if (_myTreeView.ScrollPosition.Y != value.Y)
                 {
                     // sync node text view to the same position.
-                    nodeTextView.ScrollPosition = new Point(0, value.Y);
-                    nodeTextView.Invalidate();
+                    _nodeTextView.ScrollPosition = new Point(0, value.Y);
+                    _nodeTextView.Invalidate();
                 }
                 else
                 {
                     // horizontal only
                 }
-                myTreeView.ScrollPosition = value;
-                myTreeView.Invalidate();
+                _myTreeView.ScrollPosition = value;
+                _myTreeView.Invalidate();
             }
         }
 
@@ -463,12 +458,12 @@ namespace XmlNotepad
         {
             // Scroll the newly selected node into view vertically.
             Rectangle r = n.LabelBounds;
-            int delta = myTreeView.TreeIndent + imageList1.ImageSize.Width + TreeNode.GetGap(myTreeView.TreeIndent);
+            int delta = _myTreeView.TreeIndent + imageList1.ImageSize.Width + TreeNode.GetGap(_myTreeView.TreeIndent);
             r = new Rectangle(r.Left - delta, r.Top, r.Width + delta, r.Height);
-            int y = r.Top + myTreeView.ScrollPosition.Y;
-            if (y > myTreeView.Height - myTreeView.ItemHeight)
+            int y = r.Top + _myTreeView.ScrollPosition.Y;
+            if (y > _myTreeView.Height - _myTreeView.ItemHeight)
             {
-                y = y - myTreeView.Height + myTreeView.ItemHeight;
+                y = y - _myTreeView.Height + _myTreeView.ItemHeight;
             }
             else if (y > 0)
             {
@@ -476,21 +471,21 @@ namespace XmlNotepad
             }
             if (y != 0)
             {
-                int newy = myTreeView.ScrollPosition.Y - y;
-                myTreeView.ScrollPosition = new Point(myTreeView.ScrollPosition.X, newy);
-                nodeTextView.ScrollPosition = new Point(0, newy);
-                this.nodeTextView.Invalidate();
-                this.vScrollBar1.Value = Math.Max(0, Math.Min(this.vScrollBar1.Maximum, this.vScrollBar1.Value + (y / myTreeView.ItemHeight)));
+                int newy = _myTreeView.ScrollPosition.Y - y;
+                _myTreeView.ScrollPosition = new Point(_myTreeView.ScrollPosition.X, newy);
+                _nodeTextView.ScrollPosition = new Point(0, newy);
+                this._nodeTextView.Invalidate();
+                this.vScrollBar1.Value = Math.Max(0, Math.Min(this.vScrollBar1.Maximum, this.vScrollBar1.Value + (y / _myTreeView.ItemHeight)));
             }
 
             // Tweak horizontal to make the newly selected label visible.
-            int x = this.myTreeView.ScrollPosition.X;
-            if (r.Left + this.myTreeView.ScrollPosition.X < 0)
+            int x = this._myTreeView.ScrollPosition.X;
+            if (r.Left + this._myTreeView.ScrollPosition.X < 0)
             {
                 // Label is off the left hand side.
                 x = -r.Left;
             }
-            else if (r.Right + this.myTreeView.ScrollPosition.X > this.resizer.Left)
+            else if (r.Right + this._myTreeView.ScrollPosition.X > this.resizer.Left)
             {
                 // Label is off the right hand side
                 x = this.resizer.Left - r.Right - 10;
@@ -498,13 +493,13 @@ namespace XmlNotepad
                 {
                     // Label is too long to fit, now it hangs off the left side, so
                     // let's just leave it where it was
-                    x = this.myTreeView.ScrollPosition.X;
+                    x = this._myTreeView.ScrollPosition.X;
                 }
             }
-            if (x != this.myTreeView.ScrollPosition.X)
+            if (x != this._myTreeView.ScrollPosition.X)
             {
                 int pos = Math.Max(0, Math.Min(this.hScrollBar1.Maximum * HScrollIncrement, -x));
-                myTreeView.ScrollPosition = new Point(-pos, myTreeView.ScrollPosition.Y);
+                _myTreeView.ScrollPosition = new Point(-pos, _myTreeView.ScrollPosition.Y);
                 this.hScrollBar1.Value = pos / HScrollIncrement;
             }
         }
@@ -542,7 +537,7 @@ namespace XmlNotepad
 
         private void OnModelChanged(object sender, ModelChangedEventArgs e)
         {
-            if (disposed) return;
+            if (_disposed) return;
             ModelChangeType t = e.ModelChangeType;
             switch (t)
             {
@@ -557,7 +552,7 @@ namespace XmlNotepad
                     RecalculateNamespaces(e.Node);
                     break;
             }
-            nodeTextView.Invalidate();
+            _nodeTextView.Invalidate();
         }
 
         private void CheckChange(ModelChangedEventArgs e)
@@ -566,7 +561,7 @@ namespace XmlNotepad
             // but when document is saved it may add nodes (like xml declaration) and so 
             // we check for this here and add corresponding nodes in the tree view when necessary.
             XmlNode node = e.Node;
-            if (!IsEditing && saving && node != null && null == FindNode(node))
+            if (!IsEditing && _saving && node != null && null == FindNode(node))
             {
                 if (e.ModelChangeType == ModelChangeType.NodeInserted)
                 {
@@ -583,7 +578,7 @@ namespace XmlNotepad
                         context = FindNode(node.NextSibling);
                         position = InsertPosition.Before;
                     }
-                    else 
+                    else
                     {
                         context = FindNode(node.ParentNode);
                         position = InsertPosition.Child;
@@ -592,7 +587,7 @@ namespace XmlNotepad
                     {
                         InsertNode inode = new InsertNode(context, position, node, false, false);
                         this.UndoManager.Push(inode);
-                        this.nodeTextView.Invalidate();
+                        this._nodeTextView.Invalidate();
                     }
                 }
             }
@@ -600,7 +595,7 @@ namespace XmlNotepad
 
         public bool IsEditing
         {
-            get { return this.myTreeView.IsEditing || this.nodeTextView.IsEditing; }
+            get { return this._myTreeView.IsEditing || this._nodeTextView.IsEditing; }
         }
 
         private void OnFileChanged(object sender, EventArgs e)
@@ -614,33 +609,33 @@ namespace XmlNotepad
             this.vScrollBar1.Value = 0;
             this.hScrollBar1.Maximum = 0;
             this.hScrollBar1.Value = 0;
-            this.nodeTextView.Top = 0;
-            this.nodeTextView.ScrollPosition = new Point(0, 0);
-            this.myTreeView.ScrollPosition = new Point(0, 0);
+            this._nodeTextView.Top = 0;
+            this._nodeTextView.ScrollPosition = new Point(0, 0);
+            this._myTreeView.ScrollPosition = new Point(0, 0);
 
             this.SuspendLayout();
-            this.myTreeView.BeginUpdate();
+            this._myTreeView.BeginUpdate();
             try
             {
-                XmlTreeNodeCollection nodes = new XmlTreeNodeCollection(this, this.model.Document);
-                this.myTreeView.Nodes = this.nodeTextView.Nodes = nodes;
+                XmlTreeNodeCollection nodes = new XmlTreeNodeCollection(this, this._model.Document);
+                this._myTreeView.Nodes = this._nodeTextView.Nodes = nodes;
 
-                foreach (XmlTreeNode tn in this.myTreeView.Nodes)
+                foreach (XmlTreeNode tn in this._myTreeView.Nodes)
                 {
                     tn.Expand();
                 }
-                this.nodeTextView.Reset();
+                this._nodeTextView.Reset();
             }
             finally
             {
-                this.myTreeView.EndUpdate();
+                this._myTreeView.EndUpdate();
             }
             this.ResumeLayout();
-            this.myTreeView.Invalidate();
-            this.myTreeView.Focus();
-            if (this.myTreeView.Nodes.Count > 0)
+            this._myTreeView.Invalidate();
+            this._myTreeView.Focus();
+            if (this._myTreeView.Nodes.Count > 0)
             {
-                this.SelectedNode = (XmlTreeNode)this.myTreeView.Nodes[0];
+                this.SelectedNode = (XmlTreeNode)this._myTreeView.Nodes[0];
             }
         }
 
@@ -666,8 +661,8 @@ namespace XmlNotepad
             if (this.hScrollBar1.Visible)
             {
                 int x = this.resizer.Left;
-                int w = this.myTreeView.VirtualWidth + 10;
-                this.myTreeView.Height = this.Height - this.hScrollBar1.Height;
+                int w = this._myTreeView.VirtualWidth + 10;
+                this._myTreeView.Height = this.Height - this.hScrollBar1.Height;
                 int hScrollMax = 10 + ((w - x) / HScrollIncrement);
                 this.hScrollBar1.Minimum = 0;
                 this.hScrollBar1.Maximum = hScrollMax;
@@ -678,14 +673,14 @@ namespace XmlNotepad
                 this.hScrollBar1.Visible = false;
                 this.hScrollBar1.Value = 0;
             }
-            int itemHeight = this.myTreeView.ItemHeight;
-            int visibleNodes = this.myTreeView.VirtualHeight / itemHeight;
+            int itemHeight = this._myTreeView.ItemHeight;
+            int visibleNodes = this._myTreeView.VirtualHeight / itemHeight;
             int vScrollMax = Math.Max(0, visibleNodes - 1);
             this.vScrollBar1.Maximum = vScrollMax;
             this.vScrollBar1.SmallChange = 1;
-            this.vScrollBar1.LargeChange = this.myTreeView.VisibleRows;
+            this.vScrollBar1.LargeChange = this._myTreeView.VisibleRows;
             this.vScrollBar1.Minimum = 0;
-            if (this.myTreeView.VirtualHeight < this.Height)
+            if (this._myTreeView.VirtualHeight < this.Height)
             {
                 this.vScrollBar1.Value = 0;
             }
@@ -694,9 +689,9 @@ namespace XmlNotepad
                 this.vScrollBar1.Value = Math.Min(this.vScrollBar1.Value, vScrollMax);
             }
 
-            int y = -this.vScrollBar1.Value * this.myTreeView.ItemHeight;
-            this.myTreeView.ScrollPosition = new Point(-this.hScrollBar1.Value * HScrollIncrement, y);
-            this.nodeTextView.ScrollPosition = new Point(0, y);
+            int y = -this.vScrollBar1.Value * this._myTreeView.ItemHeight;
+            this._myTreeView.ScrollPosition = new Point(-this.hScrollBar1.Value * HScrollIncrement, y);
+            this._nodeTextView.ScrollPosition = new Point(0, y);
 
         }
 
@@ -710,24 +705,24 @@ namespace XmlNotepad
         {
 
             int x = this.resizer.Left;
-            this.myTreeView.Width = x;
+            this._myTreeView.Width = x;
 
-            int count = CountVisibleNodes(this.myTreeView.Nodes);
-            int h = Math.Max(this.Height, this.myTreeView.ItemHeight * count);
+            int count = CountVisibleNodes(this._myTreeView.Nodes);
+            int h = Math.Max(this.Height, this._myTreeView.ItemHeight * count);
             this.vScrollBar1.Left = this.Right - this.vScrollBar1.Width;
             this.vScrollBar1.Height = this.Height;
             this.hScrollBar1.Top = this.Height - this.hScrollBar1.Height;
 
             this.hScrollBar1.Width = x;
-            this.myTreeView.Size = new Size(x, this.Height);
-            this.nodeTextView.Size = new Size(this.vScrollBar1.Left - this.resizer.Right, this.Height);
-            this.nodeTextView.Left = this.resizer.Right;
+            this._myTreeView.Size = new Size(x, this.Height);
+            this._nodeTextView.Size = new Size(this.vScrollBar1.Left - this.resizer.Right, this.Height);
+            this._nodeTextView.Left = this.resizer.Right;
 
-            int w = this.myTreeView.VirtualWidth + 10;
-            this.myTreeView.Width = Math.Max(w, x);
+            int w = this._myTreeView.VirtualWidth + 10;
+            this._myTreeView.Width = Math.Max(w, x);
             if (w > x)
             {
-                this.myTreeView.Height = this.Height - this.hScrollBar1.Height;
+                this._myTreeView.Height = this.Height - this.hScrollBar1.Height;
                 this.hScrollBar1.Visible = true;
             }
             else
@@ -739,18 +734,18 @@ namespace XmlNotepad
 
             this.resizer.Height = this.Height;
             Invalidate();
-            this.nodeTextView.Invalidate();
+            this._nodeTextView.Invalidate();
         }
 
         public void OnLoaded()
         {
-            this.nodeTextView.OnLoaded();
+            this._nodeTextView.OnLoaded();
         }
 
         public void Cut()
         {
             this.Commit();
-            XmlTreeNode selection = (XmlTreeNode)this.myTreeView.SelectedNode;
+            XmlTreeNode selection = (XmlTreeNode)this._myTreeView.SelectedNode;
             if (selection != null)
             {
                 this.UndoManager.Push(new CutCommand(this, selection));
@@ -761,7 +756,7 @@ namespace XmlNotepad
         public void Copy()
         {
             this.Commit();
-            XmlTreeNode selection = (XmlTreeNode)this.myTreeView.SelectedNode;
+            XmlTreeNode selection = (XmlTreeNode)this._myTreeView.SelectedNode;
             if (selection != null)
             {
                 TreeData.SetData(selection);
@@ -774,7 +769,7 @@ namespace XmlNotepad
             this.Commit();
             try
             {
-                this.UndoManager.Push(new PasteCommand(this.model.Document, this, position, TreeData.GetData()));
+                this.UndoManager.Push(new PasteCommand(this._model.Document, this, position, TreeData.GetData()));
             }
             catch (Exception ex)
             {
@@ -787,7 +782,7 @@ namespace XmlNotepad
             this.Commit();
             try
             {
-                this.UndoManager.Push(new PasteCommand(this.model.Document, this, position, new TreeData(xml)));
+                this.UndoManager.Push(new PasteCommand(this._model.Document, this, position, new TreeData(xml)));
             }
             catch (Exception ex)
             {
@@ -797,7 +792,7 @@ namespace XmlNotepad
 
         public virtual bool CanInsertNode(InsertPosition position, XmlNodeType type)
         {
-            XmlTreeNode n = (XmlTreeNode)this.myTreeView.SelectedNode;
+            XmlTreeNode n = (XmlTreeNode)this._myTreeView.SelectedNode;
             if (n != null && n.Node == null)
             {
                 // We are still editing this tree node and haven't created XmlNode
@@ -814,13 +809,13 @@ namespace XmlNotepad
             {
                 if (this.Commit())
                 {
-                    XmlTreeNode n = (XmlTreeNode)this.myTreeView.SelectedNode;
+                    XmlTreeNode n = (XmlTreeNode)this._myTreeView.SelectedNode;
                     if (n == null) return;
                     ChangeNode cmd = new ChangeNode(this, n, nt);
                     this.UndoManager.Push(cmd);
-                    this.nodeTextView.Invalidate();
-                    this.myTreeView.SelectedNode = cmd.NewNode;
-                    this.myTreeView.Focus();
+                    this._nodeTextView.Invalidate();
+                    this._myTreeView.SelectedNode = cmd.NewNode;
+                    this._myTreeView.Focus();
                 }
             }
             catch (Exception ex)
@@ -833,20 +828,20 @@ namespace XmlNotepad
         {
             try
             {
-                XmlTreeNode n = (XmlTreeNode)this.myTreeView.SelectedNode;
+                XmlTreeNode n = (XmlTreeNode)this._myTreeView.SelectedNode;
                 InsertNode inode = new InsertNode(this);
                 inode.Initialize(n, position, type);
                 this.UndoManager.Push(inode);
-                this.nodeTextView.Invalidate();
-                this.myTreeView.SelectedNode = inode.NewNode;
+                this._nodeTextView.Invalidate();
+                this._myTreeView.SelectedNode = inode.NewNode;
                 if (inode.RequiresName)
                 {
-                    this.myTreeView.Focus();
+                    this._myTreeView.Focus();
                     inode.NewNode.BeginEdit();
                 }
                 else
                 {
-                    this.nodeTextView.FocusBeginEdit(null);
+                    this._nodeTextView.FocusBeginEdit(null);
                 }
             }
             catch (Exception ex)
@@ -857,11 +852,11 @@ namespace XmlNotepad
 
         public bool Delete()
         {
-            if (this.myTreeView.SelectedNode != null)
+            if (this._myTreeView.SelectedNode != null)
             {
-                XmlTreeNode t = (XmlTreeNode)this.myTreeView.SelectedNode;
-                this.UndoManager.Push(new DeleteNode(this.model.Document, t));
-                this.nodeTextView.Invalidate();
+                XmlTreeNode t = (XmlTreeNode)this._myTreeView.SelectedNode;
+                this.UndoManager.Push(new DeleteNode(this._model.Document, t));
+                this._nodeTextView.Invalidate();
                 return true;
             }
             return false;
@@ -870,9 +865,9 @@ namespace XmlNotepad
         public bool Insert()
         {
             // Insert empty node of same type as current node right after current node.
-            if (this.myTreeView.SelectedNode != null)
+            if (this._myTreeView.SelectedNode != null)
             {
-                XmlTreeNode n = (XmlTreeNode)this.myTreeView.SelectedNode;
+                XmlTreeNode n = (XmlTreeNode)this._myTreeView.SelectedNode;
                 InsertNode(InsertPosition.After, n.Node.NodeType);
                 return true;
             }
@@ -881,11 +876,11 @@ namespace XmlNotepad
 
         public bool Duplicate()
         {
-            if (this.myTreeView.SelectedNode != null)
+            if (this._myTreeView.SelectedNode != null)
             {
-                XmlTreeNode t = (XmlTreeNode)this.myTreeView.SelectedNode;
+                XmlTreeNode t = (XmlTreeNode)this._myTreeView.SelectedNode;
                 this.UndoManager.Push(new MoveNode(this, t, t, InsertPosition.After, true));
-                this.nodeTextView.Invalidate();
+                this._nodeTextView.Invalidate();
                 return true;
             }
             return false;
@@ -906,11 +901,11 @@ namespace XmlNotepad
             {
                 this.TreeView.EndEdit(true);
             }
-            if (this.nodeTextView.IsEditing)
+            if (this._nodeTextView.IsEditing)
             {
-                this.nodeTextView.EndEdit(true);
+                this._nodeTextView.EndEdit(true);
             }
-            this.myTreeView.ScrollPosition = new Point(-e.NewValue * HScrollIncrement, this.myTreeView.ScrollPosition.Y);
+            this._myTreeView.ScrollPosition = new Point(-e.NewValue * HScrollIncrement, this._myTreeView.ScrollPosition.Y);
         }
 
         private void vScrollBar1_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
@@ -919,14 +914,14 @@ namespace XmlNotepad
             {
                 this.TreeView.EndEdit(true);
             }
-            if (this.nodeTextView.IsEditing)
+            if (this._nodeTextView.IsEditing)
             {
-                this.nodeTextView.EndEdit(true);
+                this._nodeTextView.EndEdit(true);
             }
-            int y = -e.NewValue * this.myTreeView.ItemHeight;
-            this.myTreeView.ScrollPosition = new Point(this.myTreeView.ScrollPosition.X, y);
-            this.nodeTextView.ScrollPosition = new Point(0, y);
-            this.nodeTextView.Invalidate();
+            int y = -e.NewValue * this._myTreeView.ItemHeight;
+            this._myTreeView.ScrollPosition = new Point(this._myTreeView.ScrollPosition.X, y);
+            this._nodeTextView.ScrollPosition = new Point(0, y);
+            this._nodeTextView.Invalidate();
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -939,46 +934,46 @@ namespace XmlNotepad
                 case Keys.Tab:
                     if (modifiers == Keys.Shift)
                     {
-                        bool editing = this.nodeTextView.IsEditing;
-                        if (this.nodeTextView.Focused || editing)
+                        bool editing = this._nodeTextView.IsEditing;
+                        if (this._nodeTextView.Focused || editing)
                         {
-                            if (this.nodeTextView.EndEdit(false))
+                            if (this._nodeTextView.EndEdit(false))
                             {
-                                this.myTreeView.Focus();
+                                this._myTreeView.Focus();
                             }
                         }
                         else
                         {
-                            if (this.myTreeView.SelectedNode != null)
+                            if (this._myTreeView.SelectedNode != null)
                             {
-                                TreeNode previous = this.myTreeView.SelectedNode.PrevVisibleNode;
-                                if (previous != null) this.myTreeView.SelectedNode = previous;
+                                TreeNode previous = this._myTreeView.SelectedNode.PrevVisibleNode;
+                                if (previous != null) this._myTreeView.SelectedNode = previous;
                             }
-                            this.nodeTextView.Focus();
+                            this._nodeTextView.Focus();
                         }
                     }
                     else
                     {
-                        bool editing = this.myTreeView.IsEditing;
-                        if (this.myTreeView.Focused || editing)
+                        bool editing = this._myTreeView.IsEditing;
+                        if (this._myTreeView.Focused || editing)
                         {
-                            if (this.myTreeView.EndEdit(false))
+                            if (this._myTreeView.EndEdit(false))
                             {
-                                this.nodeTextView.Focus();
+                                this._nodeTextView.Focus();
                                 if (editing)
                                 {
-                                    this.nodeTextView.FocusBeginEdit(null);
+                                    this._nodeTextView.FocusBeginEdit(null);
                                 }
                             }
                         }
                         else
                         {
-                            if (this.myTreeView.SelectedNode != null)
+                            if (this._myTreeView.SelectedNode != null)
                             {
-                                TreeNode next = this.myTreeView.SelectedNode.NextVisibleNode;
-                                if (next != null) this.myTreeView.SelectedNode = next;
+                                TreeNode next = this._myTreeView.SelectedNode.NextVisibleNode;
+                                if (next != null) this._myTreeView.SelectedNode = next;
                             }
-                            this.myTreeView.Focus();
+                            this._myTreeView.Focus();
                         }
                     }
                     return true;
@@ -988,9 +983,9 @@ namespace XmlNotepad
 
         public void StartIncrementalSearch()
         {
-            if (this.nodeTextView.ContainsFocus)
+            if (this._nodeTextView.ContainsFocus)
             {
-                this.nodeTextView.StartIncrementalSearch();
+                this._nodeTextView.StartIncrementalSearch();
             }
             else
             {
@@ -1008,14 +1003,14 @@ namespace XmlNotepad
                 bool ctrlMods = e.Modifiers == Keys.Control || e.Modifiers == (Keys.Control | Keys.Shift);
                 bool nudgeMods = e.Modifiers == (Keys.Control | Keys.Shift);
                 XmlTreeNode xn = this.SelectedNode;
-                TreeNode n = this.myTreeView.SelectedNode;
+                TreeNode n = this._myTreeView.SelectedNode;
                 switch (e.KeyCode)
                 {
                     case Keys.Escape:
                         this.Commit();
                         if (!e.Handled)
                         {
-                            this.myTreeView.SelectedNode = null;
+                            this._myTreeView.SelectedNode = null;
                             if (this.SelectionChanged != null)
                                 SelectionChanged(this, EventArgs.Empty);
                         }
@@ -1049,7 +1044,7 @@ namespace XmlNotepad
                         }
                         else if (!this.IsEditing && n != null && n.Children.Count == 0)
                         {
-                            this.nodeTextView.Focus();
+                            this._nodeTextView.Focus();
                             e.Handled = true;
                         }
                         break;
@@ -1099,7 +1094,7 @@ namespace XmlNotepad
 
         public void BeginEditNodeName()
         {
-            TreeNode n = this.myTreeView.SelectedNode;
+            TreeNode n = this._myTreeView.SelectedNode;
             if (!this.IsEditing && n != null && n.IsLabelEditable)
             {
                 n.BeginEdit();
@@ -1108,7 +1103,7 @@ namespace XmlNotepad
 
         private void nodeTextView_KeyDown(object sender, KeyEventArgs e)
         {
-            tip.Hide();
+            _tip.Hide();
             CurrentEvent.Event = e;
             if (!this.IsEditing)
             {
@@ -1117,9 +1112,9 @@ namespace XmlNotepad
                 switch (key)
                 {
                     case Keys.Left:
-                        if (nodeTextView.Focused)
+                        if (_nodeTextView.Focused)
                         {
-                            this.myTreeView.Focus();
+                            this._myTreeView.Focus();
                             e.Handled = true;
                         }
                         break;
@@ -1151,7 +1146,7 @@ namespace XmlNotepad
                     default:
                         if (!e.Handled)
                         {
-                            this.myTreeView.HandleKeyDown(e);
+                            this._myTreeView.HandleKeyDown(e);
                         }
                         break;
                 }
@@ -1168,31 +1163,31 @@ namespace XmlNotepad
             // change the node colors.
             if (name == "LightColors" || name == "DarkColors" || name == "Theme")
             {
-                var theme = (ColorTheme)this.settings["Theme"];
+                var theme = (ColorTheme)this._settings["Theme"];
                 var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-                System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings[colorSetName];
+                System.Collections.Hashtable colors = (System.Collections.Hashtable)this._settings[colorSetName];
                 Color backColor = (Color)colors["Background"];
                 this.BackColor = backColor;
-                this.myTreeView.BackColor = backColor;
-                this.nodeTextView.BackColor = backColor;
+                this._myTreeView.BackColor = backColor;
+                this._nodeTextView.BackColor = backColor;
 
                 Color foreColor = (Color)colors["Text"];
-                this.myTreeView.ForeColor = foreColor;
-                this.nodeTextView.ForeColor = foreColor;
+                this._myTreeView.ForeColor = foreColor;
+                this._nodeTextView.ForeColor = foreColor;
                 update = true;
             }
 
             if (name == "Font")
             {
-                this.Font = (Font)this.settings["Font"];
+                this.Font = (Font)this._settings["Font"];
                 update = true;
             }
 
             if (update)
             {
-                this.myTreeView.BeginUpdate();
-                InvalidateNodes(this.myTreeView.Nodes); // force nodes to pick up new colors.
-                this.myTreeView.EndUpdate();
+                this._myTreeView.BeginUpdate();
+                InvalidateNodes(this._myTreeView.Nodes); // force nodes to pick up new colors.
+                this._myTreeView.EndUpdate();
             }
         }
 
@@ -1265,21 +1260,21 @@ namespace XmlNotepad
         private void treeViewFeedback_DragEnter(object sender, DragEventArgs e)
         {
             TreeData data = CheckDragEvent(e);
-            if (data != null && this.feedback == null)
+            if (data != null && this._feedback == null)
             {
-                this.feedback = new XmlTreeViewDropFeedback();
-                if (this.dragged == null)
+                this._feedback = new XmlTreeViewDropFeedback();
+                if (this._dragged == null)
                 {
                     // dragging from another app, so we have to import the node at this point.
-                    XmlTreeNode target = (XmlTreeNode)this.myTreeView.FindNodeAt(e.X, e.Y);
-                    this.dragged = data.GetTreeNode(this.Model.Document, target, this);
+                    XmlTreeNode target = (XmlTreeNode)this._myTreeView.FindNodeAt(e.X, e.Y);
+                    this._dragged = data.GetTreeNode(this.Model.Document, target, this);
                 }
-                this.feedback.Item = this.dragged;
-                this.feedback.TreeView = this.myTreeView;
+                this._feedback.Item = this._dragged;
+                this._feedback.TreeView = this._myTreeView;
             }
-            if (this.feedback != null)
+            if (this._feedback != null)
             {
-                this.feedback.Position = new Point(e.X, e.Y);
+                this._feedback.Position = new Point(e.X, e.Y);
             }
         }
 
@@ -1292,10 +1287,10 @@ namespace XmlNotepad
         {
             // find the node under the X,Y position and draw feedback as to where the new node will
             // be dropped. 
-            if (this.feedback != null)
+            if (this._feedback != null)
             {
                 CheckDragEvent(e);
-                this.feedback.Position = new Point(e.X, e.Y);
+                this._feedback.Position = new Point(e.X, e.Y);
             }
         }
 
@@ -1308,11 +1303,11 @@ namespace XmlNotepad
         {
             if (e.Button == MouseButtons.Left)
             {
-                this.dragged = (XmlTreeNode)e.Item;
-                this.myTreeView.SelectedNode = this.dragged;
-                TreeData data = new TreeData(this.dragged);
+                this._dragged = (XmlTreeNode)e.Item;
+                this._myTreeView.SelectedNode = this._dragged;
+                TreeData data = new TreeData(this._dragged);
                 DragDropEffects effect = this.DoDragDrop(data, DragDropEffects.All);
-                if (this.dragged != null && effect != DragDropEffects.None)
+                if (this._dragged != null && effect != DragDropEffects.None)
                 {
                     FinishDragDrop(data, effect);
                 }
@@ -1322,30 +1317,30 @@ namespace XmlNotepad
         }
         void RemoveFeedback()
         {
-            if (this.feedback != null)
+            if (this._feedback != null)
             {
-                this.feedback.Finish(this.dragged != null);
-                this.feedback.Dispose();
-                this.feedback = null;
+                this._feedback.Finish(this._dragged != null);
+                this._feedback.Dispose();
+                this._feedback = null;
             }
         }
 
         protected void FinishDragDrop(TreeData data, DragDropEffects effect)
         {
-            if (data != null && effect != DragDropEffects.None && this.dragged != null)
+            if (data != null && effect != DragDropEffects.None && this._dragged != null)
             {
                 bool copy = (effect == DragDropEffects.Copy);
-                if (this.feedback != null)
+                if (this._feedback != null)
                 {
                     // Then we are also the drop site
                     MoveNode cmd = null;
-                    if (this.feedback.Before != null)
+                    if (this._feedback.Before != null)
                     {
-                        cmd = MoveNode(this.dragged, (XmlTreeNode)this.feedback.Before, InsertPosition.Before, copy);
+                        cmd = MoveNode(this._dragged, (XmlTreeNode)this._feedback.Before, InsertPosition.Before, copy);
                     }
-                    else if (this.feedback.After != null)
+                    else if (this._feedback.After != null)
                     {
-                        cmd = MoveNode(this.dragged, (XmlTreeNode)this.feedback.After, InsertPosition.After, copy);
+                        cmd = MoveNode(this._dragged, (XmlTreeNode)this._feedback.After, InsertPosition.After, copy);
                     }
                     // Now we can expand it because it is now in the tree
                     if (cmd != null && cmd.Source.Children.Count > 1)
@@ -1357,11 +1352,11 @@ namespace XmlNotepad
                 {
                     // Then this was a move to another process, so now we have to remove it
                     // from this process.
-                    Debug.Assert(this.myTreeView.SelectedNode == this.dragged);
+                    Debug.Assert(this._myTreeView.SelectedNode == this._dragged);
                     this.Delete();
                 }
             }
-            this.dragged = null;
+            this._dragged = null;
             RemoveFeedback();
         }
 
@@ -1416,8 +1411,8 @@ namespace XmlNotepad
                 return; // don't "redo" this during Commnad.Redo()! 
 
             this.SuspendLayout();
-            this.myTreeView.BeginUpdate();
-            this.model.BeginUpdate();
+            this._myTreeView.BeginUpdate();
+            this._model.BeginUpdate();
 
             Cursor.Current = Cursors.WaitCursor;
 
@@ -1453,10 +1448,10 @@ namespace XmlNotepad
             finally
             {
                 reentrantLock = false;
-                this.myTreeView.EndUpdate();
+                this._myTreeView.EndUpdate();
                 this.ResumeLayout();
-                this.myTreeView.Invalidate();
-                this.model.EndUpdate();
+                this._myTreeView.Invalidate();
+                this._model.EndUpdate();
                 Cursor.Current = Cursors.Arrow;
             }
         }
@@ -1481,6 +1476,13 @@ namespace XmlNotepad
         }
 
         #region Component Designer generated code
+
+        private System.Windows.Forms.ImageList imageList1;
+        private System.ComponentModel.IContainer components;
+        private PaneResizer resizer;
+        private System.Windows.Forms.VScrollBar vScrollBar1;
+        private System.Windows.Forms.HScrollBar hScrollBar1;
+
         /// <summary> 
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
@@ -1493,8 +1495,8 @@ namespace XmlNotepad
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.resizer = new XmlNotepad.PaneResizer();
-            this.myTreeView = new XmlNotepad.TreeView();
-            this.nodeTextView = new XmlNotepad.NodeTextView();
+            this._myTreeView = new XmlNotepad.TreeView();
+            this._nodeTextView = new XmlNotepad.NodeTextView();
             this.SuspendLayout();
             // 
             // imageList1
@@ -1513,7 +1515,7 @@ namespace XmlNotepad
             // vScrollBar1
             // 
             this.vScrollBar1.AccessibleName = "VScrollBar";
-            this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.vScrollBar1.Location = new System.Drawing.Point(477, 0);
             this.vScrollBar1.Name = "vScrollBar1";
@@ -1524,7 +1526,7 @@ namespace XmlNotepad
             // hScrollBar1
             // 
             this.hScrollBar1.AccessibleName = "HScrollBar";
-            this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.hScrollBar1.Location = new System.Drawing.Point(0, 204);
             this.hScrollBar1.Name = "hScrollBar1";
@@ -1538,8 +1540,8 @@ namespace XmlNotepad
             this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Raised;
             this.resizer.Location = new System.Drawing.Point(200, 0);
             this.resizer.Name = "resizer";
-            this.resizer.Pane1 = this.myTreeView;
-            this.resizer.Pane2 = this.nodeTextView;
+            this.resizer.Pane1 = this._myTreeView;
+            this.resizer.Pane2 = this._nodeTextView;
             this.resizer.PaneWidth = 5;
             this.resizer.Size = new System.Drawing.Size(5, 408);
             this.resizer.TabIndex = 3;
@@ -1547,39 +1549,39 @@ namespace XmlNotepad
             // 
             // myTreeView
             // 
-            this.myTreeView.AccessibleName = "TreeView";
-            this.myTreeView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
-            this.myTreeView.ImageList = this.imageList1;
-            this.myTreeView.LabelEdit = true;
-            this.myTreeView.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.myTreeView.Location = new System.Drawing.Point(0, 0);
-            this.myTreeView.MouseDownEditDelay = 400;
-            this.myTreeView.Name = "myTreeView";
-            this.myTreeView.Nodes = null;
-            this.myTreeView.ScrollPosition = new System.Drawing.Point(0, 0);
-            this.myTreeView.SelectedNode = null;
-            this.myTreeView.Size = new System.Drawing.Size(216, 224);
-            this.myTreeView.TabIndex = 1;
-            this.myTreeView.TreeIndent = 30;
-            this.myTreeView.VirtualHeight = 0;
-            this.myTreeView.VirtualWidth = 0;
+            this._myTreeView.AccessibleName = "TreeView";
+            this._myTreeView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
+            this._myTreeView.ImageList = this.imageList1;
+            this._myTreeView.LabelEdit = true;
+            this._myTreeView.LineColor = System.Drawing.SystemColors.ControlDark;
+            this._myTreeView.Location = new System.Drawing.Point(0, 0);
+            this._myTreeView.MouseDownEditDelay = 400;
+            this._myTreeView.Name = "myTreeView";
+            this._myTreeView.Nodes = null;
+            this._myTreeView.ScrollPosition = new System.Drawing.Point(0, 0);
+            this._myTreeView.SelectedNode = null;
+            this._myTreeView.Size = new System.Drawing.Size(216, 224);
+            this._myTreeView.TabIndex = 1;
+            this._myTreeView.TreeIndent = 30;
+            this._myTreeView.VirtualHeight = 0;
+            this._myTreeView.VirtualWidth = 0;
             // 
             // nodeTextView
             // 
-            this.nodeTextView.AccessibleDescription = "Right hand side of the XmlTreeView for editing node values";
-            this.nodeTextView.AccessibleName = "NodeTextView";
-            this.nodeTextView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
-            this.nodeTextView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this._nodeTextView.AccessibleDescription = "Right hand side of the XmlTreeView for editing node values";
+            this._nodeTextView.AccessibleName = "NodeTextView";
+            this._nodeTextView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
+            this._nodeTextView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nodeTextView.BackColor = System.Drawing.Color.White;
-            this.nodeTextView.Location = new System.Drawing.Point(301, 0);
-            this.nodeTextView.Name = "nodeTextView";
-            this.nodeTextView.Nodes = null;
-            this.nodeTextView.ScrollPosition = new System.Drawing.Point(0, 0);
-            this.nodeTextView.SelectedNode = null;
-            this.nodeTextView.Size = new System.Drawing.Size(179, 224);
-            this.nodeTextView.TabIndex = 4;
+            this._nodeTextView.BackColor = System.Drawing.Color.White;
+            this._nodeTextView.Location = new System.Drawing.Point(301, 0);
+            this._nodeTextView.Name = "nodeTextView";
+            this._nodeTextView.Nodes = null;
+            this._nodeTextView.ScrollPosition = new System.Drawing.Point(0, 0);
+            this._nodeTextView.SelectedNode = null;
+            this._nodeTextView.Size = new System.Drawing.Size(179, 224);
+            this._nodeTextView.TabIndex = 4;
             // 
             // XmlTreeView
             // 
@@ -1589,8 +1591,8 @@ namespace XmlNotepad
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.resizer);
-            this.Controls.Add(this.nodeTextView);
-            this.Controls.Add(this.myTreeView);
+            this.Controls.Add(this._nodeTextView);
+            this.Controls.Add(this._myTreeView);
             this.Name = "XmlTreeView";
             this.Size = new System.Drawing.Size(496, 224);
             this.ResumeLayout(false);
@@ -1599,22 +1601,22 @@ namespace XmlNotepad
 
         public void BeginUpdate()
         {
-            this.updating++;
+            this._updating++;
         }
 
         public void EndUpdate()
         {
-            this.updating--;
+            this._updating--;
         }
 
         public void BeginSave()
         {
-            this.saving = true;
+            this._saving = true;
         }
 
         public void EndSave()
         {
-            this.saving = false;
+            this._saving = false;
         }
         #endregion
     }
@@ -1634,33 +1636,33 @@ namespace XmlNotepad
 
     public class XmlTreeNode : TreeNode, IXmlTreeNode
     {
-        Settings settings;
-        NodeImage img;
-        Color foreColor;
-        internal List<XmlTreeNode> children;
-        XmlTreeView view;
-        XmlNode node;
-        XmlSchemaType type;
-        XmlNodeType nodeType;
-        string editLabel;
+        private Settings _settings;
+        private NodeImage _img;
+        private Color _foreColor;
+        internal List<XmlTreeNode> _children;
+        private XmlTreeView _view;
+        private XmlNode _node;
+        private XmlSchemaType _type;
+        private XmlNodeType _nodeType;
+        private string _editLabel;
 
         public XmlTreeNode(XmlTreeView view)
         {
-            this.view = view;
+            this._view = view;
         }
 
         public XmlTreeNode(XmlTreeView view, XmlNode node)
         {
-            this.view = view;
-            this.node = node;
+            this._view = view;
+            this._node = node;
             Init();
         }
 
         public XmlTreeNode(XmlTreeView view, XmlTreeNode parent, XmlNode node)
             : base(parent)
         {
-            this.view = view;
-            this.node = node;
+            this._view = view;
+            this._node = node;
             Init();
         }
 
@@ -1669,19 +1671,19 @@ namespace XmlNotepad
         [Browsable(false)]
         public XmlNodeType NodeType
         {
-            get { return (this.node != null) ? this.node.NodeType : this.nodeType; }
-            set { this.nodeType = value; }
+            get { return (this._node != null) ? this._node.NodeType : this._nodeType; }
+            set { this._nodeType = value; }
         }
 
         [Browsable(false)]
         public XmlTreeView XmlTreeView
         {
-            get { return this.view; }
+            get { return this._view; }
             set
             {
-                this.view = value;
+                this._view = value;
                 this.TreeView = value == null ? null : value.TreeView;
-                PropagateView(value, children);
+                PropagateView(value, _children);
                 Init();
             }
         }
@@ -1711,7 +1713,7 @@ namespace XmlNotepad
 
         void OnChildRemoved()
         {
-            if (this.img == NodeImage.Element && this.Children.Count == 0)
+            if (this._img == NodeImage.Element && this.Children.Count == 0)
             {
                 MakeLeaf();
             }
@@ -1720,15 +1722,15 @@ namespace XmlNotepad
         void MakeLeaf()
         {
             this.Collapse();
-            this.img = NodeImage.Leaf;
+            this._img = NodeImage.Leaf;
             this.Invalidate();
         }
 
         [Browsable(false)]
         public XmlSchemaType SchemaType
         {
-            get { return this.type; }
-            set { this.type = value; }
+            get { return this._type; }
+            set { this._type = value; }
         }
 
         void PropagateView(XmlTreeView view, List<XmlTreeNode> children)
@@ -1738,18 +1740,18 @@ namespace XmlNotepad
                 foreach (XmlTreeNode child in children)
                 {
                     child.XmlTreeView = view;
-                    PropagateView(view, child.children);
+                    PropagateView(view, child._children);
                 }
             }
         }
 
         void Init()
         {
-            if (this.view != null)
+            if (this._view != null)
             {
-                this.settings = view.Settings;
-                this.img = CalculateNodeImage(this.Node);
-                this.foreColor = this.GetForeColor(this.img);
+                this._settings = _view.Settings;
+                this._img = CalculateNodeImage(this.Node);
+                this._foreColor = this.GetForeColor(this._img);
             }
         }
 
@@ -1761,14 +1763,14 @@ namespace XmlNotepad
             this.XmlTreeView.SyncScrollbars();
         }
 
-        public Settings Settings { get { return this.settings; } }
+        public Settings Settings { get { return this._settings; } }
 
         public XmlNode Node
         {
-            get { return this.node; }
+            get { return this._node; }
             set
             {
-                this.node = value;
+                this._node = value;
                 int count = this.Children.Count;
                 Init();
                 this.Invalidate();
@@ -1783,11 +1785,11 @@ namespace XmlNotepad
         {
             get
             {
-                return this.Node == null ? editLabel : this.Node.Name;
+                return this.Node == null ? _editLabel : this.Node.Name;
             }
             set
             {
-                editLabel = value;
+                _editLabel = value;
                 this.Invalidate();
             }
         }
@@ -1795,8 +1797,8 @@ namespace XmlNotepad
         {
             get
             {
-                return (this.node == null || this.node is XmlProcessingInstruction ||
-                    ((this.node is XmlAttribute || this.node is XmlElement)));
+                return (this._node == null || this._node is XmlProcessingInstruction ||
+                    ((this._node is XmlAttribute || this._node is XmlElement)));
             }
         }
         public override string Text
@@ -1835,7 +1837,7 @@ namespace XmlNotepad
         {
             get
             {
-                return this.foreColor;
+                return this._foreColor;
             }
         }
 
@@ -1855,7 +1857,7 @@ namespace XmlNotepad
                 {
                     return NodeImage.OpenElement;
                 }
-                return this.img;
+                return this._img;
             }
         }
 
@@ -1869,9 +1871,9 @@ namespace XmlNotepad
 
         public Color GetForeColor(NodeImage img)
         {
-            var theme = (ColorTheme)this.settings["Theme"];
+            var theme = (ColorTheme)this._settings["Theme"];
             var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-            System.Collections.Hashtable colors = (System.Collections.Hashtable)this.settings[colorSetName];
+            System.Collections.Hashtable colors = (System.Collections.Hashtable)this._settings[colorSetName];
             switch (img)
             {
                 case NodeImage.Element:
@@ -1893,7 +1895,7 @@ namespace XmlNotepad
 
         NodeImage CalculateNodeImage(XmlNode n)
         {
-            XmlNodeType nt = (n == null) ? this.nodeType : n.NodeType;
+            XmlNodeType nt = (n == null) ? this._nodeType : n.NodeType;
             switch (nt)
             {
                 case XmlNodeType.Attribute:
@@ -2112,7 +2114,7 @@ namespace XmlNotepad
 
         public virtual string GetToolTip()
         {
-            if (this.node == null) return null;
+            if (this._node == null) return null;
             XmlSchemaInfo si = this.XmlTreeView.Model.GetTypeInfo(this.Node);
             if (si != null)
             {
@@ -2120,14 +2122,14 @@ namespace XmlNotepad
 
                 foreach (XmlSchemaAnnotated a in toSearch)
                 {
-                    string s = SchemaCache.GetAnnotation(a, SchemaCache.AnnotationNode.Tooltip, (string)settings["Language"]);
+                    string s = SchemaCache.GetAnnotation(a, SchemaCache.AnnotationNode.Tooltip, (string)_settings["Language"]);
                     if (!string.IsNullOrEmpty(s)) return s;
                 }
             }
             return null;
         }
 
-        private List<XmlSchemaAnnotated>  GetTypeInfoSearch(XmlSchemaInfo si)
+        private List<XmlSchemaAnnotated> GetTypeInfoSearch(XmlSchemaInfo si)
         {
 
             List<XmlSchemaAnnotated> toSearch = new List<XmlSchemaAnnotated>();
@@ -2172,7 +2174,7 @@ namespace XmlNotepad
 
         public virtual XmlDocument GetDocumentation()
         {
-            if (this.node == null) return null;
+            if (this._node == null) return null;
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement root = xmlDoc.CreateElement("documentation");
             xmlDoc.AppendChild(root);
@@ -2186,7 +2188,7 @@ namespace XmlNotepad
                 {
                     if (a != null)
                     {
-                        XmlSchemaDocumentation d = SchemaCache.GetDocumentation(a, (string)settings["Language"]);
+                        XmlSchemaDocumentation d = SchemaCache.GetDocumentation(a, (string)_settings["Language"]);
                         if (null != d && d.Markup != null && d.Markup.Length > 0)
                         {
                             foreach (XmlNode n in d.Markup)
@@ -2231,29 +2233,29 @@ namespace XmlNotepad
 
     public class XmlTreeNodeCollection : TreeNodeCollection, IEnumerable<XmlTreeNode>
     {
-        XmlTreeNode parent;
-        XmlNode node;
-        XmlTreeView treeView;
-        List<XmlTreeNode> children;
+        private XmlTreeNode _parent;
+        private XmlNode _node;
+        private XmlTreeView _treeView;
+        private List<XmlTreeNode> _children;
 
         public XmlTreeNodeCollection(XmlTreeView treeView, XmlNode parent)
         {
-            this.node = parent;
-            this.treeView = treeView;
+            this._node = parent;
+            this._treeView = treeView;
         }
 
         public XmlTreeNodeCollection(XmlTreeNode parent)
         {
-            this.treeView = parent.XmlTreeView;
-            this.parent = parent;
-            if (parent != null) this.children = parent.children;
-            this.node = parent.Node;
+            this._treeView = parent.XmlTreeView;
+            this._parent = parent;
+            if (parent != null) this._children = parent._children;
+            this._node = parent.Node;
         }
 
         IEnumerator<XmlTreeNode> IEnumerable<XmlTreeNode>.GetEnumerator()
         {
             Populate();
-            return this.children.GetEnumerator();
+            return this._children.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -2276,7 +2278,7 @@ namespace XmlNotepad
             get
             {
                 Populate();
-                return this.children == null ? 0 : this.children.Count;
+                return this._children == null ? 0 : this._children.Count;
             }
         }
 
@@ -2284,36 +2286,36 @@ namespace XmlNotepad
         {
             Populate();
             XmlTreeNode xn = ((XmlTreeNode)node);
-            return this.children.IndexOf(xn);
+            return this._children.IndexOf(xn);
         }
 
         public override void Add(TreeNode node)
         {
-            node.Parent = this.parent;
+            node.Parent = this._parent;
             XmlTreeNode xn = ((XmlTreeNode)node);
-            xn.XmlTreeView = this.treeView;
+            xn.XmlTreeView = this._treeView;
             Populate();
-            this.children.Add(xn);
+            this._children.Add(xn);
         }
 
         public override void Insert(int i, TreeNode node)
         {
-            node.Parent = this.parent;
+            node.Parent = this._parent;
             XmlTreeNode xn = ((XmlTreeNode)node);
-            xn.XmlTreeView = this.treeView;
+            xn.XmlTreeView = this._treeView;
             Populate();
-            if (i > this.children.Count) i = this.children.Count;
-            this.children.Insert(i, xn);
+            if (i > this._children.Count) i = this._children.Count;
+            this._children.Insert(i, xn);
         }
 
         public override void Remove(TreeNode child)
         {
-            if (this.children != null)
+            if (this._children != null)
             {
                 XmlTreeNode xn = ((XmlTreeNode)child);
-                if (this.children.Contains(xn))
+                if (this._children.Contains(xn))
                 {
-                    this.children.Remove(xn);
+                    this._children.Remove(xn);
                     return;
                 }
             }
@@ -2325,42 +2327,42 @@ namespace XmlNotepad
             get
             {
                 Populate();
-                return this.children[i] as TreeNode;
+                return this._children[i] as TreeNode;
             }
         }
 
         void Populate()
         {
-            if (this.children == null)
+            if (this._children == null)
             {
                 List<XmlTreeNode> children = new List<XmlTreeNode>();
-                if (node != null && !(node is XmlAttribute))
+                if (_node != null && !(_node is XmlAttribute))
                 {
-                    if (node.Attributes != null)
+                    if (_node.Attributes != null)
                     {
-                        foreach (XmlAttribute a in node.Attributes)
+                        foreach (XmlAttribute a in _node.Attributes)
                         {
                             if (a.Specified)
                             {
-                                XmlTreeNode c = treeView.CreateTreeNode(parent, a);
-                                c.XmlTreeView = this.treeView;
+                                XmlTreeNode c = _treeView.CreateTreeNode(_parent, a);
+                                c.XmlTreeView = this._treeView;
                                 children.Add(c);
                             }
                         }
                     }
-                    if (node.HasChildNodes)
+                    if (_node.HasChildNodes)
                     {
-                        foreach (XmlNode n in node.ChildNodes)
+                        foreach (XmlNode n in _node.ChildNodes)
                         {
-                            XmlTreeNode c = treeView.CreateTreeNode(parent, n);
-                            c.XmlTreeView = this.treeView;
+                            XmlTreeNode c = _treeView.CreateTreeNode(_parent, n);
+                            c.XmlTreeView = this._treeView;
                             children.Add(c);
                         }
                     }
                 }
-                this.children = children;
-                if (parent != null) parent.children = children;
-                if (this.treeView != null) this.treeView.PerformLayout();
+                this._children = children;
+                if (_parent != null) _parent._children = children;
+                if (this._treeView != null) this._treeView.PerformLayout();
             }
         }
 
@@ -2379,23 +2381,23 @@ namespace XmlNotepad
 
     public class NodeChangeEventArgs : EventArgs
     {
-        XmlTreeNode node;
+        private XmlTreeNode _node;
 
         public XmlTreeNode Node
         {
-            get { return node; }
-            set { node = value; }
+            get { return _node; }
+            set { _node = value; }
         }
 
         public NodeChangeEventArgs(XmlTreeNode node)
         {
-            this.node = node;
+            this._node = node;
         }
     }
 
     public class XmlTreeViewDropFeedback : TreeViewDropFeedback
     {
-        int autoScrollCount;
+        private int _autoScrollCount;
 
         public override Point Position
         {
@@ -2429,19 +2431,17 @@ namespace XmlNotepad
             }
             if (node != null)
             {
-                if (nearEnd || autoScrollCount > 1)
+                if (nearEnd || _autoScrollCount > 1)
                 {
                     parent.ScrollIntoView(node);
-                    autoScrollCount = 0;
+                    _autoScrollCount = 0;
                 }
                 else
                 {
-                    autoScrollCount++;
+                    _autoScrollCount++;
                 }
                 ResetToggleCount();
             }
         }
-
     }
-
 }

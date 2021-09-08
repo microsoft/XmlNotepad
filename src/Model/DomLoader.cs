@@ -10,60 +10,60 @@ namespace XmlNotepad
     /// <summary>
     /// This class keeps track of DOM node line locations so you can do error reporting.
     /// </summary>
-    class DomLoader
+    internal class DomLoader
     {
-        Dictionary<XmlNode, LineInfo> lineTable = new Dictionary<XmlNode, LineInfo>();
-        XmlDocument doc;
-        XmlReader reader;
-        IServiceProvider site;
-        const string xsiUri = "http://www.w3.org/2001/XMLSchema-instance";
+        private Dictionary<XmlNode, LineInfo> _lineTable = new Dictionary<XmlNode, LineInfo>();
+        private XmlDocument _doc;
+        private XmlReader _reader;
+        private IServiceProvider _site;
+        private const string xsiUri = "http://www.w3.org/2001/XMLSchema-instance";
 
         public DomLoader(IServiceProvider site)
         {
-            this.site = site;
+            this._site = site;
         }
 
         void AddToTable(XmlNode node)
         {
             // stop this table from eating up too much memory on very large XML documents.
-            if (lineTable.Count < 1000000)
+            if (_lineTable.Count < 1000000)
             {
-                lineTable[node] = new LineInfo(reader);
+                _lineTable[node] = new LineInfo(_reader);
             }
         }
 
         public LineInfo GetLineInfo(XmlNode node)
         {
-            if (node != null && lineTable.ContainsKey(node))
+            if (node != null && _lineTable.ContainsKey(node))
             {
-                return lineTable[node];
+                return _lineTable[node];
             }
             return null;
         }
 
         public XmlDocument Load(XmlReader r)
         {
-            this.lineTable = new Dictionary<XmlNode, LineInfo>();
-            this.doc = new XmlDocument();
-            this.doc.XmlResolver = Settings.Instance.Resolver;
-            this.doc.Schemas.XmlResolver = Settings.Instance.Resolver;
-            SetLoading(this.doc, true);
+            this._lineTable = new Dictionary<XmlNode, LineInfo>();
+            this._doc = new XmlDocument();
+            this._doc.XmlResolver = Settings.Instance.Resolver;
+            this._doc.Schemas.XmlResolver = Settings.Instance.Resolver;
+            SetLoading(this._doc, true);
             try
             {
-                this.reader = r;
-                AddToTable(this.doc);
+                this._reader = r;
+                AddToTable(this._doc);
                 LoadDocument();
             }
             finally
             {
-                SetLoading(this.doc, false);
+                SetLoading(this._doc, false);
             }
-            return doc;
+            return _doc;
         }
 
         void SetLoading(XmlDocument doc, bool flag)
         {
-            FieldInfo fi = this.doc.GetType().GetField("isLoading", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo fi = this._doc.GetType().GetField("isLoading", BindingFlags.Instance | BindingFlags.NonPublic);
             if (fi != null)
             {
                 fi.SetValue(doc, flag);
@@ -73,8 +73,8 @@ namespace XmlNotepad
         private void LoadDocument()
         {
             bool preserveWhitespace = false;
-            XmlReader r = this.reader;
-            XmlNode parent = this.doc;
+            XmlReader r = this._reader;
+            XmlNode parent = this._doc;
             XmlElement element;
             while (r.Read())
             {
@@ -83,7 +83,7 @@ namespace XmlNotepad
                 {
                     case XmlNodeType.Element:
                         bool fEmptyElement = r.IsEmptyElement;
-                        element = doc.CreateElement(r.Prefix, r.LocalName, r.NamespaceURI);
+                        element = _doc.CreateElement(r.Prefix, r.LocalName, r.NamespaceURI);
 
                         AddToTable(element);
                         element.IsEmpty = fEmptyElement;
@@ -124,19 +124,19 @@ namespace XmlNotepad
                         break;
 
                     case XmlNodeType.Text:
-                        node = doc.CreateTextNode(r.Value);
+                        node = _doc.CreateTextNode(r.Value);
                         AddToTable(node);
                         break;
 
                     case XmlNodeType.SignificantWhitespace:
-                        node = doc.CreateSignificantWhitespace(r.Value);
+                        node = _doc.CreateSignificantWhitespace(r.Value);
                         AddToTable(node);
                         break;
 
                     case XmlNodeType.Whitespace:
                         if (preserveWhitespace)
                         {
-                            node = doc.CreateWhitespace(r.Value);
+                            node = _doc.CreateWhitespace(r.Value);
                             AddToTable(node);
                             break;
                         }
@@ -145,7 +145,7 @@ namespace XmlNotepad
                             continue;
                         }
                     case XmlNodeType.CDATA:
-                        node = doc.CreateCDataSection(r.Value);
+                        node = _doc.CreateCDataSection(r.Value);
                         AddToTable(node);
                         break;
 
@@ -154,7 +154,7 @@ namespace XmlNotepad
                         break;
 
                     case XmlNodeType.ProcessingInstruction:
-                        node = doc.CreateProcessingInstruction(r.Name, r.Value);
+                        node = _doc.CreateProcessingInstruction(r.Name, r.Value);
                         AddToTable(node);
                         if (string.IsNullOrEmpty(this.xsltFileName) && r.Name == "xml-stylesheet")
                         {
@@ -167,7 +167,7 @@ namespace XmlNotepad
                         break;
 
                     case XmlNodeType.Comment:
-                        node = doc.CreateComment(r.Value);
+                        node = _doc.CreateComment(r.Value);
                         AddToTable(node);
                         break;
 
@@ -175,7 +175,7 @@ namespace XmlNotepad
                         {
                             string pubid = r.GetAttribute("PUBLIC");
                             string sysid = r.GetAttribute("SYSTEM");
-                            node = doc.CreateDocumentType(r.Name, pubid, sysid, r.Value);
+                            node = _doc.CreateDocumentType(r.Name, pubid, sysid, r.Value);
                             break;
                         }
 
@@ -258,10 +258,10 @@ namespace XmlNotepad
 
         private XmlAttribute LoadAttributeNode()
         {
-            Debug.Assert(reader.NodeType == XmlNodeType.Attribute);
+            Debug.Assert(_reader.NodeType == XmlNodeType.Attribute);
 
-            XmlReader r = reader;
-            XmlAttribute attr = doc.CreateAttribute(r.Prefix, r.LocalName, r.NamespaceURI);
+            XmlReader r = _reader;
+            XmlAttribute attr = _doc.CreateAttribute(r.Prefix, r.LocalName, r.NamespaceURI);
             AddToTable(attr);
             XmlNode parent = attr;
 
@@ -271,7 +271,7 @@ namespace XmlNotepad
                 switch (r.NodeType)
                 {
                     case XmlNodeType.Text:
-                        node = doc.CreateTextNode(r.Value);
+                        node = _doc.CreateTextNode(r.Value);
                         AddToTable(node);
                         break;
                     case XmlNodeType.EntityReference:
@@ -327,8 +327,8 @@ namespace XmlNotepad
         {
             try
             {
-                Uri resolved = new Uri(new Uri(reader.BaseURI), fname);
-                this.doc.Schemas.Add(null, resolved.AbsoluteUri);
+                Uri resolved = new Uri(new Uri(_reader.BaseURI), fname);
+                this._doc.Schemas.Add(null, resolved.AbsoluteUri);
             }
             catch (Exception ex)
             {
@@ -338,25 +338,25 @@ namespace XmlNotepad
 
         private XmlDeclaration LoadDeclarationNode()
         {
-            Debug.Assert(reader.NodeType == XmlNodeType.XmlDeclaration);
+            Debug.Assert(_reader.NodeType == XmlNodeType.XmlDeclaration);
 
             //parse data
-            XmlDeclaration decl = doc.CreateXmlDeclaration("1.0", null, null);
+            XmlDeclaration decl = _doc.CreateXmlDeclaration("1.0", null, null);
             AddToTable(decl);
 
             // Try first to use the reader to get the xml decl "attributes". Since not all readers are required to support this, it is possible to have
             // implementations that do nothing
-            while (reader.MoveToNextAttribute())
+            while (_reader.MoveToNextAttribute())
             {
-                switch (reader.Name)
+                switch (_reader.Name)
                 {
                     case "version":
                         break;
                     case "encoding":
-                        decl.Encoding = reader.Value;
+                        decl.Encoding = _reader.Value;
                         break;
                     case "standalone":
-                        decl.Standalone = reader.Value;
+                        decl.Standalone = _reader.Value;
                         break;
                     default:
                         Debug.Assert(false);
@@ -368,7 +368,7 @@ namespace XmlNotepad
 
         void UnexpectedNodeType(XmlNodeType type)
         {
-            IXmlLineInfo li = (IXmlLineInfo)reader;
+            IXmlLineInfo li = (IXmlLineInfo)_reader;
             throw new XmlException(string.Format(Strings.UnexpectedNodeType, type.ToString()), null,
                 li.LineNumber, li.LinePosition);
         }

@@ -15,24 +15,26 @@ using System.Windows.Automation;
 // Here's a handy reference on SendKeys:
 // http://msdn2.microsoft.com/en-us/library/system.windows.forms.sendkeys.aspx
 
-namespace UnitTests {
-    
+namespace UnitTests
+{
+
     [TestClass]
     public class UnitTest1 : TestBase
     {
         const int TestMethodTimeout = 300000; // 5 minutes
-        readonly string TestDir;
-                
-        public UnitTest1() {
+        private readonly string _testDir;
+
+        public UnitTest1()
+        {
             Uri baseUri = new Uri(this.GetType().Assembly.Location);
             Uri resolved = new Uri(baseUri, "..\\..\\..\\");
-            TestDir = resolved.LocalPath;
+            _testDir = resolved.LocalPath;
             // Test that we can process updates and show available updates button.
             // Have to fix the location field to show the right thing.
             XmlDocument doc = new XmlDocument();
-            doc.Load(TestDir + @"UnitTests\TestUpdates.xml");
+            doc.Load(_testDir + @"UnitTests\TestUpdates.xml");
             XmlElement e = doc.SelectSingleNode("updates/application/location") as XmlElement;
-            string target = TestDir + @"XmlNotepad\bin\Debug\Updates.xml";
+            string target = _testDir + @"XmlNotepad\bin\Debug\Updates.xml";
             e.InnerText = target;
             doc.Save(target);
         }
@@ -40,80 +42,94 @@ namespace UnitTests {
         //[ClassInitialize()]
         //public static void MyClassInitialize(TestContext testContext) {
         //}
-        
+
         //[ClassCleanup()]
         //public static void MyClassCleanup() {            
         //}
-        
-        [TestInitialize()]        
-        public void MyTestInitialize() {
-        }
-        
-        [TestCleanup()]
-        public void MyTestCleanup() 
+
+        [TestInitialize()]
+        public void MyTestInitialize()
         {
-            if (this.window != null) {
+        }
+
+        [TestCleanup()]
+        public void MyTestCleanup()
+        {
+            if (this.window != null)
+            {
                 this.window.Dispose(true);
             }
         }
 
-        Window LaunchNotepad() {
-            this.window  = LaunchNotepad(null);
+        Window LaunchNotepad()
+        {
+            this.window = LaunchNotepad(null);
             this.window.InvokeMenuItem("newToolStripMenuItem");
             Sleep(1000);
             return window;
         }
 
-        Window LaunchNotepad(string filename) {
+        Window LaunchNotepad(string filename)
+        {
             this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", "\"" + filename + "\"", "FormMain");
             return window;
         }
 
 
-        AutomationWrapper XmlTreeView {
-            get {
+        AutomationWrapper XmlTreeView
+        {
+            get
+            {
                 AutomationWrapper xtv = this.window.FindDescendant("xmlTreeView1");
                 return xtv;
             }
         }
 
-        AutomationWrapper TreeView {
-            get {
+        AutomationWrapper TreeView
+        {
+            get
+            {
                 AutomationWrapper tv = this.window.FindDescendant("TreeView");
                 return tv;
             }
         }
 
 
-        AutomationWrapper NodeTextView {
-            get {
+        AutomationWrapper NodeTextView
+        {
+            get
+            {
                 AutomationWrapper ntv = this.window.FindDescendant("NodeTextView");
                 return ntv;
             }
         }
 
-        AutomationWrapper NodeTextViewCompletionSet {
-            get {
-                AutomationWrapper cset = this.window.FindPopup("CompletionSet");               
-                if (!cset.IsVisible) {
+        AutomationWrapper NodeTextViewCompletionSet
+        {
+            get
+            {
+                AutomationWrapper cset = this.window.FindPopup("CompletionSet");
+                if (!cset.IsVisible)
+                {
                     throw new Exception("CompletionSet is not visible");
                 }
                 return cset;
             }
         }
-        
+
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestUndoRedo() {
+        public void TestUndoRedo()
+        {
             Trace.WriteLine("TestUndoRedo==========================================================");
             // Since this is the first test, we have to make sure we don't load some other user settings.
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = this.LaunchNotepad(testFile);
 
             // test that we can cancel editing when we click New
-            Sleep(500); 
+            Sleep(500);
             w.SendKeystrokes("^IRoot{ENTER}");
-            Sleep(100); 
+            Sleep(100);
             w.InvokeMenuItem("newToolStripMenuItem");
             Sleep(500);
 
@@ -125,29 +141,35 @@ namespace UnitTests {
             int commands = 0;
             bool readyForText = false;
 
-            using (reader) {
-                while (reader.Read()) {
-                    if (reader.NodeType == XmlNodeType.Whitespace || 
+            using (reader)
+            {
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Whitespace ||
                         reader.NodeType == XmlNodeType.SignificantWhitespace ||
                         reader.NodeType == XmlNodeType.XmlDeclaration)
                         continue;
 
                     Trace.WriteLine(string.Format("Adding node type {0} with name {1} and value {2}",
                         reader.NodeType.ToString(), reader.Name, reader.Value));
-                    
+
                     bool children = false;
-                    Trace.WriteLine(reader.NodeType + " " + reader.Name + "["+reader.Value+"]");
-                    switch (reader.NodeType) {
+                    Trace.WriteLine(reader.NodeType + " " + reader.Name + "[" + reader.Value + "]");
+                    switch (reader.NodeType)
+                    {
                         case XmlNodeType.Element:
                             commands++;
                             w.InvokeMenuItem(openElement ? "elementChildToolStripMenuItem" :
                                 "elementAfterToolStripMenuItem");
                             openElement = true;
                             bool isEmpty = reader.IsEmptyElement;
-                            if (!isEmpty) {
+                            if (!isEmpty)
+                            {
                                 hasChildren.Push(children);
                                 children = false;
-                            } else {
+                            }
+                            else
+                            {
                                 openElement = false;
                             }
                             string name = reader.Name;
@@ -157,7 +179,8 @@ namespace UnitTests {
 
                             readyForText = true;
                             bool firstAttribute = true;
-                            while (reader.MoveToNextAttribute()){
+                            while (reader.MoveToNextAttribute())
+                            {
                                 w.InvokeMenuItem(firstAttribute ? "attributeChildToolStripMenuItem" :
                                     "attributeAfterToolStripMenuItem");
                                 firstAttribute = false;
@@ -173,7 +196,8 @@ namespace UnitTests {
                                 Sleep(30);
                                 w.SendKeystrokes("{LEFT}");
                             }
-                            if (isEmpty) {
+                            if (isEmpty)
+                            {
                                 readyForText = false;
                                 Sleep(50);
                                 if (firstAttribute) w.SendKeystrokes("{ESC}"); // cancel value editing.
@@ -208,11 +232,14 @@ namespace UnitTests {
                             break;
                         case XmlNodeType.Text:
                             Sleep(30);
-                            if (openElement) {
+                            if (openElement)
+                            {
                                 commands++;
                                 if (!readyForText)
                                     w.SendKeystrokes("{TAB}{ENTER}");
-                            } else {
+                            }
+                            else
+                            {
                                 children = true;
                                 commands++;
                                 w.InvokeMenuItem("textAfterToolStripMenuItem");
@@ -242,7 +269,8 @@ namespace UnitTests {
                         case XmlNodeType.EndElement:
                             Sleep(50);
                             string keys = "";
-                            if (readyForText) {
+                            if (readyForText)
+                            {
                                 readyForText = false;
                                 w.SendKeystrokes("{ESC}");
                                 Sleep(200);
@@ -275,24 +303,27 @@ namespace UnitTests {
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestEditCombinations() {
+        public void TestEditCombinations()
+        {
             Trace.WriteLine("TestEditCombinations==========================================================");
             // Test all the combinations of insert before, after, child stuff!
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = this.LaunchNotepad(testFile);
             w.InvokeMenuItem("newToolStripMenuItem");
             Sleep(500);
 
             // each node type at root level
-            string[] nodeTypes = new string[]{ "comment", "PI", "element", "attribute", "text", "cdata" };
-            bool[] validInRoot = new bool[]{ true, true, true, false, false, false };
-            bool[] requiresName = new bool[]{ false, true, true, true, false, false };
+            string[] nodeTypes = new string[] { "comment", "PI", "element", "attribute", "text", "cdata" };
+            bool[] validInRoot = new bool[] { true, true, true, false, false, false };
+            bool[] requiresName = new bool[] { false, true, true, true, false, false };
             string[] clips = new string[] { "<!--{1}-->", "<?{0} {1}?>", "<{0}>{1}</{0}>", "{0}=\"{1}\"", "{1}", "<![CDATA[{1}]]>" };
             nodeIndex = 0;
 
-            for (int i = 0; i < nodeTypes.Length; i++){
+            for (int i = 0; i < nodeTypes.Length; i++)
+            {
                 string type = nodeTypes[i];
-                if (validInRoot[i]){
+                if (validInRoot[i])
+                {
                     InsertNode(type, "Child", requiresName[i], clips[i]);
                     Undo();
                     Undo();
@@ -301,19 +332,23 @@ namespace UnitTests {
 
             w.InvokeMenuItem("commentChildToolStripMenuItem");
 
-            for (int i = 0; i < nodeTypes.Length; i++) {
+            for (int i = 0; i < nodeTypes.Length; i++)
+            {
                 string type = nodeTypes[i];
-                if (validInRoot[i]) {
-                    InsertNode(type, "After", requiresName[i], clips[i]);                                       
-                    if (type != "element") {
-                        InsertNode(type, "Before", requiresName[i], clips[i]);                    
+                if (validInRoot[i])
+                {
+                    InsertNode(type, "After", requiresName[i], clips[i]);
+                    if (type != "element")
+                    {
+                        InsertNode(type, "Before", requiresName[i], clips[i]);
                     }
                 }
             }
             w.SendKeystrokes("^Ielement");
-                
+
             // test all combinations of child elements under root element
-            for (int i = 0; i < nodeTypes.Length; i++) {
+            for (int i = 0; i < nodeTypes.Length; i++)
+            {
                 string type = nodeTypes[i];
                 InsertNode(type, "Child", requiresName[i], clips[i]);
                 InsertNode(type, "After", requiresName[i], clips[i]);
@@ -325,12 +360,14 @@ namespace UnitTests {
         }
 
         int nodeIndex = 0;
-        private void InsertNode(string type, string mode, bool requiresName, string clip) {
+        private void InsertNode(string type, string mode, bool requiresName, string clip)
+        {
             string command = type + mode + "ToolStripMenuItem";
             Trace.WriteLine(command);
             this.window.InvokeMenuItem(command);
             string name = type + nodeIndex.ToString();
-            if (requiresName) {
+            if (requiresName)
+            {
                 this.window.SendKeystrokes(name);
                 this.window.SendKeystrokes("{TAB}");
             }
@@ -344,7 +381,7 @@ namespace UnitTests {
             this.window.InvokeMenuItem("toolStripButtonCopy");
             CheckClipboard(result);
 
-            nodeIndex++;            
+            nodeIndex++;
         }
 
         /// <summary>
@@ -352,7 +389,8 @@ namespace UnitTests {
         /// This works on the tree view and the node text view depending on which
         /// has the focus.
         /// </summary>
-        void CheckNodeValue(string expected) {
+        void CheckNodeValue(string expected)
+        {
             CheckNodeValue(expected, StringComparison.Ordinal);
         }
 
@@ -365,7 +403,7 @@ namespace UnitTests {
         {
             if (!Window.GetForegroundWindowText().StartsWith("XML Notepad"))
             {
-                this.window.Activate(); 
+                this.window.Activate();
                 Sleep(500);
             }
             // must not be a leaf node then...
@@ -379,14 +417,16 @@ namespace UnitTests {
             Sleep(300);
         }
 
-        internal void CheckOuterXml(string expected) {
+        internal void CheckOuterXml(string expected)
+        {
             this.window.SendKeystrokes("^c");
             CheckClipboard(expected);
         }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestIntellisense() {
+        public void TestIntellisense()
+        {
             Trace.WriteLine("TestIntellisense==========================================================");
             var w = LaunchNotepad();
 
@@ -436,8 +476,8 @@ namespace UnitTests {
             w.SendKeystrokes("+{TAB}{ENTER}");
             w.SendKeystrokes("t{ENTER}");
 
-            Trace.WriteLine("make sure we can undo redo edit attribute name."); 
-            UndoRedo(); 
+            Trace.WriteLine("make sure we can undo redo edit attribute name.");
+            UndoRedo();
             w.SendKeystrokes("{TAB}{ENTER}11:18:38:P{ENTER}");
 
             Trace.WriteLine("undo redo of edit attribute");
@@ -463,7 +503,7 @@ namespace UnitTests {
             Sleep(500);
             w.SendKeystrokes("{ENTER}"); // activate drop down.
             Rectangle bounds = GetXmlBuilderBounds();
-            Window popup = ClickXmlBuilder();            
+            Window popup = ClickXmlBuilder();
             popup.SendKeystrokes("{DOWN}{LEFT} {ENTER}");
 
             Trace.WriteLine("test MouseDown on NodeTextView editor");
@@ -485,7 +525,7 @@ namespace UnitTests {
 
             Trace.WriteLine("Test UriBuilder");
             popup = ClickXmlBuilder();
-            popup.SendKeystrokes(TestDir + "UnitTests\\" + "test1.xml");
+            popup.SendKeystrokes(_testDir + "UnitTests\\" + "test1.xml");
             popup.DismissPopUp("{ENTER}");
 
             w.SendKeystrokes("{ENTER}");
@@ -543,8 +583,8 @@ namespace UnitTests {
             w.SendKeystrokes("woops{ENTER}");
             Sleep(500);//just so I can see it
 
-            Trace.WriteLine("Move to Basket element"); 
-            w.SendKeystrokes("{ESC}");            
+            Trace.WriteLine("Move to Basket element");
+            w.SendKeystrokes("{ESC}");
             Sleep(500);
             w.SendKeystrokes("{LEFT}{LEFT}");
             Sleep(1000);
@@ -579,7 +619,8 @@ namespace UnitTests {
             this.SaveAndCompare("out.xml", "test2.xml");
         }
 
-        private void NavigateErrorWithMouse() {
+        private void NavigateErrorWithMouse()
+        {
             AutomationWrapper grid = this.window.FindDescendant("DataGridView");
             AutomationWrapper row = grid.FirstChild;
             row = row.NextSibling;
@@ -588,47 +629,59 @@ namespace UnitTests {
             Mouse.MouseDoubleClick(pt, MouseButtons.Left);
         }
 
-        private void NavigateNextError() {
+        private void NavigateNextError()
+        {
             this.window.InvokeMenuItem("nextErrorToolStripMenuItem");
         }
 
-        private void Undo(int count) {
-            while (count-- > 0) {
+        private void Undo(int count)
+        {
+            while (count-- > 0)
+            {
                 Undo();
             }
         }
 
-        private void Redo(int count) {
-            while (count-- > 0) {
+        private void Redo(int count)
+        {
+            while (count-- > 0)
+            {
                 Redo();
             }
         }
 
-        private void Undo() {
+        private void Undo()
+        {
             this.window.InvokeMenuItem("undoToolStripMenuItem");
         }
-        private void Redo() {
+        private void Redo()
+        {
             this.window.InvokeMenuItem("redoToolStripMenuItem");
         }
-        private void UndoRedo(int level) {
-            for (int i = 0; i < level; i++) {
+        private void UndoRedo(int level)
+        {
+            for (int i = 0; i < level; i++)
+            {
                 Undo();
             }
-            for (int i = 0; i < level; i++) {
+            for (int i = 0; i < level; i++)
+            {
                 Redo();
             }
         }
-        private void UndoRedo() {
+        private void UndoRedo()
+        {
             Undo();
             Redo();
         }
 
         Rectangle GetXmlBuilderBounds()
         {
-            return NodeTextViewCompletionSet.Bounds; 
+            return NodeTextViewCompletionSet.Bounds;
         }
 
-        Window ClickXmlBuilder() {
+        Window ClickXmlBuilder()
+        {
             // Find the intellisense button and click on it
             var w = NodeTextViewCompletionSet;
             Rectangle bounds = w.Bounds;
@@ -641,36 +694,38 @@ namespace UnitTests {
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestCompare() {
+        public void TestCompare()
+        {
             Trace.WriteLine("TestCompare==========================================================");
-            string testFile = TestDir + "UnitTests\\test4.xml";
+            string testFile = _testDir + "UnitTests\\test4.xml";
             var w = LaunchNotepad(testFile);
 
             // something the same
             w.InvokeAsyncMenuItem("compareXMLFilesToolStripMenuItem");
             Window openDialog = w.WaitForPopup();
-            openDialog.SendKeystrokes(TestDir + "UnitTests\\test4.xml{ENTER}");
+            openDialog.SendKeystrokes(_testDir + "UnitTests\\test4.xml{ENTER}");
             Window msgBox = w.WaitForPopup();
             string text = msgBox.GetWindowText();
             Assert.AreEqual<string>(text, "XML Diff Error");
             msgBox.SendKeystrokes("{ENTER}");
 
             // the file open dialog will reopen...
-            openDialog = w.WaitForPopup();            
-            openDialog.SendKeystrokes(TestDir + "UnitTests\\test5.xml{ENTER}");
+            openDialog = w.WaitForPopup();
+            openDialog.SendKeystrokes(_testDir + "UnitTests\\test5.xml{ENTER}");
 
-            Window browser = w.WaitForPopup();            
+            Window browser = w.WaitForPopup();
             browser.DismissPopUp("%{F4}");
 
             Undo();
-        }        
+        }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestClipboard() {
+        public void TestClipboard()
+        {
             Trace.WriteLine("TestClipboard==========================================================");
 
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             Trace.WriteLine("Incremental find 'Emp'");
@@ -680,7 +735,7 @@ namespace UnitTests {
 
             Trace.WriteLine("cut");
             w.SendKeystrokes("^x");
-            
+
             string expected = "<Employee xmlns=\"http://www.hr.org\" id=\"46613\" title=\"Architect\"><Name First=\"Chris\" Last=\"Lovett\" /><Street>One Microsoft Way</Street><City>Redmond</City><Zip>98052</Zip><Country><Name>U.S.A.</Name></Country><Office></Office></Employee>";
             CheckClipboard(expected);
 
@@ -769,48 +824,50 @@ namespace UnitTests {
             w.InvokeMenuItem("pasteToolStripMenuItem");
 
             Trace.WriteLine("Test namespace prefix auto-generation.");
-            Sleep(500); 
+            Sleep(500);
             w.SendKeystrokes("{DOWN}"); // reset type-to-find
             w.SendKeystrokes("^Iid");
             w.SendKeystrokes("{ENTER}");
             w.SendKeystrokes("{HOME}y:{ENTER}");
-            Sleep(200); 
+            Sleep(200);
             w.SendKeystrokes("{DOWN}"); // reset type-to-find
             w.SendKeystrokes("^Iitem");
             w.SendKeystrokes("{ENTER}{HOME}z:{ENTER}");
             Sleep(200);
-            
+
             // test save to same file.
             this.SaveAndCompare("out.xml", "test6.xml");
 
         }
 
-        void WipeFile(string fname) {
-            if (File.Exists(fname)) {
+        void WipeFile(string fname)
+        {
+            if (File.Exists(fname))
+            {
                 File.SetAttributes(fname, File.GetAttributes(fname) & ~FileAttributes.ReadOnly);
                 File.Delete(fname);
             }
         }
 
-        class ResetSettings : IDisposable
+        private class ResetSettings : IDisposable
         {
-            readonly string backupSettings;
-            readonly string originalSettings;
+            private readonly string _backupSettings;
+            private readonly string _originalSettings;
 
             public ResetSettings()
             {
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                originalSettings = System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
-                backupSettings = Path.GetTempPath() + "XmlNotepad.settings";
-                File.Copy(originalSettings, backupSettings, true);
+                _originalSettings = System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
+                _backupSettings = Path.GetTempPath() + "XmlNotepad.settings";
+                File.Copy(_originalSettings, _backupSettings, true);
             }
 
             public XmlDocument LoadSettings()
             {
                 XmlDocument doc = new XmlDocument();
-                if (File.Exists(originalSettings))
+                if (File.Exists(_originalSettings))
                 {
-                    doc.Load(originalSettings);
+                    doc.Load(_originalSettings);
                 }
                 return doc;
             }
@@ -823,7 +880,7 @@ namespace UnitTests {
                 {
                     try
                     {
-                        File.Copy(backupSettings, originalSettings, true);
+                        File.Copy(_backupSettings, _originalSettings, true);
                         ok = true;
                         break;
                     }
@@ -835,18 +892,19 @@ namespace UnitTests {
 
                 if (!ok)
                 {
-                    throw new ApplicationException("Why is this file '" + originalSettings + "' still locked ?");
+                    throw new ApplicationException("Why is this file '" + _originalSettings + "' still locked ?");
                 }
 
-                if (File.Exists(backupSettings))
-                    File.Delete(backupSettings);
+                if (File.Exists(_backupSettings))
+                    File.Delete(_backupSettings);
             }
         }
 
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestOptionsDialog() {
+        public void TestOptionsDialog()
+        {
             Trace.WriteLine("TestOptionsDialog==========================================================");
 
             // Save original settings.
@@ -888,7 +946,7 @@ namespace UnitTests {
             Sleep(500);
             Mouse.MouseClick(pt, MouseButtons.Left);
             Window popup = options.WaitForPopup();
-            
+
             popup.DismissPopUp("{ENTER}");
 
             string[] names = new string[] { "Element", "Attribute", "Text",
@@ -897,8 +955,9 @@ namespace UnitTests {
             string[] values = new string[] { "Aqua", "128, 64, 64", "64, 0, 0",
                   "64, 0, 128", "Lime", "128, 0, 64", "0, 64, 64"};
 
-            
-            for (int i = 0, n = names.Length; i<n ;i++) {
+
+            for (int i = 0, n = names.Length; i < n; i++)
+            {
                 string name = names[i];
 
                 Trace.WriteLine("Click " + name);
@@ -922,27 +981,32 @@ namespace UnitTests {
 
             // verify persisted colors.
             XmlDocument doc = rs.LoadSettings();
-            for (int i = 0, n = names.Length; i<n; i++){
+            for (int i = 0, n = names.Length; i < n; i++)
+            {
                 string ename = names[i];
                 XmlNode node = doc.SelectSingleNode("Settings/Colors/" + ename);
-                if (node != null) {
+                if (node != null)
+                {
                     string expected = values[i];
                     string actual = node.InnerText;
-                    if (expected != actual) {
+                    if (expected != actual)
+                    {
                         Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
                         passed = false;
                     }
                 }
             }
 
-            if (!passed) {
+            if (!passed)
+            {
                 throw new ApplicationException("Unexpected colors found in XmlNotepad.settings file.");
             }
         }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestDialogs() {
+        public void TestDialogs()
+        {
 
             // ensure we get this warning dialog.
             ResetFormatLongLines();
@@ -951,7 +1015,7 @@ namespace UnitTests {
             SetTreeViewWidth(290);
 
             Trace.WriteLine("TestDialogs==========================================================");
-            string testFile = TestDir + "UnitTests\\supply.xml";
+            string testFile = _testDir + "UnitTests\\supply.xml";
             var w = LaunchNotepad(testFile);
 
             // Window/NewWindow!
@@ -998,14 +1062,14 @@ namespace UnitTests {
             popup = w.WaitForPopup();
             popup.DismissPopUp("{ENTER}");
             w.SendKeystrokes("{ENTER}");
-                        
+
             Trace.WriteLine("View source");
             w.InvokeAsyncMenuItem("sourceToolStripMenuItem");
             popup = w.WaitForPopup(); // file has changed, do you want to save it?
             popup.SendKeystrokes("%N");
             popup = w.WaitForPopup(); // wait for Notepad.exe.
             popup.DismissPopUp("%{F4}");
-            
+
             // Show help
             Trace.WriteLine("Show help...");
             Trace.WriteLine(Directory.GetCurrentDirectory());
@@ -1013,18 +1077,18 @@ namespace UnitTests {
             w.SendKeystrokes("{F1}");
             popup = w.WaitForPopup();
             popup.DismissPopUp("%{F4}");
-            
+
             // Test SaveIfDirty
             Trace.WriteLine("make simple edit");
             FocusTreeView();
             w.SendKeystrokes("{END}{DELETE}");// make simple edit
-           
+
             Trace.WriteLine("Test error dialog when user tries to enter element with no name");
             w.InvokeMenuItem("repeatToolStripMenuItem");
             w.SendKeystrokes("{ENTER}");
             popup = w.WaitForPopup();
             popup.DismissPopUp("%N");
-            
+
             Trace.WriteLine("Test error dialog when user tries to enter name with spaces");
             w.SendKeystrokes("     {ENTER}");
             popup = w.WaitForPopup();
@@ -1057,7 +1121,7 @@ namespace UnitTests {
             Trace.WriteLine("open bad file");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
             Window popup = w.WaitForPopup();
-            popup.SendKeystrokes(TestDir + "UnitTests\\bad.xml{ENTER}");
+            popup.SendKeystrokes(_testDir + "UnitTests\\bad.xml{ENTER}");
             popup = w.WaitForPopup();
             popup.SendKeystrokes("%Y");
             popup = w.WaitForPopup();
@@ -1067,7 +1131,7 @@ namespace UnitTests {
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
             popup = w.WaitForPopup();
-            popup.SendKeystrokes(TestDir + "UnitTests\\supply.xml");
+            popup.SendKeystrokes(_testDir + "UnitTests\\supply.xml");
             popup.DismissPopUp("{ENTER}");
 
             // make an edit.
@@ -1084,7 +1148,7 @@ namespace UnitTests {
 
             // Save As...
             Trace.WriteLine("Save As...");
-            string outFile = TestDir + "UnitTests\\out.xml";
+            string outFile = _testDir + "UnitTests\\out.xml";
             WipeFile(outFile);
             w.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
             popup = w.WaitForPopup();
@@ -1138,7 +1202,8 @@ namespace UnitTests {
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestSchemaDialog() {
+        public void TestSchemaDialog()
+        {
             Trace.WriteLine("TestSchemaDialog==========================================================");
             var w = LaunchNotepad();
 
@@ -1154,7 +1219,7 @@ namespace UnitTests {
 
             Window fileDialog = schemaDialog.WaitForPopup();
             OpenFileDialog fd = new OpenFileDialog(fileDialog);
-            string schema = TestDir + "UnitTests\\emp.xsd";
+            string schema = _testDir + "UnitTests\\emp.xsd";
             fd.FileName = schema;
             fd.DismissPopUp("{ENTER}");
 
@@ -1162,7 +1227,8 @@ namespace UnitTests {
             Sleep(300); // just so we can watch it happen
             schemaDialog.SendKeystrokes("^c"); // copy
             string text = Clipboard.GetText();
-            if (!text.ToLowerInvariant().Contains("emp.xsd")) {
+            if (!text.ToLowerInvariant().Contains("emp.xsd"))
+            {
                 throw new ApplicationException("Did not find 'test2.xsd' on the clipboard!");
             }
             Trace.WriteLine("Close schema dialog");
@@ -1180,7 +1246,8 @@ namespace UnitTests {
             Trace.WriteLine("Cut");
             schemaDialog.SendKeystrokes("^x"); // cut
             text = Clipboard.GetText();
-            if (!text.ToLowerInvariant().Contains("emp.xsd")) {
+            if (!text.ToLowerInvariant().Contains("emp.xsd"))
+            {
                 throw new ApplicationException("Did not find 'test2.xsd' on the clipboard!");
             }
             Sleep(300);
@@ -1217,30 +1284,32 @@ namespace UnitTests {
             Sleep(500);
 
             Trace.WriteLine("Add emp2.xsd via paste");
-            schema = TestDir + "UnitTests\\emp2.xsd";
+            schema = _testDir + "UnitTests\\emp2.xsd";
             schemaDialog.SendKeystrokes("{DOWN}{RIGHT}{RIGHT}^ "); // select first row
             Clipboard.SetText(schema);
             schemaDialog.SendKeystrokes("^v");
             schemaDialog.SendKeystrokes("^c"); // copy
             text = Clipboard.GetText();
-            if (!text.ToLowerInvariant().Contains("emp2.xsd")) {
+            if (!text.ToLowerInvariant().Contains("emp2.xsd"))
+            {
                 throw new ApplicationException("Did not find 'test2.xsd' on the clipboard!");
             }
 
             Trace.WriteLine("Add duplicate schema via file dialog ");
             Sleep(1000);
             schemaDialog.InvokeAsyncMenuItem("addSchemasToolStripMenuItem");
-            
+
             fileDialog = schemaDialog.WaitForPopup();
             fd = new OpenFileDialog(fileDialog);
-            schema = TestDir + "UnitTests\\emp.xsd";
+            schema = _testDir + "UnitTests\\emp.xsd";
             fd.FileName = schema;
             fd.DismissPopUp("{ENTER}");
-            
+
             Sleep(300); // just so we can watch it happen
             schemaDialog.SendKeystrokes("^c"); // copy first row
             text = Clipboard.GetText();
-            if (!text.ToLowerInvariant().Contains("emp.xsd")) {
+            if (!text.ToLowerInvariant().Contains("emp.xsd"))
+            {
                 throw new ApplicationException("Did not find 'emp.xsd' on the clipboard!");
             }
             Trace.WriteLine("Make sure we commit with the duplicate tns.");
@@ -1269,11 +1338,12 @@ namespace UnitTests {
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestXPathFind() {
+        public void TestXPathFind()
+        {
             Trace.WriteLine("TestXPathFind==========================================================");
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
-                       
+
             Sleep(1000);
 
             Trace.WriteLine("test path of 'pi' node");
@@ -1311,7 +1381,7 @@ namespace UnitTests {
             w.SendKeystrokes("{ESC}{DOWN}^IEmp");
             fd = OpenFindDialog();
             AssertNormalizedEqual(fd.FindString, "/Root/a:Employee"); // test element with namespaces!
-            
+
             Trace.WriteLine("test edit path and find node.");
             fd.Window.SendKeystrokes("/Root{ENTER}");
             Sleep(100);
@@ -1340,13 +1410,14 @@ namespace UnitTests {
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestXsltOutput() {
+        public void TestXsltOutput()
+        {
             Trace.WriteLine("TestXsltOutput==========================================================");
 
             var w = LaunchNotepad();
 
             MainWindowWrapper xw = new MainWindowWrapper(w);
-            xw.LoadXmlAddress(TestDir + "Application\\Samples\\rss.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            xw.LoadXmlAddress(_testDir + "Application\\Samples\\rss.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
             Trace.WriteLine("Show XSLT");
             xw.ShowXslt();
@@ -1359,10 +1430,11 @@ namespace UnitTests {
             Assert.AreEqual(Path.GetFileName(path), "rss.htm");
 
             Trace.WriteLine("Enter custom XSL with script code.");
-            xw.EnterXslFilename(TestDir + "UnitTests\\rss.xsl");
+            xw.EnterXslFilename(_testDir + "UnitTests\\rss.xsl");
             Window popup = w.WaitForPopup();
             string title = Window.GetForegroundWindowText();
-            if (title != "Untrusted Script Code") {
+            if (title != "Untrusted Script Code")
+            {
                 throw new ApplicationException("Expecting script security dialog");
             }
             Sleep(1000);
@@ -1373,8 +1445,8 @@ namespace UnitTests {
             this.CheckClipboard(new Regex(@"Found [\d]* RSS items. The script executed successfully."));
 
             Trace.WriteLine("Try xslt with error");
-            xw.EnterXslFilename(TestDir + "UnitTests\\bad.xsl");
-            Sleep(2000);            
+            xw.EnterXslFilename(_testDir + "UnitTests\\bad.xsl");
+            Sleep(2000);
             xw.CopyHtml();
             this.CheckClipboard(@"Error Transforming XML 
 Prefix 'user' is not defined. ");
@@ -1413,12 +1485,13 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestFind() {
+        public void TestFind()
+        {
 
             ResetFindOptions();
 
             Trace.WriteLine("TestFind==========================================================");
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             Trace.WriteLine("Test auto-move of Find Window to reveal what was found");
@@ -1515,16 +1588,16 @@ Prefix 'user' is not defined. ");
             ResetFindOptions();
 
             Trace.WriteLine("TestReplace==========================================================");
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             w.SendKeystrokes("{HOME}");
             var findDialog = OpenReplaceDialog();
 
             Trace.WriteLine("Toggle dialog using ctrl+f & ctrl+h");
-            findDialog.Window.SendKeystrokes("^f");            
+            findDialog.Window.SendKeystrokes("^f");
             Sleep(300); // so I can see it...
-            findDialog.Window.SendKeystrokes("^h");            
+            findDialog.Window.SendKeystrokes("^h");
             Sleep(300);
 
             Trace.WriteLine("test we can replace 'This' using case sensitive.");
@@ -1538,7 +1611,7 @@ Prefix 'user' is not defined. ");
             findDialog.Window.DismissPopUp("{ESC}");
             Sleep(200);
             this.NodeTextView.SetFocus();
-            w.SendKeystrokes("^c"); 
+            w.SendKeystrokes("^c");
             CheckClipboard(expected);
 
             Trace.WriteLine("Check compound undo.");
@@ -1572,7 +1645,7 @@ Prefix 'user' is not defined. ");
     ");
             findDialog.Window.DismissPopUp("{ESC}");
 
-            Undo(); 
+            Undo();
             Undo(); // should move us back to the previous paragraph
             Redo(); // check that this replace operation actually worked.
             CheckOuterXml(@"XXXXX version by Jon Bosak, 1996-1999.");
@@ -1593,7 +1666,7 @@ Prefix 'user' is not defined. ");
             ResetFindOptions();
 
             Trace.WriteLine("TestReplaceBackwards==========================================================");
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             w.SendKeystrokes("{HOME}");
@@ -1628,9 +1701,11 @@ Prefix 'user' is not defined. ");
             ResetFindOptions();
         }
 
-        void ResetFindOptions() {
+        void ResetFindOptions()
+        {
             string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 return;
             }
             XmlDocument doc = new XmlDocument();
@@ -1639,7 +1714,7 @@ Prefix 'user' is not defined. ");
             RemoveNode(doc, "//SearchWholeWord");
             RemoveNode(doc, "//SearchRegex");
             RemoveNode(doc, "//SearchMatchCase");
-            RemoveNode(doc, "//SearchXPath");            
+            RemoveNode(doc, "//SearchXPath");
             RemoveNode(doc, "//FindMode");
             doc.Save(path);
         }
@@ -1687,9 +1762,11 @@ Prefix 'user' is not defined. ");
             doc.Save(path);
         }
 
-        void ClearSchemaCache() {
+        void ClearSchemaCache()
+        {
             string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 return;
             }
             XmlDocument doc = new XmlDocument();
@@ -1699,14 +1776,17 @@ Prefix 'user' is not defined. ");
             doc.Save(path);
         }
 
-        void RemoveNode(XmlDocument doc, string xpath) {
+        void RemoveNode(XmlDocument doc, string xpath)
+        {
             XmlNode node = doc.SelectSingleNode(xpath);
             if (node != null) node.ParentNode.RemoveChild(node);
         }
 
-        void RemoveNodes(XmlDocument doc, string xpath) {
+        void RemoveNodes(XmlDocument doc, string xpath)
+        {
             List<XmlNode> toRemove = new List<XmlNode>();
-            foreach (XmlNode node in doc.SelectNodes(xpath)) {
+            foreach (XmlNode node in doc.SelectNodes(xpath))
+            {
                 toRemove.Add(node);
             }
             foreach (XmlNode node in toRemove)
@@ -1718,10 +1798,11 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestToolbarAndContextMenus() {
+        public void TestToolbarAndContextMenus()
+        {
             Trace.WriteLine("TestToolbarAndContextMenus==========================================================");
 
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             Trace.WriteLine("Test toopstrip 'new' button");
@@ -1786,31 +1867,32 @@ Prefix 'user' is not defined. ");
             w.SendKeystrokes("it is finished");
             //bugbug: w.InvokeMenuItem("ctxPIBeforeToolStripMenuItem");
             w.SendKeystrokes("^ ob");
-            Sleep(200);            
+            Sleep(200);
             w.SendKeystrokes("page{TAB}break{ENTER}");
 
             Save("out.xml");
             Sleep(1000);
 
             Trace.WriteLine("Test toolStripButtonSave 'save'");
-            w.InvokeMenuItem("toolStripButtonSave");            
+            w.InvokeMenuItem("toolStripButtonSave");
 
             this.SaveAndCompare("out.xml", "test5.xml");
         }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestNudge() {
+        public void TestNudge()
+        {
             Trace.WriteLine("TestNudge==========================================================");
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
 
             // better test when things are expanded
             w.InvokeMenuItem("collapseAllToolStripMenuItem");
- 
+
             // better test when things are expanded
             w.InvokeMenuItem("expandAllToolStripMenuItem");
-            
+
             int cmds = 0;
             w.SendKeystrokes("^I#"); // select first comment
             w.InvokeMenuItem("downToolStripMenuItem");
@@ -1826,7 +1908,7 @@ Prefix 'user' is not defined. ");
             // test nudge attr ({DOWN} resets type-to-find).
             Sleep(1000);
             w.SendKeystrokes("{DOWN}^Iid"); // select first attribute
-            
+
             w.InvokeMenuItem("downToolStripMenuItem");
             cmds++;
             w.InvokeMenuItem("upToolStripMenuItem");
@@ -1835,7 +1917,7 @@ Prefix 'user' is not defined. ");
             // test nudge element .
             Sleep(1000);
             w.SendKeystrokes("{DOWN}^IEmp");
-            
+
             w.InvokeMenuItem("downToolStripMenuItem");
             cmds++;
             w.InvokeMenuItem("upToolStripMenuItem");
@@ -1858,7 +1940,7 @@ Prefix 'user' is not defined. ");
             // test nudge pi
             Sleep(1000);
             w.SendKeystrokes("{DOWN}^Ipi"); // select next pi
-            
+
             w.InvokeMenuItem("leftToolStripMenuItem");
             cmds++;
             w.InvokeMenuItem("rightToolStripMenuItem");
@@ -1876,7 +1958,8 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestDragDrop() {
+        public void TestDragDrop()
+        {
             Trace.WriteLine("TestDragDrop==========================================================");
             var w = this.LaunchNotepad();
 
@@ -1885,8 +1968,8 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
             Window openDialog = w.WaitForPopup();
-            Trace.WriteLine("Opening '" + TestDir + "UnitTests'");
-            openDialog.SendKeystrokes(TestDir + "UnitTests{ENTER}");
+            Trace.WriteLine("Opening '" + _testDir + "UnitTests'");
+            openDialog.SendKeystrokes(_testDir + "UnitTests{ENTER}");
             Sleep(1000);
 
             // Drag/drop from open file dialog into xml notepad client area.
@@ -1910,34 +1993,34 @@ Prefix 'user' is not defined. ");
             Mouse.MouseDragDrop(iloc, drop, 5, MouseButtons.Left);
             Sleep(1000);
             dialogWrapper.DismissPopUp("{ESC}");
-            
+
             // need bigger window to test drag/drop
             w.SetWindowSize(800, 600);
-            
+
             w.InvokeMenuItem("collapseAllToolStripMenuItem");
             w.InvokeMenuItem("expandAllToolStripMenuItem");
 
             // Test mouse wheel
             AutomationWrapper tree = this.TreeView;
             CheckProperties(tree);
-            
+
             w.SendKeystrokes("{HOME}");
             // AutomationElement returns physical coords, but Cursor.Position wants Logical coords.
             Cursor.Position = w.AccessibleObject.PhysicalToLogicalPoint(tree.Bounds.Center());
             Sleep(500); // wait for focus to kick in before sending mouse events.
-            Mouse.MouseWheel(w.AccessibleObject, - 120 * 15); // first one doesn't get thru for some reason!
+            Mouse.MouseWheel(w.AccessibleObject, -120 * 15); // first one doesn't get thru for some reason!
             Sleep(500);
             Mouse.MouseWheel(w.AccessibleObject, 120 * 15);
             Sleep(500);
-            
+
             // Test navigation keys
             w.SendKeystrokes("{HOME}");
             CheckNodeValue("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             w.SendKeystrokes("{END}");
             CheckNodeValue("<!--last comment-->");
             w.SendKeystrokes("{PGUP}{PGDN}{UP}{UP}");
-            CheckNodeValue("Name");            
-            
+            CheckNodeValue("Name");
+
             // Get AutomationWrapper to selected node in the tree.
             AutomationWrapper ntv = this.NodeTextView;
             CheckProperties(ntv);
@@ -1956,9 +2039,10 @@ Prefix 'user' is not defined. ");
             // for some odd reason the paste expands the element.
             Sleep(300);
             CheckNodeValue(office);  // confirm via copy operation
-                        
+
             node = tree.GetSelectedChild();
-            if (node == null) {
+            if (node == null)
+            {
                 throw new ApplicationException("Selected node not found");
             }
             CheckProperties(node);
@@ -2011,7 +2095,7 @@ Prefix 'user' is not defined. ");
             // Autoscroll
             Point treeTop = TopCenter(tree.Bounds, 2);
 
-            Trace.WriteLine("--- Drag to top of tree view ---"); 
+            Trace.WriteLine("--- Drag to top of tree view ---");
             Mouse.MouseDragTo(endPt, treeTop, 5, MouseButtons.Left);
             Sleep(1000); // autoscroll time.
             // Drag out of tree view.
@@ -2019,7 +2103,7 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("--- Drag to titlebar ---");
             Mouse.MouseDragTo(treeTop, titleBar, 10, MouseButtons.Left);
             Sleep(1000); // should now have 'no drop icon'.
-            Mouse.MouseUp(titleBar, MouseButtons.Left);            
+            Mouse.MouseUp(titleBar, MouseButtons.Left);
 
             // code coverage on expand/collapse.
             w.SendKeystrokes("^ICountry");
@@ -2055,31 +2139,40 @@ Prefix 'user' is not defined. ");
         /// <param name="w"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        Point GetDropSpot(Window w, Rectangle target) {
+        Point GetDropSpot(Window w, Rectangle target)
+        {
             AutomationWrapper acc = w.AccessibleObject;
             Rectangle source = acc.Bounds;
             source.Inflate(20, 20); // add extra margin
-            if (source.Contains(target)) {
+            if (source.Contains(target))
+            {
                 // Source window is completely occluding the target window, so we need to move it!
-                Point from = new Point(source.Left + (source.Width/2), source.Top + 5);
+                Point from = new Point(source.Left + (source.Width / 2), source.Top + 5);
                 int amount = target.Left - source.Left + 300;
                 Point end = new Point(from.X + amount, from.Y);
                 // Move window to the right.
                 Mouse.MouseDown(from, MouseButtons.Left);
                 Mouse.MouseDragDrop(from, end, 5, MouseButtons.Left);
-                
+
                 source = acc.Bounds;
             }
-            if (source.Left > target.Left) {
+            if (source.Left > target.Left)
+            {
                 // pick a spot along the left margin
                 return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
-            } else if (source.Right < target.Right) {
+            }
+            else if (source.Right < target.Right)
+            {
                 // pick a spot along the right margin
                 return new Point((target.Right + source.Right) / 2, (target.Top + target.Bottom) / 2);
-            } else if (source.Top > target.Top) {
+            }
+            else if (source.Top > target.Top)
+            {
                 // top margin
                 return new Point((target.Right + target.Left) / 2, (source.Top + target.Top) / 2);
-            } else if (source.Bottom < target.Bottom) {
+            }
+            else if (source.Bottom < target.Bottom)
+            {
                 // bottom margin
                 return new Point((target.Right + target.Left) / 2, (source.Bottom + target.Bottom) / 2);
             }
@@ -2092,17 +2185,18 @@ Prefix 'user' is not defined. ");
         }
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestAccessibility() {
+        public void TestAccessibility()
+        {
 
             Trace.WriteLine("TestAccessibility==========================================================");
-            string testFile = TestDir + "UnitTests\\test1.xml";
+            string testFile = _testDir + "UnitTests\\test1.xml";
             Window w = this.LaunchNotepad(testFile);
             Sleep(1000);
 
             // Get AutomationWrapper to selected node in the tree.
             AutomationWrapper tree = this.TreeView;
             AutomationWrapper root = tree.GetChild(3);
-            
+
             // employee
             AutomationWrapper emp = root.GetChild(7);
             emp.Select();
@@ -2111,7 +2205,7 @@ Prefix 'user' is not defined. ");
 
             emp.IsExpanded = true;
             AutomationWrapper node = emp.FirstChild;
-            
+
             // Test accesibility navigation!
             node = node.Parent;
             CheckNodeName(node, "Employee");
@@ -2149,7 +2243,7 @@ Prefix 'user' is not defined. ");
             //node = node.Navigate(AccessibleNavigation.Next);
             node = node.NextSibling;
             CheckNodeName(node, "title");
-            
+
             // Test TAB and SHIFT-TAB navigation.
             w.SendKeystrokes("{TAB}");
             Sleep(200);
@@ -2229,13 +2323,13 @@ Prefix 'user' is not defined. ");
             CheckNodeName(cset, "Root");
 
             AutomationWrapper next = first.NextSibling;
-            CheckNodeValue(next, " Test all element types ");            
+            CheckNodeValue(next, " Test all element types ");
 
             next = next.NextSibling; // pi
             next = next.NextSibling; // root
             next.Invoke(); // toggle
             next.Invoke(); // toggle
-            
+
             emp = root.GetChild(7);
             emp.Select();
 
@@ -2264,7 +2358,7 @@ Prefix 'user' is not defined. ");
         }
 
         private void SetNodeName(string text)
-        { 
+        {
             // must not be a leaf node then, unfortunately the mapping from IAccessible to AutomationElement
             // don't add ValuePattern on ListItems that have children, so we have to get the value the hard way.
             Sleep(100);
@@ -2273,15 +2367,16 @@ Prefix 'user' is not defined. ");
             this.window.SendKeystrokes(text);
             Sleep(300);
             this.window.SendKeystrokes("{ENTER}");
-            Sleep(300);            
+            Sleep(300);
         }
-        
+
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestKeyboard() {
+        public void TestKeyboard()
+        {
             Trace.WriteLine("TestKeyboard==========================================================");
-            string testFile = TestDir + "UnitTests\\emp.xml";
-            string xsdFile = TestDir + "UnitTests\\emp.xsd";
+            string testFile = _testDir + "UnitTests\\emp.xml";
+            string xsdFile = _testDir + "UnitTests\\emp.xsd";
             var w = this.LaunchNotepad(testFile);
 
             Sleep(1000);
@@ -2332,7 +2427,7 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("Previous pane");
             w.SendKeystrokes("+{F6}"); // Navigate back to error list
             w.SendKeystrokes("{UP}{UP}{UP}{ENTER}"); // Select first error
-            CheckNodeValue("City");            
+            CheckNodeValue("City");
 
             Trace.WriteLine("Next Error");
             w.SendKeystrokes("{F4}{F4}"); // next error twice
@@ -2378,9 +2473,10 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestMouse() {
+        public void TestMouse()
+        {
             Trace.WriteLine("TestMouse==========================================================");
-            string testFile = TestDir + "UnitTests\\emp.xml";
+            string testFile = _testDir + "UnitTests\\emp.xml";
             var w = this.LaunchNotepad(testFile);
 
             Sleep(1000);
@@ -2419,7 +2515,7 @@ Prefix 'user' is not defined. ");
 
             CheckOuterXml("Employee");
             this.window.SendKeystrokes("{ESCAPE}");
-            
+
             // code coverage on scrollbar interaction
             AutomationWrapper vscroll = w.FindDescendant("VScrollBar");
             bounds = vscroll.Bounds;
@@ -2435,7 +2531,8 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestUtilities() {
+        public void TestUtilities()
+        {
             Trace.WriteLine("TestUtilities==========================================================");
             // code coverage on hard to reach utility code.
             HLSColor hls = new HLSColor(Color.Red);
@@ -2447,11 +2544,14 @@ Prefix 'user' is not defined. ");
 
             // Test resource class.
             Type t = FormMain.ResourceType;
-            foreach (PropertyInfo pi in t.GetProperties(BindingFlags.Static)) {
-                if (pi.PropertyType == typeof(string)) {
+            foreach (PropertyInfo pi in t.GetProperties(BindingFlags.Static))
+            {
+                if (pi.PropertyType == typeof(string))
+                {
                     string name = pi.Name;
                     object res = pi.GetValue(null, null);
-                    if (res == null) {
+                    if (res == null)
+                    {
                         throw new Exception("Unexpected null returned from property: " + name);
                     }
                     Trace.WriteLine(string.Format("{0}={1}", name, res.ToString()));
@@ -2459,17 +2559,19 @@ Prefix 'user' is not defined. ");
             }
 
             // Test XmlIncludeReader
-            string test = TestDir + "UnitTests\\includes\\index.xml";
+            string test = _testDir + "UnitTests\\includes\\index.xml";
             Uri baseUri = new Uri(test);
             XmlDocument doc = new XmlDocument();
             doc.Load(test);
 
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.DtdProcessing = DtdProcessing.Parse;
-            foreach (XmlElement e in doc.SelectNodes("test/case")) {
+            foreach (XmlElement e in doc.SelectNodes("test/case"))
+            {
                 Uri input = new Uri(baseUri, e.GetAttribute("input"));
                 Uri output = new Uri(baseUri, e.GetAttribute("results"));
-                using (var r = XmlIncludeReader.CreateIncludeReader(input.LocalPath, settings)) {
+                using (var r = XmlIncludeReader.CreateIncludeReader(input.LocalPath, settings))
+                {
                     CompareResults(ReadNodes(r), output.LocalPath);
                 }
             }
@@ -2477,7 +2579,8 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestNoBorderTabControl() {
+        public void TestNoBorderTabControl()
+        {
             Form f = new Form();
             f.Size = new Size(400, 400);
 
@@ -2493,7 +2596,7 @@ Prefix 'user' is not defined. ");
             page2.Text = "Orange";
             RadioButton b1 = new RadioButton();
             b1.Text = "test1";
-            b1.Location = new Point(10, 10); 
+            b1.Location = new Point(10, 10);
             page2.Controls.Add(b1);
             RadioButton b2 = new RadioButton();
             b2.Text = "test2";
@@ -2504,7 +2607,7 @@ Prefix 'user' is not defined. ");
             f.Controls.Add(tabs);
 
             f.Show();
-            
+
             Sleep(1000);
 
             tabs.TabPages.Remove(page1);
@@ -2512,20 +2615,20 @@ Prefix 'user' is not defined. ");
             tabs.TabPages.Add(page1);
             tabs.TabPages.Add(page2);
 
-            
+
             Sleep(1000);
 
             tabs.TabPages.Clear();
             tabs.TabPages.Add(page1);
 
-            
+
             Sleep(1000);
 
             Assert.IsTrue(tabs.TabPages.Contains(page1));
             Assert.IsTrue(!tabs.TabPages.Contains(page2));
             tabs.TabPages.Insert(0, page2);
 
-            
+
             Sleep(1000);
 
             int i = tabs.TabPages.IndexOf(page1);
@@ -2540,12 +2643,12 @@ Prefix 'user' is not defined. ");
 
             tabs.TabPages.Remove(page1);
             tabs.TabPages.RemoveAt(0);
-            
+
             Sleep(1000);
 
             tabs.TabPages[0] = page1;
             tabs.TabPages[1] = page2;
-            
+
             Sleep(1000);
 
             NoBorderTabPage[] a = new NoBorderTabPage[tabs.TabPages.Count];
@@ -2557,30 +2660,32 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestInclude() {
+        public void TestInclude()
+        {
             Trace.WriteLine("TestInclude==========================================================");
-            string nonexist = TestDir + "UnitTests\\Includes\\nonexist.xml";
+            string nonexist = _testDir + "UnitTests\\Includes\\nonexist.xml";
             WipeFile(nonexist);
 
-            try {
-                
-                string testFile = TestDir + "UnitTests\\Includes\\i1.xml";
+            try
+            {
+
+                string testFile = _testDir + "UnitTests\\Includes\\i1.xml";
                 var w = this.LaunchNotepad(testFile);
 
                 w.SendKeystrokes("^Iinclude");
                 w.InvokeMenuItem("gotoDefinitionToolStripMenuItem");
                 Window popup = w.WaitForPopup();
                 popup.DismissPopUp("%{F4}");
-                
+
                 w.InvokeMenuItem("expandXIncludesToolStripMenuItem");
                 this.SaveAndCompare("Includes\\out.xml", "Includes\\r1.xml");
 
                 Trace.WriteLine("Test F12 on non-existant include");
-                testFile = TestDir + "UnitTests\\Includes\\i3.xml";
+                testFile = _testDir + "UnitTests\\Includes\\i3.xml";
                 w.InvokeAsyncMenuItem("openToolStripMenuItem");
                 popup = w.WaitForPopup();
                 popup.DismissPopUp(testFile + "{ENTER}");
-               
+
                 w.SendKeystrokes("^Ix:{F12}");
                 popup = w.WaitForPopup();
 
@@ -2591,42 +2696,47 @@ Prefix 'user' is not defined. ");
                 popup.SendKeystrokes("%{F4}");
 
                 Sleep(2000);
-                if (!File.Exists(nonexist)) {
+                if (!File.Exists(nonexist))
+                {
                     throw new ApplicationException("File should now exist!");
                 }
-            } finally {
+            }
+            finally
+            {
                 WipeFile(nonexist);
             }
         }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestUnicode() {
+        public void TestUnicode()
+        {
 
             ClearSchemaCache();
 
             Trace.WriteLine("TestUnicode==========================================================");
-            string testFile = TestDir + "UnitTests\\unicode.xml";
+            string testFile = _testDir + "UnitTests\\unicode.xml";
             var w = this.LaunchNotepad(testFile);
 
-            string outFile = TestDir + "UnitTests\\out.xml";
+            string outFile = _testDir + "UnitTests\\out.xml";
             WipeFile(outFile);
 
             w.InvokeAsyncMenuItem("exportErrorsToolStripMenuItem");
-            
+
             Window popup = w.WaitForPopup();
             popup.DismissPopUp(outFile + "{ENTER}");
-            
-            string expectedFile = TestDir + "UnitTests\\errors.xml";
+
+            string expectedFile = _testDir + "UnitTests\\errors.xml";
             CompareResults(ReadNodes(expectedFile), outFile);
 
         }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
-        public void TestChangeTo() {
+        public void TestChangeTo()
+        {
             Trace.WriteLine("TestChangeTo==========================================================");
-            string testFile = TestDir + "UnitTests\\test8.xml";
+            string testFile = _testDir + "UnitTests\\test8.xml";
             var w = this.LaunchNotepad(testFile);
             Sleep(1000);
 
@@ -2676,7 +2786,7 @@ Prefix 'user' is not defined. ");
             this.Undo();
             this.Undo();
 
-            Trace.WriteLine("Now file should be identical to original");            
+            Trace.WriteLine("Now file should be identical to original");
             SaveAndCompare("out.xml", "test8.xml");
 
             Trace.WriteLine("Change attribute to element");
@@ -2813,20 +2923,22 @@ Prefix 'user' is not defined. ");
         }
 
         //==================================================================================
-        private void SaveAndCompare(string outname, string compareWith) {
+        private void SaveAndCompare(string outname, string compareWith)
+        {
 
             string outFile = Save(outname);
 
-            string expectedFile = TestDir + "UnitTests\\" + compareWith;
+            string expectedFile = _testDir + "UnitTests\\" + compareWith;
             Sleep(1000);
             CompareResults(ReadNodes(expectedFile), outFile);
         }
 
-        private string Save(string outname) {
-            Trace.WriteLine("Save");            
-            string outFile = TestDir + "UnitTests\\" + outname;
+        private string Save(string outname)
+        {
+            Trace.WriteLine("Save");
+            string outFile = _testDir + "UnitTests\\" + outname;
             DeleteFile(outFile);
-            
+
             // Has to be "Async" otherwise automation locks up because of the popup dialog.
             this.window.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
             Window dialog = this.window.WaitForPopup();
@@ -2839,9 +2951,11 @@ Prefix 'user' is not defined. ");
         }
 
 
-        void TestHitTest(Point pt, AutomationWrapper parent, AutomationWrapper expected) {
+        void TestHitTest(Point pt, AutomationWrapper parent, AutomationWrapper expected)
+        {
             AutomationWrapper obj = parent.HitTest(pt.X, pt.Y);
-            if (obj.Name != expected.Name) {
+            if (obj.Name != expected.Name)
+            {
                 throw new ApplicationException(
                     string.Format("Found node '{0}' at {1},{2} instead of node '{3}'",
                         obj.Name, pt.X.ToString(), pt.Y.ToString(), expected.Name)
@@ -2849,27 +2963,33 @@ Prefix 'user' is not defined. ");
             }
         }
 
-        Point TopCenter(Rectangle bounds, int dy) {
+        Point TopCenter(Rectangle bounds, int dy)
+        {
             return new Point(bounds.Left + (bounds.Width / 2), bounds.Top + dy);
         }
 
-        void FocusTreeView() {
+        void FocusTreeView()
+        {
             AutomationWrapper acc = this.TreeView;
             acc.SetFocus();
         }
 
-        void CheckNodeName(string expected) {
+        void CheckNodeName(string expected)
+        {
             AutomationWrapper acc = this.TreeView;
             AutomationWrapper node = acc.GetSelectedChild();
-            if (node == null) {
+            if (node == null)
+            {
                 throw new ApplicationException("No node selected in tre view!");
             }
             CheckNodeName(node, expected);
         }
 
-        void CheckNodeName(AutomationWrapper acc, string expected) {
+        void CheckNodeName(AutomationWrapper acc, string expected)
+        {
             string name = acc.Name;
-            if (name != expected) {
+            if (name != expected)
+            {
                 throw new ApplicationException(string.Format("Expecting node name '{0}', but found '{1}'", expected, name));
             }
             Trace.WriteLine("Name=" + name);
@@ -2878,9 +2998,11 @@ Prefix 'user' is not defined. ");
 #endif
         }
 
-        void CheckNodeValue(AutomationWrapper acc, string expected) {
+        void CheckNodeValue(AutomationWrapper acc, string expected)
+        {
             string value = acc.Value;
-            if (value != expected) {
+            if (value != expected)
+            {
                 throw new ApplicationException(string.Format("Expecting node value '{0}'", expected));
             }
             Trace.WriteLine("Value=" + value);
@@ -2889,7 +3011,8 @@ Prefix 'user' is not defined. ");
 #endif
         }
 
-        void CheckProperties(AutomationWrapper node) {
+        void CheckProperties(AutomationWrapper node)
+        {
             // Get code coverage on the boring stuff.
             Trace.WriteLine("Name=" + node.Name);
             // not all nodes support a ValuePattern (comment, pi, cdata).
@@ -2907,7 +3030,8 @@ Prefix 'user' is not defined. ");
             //Trace.WriteLine("\tHelpTopic=" + node.GetHelpTopic(out filename));
         }
 
-        public override void CheckClipboard(string expected) {
+        public override void CheckClipboard(string expected)
+        {
             int retries = 5;
             string text = null;
             while (retries-- > 0)
@@ -2920,14 +3044,14 @@ Prefix 'user' is not defined. ");
                         return;
                     }
                 }
-                Sleep(250);    
+                Sleep(250);
             }
 
             if (!Clipboard.ContainsText())
             {
                 throw new ApplicationException("clipboard does not contain any text!");
-            } 
-            AssertNormalizedEqual(""+ text, expected);
+            }
+            AssertNormalizedEqual("" + text, expected);
         }
 
         public void CheckClipboard(string expected, StringComparison comparison)
@@ -2977,7 +3101,8 @@ Prefix 'user' is not defined. ");
             throw new ApplicationException(@"clipboard [" + Clipboard.GetText() + "] does not match expected value: [" + expected + "]");
         }
 
-        public void AssertNormalizedEqual(string value, string expected) {
+        public void AssertNormalizedEqual(string value, string expected)
+        {
             expected = NormalizeNewLines(expected);
             string text = NormalizeNewLines(value);
             if (!IsNormalizedEqual(text, expected))
@@ -2995,7 +3120,7 @@ Prefix 'user' is not defined. ");
                 throw new ApplicationException("clipboard '[" + text + "]' does not match expected value: [" + expected + "]");
             }
         }
-        
+
         public bool IsNormalizedEqual(string value, string expected)
         {
             expected = NormalizeNewLines(expected);
@@ -3010,18 +3135,25 @@ Prefix 'user' is not defined. ");
             return string.Compare(text, expected, comparison) == 0;
         }
 
-        public static string NormalizeNewLines(string text) {
+        public static string NormalizeNewLines(string text)
+        {
             if (text == null) return null;
             StringBuilder sb = new StringBuilder();
-            for (int i = 0, n = text.Length; i < n; i++) {
+            for (int i = 0, n = text.Length; i < n; i++)
+            {
                 char ch = text[i];
-                if (ch == '\r') {
+                if (ch == '\r')
+                {
                     if (i + 1 < n && text[i + 1] == '\n')
                         i++;
                     sb.Append("\r\n");
-                } else if (ch == '\n') {
+                }
+                else if (ch == '\n')
+                {
                     sb.Append("\r\n");
-                } else {
+                }
+                else
+                {
                     sb.Append(ch);
                 }
             }
