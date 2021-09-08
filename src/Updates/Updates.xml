@@ -9,6 +9,9 @@
 		<history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
 		<frequency>1.00:00:00</frequency>
 	</application>
+  <version number="2.8.0.46">
+    <bug>Fix dynamic help bug introduced in the version 2.8.0.45.</bug>
+  </version>
   <version number="2.8.0.45">
     <feature>
     Add support for &lt;?xsl-output default="path"?&gt; as a way to provide a default output
