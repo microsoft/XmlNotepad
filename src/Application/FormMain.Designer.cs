@@ -361,8 +361,8 @@ namespace XmlNotepad
             this.resizer = new XmlNotepad.PaneResizer();
             this.tabPageTaskList = new XmlNotepad.NoBorderTabPage();
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
-            this.taskList = new XmlNotepad.TaskList();
-            this.dynamicHelpViewer = new XmlNotepad.XsltControl();
+            this._taskList = new XmlNotepad.TaskList();
+            this._dynamicHelpViewer = new XmlNotepad.XsltControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenu1.SuspendLayout();
@@ -1528,18 +1528,18 @@ namespace XmlNotepad
             //
             // taskList
             //
-            resources.ApplyResources(this.taskList, "taskList");
-            this.taskList.Name = "taskList";
-            this.helpProvider1.SetShowHelp(this.taskList, ((bool)(resources.GetObject("taskList.ShowHelp"))));
+            resources.ApplyResources(this._taskList, "taskList");
+            this._taskList.Name = "taskList";
+            this.helpProvider1.SetShowHelp(this._taskList, ((bool)(resources.GetObject("taskList.ShowHelp"))));
             //
             // dynamicHelpViewer
             //
-            resources.ApplyResources(this.dynamicHelpViewer, "dynamicHelpViewer");
-            this.dynamicHelpViewer.BaseUri = null;
-            this.dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
-            this.dynamicHelpViewer.IgnoreDTD = false;
-            this.dynamicHelpViewer.Name = "dynamicHelpViewer";
-            this.helpProvider1.SetShowHelp(this.dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
+            resources.ApplyResources(this._dynamicHelpViewer, "dynamicHelpViewer");
+            this._dynamicHelpViewer.BaseUri = null;
+            this._dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
+            this._dynamicHelpViewer.IgnoreDTD = false;
+            this._dynamicHelpViewer.Name = "dynamicHelpViewer";
+            this.helpProvider1.SetShowHelp(this._dynamicHelpViewer, ((bool)(resources.GetObject("dynamicHelpViewer.ShowHelp"))));
             //
             // statusStrip1
             //

@@ -10,52 +10,61 @@ namespace XmlNotepad
 
     public delegate void NavigateEventHandler(object sender, Task task);
 
-    public partial class TaskList : UserControl {
+    public partial class TaskList : UserControl
+    {
 
         public event NavigateEventHandler Navigate;
         public event KeyEventHandler GridKeyDown;
 
-        ImageList imageList = new ImageList();
-        DataGridViewRow navigated;
+        private ImageList _imageList = new ImageList();
+        private DataGridViewRow _navigated;
 
-        public TaskList() {
+        public TaskList()
+        {
             InitializeComponent();
             // NOTE: do not dispose this stream - it belongs to the image.
             Stream stream = this.GetType().Assembly.GetManifestResourceStream("XmlNotepad.Resources.errorlist.bmp");
             Image strip = Image.FromStream(stream);
-            imageList.Images.AddStrip(strip);
-            imageList.TransparentColor = Color.FromArgb(0, 255, 0);
+            _imageList.Images.AddStrip(strip);
+            _imageList.TransparentColor = Color.FromArgb(0, 255, 0);
             dataGridView1.DoubleClick += new EventHandler(dataGridView1_DoubleClick);
             dataGridView1.KeyDown += new KeyEventHandler(dataGridView1_KeyDown);
         }
 
-        void dataGridView1_KeyDown(object sender, KeyEventArgs e) {
+        void dataGridView1_KeyDown(object sender, KeyEventArgs e)
+        {
             if (GridKeyDown != null) GridKeyDown(sender, e);
         }
 
-        public Task this[int index] {
-            get {
+        public Task this[int index]
+        {
+            get
+            {
                 if (this.dataGridView1.Rows.Count == 0) return null;
                 DataGridViewRow row = this.dataGridView1.Rows[index];
                 return row.Tag as Task;
             }
-            set {
+            set
+            {
                 DataGridViewRow row = this.dataGridView1.Rows[index];
                 row.SetValues(GetValues(value));
                 row.Tag = value; // keep mapping to original task!
             }
         }
 
-        public ImageList Images {
-            get { return this.imageList; }
-            set { this.imageList = value; }
+        public ImageList Images
+        {
+            get { return this._imageList; }
+            set { this._imageList = value; }
         }
 
-        static object[] GetValues(Task t) {
+        static object[] GetValues(Task t)
+        {
             return new object[] { t.SeverityImage, t.Description, t.FileName, t.Line, t.Column };
         }
 
-        public int Add(Task t) {            
+        public int Add(Task t)
+        {
             t.Parent = this;
             int index = this.dataGridView1.Rows.Add(GetValues(t));
             DataGridViewRow row = this.dataGridView1.Rows[index];
@@ -63,104 +72,129 @@ namespace XmlNotepad
             return index;
         }
 
-        public int GetTaskIndex(Task t) {
-            for (int i = 0, n = this.Count; i < n; i++) {
-                DataGridViewRow row = this.dataGridView1.Rows[i];           
-                if (row.Tag == t) {
+        public int GetTaskIndex(Task t)
+        {
+            for (int i = 0, n = this.Count; i < n; i++)
+            {
+                DataGridViewRow row = this.dataGridView1.Rows[i];
+                if (row.Tag == t)
+                {
                     return i;
                 }
             }
             return -1;
         }
 
-        public bool Remove(Task t) {
+        public bool Remove(Task t)
+        {
             int i = GetTaskIndex(t);
-            if (i >= 0) {
+            if (i >= 0)
+            {
                 t.Parent = null;
-                if (navigated != null && navigated.Index == i)
-                    navigated = null;
+                if (_navigated != null && _navigated.Index == i)
+                    _navigated = null;
                 this.dataGridView1.Rows.RemoveAt(i);
                 return true;
             }
             return false;
         }
 
-        public bool Contains(Task t) {
-            foreach (DataGridViewRow row in this.dataGridView1.Rows) {
+        public bool Contains(Task t)
+        {
+            foreach (DataGridViewRow row in this.dataGridView1.Rows)
+            {
                 Task o = row.Tag as Task;
-                if (o != null && o.Equals(t)) {
+                if (o != null && o.Equals(t))
+                {
                     return true;
                 }
             }
             return false;
         }
 
-        public void Insert(int index, Task t) {
+        public void Insert(int index, Task t)
+        {
             t.Parent = this;
             this.dataGridView1.Rows.Insert(index, GetValues(t));
             DataGridViewRow row = this.dataGridView1.Rows[index];
             row.Tag = t;
         }
 
-        public void Clear() {
-            navigated = null;
-            foreach (DataGridViewRow row in this.dataGridView1.Rows) {
+        public void Clear()
+        {
+            _navigated = null;
+            foreach (DataGridViewRow row in this.dataGridView1.Rows)
+            {
                 Task t = row.Tag as Task;
                 t.Parent = null;
             }
             this.dataGridView1.Rows.Clear();
         }
 
-        public int Count {
+        public int Count
+        {
             get { return this.dataGridView1.Rows.Count; }
         }
 
-        internal void OnTaskChanged(Task t) {
+        internal void OnTaskChanged(Task t)
+        {
             int i = GetTaskIndex(t);
-            if (i >= 0) {
+            if (i >= 0)
+            {
                 t.Parent = this;
                 this.dataGridView1.Rows[i].SetValues(GetValues(t));
             }
         }
 
-        public bool NavigateNextError() {
+        public bool NavigateNextError()
+        {
             int index = -1;
-            if (navigated != null) {
-                index = navigated.Index;
+            if (_navigated != null)
+            {
+                index = _navigated.Index;
             }
-            if (index + 1 >= this.dataGridView1.Rows.Count) {
+            if (index + 1 >= this.dataGridView1.Rows.Count)
+            {
                 index = -1; // wrap around
             }
-            if (index + 1 < this.dataGridView1.Rows.Count) {
+            if (index + 1 < this.dataGridView1.Rows.Count)
+            {
                 this.dataGridView1.ClearSelection();
                 this.dataGridView1.Rows[index + 1].Selected = true;
                 NavigateSelectedError();
                 return true;
-            } 
+            }
             return false;
         }
 
-        public void NavigateSelectedError() {
-            if (this.dataGridView1.SelectedRows.Count > 0) {
+        public void NavigateSelectedError()
+        {
+            if (this.dataGridView1.SelectedRows.Count > 0)
+            {
                 DataGridViewRow row = this.dataGridView1.SelectedRows[0];
                 Task task = this[row.Index];
-                if (task != null && this.Navigate != null) {
+                if (task != null && this.Navigate != null)
+                {
                     Navigate(this, task);
-                    navigated = row;
+                    _navigated = row;
                 }
             }
         }
 
-        void dataGridView1_DoubleClick(object sender, EventArgs e) {
+        void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
             NavigateSelectedError();
         }
 
-        public void Save(string filename) {
+        public void Save(string filename)
+        {
             XmlWriterSettings settings = new XmlWriterSettings();
             Utilities.InitializeWriterSettings(settings, this.Site as IServiceProvider);
-            using (XmlWriter w = XmlWriter.Create(filename, settings)) {
+            using (XmlWriter w = XmlWriter.Create(filename, settings))
+            {
                 w.WriteStartElement("ErrorList");
-                foreach (DataGridViewRow row in this.dataGridView1.Rows) {
+                foreach (DataGridViewRow row in this.dataGridView1.Rows)
+                {
                     Task t = row.Tag as Task;
                     w.WriteStartElement("Error");
                     w.WriteElementString("Severity", t.Severity.ToString());
@@ -174,7 +208,8 @@ namespace XmlNotepad
         }
     }
 
-    public class Task {
+    public class Task
+    {
         Severity severity;
         string description;
         string fileName;
@@ -185,10 +220,12 @@ namespace XmlNotepad
         Image img;
         int hash;
 
-        internal Task() {
+        internal Task()
+        {
         }
 
-        public Task(Severity sev, string description, string fileName, int line, int column, object data) {
+        public Task(Severity sev, string description, string fileName, int line, int column, object data)
+        {
             this.severity = sev;
             this.description = description;
             this.fileName = fileName;
@@ -198,100 +235,126 @@ namespace XmlNotepad
             this.hash = GetHashCode();
         }
 
-        public TaskList Parent {
+        public TaskList Parent
+        {
             get { return this.parent; }
             set { this.parent = value; }
         }
 
         [System.ComponentModel.Browsable(false)]
-        public Severity Severity {
+        public Severity Severity
+        {
             get { return this.severity; }
-            set {
-                if (this.severity != value) {
+            set
+            {
+                if (this.severity != value)
+                {
                     this.severity = value;
                     OnChanged();
                 }
             }
         }
 
-        public Image SeverityImage {
-            get {
-                if (img == null) {
-                    if (this.parent != null && this.parent.Images != null) {
+        public Image SeverityImage
+        {
+            get
+            {
+                if (img == null)
+                {
+                    if (this.parent != null && this.parent.Images != null)
+                    {
                         return this.parent.Images.Images[(int)this.Severity];
                     }
                 }
-                return img; 
+                return img;
             }
-            set {
+            set
+            {
                 this.img = value;
             }
         }
 
-        public string Description {
+        public string Description
+        {
             get { return this.description; }
-            set {
-                if (this.description != value) {
+            set
+            {
+                if (this.description != value)
+                {
                     this.description = value;
                     OnChanged();
                 }
             }
         }
-        public string FileName {
+        public string FileName
+        {
             get { return this.fileName; }
-            set {
-                if (this.fileName != value) {
+            set
+            {
+                if (this.fileName != value)
+                {
                     this.fileName = value;
                     OnChanged();
                 }
             }
         }
-        public int Line {
+        public int Line
+        {
             get { return this.line; }
-            set {
-                if (this.line != value) {
+            set
+            {
+                if (this.line != value)
+                {
                     this.line = value;
                     OnChanged();
                 }
             }
         }
-        public int Column {
+        public int Column
+        {
             get { return this.column; }
-            set {
-                if (this.column != value) {
+            set
+            {
+                if (this.column != value)
+                {
                     this.column = value;
                     OnChanged();
-                } 
+                }
             }
         }
 
-        public object Data {
+        public object Data
+        {
             get { return this.data; }
             set { this.data = value; }
         }
 
-        private void OnChanged() {
+        private void OnChanged()
+        {
 
             this.hash = GetHashCode();
             if (this.parent != null)
                 this.parent.OnTaskChanged(this);
         }
 
-        public override bool Equals(object obj) {
-            if (obj is Task) {
+        public override bool Equals(object obj)
+        {
+            if (obj is Task)
+            {
                 Task other = (Task)obj;
 
                 return this.hash == other.hash &&
-                    this.line == other.line && 
+                    this.line == other.line &&
                     this.column == other.column &&
-                    this.severity == other.severity && 
+                    this.severity == other.severity &&
                     this.description == other.description &&
                     this.fileName == other.fileName;
             }
             return false;
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             int hash1 = 0;
             int hash2 = 0;
             if (this.description != null) hash1 = this.description.GetHashCode();
@@ -302,53 +365,64 @@ namespace XmlNotepad
 
     }
 
-    public class TaskHandler : ErrorHandler {
-        TaskList list;
-        System.Collections.Hashtable unique;
-        IList<Task> errors;
-        public TaskHandler(TaskList list){
-            this.list = list;
+    public class TaskHandler : ErrorHandler
+    {
+        private TaskList _list;
+        private HashSet<Task> _unique;
+        private IList<Task> _errors;
+
+        public TaskHandler(TaskList list)
+        {
+            this._list = list;
         }
 
-        public void Start() {
-            this.unique = new System.Collections.Hashtable();
-            this.errors = new List<Task>();
+        public void Start()
+        {
+            this._unique = new HashSet<Task>();
+            this._errors = new List<Task>();
         }
 
-        public override void HandleError(Severity sev, string reason, string filename, int line, int col, object data) {
+        public override void HandleError(Severity sev, string reason, string filename, int line, int col, object data)
+        {
             Task nt = new Task(sev, reason, filename, line, col, data);
-            if (!unique.Contains(nt)) {
-                unique[nt] = nt;
-                errors.Add(nt); // preserve order
+            if (!_unique.Contains(nt))
+            {
+                _unique.Add(nt);
+                _errors.Add(nt); // preserve order
             }
         }
 
-        public void Finish() {
+        public void Finish()
+        {
             // Now merge the lists.
             System.Collections.Hashtable existing = new System.Collections.Hashtable();
             IList<Task> copy = new List<Task>();
-            for (int i = 0, n = list.Count; i < n; i++) {
-                Task t = list[i];
+            for (int i = 0, n = _list.Count; i < n; i++)
+            {
+                Task t = _list[i];
                 copy.Add(t);
                 existing[t] = t;
             }
             // Remove tasks that are no longer reported.
-            foreach (Task t in copy){
-                if (!unique.Contains(t)) {
-                    this.list.Remove(t);
-                }                
+            foreach (Task t in copy)
+            {
+                if (!_unique.Contains(t))
+                {
+                    this._list.Remove(t);
+                }
             }
 
             // Insert any new tasks that have appeared up to a maximum of 1000.
-            for (int i = 0, n = errors.Count; i < n; i++) {
-                Task t = errors[i];
+            for (int i = 0, n = _errors.Count; i < n; i++)
+            {
+                Task t = _errors[i];
                 if (!existing.Contains(t))
                 {
-                    this.list.Insert(i, t);
+                    this._list.Insert(i, t);
                 }
 
                 // don't let the error list get too long.
-                if (list.Count > 1000)
+                if (_list.Count > 1000)
                 {
                     break;
                 }

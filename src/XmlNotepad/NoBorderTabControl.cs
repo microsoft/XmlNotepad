@@ -4,59 +4,78 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace XmlNotepad {
-    public class NoBorderTabControlEventArgs {
-        NoBorderTabPage page;
-        public NoBorderTabControlEventArgs(NoBorderTabPage page){
-            this.page = page;
+namespace XmlNotepad
+{
+    public class NoBorderTabControlEventArgs
+    {
+        private NoBorderTabPage _page;
+
+        public NoBorderTabControlEventArgs(NoBorderTabPage page)
+        {
+            this._page = page;
         }
-        public NoBorderTabPage TabPage {
-            get { return this.page; }
+        public NoBorderTabPage TabPage
+        {
+            get { return this._page; }
         }
     }
+
     public delegate void NoBorderTabControlEventHandler(object sender, NoBorderTabControlEventArgs args);
-    public class NoBorderTabControl : UserControl {
-        TabControl tabs;
-        TabPageCollection pages;
+
+    public class NoBorderTabControl : UserControl
+    {
+        private TabControl _tabs;
+        private TabPageCollection _pages;
         public delegate void PageEventHandler(object sender, PageEventArgs args);
         public event NoBorderTabControlEventHandler Selected;
 
-        public NoBorderTabControl() {
-            pages = new TabPageCollection();
-            tabs = new TabControl();
-            
-            this.Controls.Add(tabs);
-            pages.PageAdded += new PageEventHandler(OnPageAdded);
-            pages.PageRemoved += new PageEventHandler(OnPageRemoved);
-            tabs.SelectedIndexChanged += new EventHandler(OnTabsSelectedIndexChanged);
+        public NoBorderTabControl()
+        {
+            _pages = new TabPageCollection();
+            _tabs = new TabControl();
+
+            this.Controls.Add(_tabs);
+            _pages.PageAdded += new PageEventHandler(OnPageAdded);
+            _pages.PageRemoved += new PageEventHandler(OnPageRemoved);
+            _tabs.SelectedIndexChanged += new EventHandler(OnTabsSelectedIndexChanged);
         }
 
-        public TabControl Tabs => tabs;
+        public TabControl Tabs => _tabs;
 
-        public int SelectedIndex {
-            get { return tabs.SelectedIndex; }
-            set { tabs.SelectedIndex = value; }
+        public int SelectedIndex
+        {
+            get { return _tabs.SelectedIndex; }
+            set { _tabs.SelectedIndex = value; }
         }
 
-        public NoBorderTabPage SelectedTab {
-            get { 
-                return (NoBorderTabPage)pages[tabs.SelectedIndex];
+        public NoBorderTabPage SelectedTab
+        {
+            get
+            {
+                return (NoBorderTabPage)_pages[_tabs.SelectedIndex];
             }
-            set {
-                foreach (NoBorderTabPage p in pages) {
-                    if (p == value) {
-                        this.tabs.SelectedTab = p.Page;
+            set
+            {
+                foreach (NoBorderTabPage p in _pages)
+                {
+                    if (p == value)
+                    {
+                        this._tabs.SelectedTab = p.Page;
                         break;
                     }
                 }
             }
         }
 
-        void OnTabsSelectedIndexChanged(object sender, EventArgs e) {
-            TabPage page = tabs.SelectedTab;
-            foreach (NoBorderTabPage p in pages) {
-                if (p.Page == page) {
-                    if (Selected != null) {
+        void OnTabsSelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabPage page = _tabs.SelectedTab;
+            foreach (NoBorderTabPage p in _pages)
+            {
+                if (p.Page == page)
+                {
+                    if (Selected != null)
+                    {
                         Selected(this, new NoBorderTabControlEventArgs(p));
                     }
                     this.Controls.SetChildIndex(p, 0); // put it on top!
@@ -65,158 +84,199 @@ namespace XmlNotepad {
             }
         }
 
-        void OnPageRemoved(object sender, PageEventArgs e) {
+        void OnPageRemoved(object sender, PageEventArgs e)
+        {
             NoBorderTabPage page = e.Page;
-            tabs.TabPages.Remove(page.Page);
-            if (this.Controls.Contains(page)) {
+            _tabs.TabPages.Remove(page.Page);
+            if (this.Controls.Contains(page))
+            {
                 this.Controls.Remove(page);
             }
         }
 
-        void OnPageAdded(object sender, PageEventArgs e) {
+        void OnPageAdded(object sender, PageEventArgs e)
+        {
             NoBorderTabPage page = e.Page;
-            if (e.Index >= tabs.TabPages.Count) {
-                tabs.TabPages.Add(page.Page);
-            } else {
-                tabs.TabPages.Insert(e.Index, page.Page);
+            if (e.Index >= _tabs.TabPages.Count)
+            {
+                _tabs.TabPages.Add(page.Page);
             }
-            if (!this.Controls.Contains(page)) {
+            else
+            {
+                _tabs.TabPages.Insert(e.Index, page.Page);
+            }
+            if (!this.Controls.Contains(page))
+            {
                 this.Controls.Add(page);
                 this.Controls.SetChildIndex(page, this.TabPages.IndexOf(page));
             }
         }
 
-        protected override void OnControlAdded(ControlEventArgs e) {
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
             base.OnControlAdded(e);
             NoBorderTabPage page = e.Control as NoBorderTabPage;
-            if (page != null && !tabs.TabPages.Contains(page.Page)) {
-                pages.Add(page);
+            if (page != null && !_tabs.TabPages.Contains(page.Page))
+            {
+                _pages.Add(page);
             }
         }
 
-        protected override void OnControlRemoved(ControlEventArgs e) {
+        protected override void OnControlRemoved(ControlEventArgs e)
+        {
             base.OnControlRemoved(e);
             NoBorderTabPage page = e.Control as NoBorderTabPage;
-            if (page != null && tabs.TabPages.Contains(page.Page)) {
-                pages.Remove(page);
+            if (page != null && _tabs.TabPages.Contains(page.Page))
+            {
+                _pages.Remove(page);
             }
         }
 
-        protected override void OnLayout(LayoutEventArgs e) {
-            tabs.MinimumSize = new Size(10, 10);
-            Size s = tabs.GetPreferredSize(new Size(this.Width, 20));
-            int height = tabs.ItemSize.Height + tabs.Padding.Y;
-            tabs.Bounds = new Rectangle(0, 0, this.Width, height);
+        protected override void OnLayout(LayoutEventArgs e)
+        {
+            _tabs.MinimumSize = new Size(10, 10);
+            Size s = _tabs.GetPreferredSize(new Size(this.Width, 20));
+            int height = _tabs.ItemSize.Height + _tabs.Padding.Y;
+            _tabs.Bounds = new Rectangle(0, 0, this.Width, height);
 
-            foreach (NoBorderTabPage p in this.TabPages) {
+            foreach (NoBorderTabPage p in this.TabPages)
+            {
                 p.Bounds = new Rectangle(0, height, this.Width, this.Height - height);
             }
         }
 
-        public TabPageCollection TabPages { 
-            get {
-                return pages;
+        public TabPageCollection TabPages
+        {
+            get
+            {
+                return _pages;
             }
         }
 
-        public class PageEventArgs : EventArgs {
+        public class PageEventArgs : EventArgs
+        {
             int index;
             NoBorderTabPage page;
 
-            public PageEventArgs(NoBorderTabPage page, int index) {
+            public PageEventArgs(NoBorderTabPage page, int index)
+            {
                 this.page = page;
                 this.index = index;
             }
 
-            public NoBorderTabPage Page {
-                get {
+            public NoBorderTabPage Page
+            {
+                get
+                {
                     return this.page;
                 }
-                set {
+                set
+                {
                     this.page = value;
                 }
             }
 
-            public int Index {
-                get {
+            public int Index
+            {
+                get
+                {
                     return this.index;
                 }
-                set {
+                set
+                {
                     this.index = value;
                 }
             }
         }
 
-        public class TabPageCollection : IList {
+        public class TabPageCollection : IList
+        {
             ArrayList list = new ArrayList();
 
             public event PageEventHandler PageAdded;
             public event PageEventHandler PageRemoved;
 
-            void OnPageAdded(NoBorderTabPage page, int index) {
+            void OnPageAdded(NoBorderTabPage page, int index)
+            {
                 PageAdded(this, new PageEventArgs(page, index));
             }
 
-            void OnPageRemoved(NoBorderTabPage page) {
+            void OnPageRemoved(NoBorderTabPage page)
+            {
                 PageRemoved(this, new PageEventArgs(page, 0));
             }
 
             #region IList Members
 
-            public int Add(object value) {
+            public int Add(object value)
+            {
                 int index = list.Count;
                 list.Add(value);
                 OnPageAdded((NoBorderTabPage)value, index);
                 return index;
             }
 
-            public void Clear() {
-                foreach (NoBorderTabPage page in list) {
+            public void Clear()
+            {
+                foreach (NoBorderTabPage page in list)
+                {
                     OnPageRemoved(page);
                 }
                 list.Clear();
             }
 
-            public bool Contains(object value) {
+            public bool Contains(object value)
+            {
                 return list.Contains(value);
             }
 
-            public int IndexOf(object value) {
+            public int IndexOf(object value)
+            {
                 return list.IndexOf(value);
             }
 
-            public void Insert(int index, object value) {
+            public void Insert(int index, object value)
+            {
                 list.Insert(index, value);
                 OnPageAdded((NoBorderTabPage)value, index);
             }
 
-            public bool IsFixedSize {
+            public bool IsFixedSize
+            {
                 get { return false; }
             }
 
-            public bool IsReadOnly {
+            public bool IsReadOnly
+            {
                 get { return false; }
             }
 
-            public void Remove(object value) {
-                OnPageRemoved((NoBorderTabPage)value); 
+            public void Remove(object value)
+            {
+                OnPageRemoved((NoBorderTabPage)value);
                 list.Remove(value);
             }
 
-            public void RemoveAt(int index) {
-                if (index >= 0 && index < list.Count) {
+            public void RemoveAt(int index)
+            {
+                if (index >= 0 && index < list.Count)
+                {
                     OnPageRemoved((NoBorderTabPage)list[index]);
                     list.RemoveAt(index);
                 }
             }
 
-            public object this[int index] {
-                get {
+            public object this[int index]
+            {
+                get
+                {
                     return list[index];
                 }
-                set {
+                set
+                {
                     RemoveAt(index);
-                    if (value != null) {
+                    if (value != null)
+                    {
                         Insert(index, value);
                     }
                 }
@@ -226,19 +286,23 @@ namespace XmlNotepad {
 
             #region ICollection Members
 
-            public void CopyTo(Array array, int index) {
+            public void CopyTo(Array array, int index)
+            {
                 list.CopyTo(array, index);
             }
 
-            public int Count {
-                get { return list.Count;  }
+            public int Count
+            {
+                get { return list.Count; }
             }
 
-            public bool IsSynchronized {
+            public bool IsSynchronized
+            {
                 get { return list.IsSynchronized; }
             }
 
-            public object SyncRoot {
+            public object SyncRoot
+            {
                 get { return list.SyncRoot; }
             }
 
@@ -246,7 +310,8 @@ namespace XmlNotepad {
 
             #region IEnumerable Members
 
-            public IEnumerator GetEnumerator() {
+            public IEnumerator GetEnumerator()
+            {
                 return list.GetEnumerator();
             }
 
@@ -254,23 +319,29 @@ namespace XmlNotepad {
         }
     }
 
-    public class NoBorderTabPage : Panel {
-        TabPage page = new TabPage();
+    public class NoBorderTabPage : Panel
+    {
+        private TabPage _page = new TabPage();
 
-        public NoBorderTabPage() {            
+        public NoBorderTabPage()
+        {
         }
 
         [System.ComponentModel.Browsable(false)]
-        internal TabPage Page {
-            get { return this.page; }
+        internal TabPage Page
+        {
+            get { return this._page; }
         }
 
-        public override string Text { 
-            get {
-                return this.page.Text;
+        public override string Text
+        {
+            get
+            {
+                return this._page.Text;
             }
-            set {
-                this.page.Text = value;
+            set
+            {
+                this._page.Text = value;
             }
         }
 

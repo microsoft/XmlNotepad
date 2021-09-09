@@ -24,21 +24,19 @@ namespace XmlNotepad
     /// <remarks>MCorning made public so subforms have access.</remarks>
     public class TreeParent
     {
-        //XmlTreeNode node;      // the reference node ("selected" node)
-        bool nodeInTree;    // is the reference node in the tree?
-        XmlTreeNode parent;
-        TreeView view;
-        //XmlNode xnode;
-        XmlNode xparent;
-        XmlNode originalParent;
-        XmlDocument doc;
+        private bool _nodeInTree;    // is the reference node in the tree?
+        private XmlTreeNode _parent;
+        private TreeView _view;
+        private XmlNode _xparent;
+        private XmlNode _originalParent;
+        private XmlDocument _doc;
 
         // There is no reference node, so the parent is the TreeView and XmlDocument.
         public TreeParent(TreeView view, XmlDocument doc)
         {
-            this.view = view;
-            this.doc = doc;
-            this.xparent = doc;
+            this._view = view;
+            this._doc = doc;
+            this._xparent = doc;
         }
 
         public TreeParent(XmlTreeView xview, XmlDocument doc, XmlTreeNode node)
@@ -51,58 +49,58 @@ namespace XmlNotepad
         public TreeParent(TreeView view, XmlDocument doc, XmlTreeNode node)
         {
             //this.node = node;
-            if (node != null) this.nodeInTree = ((TreeView)node.TreeView == view);
-            this.view = view;
-            this.doc = doc;
-            this.parent = (XmlTreeNode)node.Parent;
+            if (node != null) this._nodeInTree = ((TreeView)node.TreeView == view);
+            this._view = view;
+            this._doc = doc;
+            this._parent = (XmlTreeNode)node.Parent;
 
             //this.xnode = node.Node;
             if (node.Parent != null)
             {
-                this.xparent = ((XmlTreeNode)node.Parent).Node;
+                this._xparent = ((XmlTreeNode)node.Parent).Node;
             }
             else if (node.Node != null)
             {
-                this.xparent = node.Node.ParentNode;
+                this._xparent = node.Node.ParentNode;
             }
-            if (this.xparent == null)
+            if (this._xparent == null)
             {
-                this.xparent = this.doc;
+                this._xparent = this._doc;
             }
-            originalParent = this.xparent;
-            if (this.parent == null)
+            _originalParent = this._xparent;
+            if (this._parent == null)
             {
-                this.xparent = this.originalParent = this.doc;
+                this._xparent = this._originalParent = this._doc;
             }
         }
         public int Count
         {
             get
             {
-                if (parent != null) return parent.Children.Count;
-                return view.Nodes.Count;
+                if (_parent != null) return _parent.Children.Count;
+                return _view.Nodes.Count;
             }
         }
         public TreeView View
         {
-            get { return this.view; }
+            get { return this._view; }
         }
         public XmlDocument Document
         {
-            get { return this.doc; }
+            get { return this._doc; }
         }
         public bool IsNodeInTree
         {
-            get { return this.nodeInTree; }
+            get { return this._nodeInTree; }
         }
         public XmlTreeNode GetChild(int i)
         {
-            if (parent != null) return (XmlTreeNode)parent.Children[i];
-            return (XmlTreeNode)view.Nodes[i];
+            if (_parent != null) return (XmlTreeNode)_parent.Children[i];
+            return (XmlTreeNode)_view.Nodes[i];
         }
         public void SetParent(XmlTreeNode parent)
         {
-            this.parent = parent;
+            this._parent = parent;
             if (parent != null && parent.Node != null)
             {
                 this.SetXmlParent(parent.Node);
@@ -112,36 +110,36 @@ namespace XmlNotepad
         {
             if (parent != null)
             {
-                this.xparent = parent;
-                doc = xparent.OwnerDocument;
+                this._xparent = parent;
+                _doc = _xparent.OwnerDocument;
             }
         }
         public bool IsRoot
         {
-            get { return xparent == null || xparent is XmlDocument; }
+            get { return _xparent == null || _xparent is XmlDocument; }
         }
         public bool IsElement
         {
-            get { return xparent is XmlElement; }
+            get { return _xparent is XmlElement; }
         }
         public XmlNode ParentNode
         {
-            get { return this.xparent; }
+            get { return this._xparent; }
         }
         public int AttributeCount
         {
             get
             {
-                if (xparent == null || xparent.Attributes == null) return 0;
-                return xparent.Attributes.Count;
+                if (_xparent == null || _xparent.Attributes == null) return 0;
+                return _xparent.Attributes.Count;
             }
         }
         public int ChildCount
         {
             get
             {
-                if (xparent != null && xparent.HasChildNodes)
-                    return xparent.ChildNodes.Count;
+                if (_xparent != null && _xparent.HasChildNodes)
+                    return _xparent.ChildNodes.Count;
                 return 0;
             }
         }
@@ -156,21 +154,22 @@ namespace XmlNotepad
 
             int i = pos;
             if (position == InsertPosition.After) i++;
-            if (parent == null)
+            if (_parent == null)
             {
-                view.Nodes.Insert(i, n);
+                _view.Nodes.Insert(i, n);
             }
-            else {
-                parent.Children.Insert(i, n);
-                if (selectIt && !parent.IsExpanded)
+            else
+            {
+                _parent.Children.Insert(i, n);
+                if (selectIt && !_parent.IsExpanded)
                 {
-                    parent.Expand(); // this will change image index of leaf nodes.
+                    _parent.Expand(); // this will change image index of leaf nodes.
                 }
             }
             n.Invalidate();
             if (selectIt)
             {
-                view.SelectedNode = n;
+                _view.SelectedNode = n;
             }
         }
         public void Insert(int i, InsertPosition position, XmlNode n)
@@ -178,8 +177,8 @@ namespace XmlNotepad
             if (n == null) return;
             if (n.NodeType == XmlNodeType.Attribute)
             {
-                Debug.Assert(this.xparent is XmlElement);
-                XmlElement pe = (XmlElement)this.xparent;
+                Debug.Assert(this._xparent is XmlElement);
+                XmlElement pe = (XmlElement)this._xparent;
                 if (pe.Attributes != null)
                 {
                     XmlNode already = pe.Attributes.GetNamedItem(n.LocalName, n.NamespaceURI);
@@ -190,34 +189,39 @@ namespace XmlNotepad
                 }
                 if (pe.Attributes != null && i < pe.Attributes.Count)
                 {
-                    XmlAttribute refNode = this.xparent.Attributes[i];
+                    XmlAttribute refNode = this._xparent.Attributes[i];
                     if (position == InsertPosition.After)
                     {
                         pe.Attributes.InsertAfter((XmlAttribute)n, refNode);
                     }
-                    else {
+                    else
+                    {
                         pe.Attributes.InsertBefore((XmlAttribute)n, refNode);
                     }
                 }
-                else {
+                else
+                {
                     pe.Attributes.Append((XmlAttribute)n);
                 }
             }
-            else {
+            else
+            {
                 i -= this.AttributeCount;
-                if (this.xparent.HasChildNodes && i < this.xparent.ChildNodes.Count)
+                if (this._xparent.HasChildNodes && i < this._xparent.ChildNodes.Count)
                 {
-                    XmlNode refNode = this.xparent.ChildNodes[i];
+                    XmlNode refNode = this._xparent.ChildNodes[i];
                     if (position == InsertPosition.After)
                     {
-                        this.xparent.InsertAfter(n, refNode);
+                        this._xparent.InsertAfter(n, refNode);
                     }
-                    else {
-                        this.xparent.InsertBefore(n, refNode);
+                    else
+                    {
+                        this._xparent.InsertBefore(n, refNode);
                     }
                 }
-                else {
-                    this.xparent.AppendChild(n);
+                else
+                {
+                    this._xparent.AppendChild(n);
                 }
             }
         }
@@ -232,15 +236,16 @@ namespace XmlNotepad
 
         void Remove(XmlNode n)
         {
-            if (n != null && this.originalParent != null)
+            if (n != null && this._originalParent != null)
             {
                 if (n.NodeType == XmlNodeType.Attribute)
                 {
-                    Debug.Assert(this.originalParent is XmlElement);
-                    this.originalParent.Attributes.Remove((XmlAttribute)n);
+                    Debug.Assert(this._originalParent is XmlElement);
+                    this._originalParent.Attributes.Remove((XmlAttribute)n);
                 }
-                else {
-                    this.originalParent.RemoveChild(n);
+                else
+                {
+                    this._originalParent.RemoveChild(n);
                 }
             }
         }
@@ -248,7 +253,8 @@ namespace XmlNotepad
 
     public class EditNodeName : Command
     {
-        Command cmd;
+        private Command _cmd;
+
         public EditNodeName(XmlTreeNode node, XmlName newName, bool autoGenPrefixes)
         {
             if (node.Node == null)
@@ -258,13 +264,13 @@ namespace XmlNotepad
             switch (node.NodeType)
             {
                 case XmlNodeType.Element:
-                    cmd = new EditElementName(node, newName, autoGenPrefixes);
+                    _cmd = new EditElementName(node, newName, autoGenPrefixes);
                     break;
                 case XmlNodeType.Attribute:
-                    cmd = new EditAttributeName(node, newName, autoGenPrefixes);
+                    _cmd = new EditAttributeName(node, newName, autoGenPrefixes);
                     break;
                 case XmlNodeType.ProcessingInstruction:
-                    cmd = new EditProcessingInstructionName(node, newName.LocalName);
+                    _cmd = new EditProcessingInstructionName(node, newName.LocalName);
                     break;
                 default:
                     throw new ArgumentException(
@@ -280,32 +286,32 @@ namespace XmlNotepad
             switch (node.NodeType)
             {
                 case XmlNodeType.Element:
-                    cmd = new EditElementName(node, newName);
+                    _cmd = new EditElementName(node, newName);
                     break;
                 case XmlNodeType.Attribute:
-                    cmd = new EditAttributeName(node, newName);
+                    _cmd = new EditAttributeName(node, newName);
                     break;
                 case XmlNodeType.ProcessingInstruction:
-                    cmd = new EditProcessingInstructionName(node, newName);
+                    _cmd = new EditProcessingInstructionName(node, newName);
                     break;
                 default:
                     throw new ArgumentException(
                         string.Format(SR.NodeNameNotEditable, node.NodeType.ToString()));
             }
         }
-        public override string Name { get { return cmd.Name; } }
+        public override string Name { get { return _cmd.Name; } }
 
         public override void Do()
         {
-            cmd.Do();
+            _cmd.Do();
         }
         public override void Undo()
         {
-            cmd.Undo();
+            _cmd.Undo();
         }
         public override void Redo()
         {
-            cmd.Redo();
+            _cmd.Redo();
         }
         public override bool IsNoop
         {
@@ -319,36 +325,36 @@ namespace XmlNotepad
     /// </summary>
     public class EditAttributeName : Command
     {
-        XmlAttribute a;
-        XmlAttribute na;
-        XmlElement p;
-        XmlTreeNode node;
-        XmlName name;
-        InsertNode xmlns; // generated prefix
-        bool autoGenPrefixes = true;
+        private XmlAttribute _a;
+        private XmlAttribute _na;
+        private XmlElement _p;
+        private XmlTreeNode _node;
+        private XmlName _name;
+        private InsertNode _xmlns; // generated prefix
+        private bool _autoGenPrefixes = true;
 
         public EditAttributeName(XmlAttribute attr, NodeLabelEditEventArgs e)
         {
-            this.a = attr;
-            this.node = e.Node as XmlTreeNode;
-            this.p = this.a.OwnerElement;
-            Debug.Assert(this.p != null);
-            name = XmlHelpers.ParseName(this.p, e.Label, XmlNodeType.Attribute);
+            this._a = attr;
+            this._node = e.Node as XmlTreeNode;
+            this._p = this._a.OwnerElement;
+            Debug.Assert(this._p != null);
+            _name = XmlHelpers.ParseName(this._p, e.Label, XmlNodeType.Attribute);
         }
         public EditAttributeName(XmlTreeNode node, string newName)
         {
-            this.a = (XmlAttribute)node.Node;
-            this.node = node;
-            this.p = this.a.OwnerElement;
-            Debug.Assert(this.p != null);
-            name = XmlHelpers.ParseName(this.p, newName, XmlNodeType.Attribute);
+            this._a = (XmlAttribute)node.Node;
+            this._node = node;
+            this._p = this._a.OwnerElement;
+            Debug.Assert(this._p != null);
+            _name = XmlHelpers.ParseName(this._p, newName, XmlNodeType.Attribute);
         }
         public EditAttributeName(XmlTreeNode node, XmlName newName, bool autoGenPrefixes)
         {
-            this.a = (XmlAttribute)node.Node;
-            this.node = node;
-            name = newName;
-            this.autoGenPrefixes = autoGenPrefixes;
+            this._a = (XmlAttribute)node.Node;
+            this._node = node;
+            _name = newName;
+            this._autoGenPrefixes = autoGenPrefixes;
         }
 
         public override string Name { get { return SR.EditNameCommand; } }
@@ -357,47 +363,47 @@ namespace XmlNotepad
         {
             get
             {
-                return this.a.LocalName == name.LocalName && this.a.Prefix == name.Prefix &&
-                    this.a.NamespaceURI == name.NamespaceUri;
+                return this._a.LocalName == _name.LocalName && this._a.Prefix == _name.Prefix &&
+                    this._a.NamespaceURI == _name.NamespaceUri;
             }
         }
         public override void Do()
         {
             XmlAttribute nsa = null;
-            this.p = this.a.OwnerElement; // just in case a prior command changed this!
-            if (autoGenPrefixes && XmlHelpers.MissingNamespace(name))
+            this._p = this._a.OwnerElement; // just in case a prior command changed this!
+            if (_autoGenPrefixes && XmlHelpers.MissingNamespace(_name))
             {
-                nsa = XmlHelpers.GenerateNamespaceDeclaration(this.p, name);
+                nsa = XmlHelpers.GenerateNamespaceDeclaration(this._p, _name);
             }
-            this.na = a.OwnerDocument.CreateAttribute(name.Prefix, name.LocalName, name.NamespaceUri);
-            this.na.Value = this.a.Value; // todo: copy children properly.
+            this._na = _a.OwnerDocument.CreateAttribute(_name.Prefix, _name.LocalName, _name.NamespaceUri);
+            this._na.Value = this._a.Value; // todo: copy children properly.
             Redo();
             if (nsa != null)
             {
-                xmlns = new InsertNode(node, InsertPosition.After, nsa, false, false);
-                xmlns.Do();
+                _xmlns = new InsertNode(_node, InsertPosition.After, nsa, false, false);
+                _xmlns.Do();
             }
         }
         public override void Undo()
         {
-            if (this.xmlns != null) xmlns.Undo();
-            this.p.Attributes.InsertBefore(this.a, this.na);
-            this.p.RemoveAttributeNode(this.na);
-            this.node.Label = this.a.Name;
-            this.node.Node = this.a;
-            this.node.TreeView.SelectedNode = this.node;
+            if (this._xmlns != null) _xmlns.Undo();
+            this._p.Attributes.InsertBefore(this._a, this._na);
+            this._p.RemoveAttributeNode(this._na);
+            this._node.Label = this._a.Name;
+            this._node.Node = this._a;
+            this._node.TreeView.SelectedNode = this._node;
         }
         public override void Redo()
         {
-            this.p.Attributes.InsertBefore(this.na, this.a);
-            this.p.RemoveAttributeNode(this.a);
-            this.node.Node = this.na;
-            if (this.node.Label != this.na.Name)
+            this._p.Attributes.InsertBefore(this._na, this._a);
+            this._p.RemoveAttributeNode(this._a);
+            this._node.Node = this._na;
+            if (this._node.Label != this._na.Name)
             {
-                this.node.Label = this.na.Name;
+                this._node.Label = this._na.Name;
             }
-            if (this.xmlns != null) xmlns.Redo();
-            this.node.TreeView.SelectedNode = this.node;
+            if (this._xmlns != null) _xmlns.Redo();
+            this._node.TreeView.SelectedNode = this._node;
         }
 
     }
@@ -407,59 +413,59 @@ namespace XmlNotepad
     /// </summary>
     public class EditProcessingInstructionName : Command
     {
-        XmlProcessingInstruction pi;
-        XmlProcessingInstruction newpi;
-        XmlNode p;
-        XmlTreeNode node;
-        string name;
+        private XmlProcessingInstruction _pi;
+        private XmlProcessingInstruction _newpi;
+        private XmlNode _p;
+        private XmlTreeNode _node;
+        private string _name;
 
         public EditProcessingInstructionName(XmlProcessingInstruction pi, NodeLabelEditEventArgs e)
         {
-            this.pi = pi;
-            this.p = this.pi.ParentNode;
-            this.node = e.Node as XmlTreeNode;
-            Debug.Assert(this.p != null);
-            name = e.Label;
-            this.newpi = pi.OwnerDocument.CreateProcessingInstruction(name, pi.Data);
+            this._pi = pi;
+            this._p = this._pi.ParentNode;
+            this._node = e.Node as XmlTreeNode;
+            Debug.Assert(this._p != null);
+            _name = e.Label;
+            this._newpi = pi.OwnerDocument.CreateProcessingInstruction(_name, pi.Data);
         }
         public EditProcessingInstructionName(XmlTreeNode node, string newName)
         {
-            this.pi = (XmlProcessingInstruction)node.Node;
-            this.p = this.pi.ParentNode;
-            this.node = node;
-            Debug.Assert(this.p != null);
-            name = newName;
-            this.newpi = pi.OwnerDocument.CreateProcessingInstruction(name, pi.Data);
+            this._pi = (XmlProcessingInstruction)node.Node;
+            this._p = this._pi.ParentNode;
+            this._node = node;
+            Debug.Assert(this._p != null);
+            _name = newName;
+            this._newpi = _pi.OwnerDocument.CreateProcessingInstruction(_name, _pi.Data);
         }
 
         public override string Name { get { return SR.EditNameCommand; } }
 
         public override void Do()
         {
-            Swap(this.pi, this.newpi);
+            Swap(this._pi, this._newpi);
         }
         public override void Undo()
         {
-            Swap(this.newpi, this.pi);
+            Swap(this._newpi, this._pi);
         }
         public override void Redo()
         {
-            Swap(this.pi, this.newpi);
+            Swap(this._pi, this._newpi);
         }
         public override bool IsNoop
         {
             get
             {
-                return this.pi.Target == name;
+                return this._pi.Target == _name;
             }
         }
         public void Swap(XmlProcessingInstruction op, XmlProcessingInstruction np)
         {
-            this.p.InsertBefore(np, op);
-            this.p.RemoveChild(op);
-            this.node.Node = np;
-            this.node.Label = np.Target;
-            this.node.TreeView.SelectedNode = this.node;
+            this._p.InsertBefore(np, op);
+            this._p.RemoveChild(op);
+            this._node.Node = np;
+            this._node.Label = np.Target;
+            this._node.TreeView.SelectedNode = this._node;
         }
 
     }
@@ -468,20 +474,20 @@ namespace XmlNotepad
     /// </summary>
     public class InsertNode : Command
     {
-        XmlTreeView view;
-        XmlDocument doc;
+        private XmlTreeView _view;
+        private XmlDocument _doc;
 
         //XmlTreeNode n;
-        XmlTreeNode newNode;
-        TreeParent parent;
+        private XmlTreeNode _newNode;
+        private TreeParent _parent;
 
-        XmlNode theNode;
-        int pos;
-        XmlNodeType type;
-        bool requiresName;
-        InsertPosition position;
-        bool selectNewNode = true;
-        bool expandNewNode = true;
+        private XmlNode _theNode;
+        private int _pos;
+        private XmlNodeType _type;
+        private bool _requiresName;
+        private InsertPosition _position;
+        private bool _selectNewNode = true;
+        private bool _expandNewNode = true;
 
         /// <summary>
         /// Insert a new element as a sibling or child of current node. This command can create
@@ -489,10 +495,10 @@ namespace XmlNotepad
         /// </summary>
         public InsertNode(XmlTreeView view)
         {
-            this.view = view;
-            this.newNode = view.CreateTreeNode();
-            this.doc = view.Model.Document;
-            this.position = InsertPosition.Child;
+            this._view = view;
+            this._newNode = view.CreateTreeNode();
+            this._doc = view.Model.Document;
+            this._position = InsertPosition.Child;
         }
 
         /// <summary>
@@ -504,14 +510,14 @@ namespace XmlNotepad
         /// <param name="selectNewNode">Whether to select the node in the tree after it's inserted.</param>
         public InsertNode(XmlTreeNode target, InsertPosition position, XmlNode xnode, bool selectNewNode, bool expandNewNode)
         {
-            this.view = target.XmlTreeView;
-            this.doc = this.view.Model.Document;
-            this.position = position;
-            this.type = xnode.NodeType;
-            this.newNode = new XmlTreeNode(this.view, xnode);
-            Initialize(newNode, target, position);
-            this.selectNewNode = selectNewNode;
-            this.expandNewNode = expandNewNode;
+            this._view = target.XmlTreeView;
+            this._doc = this._view.Model.Document;
+            this._position = position;
+            this._type = xnode.NodeType;
+            this._newNode = new XmlTreeNode(this._view, xnode);
+            Initialize(_newNode, target, position);
+            this._selectNewNode = selectNewNode;
+            this._expandNewNode = expandNewNode;
         }
 
         public override string Name { get { return SR.InsertNodeCommand; } }
@@ -519,39 +525,41 @@ namespace XmlNotepad
         // Returns false if the given insertion is illegal
         public bool Initialize(XmlTreeNode n, InsertPosition position, XmlNodeType type)
         {
-            this.position = position;
-            this.type = type;
+            this._position = position;
+            this._type = type;
             XmlNode xn = null;
-            this.newNode.NodeType = type;
+            this._newNode.NodeType = type;
             if (n != null)
             {
-                this.parent = new TreeParent(view, doc, n);
+                this._parent = new TreeParent(_view, _doc, n);
                 xn = n.Node;
             }
-            else {
+            else
+            {
                 position = InsertPosition.Child; ;
-                xn = view.Model.Document;
-                this.parent = new TreeParent(view.TreeView, view.Model.Document);
+                xn = _view.Model.Document;
+                this._parent = new TreeParent(_view.TreeView, _view.Model.Document);
             }
             bool result = CanInsertNode(position, type, xn);
             if (result)
             {
                 if (position == InsertPosition.Child)
                 {
-                    if (xn != null) parent.SetParent(n);
-                    pos = parent.AttributeCount;
+                    if (xn != null) _parent.SetParent(n);
+                    _pos = _parent.AttributeCount;
                     if (type != XmlNodeType.Attribute)
-                        pos += parent.ChildCount;
+                        _pos += _parent.ChildCount;
                 }
-                else {
+                else
+                {
                     if (type == XmlNodeType.Attribute ^ xn is XmlAttribute)
                     {
-                        pos = this.parent.AttributeCount;
-                        this.position = InsertPosition.Before;
+                        _pos = this._parent.AttributeCount;
+                        this._position = InsertPosition.Before;
                     }
                     else if (n != null)
                     {
-                        pos = n.Index;
+                        _pos = n.Index;
                     }
                 }
             }
@@ -588,7 +596,7 @@ namespace XmlNotepad
             }
             if (position != InsertPosition.Child)
             {
-                xn = parent.ParentNode;
+                xn = _parent.ParentNode;
             }
             XmlNodeType parentType = (xn != null) ? xn.NodeType : XmlNodeType.None;
             bool result = insertMap[(int)type][(int)parentType];
@@ -597,17 +605,17 @@ namespace XmlNotepad
             switch (type)
             {
                 case XmlNodeType.Attribute:
-                    this.requiresName = true;
+                    this._requiresName = true;
                     break;
                 case XmlNodeType.Element:
-                    this.requiresName = true;
-                    if (position != InsertPosition.Child && parent.IsRoot && parent.Document != null && parent.Document.DocumentElement != null)
+                    this._requiresName = true;
+                    if (position != InsertPosition.Child && _parent.IsRoot && _parent.Document != null && _parent.Document.DocumentElement != null)
                     {
                         result = false; // don't allow multiple root elements.
                     }
                     break;
                 case XmlNodeType.ProcessingInstruction:
-                    this.requiresName = true;
+                    this._requiresName = true;
                     break;
             }
             return result;
@@ -615,24 +623,26 @@ namespace XmlNotepad
 
         public void Initialize(XmlTreeNode newNode, XmlTreeNode target, InsertPosition position)
         {
-            this.newNode = newNode;
-            this.position = position;
+            this._newNode = newNode;
+            this._position = position;
 
             if (target == null)
             {
-                this.parent = new TreeParent(this.view.TreeView, this.doc);
+                this._parent = new TreeParent(this._view.TreeView, this._doc);
             }
-            else {
-                this.parent = new TreeParent(this.view, this.doc, target);
+            else
+            {
+                this._parent = new TreeParent(this._view, this._doc, target);
                 if (position == InsertPosition.Child)
                 {
                     if (CanHaveChildren(target))
                     {
-                        this.parent.SetParent(target);
+                        this._parent.SetParent(target);
                     }
-                    else {
+                    else
+                    {
                         // if it's not an element it cannot have children!
-                        this.position = InsertPosition.After;
+                        this._position = InsertPosition.After;
                     }
                 }
             }
@@ -641,33 +651,34 @@ namespace XmlNotepad
                 if (target == null)
                 {
                     // inserting at rool level
-                    this.pos = this.view.TreeView.Nodes.Count;
+                    this._pos = this._view.TreeView.Nodes.Count;
                 }
-                else {
+                else
+                {
                     if (!CanHaveChildren(target))
                     {
-                        this.position = InsertPosition.After;
+                        this._position = InsertPosition.After;
                     }
                     if (newNode.NodeImage == NodeImage.Attribute)
                     {
-                        this.pos = this.parent.AttributeCount;
+                        this._pos = this._parent.AttributeCount;
                     }
                     else if (target != null)
                     {
-                        this.pos = target.Children.Count;
+                        this._pos = target.Children.Count;
                     }
                 }
             }
-            if (this.position != InsertPosition.Child)
+            if (this._position != InsertPosition.Child)
             {
                 if (target.Node is XmlAttribute ^ newNode.Node is XmlAttribute)
                 {
-                    pos = this.parent.AttributeCount;
-                    this.position = InsertPosition.Before;
+                    _pos = this._parent.AttributeCount;
+                    this._position = InsertPosition.Before;
                 }
                 else if (target != null)
                 {
-                    this.pos = target.Index;
+                    this._pos = target.Index;
                 }
             }
         }
@@ -678,78 +689,80 @@ namespace XmlNotepad
         }
         public bool RequiresName
         {
-            get { return this.requiresName; }
+            get { return this._requiresName; }
         }
         public XmlTreeNode NewNode
         {
-            get { return this.newNode; }
+            get { return this._newNode; }
         }
 
         public XmlNode CreateNode(XmlNode context, string name)
         {
             XmlNode n = null;
-            switch (type)
+            switch (_type)
             {
                 case XmlNodeType.Attribute:
                     {
-                        XmlName qname = XmlHelpers.ParseName(context, name, type);
+                        XmlName qname = XmlHelpers.ParseName(context, name, _type);
                         if (qname.Prefix == null)
                         {
-                            n = doc.CreateAttribute(qname.LocalName);
+                            n = _doc.CreateAttribute(qname.LocalName);
                         }
-                        else {
-                            n = doc.CreateAttribute(qname.Prefix, qname.LocalName, qname.NamespaceUri);
+                        else
+                        {
+                            n = _doc.CreateAttribute(qname.Prefix, qname.LocalName, qname.NamespaceUri);
                         }
                     }
                     break;
                 case XmlNodeType.CDATA:
-                    n = doc.CreateCDataSection("");
+                    n = _doc.CreateCDataSection("");
                     break;
                 case XmlNodeType.Comment:
-                    n = doc.CreateComment("");
+                    n = _doc.CreateComment("");
                     break;
                 case XmlNodeType.DocumentType:
                     XmlConvert.VerifyName(name);
-                    n = doc.CreateDocumentType(name, null, null, null);
+                    n = _doc.CreateDocumentType(name, null, null, null);
                     break;
                 case XmlNodeType.Element:
                     {
-                        XmlName qname = XmlHelpers.ParseName(context, name, type);
-                        n = doc.CreateElement(qname.Prefix, qname.LocalName, qname.NamespaceUri);
+                        XmlName qname = XmlHelpers.ParseName(context, name, _type);
+                        n = _doc.CreateElement(qname.Prefix, qname.LocalName, qname.NamespaceUri);
                         break;
                     }
                 case XmlNodeType.ProcessingInstruction:
                     XmlConvert.VerifyName(name);
                     if (name == "xml")
                     {
-                        n = doc.CreateXmlDeclaration("1.0", null, null);
+                        n = _doc.CreateXmlDeclaration("1.0", null, null);
                     }
-                    else {
-                        n = doc.CreateProcessingInstruction(name, "");
+                    else
+                    {
+                        n = _doc.CreateProcessingInstruction(name, "");
                     }
                     break;
                 case XmlNodeType.Text:
-                    n = doc.CreateTextNode("");
+                    n = _doc.CreateTextNode("");
                     break;
                 default:
-                    throw new ApplicationException(string.Format(SR.UnexpectedNodeType, type.ToString()));
+                    throw new ApplicationException(string.Format(SR.UnexpectedNodeType, _type.ToString()));
             }
             return n;
         }
         public XmlNode CreateDocumentElement(string namespaceUri, string name)
         {
             XmlNode n = null;
-            n = doc.CreateElement(name, namespaceUri);
+            n = _doc.CreateElement(name, namespaceUri);
             return n;
         }
         public XmlNode XmlNode
         {
-            get { return newNode.Node; }
+            get { return _newNode.Node; }
             set
             {
-                parent.Insert(this.pos, this.position, value);
-                newNode.Node = this.theNode = value;
-                view.TreeView.OnSelectionChanged();
+                _parent.Insert(this._pos, this._position, value);
+                _newNode.Node = this._theNode = value;
+                _view.TreeView.OnSelectionChanged();
             }
         }
         public override bool IsNoop
@@ -761,55 +774,55 @@ namespace XmlNotepad
         }
         public override void Do()
         {
-            Debug.Assert(parent != null);
-            this.view.BeginUpdate();
+            Debug.Assert(_parent != null);
+            this._view.BeginUpdate();
             try
             {
-                parent.Insert(this.pos, this.position, newNode, this.selectNewNode);
+                _parent.Insert(this._pos, this._position, _newNode, this._selectNewNode);
                 if (this.RequiresName)
                 {
-                    Debug.Assert(newNode != null);
-                    if (this.theNode != null && newNode.Node == null)
+                    Debug.Assert(_newNode != null);
+                    if (this._theNode != null && _newNode.Node == null)
                     {
-                        this.XmlNode = this.theNode;
+                        this.XmlNode = this._theNode;
                     }
-                    Debug.Assert(view != null);
-                    if (selectNewNode)
+                    Debug.Assert(_view != null);
+                    if (_selectNewNode)
                     {
-                        this.view.SelectedNode = newNode;
-                        newNode.XmlTreeView.ScrollIntoView(newNode);
+                        this._view.SelectedNode = _newNode;
+                        _newNode.XmlTreeView.ScrollIntoView(_newNode);
                     }
                 }
-                else if (newNode.Node == null)
+                else if (_newNode.Node == null)
                 {
                     this.XmlNode = CreateNode(null, null);
-                    this.view.OnNodeInserted(newNode);
+                    this._view.OnNodeInserted(_newNode);
                 }
-                if (expandNewNode)
+                if (_expandNewNode)
                 {
-                    newNode.Expand();
+                    _newNode.Expand();
                 }
             }
             finally
             {
-                this.view.EndUpdate();
+                this._view.EndUpdate();
             }
         }
         public override void Undo()
         {
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
-                if (newNode.IsEditing)
+                if (_newNode.IsEditing)
                 {
-                    newNode.EndEdit(true);
+                    _newNode.EndEdit(true);
                 }
-                TreeParent np = new TreeParent(this.view, this.doc, newNode);
-                np.Remove(newNode);
+                TreeParent np = new TreeParent(this._view, this._doc, _newNode);
+                np.Remove(_newNode);
             }
             finally
             {
-                this.view.EndUpdate();
+                this._view.EndUpdate();
             }
         }
         public override void Redo()
@@ -821,27 +834,27 @@ namespace XmlNotepad
 
     public class ChangeNode : Command
     {
-        XmlDocument doc;
-        XmlNodeType oldnt = XmlNodeType.Text;
-        XmlNodeType nt;
-        XmlTreeView view;
-        XmlTreeNode node;
-        XmlNode newNode;
-        CompoundCommand group;
-        XmlTreeNode newTreeNode;
+        private XmlDocument _doc;
+        private XmlNodeType _oldnt = XmlNodeType.Text;
+        private XmlNodeType _nt;
+        private XmlTreeView _view;
+        private XmlTreeNode _node;
+        private XmlNode _newNode;
+        private CompoundCommand _group;
+        private XmlTreeNode _newTreeNode;
 
         public ChangeNode(XmlTreeView view, XmlTreeNode node, XmlNodeType nt)
         {
-            this.doc = view.Model.Document;
-            this.nt = nt;
-            this.view = view;
-            this.node = node;
+            this._doc = view.Model.Document;
+            this._nt = nt;
+            this._view = view;
+            this._node = node;
             XmlNode n = node.Node;
             if (n == null) return;
 
             init:
-            this.oldnt = n.NodeType;
-            string innerXml = (oldnt == XmlNodeType.Element) ? n.InnerXml : SpecialUnescape(oldnt, n.Value);
+            this._oldnt = n.NodeType;
+            string innerXml = (_oldnt == XmlNodeType.Element) ? n.InnerXml : SpecialUnescape(_oldnt, n.Value);
             string outerXml = n.OuterXml;
             string qname = n.Name;
             string localName = n.LocalName;
@@ -857,16 +870,16 @@ namespace XmlNotepad
             {
                 // Try parsing the content of the node as markup! (but first check for special unescaping
                 // that we do for nested comment/cdata blocks)                
-                PasteCommand paste = new PasteCommand(doc, view, InsertPosition.Before, new TreeData(innerXml));
+                PasteCommand paste = new PasteCommand(_doc, view, InsertPosition.Before, new TreeData(innerXml));
                 XmlTreeNode nte = paste.NewNode;
                 if (nte != null && IsNamedNodeType(nte.NodeType))
                 {
                     // then it worked - we extracted a node with a name, so start over.
-                    n = newNode = nte.Node;
+                    n = _newNode = nte.Node;
                     goto init;
                 }
             }
-            if (newNode == null || newNode.NodeType != nt)
+            if (_newNode == null || _newNode.NodeType != nt)
             {
                 switch (nt)
                 {
@@ -875,41 +888,41 @@ namespace XmlNotepad
                         {
                             qname = "element";
                         }
-                        newNode = doc.CreateElement(qname, ns);
-                        newNode.InnerXml = innerXml;
+                        _newNode = _doc.CreateElement(qname, ns);
+                        _newNode.InnerXml = innerXml;
                         break;
                     case XmlNodeType.Attribute:
                         if (noName)
                         {
                             qname = "attribute";
                         }
-                        newNode = doc.CreateAttribute(qname, ns);
-                        newNode.Value = innerXml;
+                        _newNode = _doc.CreateAttribute(qname, ns);
+                        _newNode.Value = innerXml;
                         break;
                     case XmlNodeType.Comment:
-                        newNode = doc.CreateComment(SpecialEscape(nt, noName ? innerXml : outerXml));
+                        _newNode = _doc.CreateComment(SpecialEscape(nt, noName ? innerXml : outerXml));
                         break;
                     case XmlNodeType.ProcessingInstruction:
                         if (noName)
                         {
                             localName = "pi";
                         }
-                        newNode = doc.CreateProcessingInstruction(localName, innerXml);
+                        _newNode = _doc.CreateProcessingInstruction(localName, innerXml);
                         break;
                     case XmlNodeType.Text:
-                        newNode = doc.CreateTextNode(noName ? innerXml : outerXml);
+                        _newNode = _doc.CreateTextNode(noName ? innerXml : outerXml);
                         break;
                     case XmlNodeType.CDATA:
-                        newNode = doc.CreateCDataSection(SpecialEscape(nt, noName ? innerXml : outerXml));
+                        _newNode = _doc.CreateCDataSection(SpecialEscape(nt, noName ? innerXml : outerXml));
                         break;
                 }
             }
-            InsertNode icmd = new InsertNode(node, InsertPosition.Before, newNode, true, true);
-            newTreeNode = icmd.NewNode;
-            DeleteNode del = new DeleteNode(doc, node);
-            group = new CompoundCommand(this.Name);
-            group.Add(icmd);
-            group.Add(del);
+            InsertNode icmd = new InsertNode(node, InsertPosition.Before, _newNode, true, true);
+            _newTreeNode = icmd.NewNode;
+            DeleteNode del = new DeleteNode(_doc, node);
+            _group = new CompoundCommand(this.Name);
+            _group.Add(icmd);
+            _group.Add(del);
         }
 
         static string SpecialEscape(XmlNodeType nt, string value)
@@ -965,7 +978,8 @@ namespace XmlNotepad
                     {
                         sb.Append(start);
                     }
-                    else {
+                    else
+                    {
                         sb.Append(a);
                         sb.Append(b);
                     }
@@ -979,13 +993,15 @@ namespace XmlNotepad
                     {
                         sb.Append(end);
                     }
-                    else {
+                    else
+                    {
                         sb.Append(x);
                         sb.Append(y);
                     }
                     i++;
                 }
-                else {
+                else
+                {
                     sb.Append(c);
                 }
             }
@@ -1008,7 +1024,7 @@ namespace XmlNotepad
         {
             get
             {
-                return newTreeNode;
+                return _newTreeNode;
             }
         }
 
@@ -1018,76 +1034,75 @@ namespace XmlNotepad
         }
         public override string Name
         {
-            get { return string.Format(SR.ChangeNodeCommand, nt.ToString()); }
+            get { return string.Format(SR.ChangeNodeCommand, _nt.ToString()); }
         }
         public override void Do()
         {
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
-                group.Do();
+                _group.Do();
             }
             finally
             {
-                this.view.EndUpdate();
+                this._view.EndUpdate();
             }
         }
         public override void Redo()
         {
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
-                group.Redo();
+                _group.Redo();
             }
             finally
             {
-                this.view.EndUpdate();
+                this._view.EndUpdate();
             }
 
         }
         public override void Undo()
         {
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
-                group.Undo();
+                _group.Undo();
             }
             finally
             {
-                this.view.EndUpdate();
+                this._view.EndUpdate();
             }
         }
     }
 
     public class EditElementName : Command
     {
-
-        XmlElement xe;
-        XmlElement ne;
-        XmlNode p;
-        XmlTreeNode node;
-        XmlName name;
-        InsertNode xmlns; // generated prefix
-        bool autoGenPrefixes = true;
+        private XmlElement _xe;
+        private XmlElement _ne;
+        private XmlNode _p;
+        private XmlTreeNode _node;
+        private XmlName _name;
+        private InsertNode _xmlns; // generated prefix
+        private bool _autoGenPrefixes = true;
 
         public EditElementName(XmlElement n, NodeLabelEditEventArgs e)
         {
-            this.xe = n;
-            this.node = e.Node as XmlTreeNode;
-            this.name = XmlHelpers.ParseName(n, e.Label, n.NodeType);
+            this._xe = n;
+            this._node = e.Node as XmlTreeNode;
+            this._name = XmlHelpers.ParseName(n, e.Label, n.NodeType);
         }
         public EditElementName(XmlTreeNode node, string newName)
         {
-            this.xe = (XmlElement)node.Node; ;
-            this.node = node;
-            this.name = XmlHelpers.ParseName(this.xe, newName, node.NodeType);
+            this._xe = (XmlElement)node.Node; ;
+            this._node = node;
+            this._name = XmlHelpers.ParseName(this._xe, newName, node.NodeType);
         }
         public EditElementName(XmlTreeNode node, XmlName newName, bool autoGenPrefixes)
         {
-            this.xe = (XmlElement)node.Node; ;
-            this.node = node;
-            this.name = newName;
-            this.autoGenPrefixes = autoGenPrefixes;
+            this._xe = (XmlElement)node.Node; ;
+            this._node = node;
+            this._name = newName;
+            this._autoGenPrefixes = autoGenPrefixes;
         }
         public override string Name { get { return SR.EditNameCommand; } }
 
@@ -1095,60 +1110,60 @@ namespace XmlNotepad
         {
             get
             {
-                return this.xe.LocalName == name.LocalName && this.xe.Prefix == name.Prefix &&
-                    this.xe.NamespaceURI == name.NamespaceUri;
+                return this._xe.LocalName == _name.LocalName && this._xe.Prefix == _name.Prefix &&
+                    this._xe.NamespaceURI == _name.NamespaceUri;
             }
         }
         public override void Do()
         {
-            this.p = xe.ParentNode; // in case a prior command changed this!
+            this._p = _xe.ParentNode; // in case a prior command changed this!
             XmlAttribute a = null;
-            if (autoGenPrefixes && XmlHelpers.MissingNamespace(name))
+            if (_autoGenPrefixes && XmlHelpers.MissingNamespace(_name))
             {
-                a = XmlHelpers.GenerateNamespaceDeclaration(xe, name);
+                a = XmlHelpers.GenerateNamespaceDeclaration(_xe, _name);
             }
-            this.ne = xe.OwnerDocument.CreateElement(name.Prefix, name.LocalName, name.NamespaceUri);
+            this._ne = _xe.OwnerDocument.CreateElement(_name.Prefix, _name.LocalName, _name.NamespaceUri);
             Redo();
             if (a != null)
             {
-                xmlns = new InsertNode(node, InsertPosition.Child, a, false, false);
-                xmlns.Do();
+                _xmlns = new InsertNode(_node, InsertPosition.Child, a, false, false);
+                _xmlns.Do();
             }
         }
 
         public override void Undo()
         {
-            node.XmlTreeView.BeginUpdate();
+            _node.XmlTreeView.BeginUpdate();
             try
             {
-                if (this.xmlns != null) xmlns.Undo();
-                Move(ne, xe);
-                this.p.ReplaceChild(xe, ne);
-                node.Node = xe;
-                node.TreeView.SelectedNode = node;
+                if (this._xmlns != null) _xmlns.Undo();
+                Move(_ne, _xe);
+                this._p.ReplaceChild(_xe, _ne);
+                _node.Node = _xe;
+                _node.TreeView.SelectedNode = _node;
             }
             finally
             {
-                node.XmlTreeView.EndUpdate();
+                _node.XmlTreeView.EndUpdate();
             }
         }
 
         public override void Redo()
         {
-            node.XmlTreeView.BeginUpdate();
+            _node.XmlTreeView.BeginUpdate();
             try
             {
                 // Since you cannot rename an element using the DOM, create new element 
                 // and copy all children over.
-                Move(xe, ne);
-                this.p.ReplaceChild(ne, xe);
-                node.Node = ne;
-                if (this.xmlns != null) xmlns.Redo();
-                node.TreeView.SelectedNode = node;
+                Move(_xe, _ne);
+                this._p.ReplaceChild(_ne, _xe);
+                _node.Node = _ne;
+                if (this._xmlns != null) _xmlns.Redo();
+                _node.TreeView.SelectedNode = _node;
             }
             finally
             {
-                node.XmlTreeView.EndUpdate();
+                _node.XmlTreeView.EndUpdate();
             }
         }
 
@@ -1180,31 +1195,31 @@ namespace XmlNotepad
     /// </summary>
     public class EditNodeValue : Command
     {
-        XmlTreeNode n;
-        XmlNode xn;
-        string newValue;
-        string oldValue;
-        XmlTreeView view;
+        private XmlTreeNode _n;
+        private XmlNode _xn;
+        private string _newValue;
+        private string _oldValue;
+        private XmlTreeView _view;
 
         public EditNodeValue(XmlTreeView view, XmlTreeNode n, string newValue)
         {
-            this.view = view;
-            this.n = n;
-            this.xn = n.Node;
-            this.newValue = newValue;
+            this._view = view;
+            this._n = n;
+            this._xn = n.Node;
+            this._newValue = newValue;
 
-            if (xn is XmlElement)
+            if (_xn is XmlElement)
             {
-                this.oldValue = xn.InnerText;
+                this._oldValue = _xn.InnerText;
             }
-            else if (xn is XmlProcessingInstruction)
+            else if (_xn is XmlProcessingInstruction)
             {
-                XmlProcessingInstruction pi = ((XmlProcessingInstruction)xn);
-                this.oldValue = pi.Data;
+                XmlProcessingInstruction pi = ((XmlProcessingInstruction)_xn);
+                this._oldValue = pi.Data;
             }
-            else if (xn != null)
+            else if (_xn != null)
             {
-                this.oldValue = xn.Value;
+                this._oldValue = _xn.Value;
             }
         }
         public override string Name { get { return SR.EditValueCommand; } }
@@ -1213,77 +1228,77 @@ namespace XmlNotepad
         {
             get
             {
-                return this.oldValue == this.newValue;
+                return this._oldValue == this._newValue;
             }
         }
 
         void SetValue(string value)
         {
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
-                if (xn is XmlElement)
+                if (_xn is XmlElement)
                 {
-                    xn.InnerText = value;
-                    n.RemoveChildren();
+                    _xn.InnerText = value;
+                    _n.RemoveChildren();
                     if (!string.IsNullOrEmpty(value))
                     {
                         // Add text node child.
-                        XmlTreeNode text = view.CreateTreeNode();
-                        text.Node = xn.FirstChild;
-                        n.Children.Add(text);
+                        XmlTreeNode text = _view.CreateTreeNode();
+                        text.Node = _xn.FirstChild;
+                        _n.Children.Add(text);
                     }
                 }
-                else if (xn is XmlProcessingInstruction)
+                else if (_xn is XmlProcessingInstruction)
                 {
-                    XmlProcessingInstruction pi = ((XmlProcessingInstruction)xn);
+                    XmlProcessingInstruction pi = ((XmlProcessingInstruction)_xn);
                     pi.Data = value;
                 }
-                else if (xn != null)
+                else if (_xn != null)
                 {
-                    xn.Value = value;
+                    _xn.Value = value;
                 }
-                if (view != null)
+                if (_view != null)
                 {
-                    view.SelectedNode = n;
-                    view.ScrollIntoView(n);
+                    _view.SelectedNode = _n;
+                    _view.ScrollIntoView(_n);
                 }
             }
             finally
             {
-                this.view.EndUpdate();
+                this._view.EndUpdate();
             }
         }
         public override void Do()
         {
-            SetValue(newValue);
+            SetValue(_newValue);
         }
 
         public override void Undo()
         {
-            SetValue(oldValue);
+            SetValue(_oldValue);
         }
         public override void Redo()
         {
-            SetValue(newValue);
+            SetValue(_newValue);
         }
 
     }
 
     public class DeleteNode : Command
     {
-        XmlDocument doc;
-        XmlTreeNode e;
-        TreeParent parent;
-        int pos;
-        XmlTreeView view;
+        private XmlDocument _doc;
+        private XmlTreeNode _e;
+        private TreeParent _parent;
+        private int _pos;
+        private XmlTreeView _view;
 
         public DeleteNode(XmlDocument doc, XmlTreeNode e)
         {
-            this.e = e;
-            this.doc = doc;
-            this.view = e.XmlTreeView;
-            Debug.Assert(this.view != null);
+            this._e = e;
+            this._doc = doc;
+            this._view = e.XmlTreeView;
+            Debug.Assert(this._view != null);
         }
         public override bool IsNoop
         {
@@ -1293,19 +1308,19 @@ namespace XmlNotepad
 
         public override void Do()
         {
-            if (this.parent == null)
+            if (this._parent == null)
             {
-                this.pos = e.Index;
-                this.parent = new TreeParent(e.TreeView, doc, e);
+                this._pos = _e.Index;
+                this._parent = new TreeParent(_e.TreeView, _doc, _e);
             }
-            parent.Remove(e);
+            _parent.Remove(_e);
         }
 
         public override void Undo()
         {
-            view.BeginUpdate();
-            parent.Insert(this.pos, InsertPosition.Before, this.e, true);
-            view.EndUpdate();
+            _view.BeginUpdate();
+            _parent.Insert(this._pos, InsertPosition.Before, this._e, true);
+            _view.EndUpdate();
         }
 
         public override void Redo()
@@ -1317,16 +1332,16 @@ namespace XmlNotepad
 
     public class MoveNode : Command
     {
-        XmlTreeNode source;
-        XmlTreeNode target;
-        TreeParent tp;
-        InsertPosition where;
-        TreeParent sourceParent;
-        int sourcePosition;
-        bool copy;
-        bool bound;
-        bool wasExpanded;
-        XmlTreeView view;
+        private XmlTreeNode _source;
+        private XmlTreeNode _target;
+        private TreeParent _tp;
+        private InsertPosition _where;
+        private TreeParent _sourceParent;
+        private int _sourcePosition;
+        private bool _copy;
+        private bool _bound;
+        private bool _wasExpanded;
+        private XmlTreeView _view;
 
         /// <summary>
         /// Move or copy a node from one place to another place in the tree.
@@ -1344,18 +1359,18 @@ namespace XmlNotepad
             XmlNode sn = source.Node;
             XmlNode dn = target.Node;
 
-            this.copy = copy;
+            this._copy = copy;
             TreeView tv = view.TreeView;
             XmlDocument doc = view.Model.Document;
-            this.view = view;
-            this.sourcePosition = source.Index;
+            this._view = view;
+            this._sourcePosition = source.Index;
 
             view.Model.BeginUpdate();
             try
             {
                 if (copy)
                 {
-                    this.wasExpanded = source.IsExpanded;
+                    this._wasExpanded = source.IsExpanded;
                     XmlTreeNode newSource = view.CreateTreeNode();
                     if (sn != null)
                     {
@@ -1375,13 +1390,13 @@ namespace XmlNotepad
                     source = newSource;
                 }
 
-                this.sourceParent = new TreeParent(tv, doc, source);
-                this.tp = new TreeParent(tv, doc, target);
+                this._sourceParent = new TreeParent(tv, doc, source);
+                this._tp = new TreeParent(tv, doc, target);
 
                 // normalize destination based on source node type.
                 // for example, if source is an attribute, then it can only be
                 // inserted amongst attributes of another node.
-                if (tp.IsRoot && where != InsertPosition.Child)
+                if (_tp.IsRoot && where != InsertPosition.Child)
                 {
                     if (sn is XmlAttribute)
                         throw new Exception(SR.RootLevelAttributes);
@@ -1398,13 +1413,14 @@ namespace XmlNotepad
                     {
                         if (!(dn is XmlAttribute))
                         {
-                            if (tp.AttributeCount != 0)
+                            if (_tp.AttributeCount != 0)
                             {
                                 // move target to valid location for attributes.
-                                target = tp.GetChild(tp.AttributeCount - 1);
+                                target = _tp.GetChild(_tp.AttributeCount - 1);
                                 where = InsertPosition.After;
                             }
-                            else {
+                            else
+                            {
                                 // append the attribute.
                                 where = InsertPosition.Child;
                                 target = (XmlTreeNode)target.Parent;
@@ -1416,14 +1432,15 @@ namespace XmlNotepad
                     {
                         if (!(sn is XmlAttribute))
                         {
-                            int skip = tp.AttributeCount;
-                            if (tp.Count > skip)
+                            int skip = _tp.AttributeCount;
+                            if (_tp.Count > skip)
                             {
                                 // Move non-attribute down to beginning of child elements.
-                                target = tp.GetChild(skip);
+                                target = _tp.GetChild(skip);
                                 where = InsertPosition.Before;
                             }
-                            else {
+                            else
+                            {
                                 // append the node.
                                 where = InsertPosition.Child;
                                 target = (XmlTreeNode)target.Parent;
@@ -1431,14 +1448,14 @@ namespace XmlNotepad
                         }
                     }
                 }
-                this.source = source;
-                this.target = target;
-                this.where = where;
-                this.tp = new TreeParent(tv, doc, target);
+                this._source = source;
+                this._target = target;
+                this._where = where;
+                this._tp = new TreeParent(tv, doc, target);
 
                 if (where == InsertPosition.Child)
                 {
-                    this.tp.SetParent(target);
+                    this._tp.SetParent(target);
                 }
             }
             finally
@@ -1497,109 +1514,111 @@ namespace XmlNotepad
 
         public override string Name { get { return SR.MoveCommand; } }
 
-        public XmlTreeNode Source { get { return this.source; } }
+        public XmlTreeNode Source { get { return this._source; } }
 
         public override bool IsNoop
         {
-            get { return this.source == this.target; }
+            get { return this._source == this._target; }
         }
 
         public override void Do()
         {
-            XmlNode sn = source.Node;
+            XmlNode sn = _source.Node;
             //XmlNode dn = target.Node;
 
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
-                XmlTreeNode sp = (XmlTreeNode)source.Parent;
+                XmlTreeNode sp = (XmlTreeNode)_source.Parent;
 
-                int sindex = this.sourcePosition;
-                TreeView tv = source.TreeView;
+                int sindex = this._sourcePosition;
+                TreeView tv = _source.TreeView;
                 if (tv != null)
                 {
-                    this.sourceParent.Remove(source);
+                    this._sourceParent.Remove(_source);
                 }
-                int index = target.Index;
+                int index = _target.Index;
 
-                if (where == InsertPosition.Child)
+                if (_where == InsertPosition.Child)
                 {
                     if (sn is XmlAttribute)
                     {
-                        index = this.tp.AttributeCount;
+                        index = this._tp.AttributeCount;
                     }
-                    else {
-                        index = this.tp.AttributeCount + this.tp.ChildCount;
+                    else
+                    {
+                        index = this._tp.AttributeCount + this._tp.ChildCount;
                     }
                 }
                 try
                 {
-                    this.tp.Insert(index, where, source, true);
+                    this._tp.Insert(index, _where, _source, true);
                 }
                 catch (Exception)
                 {
                     if (sp != null)
                     {
-                        sp.Children.Insert(sindex, source);
+                        sp.Children.Insert(sindex, _source);
                     }
                     else if (tv != null)
                     {
-                        tv.Nodes.Insert(sindex, source);
+                        tv.Nodes.Insert(sindex, _source);
                     }
                     if (tv != null)
                     {
-                        source.TreeView.SelectedNode = source;
+                        _source.TreeView.SelectedNode = _source;
                     }
                     throw;
                 }
 
-                if (this.copy && !bound)
+                if (this._copy && !_bound)
                 {
-                    bound = true;
-                    this.view.Invalidate(); // Bind(source.Nodes, (XmlNode)source.Tag);
+                    _bound = true;
+                    this._view.Invalidate(); // Bind(source.Nodes, (XmlNode)source.Tag);
                 }
-                if (this.wasExpanded)
+                if (this._wasExpanded)
                 {
-                    source.Expand();
+                    _source.Expand();
                 }
 
-                source.TreeView.SelectedNode = source;
+                _source.TreeView.SelectedNode = _source;
             }
             finally
             {
-                view.EndUpdate();
+                _view.EndUpdate();
             }
         }
 
         public override void Undo()
         {
-            this.view.BeginUpdate();
+            this._view.BeginUpdate();
             try
             {
                 // Cannot use this.sourceParent because this points to the old source position
                 // not the current position.
-                TreeParent parent = new TreeParent(this.sourceParent.View, this.sourceParent.Document, this.source);
-                parent.Remove(this.source);
+                TreeParent parent = new TreeParent(this._sourceParent.View, this._sourceParent.Document, this._source);
+                parent.Remove(this._source);
 
                 // If the node was not in the tree, then undo just removes it, it does not
                 // have to re-insert back in a previous position, because it was a new node
                 // (probably inserted via drag/drop).
-                if (this.sourceParent.IsNodeInTree)
+                if (this._sourceParent.IsNodeInTree)
                 {
-                    this.sourceParent.Insert(this.sourcePosition, InsertPosition.Before, source, true);
-                    if (source.Parent != null && source.Parent.Children.Count == 1)
+                    this._sourceParent.Insert(this._sourcePosition, InsertPosition.Before, _source, true);
+                    if (_source.Parent != null && _source.Parent.Children.Count == 1)
                     {
-                        source.Parent.Expand();
+                        _source.Parent.Expand();
                     }
-                    source.TreeView.SelectedNode = source;
+                    _source.TreeView.SelectedNode = _source;
                 }
-                else {
-                    this.target.TreeView.SelectedNode = target;
+                else
+                {
+                    this._target.TreeView.SelectedNode = _target;
                 }
             }
             finally
             {
-                view.EndUpdate();
+                _view.EndUpdate();
             }
         }
 
@@ -1614,17 +1633,16 @@ namespace XmlNotepad
 
     public class NudgeNode : Command
     {
-
-        XmlTreeNode node;
-        NudgeDirection dir;
-        MoveNode mover;
-        XmlTreeView view;
+        private XmlTreeNode _node;
+        private NudgeDirection _dir;
+        private MoveNode _mover;
+        private XmlTreeView _view;
 
         public NudgeNode(XmlTreeView view, XmlTreeNode node, NudgeDirection dir)
         {
-            this.node = node;
-            this.dir = dir;
-            this.view = view;
+            this._node = node;
+            this._dir = dir;
+            this._view = view;
         }
 
         public override string Name { get { return SR.NudgeCommand; } }
@@ -1641,7 +1659,7 @@ namespace XmlNotepad
         {
             get
             {
-                switch (dir)
+                switch (_dir)
                 {
                     case NudgeDirection.Up:
                         return CanNudgeUp;
@@ -1677,41 +1695,42 @@ namespace XmlNotepad
 
         MoveNode GetMover()
         {
-            if (this.mover == null)
+            if (this._mover == null)
             {
-                switch (dir)
+                switch (_dir)
                 {
                     case NudgeDirection.Up:
-                        this.mover = GetNudgeUp();
+                        this._mover = GetNudgeUp();
                         break;
                     case NudgeDirection.Down:
-                        this.mover = GetNudgeDown();
+                        this._mover = GetNudgeDown();
                         break;
                     case NudgeDirection.Left:
-                        this.mover = GetNudgeLeft();
+                        this._mover = GetNudgeLeft();
                         break;
                     case NudgeDirection.Right:
-                        this.mover = GetNudgeRight();
+                        this._mover = GetNudgeRight();
                         break;
                 }
             }
-            return this.mover;
+            return this._mover;
         }
 
         public bool CanNudgeUp
         {
             get
             {
-                if (node != null)
+                if (_node != null)
                 {
-                    XmlTreeNode prev = (XmlTreeNode)node.PrevNode;
+                    XmlTreeNode prev = (XmlTreeNode)_node.PrevNode;
                     if (prev != null)
                     {
-                        if (prev.Node is XmlAttribute && !(node.Node is XmlAttribute))
+                        if (prev.Node is XmlAttribute && !(_node.Node is XmlAttribute))
                         {
                             return false;
                         }
-                        else {
+                        else
+                        {
                             return true;
                         }
                     }
@@ -1722,16 +1741,16 @@ namespace XmlNotepad
 
         public MoveNode GetNudgeUp()
         {
-            if (node != null)
+            if (_node != null)
             {
-                XmlTreeNode prev = (XmlTreeNode)node.PrevNode;
+                XmlTreeNode prev = (XmlTreeNode)_node.PrevNode;
                 if (prev != null)
                 {
-                    if (prev.Node is XmlAttribute && !(node.Node is XmlAttribute))
+                    if (prev.Node is XmlAttribute && !(_node.Node is XmlAttribute))
                     {
-                        prev = (XmlTreeNode)node.Parent;
+                        prev = (XmlTreeNode)_node.Parent;
                     }
-                    return new MoveNode(this.view, node, prev, InsertPosition.Before, false);
+                    return new MoveNode(this._view, _node, prev, InsertPosition.Before, false);
                 }
             }
             return null;
@@ -1741,9 +1760,9 @@ namespace XmlNotepad
         {
             get
             {
-                if (node != null)
+                if (_node != null)
                 {
-                    XmlTreeNode next = (XmlTreeNode)node.NextSiblingNode;
+                    XmlTreeNode next = (XmlTreeNode)_node.NextSiblingNode;
                     if (next != null)
                     {
                         return true;
@@ -1754,17 +1773,18 @@ namespace XmlNotepad
         }
         public MoveNode GetNudgeDown()
         {
-            if (node != null)
+            if (_node != null)
             {
-                XmlTreeNode next = (XmlTreeNode)node.NextSiblingNode;
+                XmlTreeNode next = (XmlTreeNode)_node.NextSiblingNode;
                 if (next != null)
                 {
-                    if (node.Parent != next.Parent)
+                    if (_node.Parent != next.Parent)
                     {
-                        return new MoveNode(this.view, node, next, InsertPosition.Before, false);
+                        return new MoveNode(this._view, _node, next, InsertPosition.Before, false);
                     }
-                    else {
-                        return new MoveNode(this.view, node, next, InsertPosition.After, false);
+                    else
+                    {
+                        return new MoveNode(this._view, _node, next, InsertPosition.After, false);
                     }
                 }
             }
@@ -1774,10 +1794,10 @@ namespace XmlNotepad
         {
             get
             {
-                if (node != null)
+                if (_node != null)
                 {
-                    XmlTreeNode xn = (XmlTreeNode)node;
-                    XmlTreeNode parent = (XmlTreeNode)node.Parent;
+                    XmlTreeNode xn = (XmlTreeNode)_node;
+                    XmlTreeNode parent = (XmlTreeNode)_node.Parent;
                     if (parent != null)
                     {
                         if (xn.Node is XmlAttribute)
@@ -1812,17 +1832,18 @@ namespace XmlNotepad
 
         public MoveNode GetNudgeLeft()
         {
-            if (node != null)
+            if (_node != null)
             {
-                XmlTreeNode parent = (XmlTreeNode)node.Parent;
+                XmlTreeNode parent = (XmlTreeNode)_node.Parent;
                 if (parent != null)
                 {
-                    if (node.Index == 0 && node.Index != parent.Children.Count - 1)
+                    if (_node.Index == 0 && _node.Index != parent.Children.Count - 1)
                     {
-                        return new MoveNode(this.view, node, parent, InsertPosition.Before, false);
+                        return new MoveNode(this._view, _node, parent, InsertPosition.Before, false);
                     }
-                    else {
-                        return new MoveNode(this.view, node, parent, InsertPosition.After, false);
+                    else
+                    {
+                        return new MoveNode(this._view, _node, parent, InsertPosition.After, false);
                     }
                 }
             }
@@ -1832,10 +1853,10 @@ namespace XmlNotepad
         {
             get
             {
-                if (node != null)
+                if (_node != null)
                 {
-                    XmlTreeNode prev = (XmlTreeNode)node.PrevNode;
-                    if (prev != null && prev != node.Parent)
+                    XmlTreeNode prev = (XmlTreeNode)_node.PrevNode;
+                    if (prev != null && prev != _node.Parent)
                     {
                         if (prev.Node is XmlElement)
                         {
@@ -1848,14 +1869,14 @@ namespace XmlNotepad
         }
         public MoveNode GetNudgeRight()
         {
-            if (node != null)
+            if (_node != null)
             {
-                XmlTreeNode prev = (XmlTreeNode)node.PrevNode;
-                if (prev != null && prev != node.Parent)
+                XmlTreeNode prev = (XmlTreeNode)_node.PrevNode;
+                if (prev != null && prev != _node.Parent)
                 {
                     if (prev.Node is XmlElement)
                     {
-                        return new MoveNode(this.view, node, prev, InsertPosition.Child, false);
+                        return new MoveNode(this._view, _node, prev, InsertPosition.Child, false);
                     }
                 }
             }
@@ -1872,31 +1893,31 @@ namespace XmlNotepad
     [Serializable]
     public class TreeData : IDataObject
     {
-        int img;
-        string xml;
-        int nodeType;
-        MemoryStream stm;
+        private int _img;
+        private string _xml;
+        private int _nodeType;
+        private MemoryStream _stm;
 
         public TreeData(MemoryStream stm)
         {
-            this.stm = stm;
-            this.img = -1;
+            this._stm = stm;
+            this._img = -1;
         }
 
         public TreeData(string xml)
         {
-            this.xml = xml;
-            this.img = -1;
+            this._xml = xml;
+            this._img = -1;
         }
 
         public TreeData(XmlTreeNode node)
         {
-            img = node.ImageIndex;
+            _img = node.ImageIndex;
             XmlNode x = node.Node;
             if (x != null)
             {
-                nodeType = (int)x.NodeType;
-                this.xml = x.OuterXml;
+                _nodeType = (int)x.NodeType;
+                this._xml = x.OuterXml;
             }
         }
 
@@ -1985,54 +2006,55 @@ namespace XmlNotepad
             {
                 node = view.CreateTreeNode();
 
-                if (this.img == -1 && this.xml != null)
+                if (this._img == -1 && this._xml != null)
                 {
                     Regex regex = new Regex(@"[:_.\w]+\s*=\s*(""[^""]*"")|('[^']*')\s*");
-                    Match m = regex.Match(xml);
-                    string trimmed = xml.Trim();
-                    if (m.Success && m.Index == 0 && m.Length == xml.Length)
+                    Match m = regex.Match(_xml);
+                    string trimmed = _xml.Trim();
+                    if (m.Success && m.Index == 0 && m.Length == _xml.Length)
                     {
-                        nodeType = (int)XmlNodeType.Attribute;
-                        img = (int)NodeImage.Attribute - 1;
+                        _nodeType = (int)XmlNodeType.Attribute;
+                        _img = (int)NodeImage.Attribute - 1;
                     }
                     else if (trimmed.StartsWith("<?"))
                     {
-                        nodeType = (int)XmlNodeType.ProcessingInstruction;
-                        img = (int)NodeImage.PI - 1;
+                        _nodeType = (int)XmlNodeType.ProcessingInstruction;
+                        _img = (int)NodeImage.PI - 1;
                     }
                     else if (trimmed.StartsWith("<!--"))
                     {
-                        nodeType = (int)XmlNodeType.Comment;
-                        img = (int)NodeImage.Comment - 1;
+                        _nodeType = (int)XmlNodeType.Comment;
+                        _img = (int)NodeImage.Comment - 1;
                     }
                     else if (trimmed.StartsWith("<![CDATA["))
                     {
-                        nodeType = (int)XmlNodeType.CDATA;
-                        img = (int)NodeImage.CData - 1;
+                        _nodeType = (int)XmlNodeType.CDATA;
+                        _img = (int)NodeImage.CData - 1;
                     }
                     else if (trimmed.StartsWith("<"))
                     {
-                        nodeType = (int)XmlNodeType.Element;
-                        img = (int)NodeImage.Element - 1;
+                        _nodeType = (int)XmlNodeType.Element;
+                        _img = (int)NodeImage.Element - 1;
                     }
-                    else {
-                        nodeType = (int)XmlNodeType.Text;
-                        img = (int)NodeImage.Text - 1;
+                    else
+                    {
+                        _nodeType = (int)XmlNodeType.Text;
+                        _img = (int)NodeImage.Text - 1;
                     }
                 }
 
                 XmlNode xn = null;
                 XmlNode context = (target != null) ? target.Node : owner;
 
-                if (this.nodeType == (int)XmlNodeType.Attribute)
+                if (this._nodeType == (int)XmlNodeType.Attribute)
                 {
-                    int i = this.xml.IndexOf('=');
+                    int i = this._xml.IndexOf('=');
                     if (i > 0)
                     {
-                        string name = this.xml.Substring(0, i).Trim();
+                        string name = this._xml.Substring(0, i).Trim();
                         XmlName qname = XmlHelpers.ParseName(context, name, XmlNodeType.Attribute);
                         xn = owner.CreateAttribute(qname.Prefix, qname.LocalName, qname.NamespaceUri);
-                        string s = this.xml.Substring(i + 1).Trim();
+                        string s = this._xml.Substring(i + 1).Trim();
                         if (s.Length > 2)
                         {
                             char quote = s[0];
@@ -2043,16 +2065,18 @@ namespace XmlNotepad
                     }
 
                 }
-                else {
+                else
+                {
                     XmlNamespaceManager nsmgr = XmlHelpers.GetNamespaceScope(context);
                     XmlParserContext pcontext = new XmlParserContext(owner.NameTable, nsmgr, null, XmlSpace.None);
                     XmlTextReader r = null;
-                    if (this.xml != null)
+                    if (this._xml != null)
                     {
-                        r = new XmlTextReader(this.xml, XmlNodeType.Element, pcontext);
+                        r = new XmlTextReader(this._xml, XmlNodeType.Element, pcontext);
                     }
-                    else {
-                        r = new XmlTextReader(this.stm, XmlNodeType.Element, pcontext);
+                    else
+                    {
+                        r = new XmlTextReader(this._stm, XmlNodeType.Element, pcontext);
                     }
                     using (r)
                     {
@@ -2088,7 +2112,7 @@ namespace XmlNotepad
                     {
                         if (node.Children.Count <= 1)
                         {
-                            this.img = ((int)NodeImage.Leaf - 1);
+                            this._img = ((int)NodeImage.Leaf - 1);
                         }
                     }
                 }
@@ -2141,7 +2165,7 @@ namespace XmlNotepad
         {
             if (format == typeof(string))
             {
-                return this.xml;
+                return this._xml;
             }
             else if (format == typeof(TreeData))
             {
@@ -2155,7 +2179,7 @@ namespace XmlNotepad
             if (format == DataFormats.Text || format == DataFormats.UnicodeText ||
                 format == DataFormats.GetFormat("XML").Name)
             {
-                return this.xml;
+                return this._xml;
             }
             else if (format == DataFormats.GetFormat(typeof(TreeData).FullName).Name)
             {

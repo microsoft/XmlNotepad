@@ -9,20 +9,20 @@ namespace XmlNotepad
 {
     public class Analytics
     {
-        const string HostName = "microsoft.github.io";
-        const string TrackingId = "UA-89203408-1";
-        string clientId;
-        bool formOptions; // did they use the options dialog during this session?
-        bool formSchemas;
-        bool formSearch;
-        bool csvImport;
-        bool xsltView;
-        bool enabled;
+        private const string HostName = "microsoft.github.io";
+        private const string TrackingId = "UA-89203408-1";
+        private string _clientId;
+        private bool _formOptions; // did they use the options dialog during this session?
+        private bool _formSchemas;
+        private bool _formSearch;
+        private bool _csvImport;
+        private bool _xsltView;
+        private bool _enabled;
 
         public Analytics(string clientId, bool enabled)
         {
-            this.clientId = clientId;
-            this.enabled = enabled;
+            this._clientId = clientId;
+            this._enabled = enabled;
         }
 
         private async void SendMeasurement(string path, string title)
@@ -30,7 +30,7 @@ namespace XmlNotepad
             await HttpProtocol.PostMeasurements(new PageMeasurement()
             {
                 TrackingId = TrackingId,
-                ClientId = this.clientId,
+                ClientId = this._clientId,
                 HostName = HostName,
                 Path = path,
                 Title = title
@@ -39,7 +39,7 @@ namespace XmlNotepad
 
         public void RecordAppLaunched()
         {
-            if (this.enabled)
+            if (this._enabled)
             {
                 SendMeasurement("/App/Launch", "Launch");
             }
@@ -47,45 +47,45 @@ namespace XmlNotepad
 
         public void RecordFormOptions()
         {
-            if (this.enabled && !formOptions)
+            if (this._enabled && !_formOptions)
             {
-                formOptions = true;
+                _formOptions = true;
                 SendMeasurement("/App/FormOptions", "Options");
             }
         }
 
         public void RecordFormSchemas()
         {
-            if (this.enabled && !formSchemas)
+            if (this._enabled && !_formSchemas)
             {
-                formSchemas = true;
+                _formSchemas = true;
                 SendMeasurement("/App/FormSchemas", "Schemas");
             }
         }
 
         public void RecordFormSearch()
         {
-            if (this.enabled && !formSearch)
+            if (this._enabled && !_formSearch)
             {
-                formSearch = true;
+                _formSearch = true;
                 SendMeasurement("/App/FormSearch", "Search");
             }
         }
 
         public void RecordCsvImport()
         {
-            if (this.enabled && !csvImport)
+            if (this._enabled && !_csvImport)
             {
-                csvImport = true;
+                _csvImport = true;
                 SendMeasurement("/App/CsvImport", "CsvImport");
             }
         }
 
         public void RecordXsltView()
         {
-            if (this.enabled && !xsltView)
+            if (this._enabled && !_xsltView)
             {
-                xsltView = true;
+                _xsltView = true;
                 SendMeasurement("/App/XsltView", "XsltView");
             }
         }

@@ -198,9 +198,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DefaultSS.xslt" />
     <EmbeddedResource Include="DynamicHelp.xslt" />
-    <EmbeddedResource Include="..\XmlStats\bin\$(Configuration)\XmlStats.exe">
-      <Link>Resources\XmlStats.exe</Link>
-    </EmbeddedResource>
     <Content Include="placeholder.xslt" />
     <Content Include="Resources\BlueBall.gif" />
     <Content Include="Resources\cdata.ico" />

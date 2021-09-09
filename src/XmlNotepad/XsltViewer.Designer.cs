@@ -146,7 +146,7 @@ namespace XmlNotepad {
         }
 
         void DefaultButton_Click(object sender, System.EventArgs e) {
-            this.SourceFileName.Text=this.model.XsltFileName;
+            this.SourceFileName.Text=this._model.XsltFileName;
         }
 
         #endregion

@@ -11,28 +11,39 @@ using System.Xml;
 using SR = XmlNotepad.StringResources;
 
 
-namespace XmlNotepad {
+namespace XmlNotepad
+{
 
-    public class XmlProxyResolver : XmlUrlResolver {
-        readonly WebProxyService ps;
+    public class XmlProxyResolver : XmlUrlResolver
+    {
+        private readonly WebProxyService _ps;
 
-        public XmlProxyResolver(IServiceProvider site) {
-            ps = site.GetService(typeof(WebProxyService)) as WebProxyService;
+        public XmlProxyResolver(IServiceProvider site)
+        {
+            _ps = site.GetService(typeof(WebProxyService)) as WebProxyService;
             Proxy = HttpWebRequest.DefaultWebProxy;
         }
 
-        public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn) {
-            if (absoluteUri == null) {
+        public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
+        {
+            if (absoluteUri == null)
+            {
                 throw new ArgumentNullException("absoluteUri");
             }
-            if ((absoluteUri.Scheme == "http" || absoluteUri.Scheme == "https" )
-                && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream))) {
-                try {
+            if ((absoluteUri.Scheme == "http" || absoluteUri.Scheme == "https")
+                && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
+            {
+                try
+                {
                     return GetResponse(absoluteUri);
-                } catch (Exception e) {
-                    if (WebProxyService.ProxyAuthenticationRequired(e)) {
-                        WebProxyState state = ps.PrepareWebProxy(this.GetProxy(), absoluteUri.AbsoluteUri, WebProxyState.DefaultCredentials, true);
-                        if (state != WebProxyState.Abort) {
+                }
+                catch (Exception e)
+                {
+                    if (WebProxyService.ProxyAuthenticationRequired(e))
+                    {
+                        WebProxyState state = _ps.PrepareWebProxy(this.GetProxy(), absoluteUri.AbsoluteUri, WebProxyState.DefaultCredentials, true);
+                        if (state != WebProxyState.Abort)
+                        {
                             // try again...
                             return GetResponse(absoluteUri);
                         }
@@ -40,12 +51,15 @@ namespace XmlNotepad {
                     throw;
                 }
 
-            } else {
+            }
+            else
+            {
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
         }
 
-        Stream GetResponse(Uri uri) {
+        Stream GetResponse(Uri uri)
+        {
             WebRequest webReq = WebRequest.Create(uri);
             webReq.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
             webReq.Credentials = CredentialCache.DefaultCredentials;
@@ -54,40 +68,47 @@ namespace XmlNotepad {
             return resp.GetResponseStream();
         }
 
-        IWebProxy GetProxy() {
-            return HttpWebRequest.DefaultWebProxy; 
+        IWebProxy GetProxy()
+        {
+            return HttpWebRequest.DefaultWebProxy;
         }
     }
 
-    public enum WebProxyState {
+    public enum WebProxyState
+    {
         NoCredentials = 0,
         DefaultCredentials = 1,
         CachedCredentials = 2,
         PromptForCredentials = 3,
         Abort = 4
-    } ;
+    };
 
 
-    public class WebProxyService {
-        private readonly IServiceProvider site;
-        private NetworkCredential cachedCredentials;
-        private string currentProxyUrl;
+    public class WebProxyService
+    {
+        private readonly IServiceProvider _site;
+        private NetworkCredential _cachedCredentials;
+        private string _currentProxyUrl;
 
-        public WebProxyService(IServiceProvider site) {
-            this.site = site;
+        public WebProxyService(IServiceProvider site)
+        {
+            this._site = site;
         }
 
         //---------------------------------------------------------------------
         // public methods
         //---------------------------------------------------------------------
-        public static bool ProxyAuthenticationRequired(Exception ex) {
+        public static bool ProxyAuthenticationRequired(Exception ex)
+        {
             bool authNeeded = false;
 
             System.Net.WebException wex = ex as System.Net.WebException;
 
-            if ((wex != null) && (wex.Status == System.Net.WebExceptionStatus.ProtocolError)) {
+            if ((wex != null) && (wex.Status == System.Net.WebExceptionStatus.ProtocolError))
+            {
                 System.Net.HttpWebResponse hwr = wex.Response as System.Net.HttpWebResponse;
-                if ((hwr != null) && (hwr.StatusCode == System.Net.HttpStatusCode.ProxyAuthenticationRequired)) {
+                if ((hwr != null) && (hwr.StatusCode == System.Net.HttpStatusCode.ProxyAuthenticationRequired))
+                {
                     authNeeded = true;
                 }
             }
@@ -103,28 +124,34 @@ namespace XmlNotepad {
         /// <param name="oldProxyState">The current state fo the web call.</param>
         /// <param name="newProxyState">The new state for the web call.</param>
         /// <param name="okToPrompt">Prompt user for credentials if they are not available.</param>
-        public WebProxyState PrepareWebProxy(IWebProxy proxy, string webCallUrl, WebProxyState oldProxyState, bool okToPrompt) {
+        public WebProxyState PrepareWebProxy(IWebProxy proxy, string webCallUrl, WebProxyState oldProxyState, bool okToPrompt)
+        {
             WebProxyState newProxyState = WebProxyState.Abort;
 
-            if (string.IsNullOrEmpty(webCallUrl)) {
+            if (string.IsNullOrEmpty(webCallUrl))
+            {
                 Debug.Fail("PrepareWebProxy called with an empty WebCallUrl.");
                 webCallUrl = "http://go.microsoft.com/fwlink/?LinkId=81947";
             }
 
             // Get the web proxy url for the the current web call.
             Uri webCallProxy = null;
-            if (proxy != null) {
+            if (proxy != null)
+            {
                 webCallProxy = proxy.GetProxy(new Uri(webCallUrl));
             }
 
-            if ((proxy != null) && (webCallProxy != null)) {
+            if ((proxy != null) && (webCallProxy != null))
+            {
                 // get proxy url.
                 string proxyUrl = webCallProxy.Host;
-                if (string.IsNullOrEmpty(currentProxyUrl)) {
-                    currentProxyUrl = proxyUrl;
+                if (string.IsNullOrEmpty(_currentProxyUrl))
+                {
+                    _currentProxyUrl = proxyUrl;
                 }
 
-                switch (oldProxyState) {
+                switch (oldProxyState)
+                {
                     case WebProxyState.NoCredentials:
                         // Add the default credentials only if there aren't any credentials attached to
                         // the DefaultWebProxy. If the first calls attaches the correct credentials, the
@@ -132,7 +159,8 @@ namespace XmlNotepad {
                         // This avoids multiple web calls. Note that state is transitioned to DefaultCredentials
                         // instead of CachedCredentials. This ensures that web calls be tried with the
                         // cached credentials if the currently attached credentials don't result in successful web call.
-                        if ((proxy.Credentials == null)) {
+                        if ((proxy.Credentials == null))
+                        {
                             proxy.Credentials = CredentialCache.DefaultCredentials;
                         }
                         newProxyState = WebProxyState.DefaultCredentials;
@@ -140,13 +168,15 @@ namespace XmlNotepad {
 
                     case WebProxyState.DefaultCredentials:
                         // Fetch cached credentials if they are null or if the proxy url has changed.
-                        if ((cachedCredentials == null) ||
-                            !string.Equals(currentProxyUrl, proxyUrl, StringComparison.OrdinalIgnoreCase)) {
-                            cachedCredentials = GetCachedCredentials(proxyUrl);
+                        if ((_cachedCredentials == null) ||
+                            !string.Equals(_currentProxyUrl, proxyUrl, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _cachedCredentials = GetCachedCredentials(proxyUrl);
                         }
 
-                        if (cachedCredentials != null) {
-                            proxy.Credentials = cachedCredentials;
+                        if (_cachedCredentials != null)
+                        {
+                            proxy.Credentials = _cachedCredentials;
                             newProxyState = WebProxyState.CachedCredentials;
                             break;
                         }
@@ -156,14 +186,20 @@ namespace XmlNotepad {
 
                     case WebProxyState.CachedCredentials:
                     case WebProxyState.PromptForCredentials:
-                        if (okToPrompt) {
-                            if (DialogResult.OK == PromptForCredentials(proxyUrl)) {
-                                proxy.Credentials = cachedCredentials;
+                        if (okToPrompt)
+                        {
+                            if (DialogResult.OK == PromptForCredentials(proxyUrl))
+                            {
+                                proxy.Credentials = _cachedCredentials;
                                 newProxyState = WebProxyState.PromptForCredentials;
-                            } else {
+                            }
+                            else
+                            {
                                 newProxyState = WebProxyState.Abort;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             newProxyState = WebProxyState.Abort;
                         }
                         break;
@@ -174,12 +210,17 @@ namespace XmlNotepad {
                     default:
                         throw new ArgumentException(string.Empty, "oldProxyState");
                 }
-            } else {
+            }
+            else
+            {
                 // No proxy for the webCallUrl scenario.
-                if (oldProxyState == WebProxyState.NoCredentials) {
+                if (oldProxyState == WebProxyState.NoCredentials)
+                {
                     // if it is the first call, change the state and let the web call proceed.
                     newProxyState = WebProxyState.DefaultCredentials;
-                } else {
+                }
+                else
+                {
                     Debug.Fail("This method is called a second time when 407 occurs. A 407 shouldn't have occurred as there is no default proxy.");
                     // We dont have a good idea of the circumstances under which
                     // WebProxy might be null for a url. To be safe, for VS 2005 SP1,
@@ -201,7 +242,8 @@ namespace XmlNotepad {
         /// </summary>
         /// <param name="proxyUrl">The proxy url for which credentials are retrieved.</param>
         /// <returns>The credentails for the proxy.</returns>
-        private static NetworkCredential GetCachedCredentials(string proxyUrl) {
+        private static NetworkCredential GetCachedCredentials(string proxyUrl)
+        {
             return Credentials.GetCachedCredentials(proxyUrl);
         }
 
@@ -210,18 +252,24 @@ namespace XmlNotepad {
         /// </summary>
         /// <param name="proxyUrl">The server that requires credentials.</param>
         /// <returns>Returns the dialog result of the prompt dialog.</returns>
-        private DialogResult PromptForCredentials(string proxyUrl) {
+        private DialogResult PromptForCredentials(string proxyUrl)
+        {
             DialogResult dialogResult = DialogResult.Cancel;
             bool prompt = true;
-            while (prompt) {
+            while (prompt)
+            {
                 prompt = false;
 
                 dialogResult = Credentials.PromptForCredentials(proxyUrl, out NetworkCredential cred);
-                if (DialogResult.OK == dialogResult) {
-                    if (cred != null) {
-                        cachedCredentials = cred;
-                        currentProxyUrl = proxyUrl;
-                    } else {
+                if (DialogResult.OK == dialogResult)
+                {
+                    if (cred != null)
+                    {
+                        _cachedCredentials = cred;
+                        _currentProxyUrl = proxyUrl;
+                    }
+                    else
+                    {
                         // Prompt again for credential as we are not able to create
                         // a NetworkCredential object from the supplied credentials.
                         prompt = true;
@@ -234,7 +282,8 @@ namespace XmlNotepad {
 
     }
 
-    internal sealed class Credentials {
+    internal sealed class Credentials
+    {
         /// <summary>
         /// Prompt the user for credentials.
         /// </summary>
@@ -247,7 +296,8 @@ namespace XmlNotepad {
         /// DialogResult.OK = if Successfully prompted user for credentials.
         /// DialogResult.Cancel = if user cancelled the prompt dialog.
         /// </returns>
-        public static DialogResult PromptForCredentials(string target, out NetworkCredential credential) {
+        public static DialogResult PromptForCredentials(string target, out NetworkCredential credential)
+        {
             DialogResult dr;
             credential = null;
 
@@ -255,7 +305,8 @@ namespace XmlNotepad {
             // Show the OS credential dialog.
             dr = ShowOSCredentialDialog(target, hwndOwner, out string username, out string password);
             // Create the NetworkCredential object.
-            if (dr == DialogResult.OK) {
+            if (dr == DialogResult.OK)
+            {
                 credential = CreateCredentials(username, password, target);
             }
 
@@ -270,11 +321,13 @@ namespace XmlNotepad {
         /// The cached credentials. It will return null if credentails are found
         /// in the cache.
         /// </returns>
-        public static NetworkCredential GetCachedCredentials(string target) {
+        public static NetworkCredential GetCachedCredentials(string target)
+        {
             NetworkCredential cred = null;
 
             // Retrieve credentials from the OS credential store.
-            if (ReadOSCredentials(target, out string username, out string password)) {
+            if (ReadOSCredentials(target, out string username, out string password))
+            {
                 // Create the NetworkCredential object if we successfully
                 // retrieved the credentails from the OS store.
                 cred = CreateCredentials(username, password, target);
@@ -303,7 +356,8 @@ namespace XmlNotepad {
         /// DialogResult.OK = if Successfully prompted user for credentials.
         /// DialogResult.Cancel = if user cancelled the prompt dialog.
         /// </returns>
-        private static DialogResult ShowOSCredentialDialog(string target, IntPtr hwdOwner, out string userName, out string password) {
+        private static DialogResult ShowOSCredentialDialog(string target, IntPtr hwdOwner, out string userName, out string password)
+        {
             DialogResult retValue;
             userName = string.Empty;
             password = string.Empty;
@@ -357,12 +411,15 @@ namespace XmlNotepad {
                 flags);
 
 
-            if (result == NativeMethods.CredUIReturnCodes.NO_ERROR) {
+            if (result == NativeMethods.CredUIReturnCodes.NO_ERROR)
+            {
                 userName = user.ToString();
                 password = pwd.ToString();
 
-                try {
-                    if (Convert.ToBoolean(saveCredentials)) {
+                try
+                {
+                    if (Convert.ToBoolean(saveCredentials))
+                    {
                         // Try reading the credentials back to ensure that we can read the stored credentials. If
                         // the CredUIPromptForCredentials() function is not able successfully call CredGetTargetInfo(),
                         // it will store credentials with credential type as DOMAIN_PASSWORD. For DOMAIN_PASSWORD
@@ -371,7 +428,8 @@ namespace XmlNotepad {
                         bool successfullyReadCredentials = ReadOSCredentials(target, out string storedUserName, out string storedPassword);
                         if (!successfullyReadCredentials ||
                             !string.Equals(userName, storedUserName, StringComparison.Ordinal) ||
-                            !string.Equals(password, storedPassword, StringComparison.Ordinal)) {
+                            !string.Equals(password, storedPassword, StringComparison.Ordinal))
+                        {
                             // We are not able to retrieve the credentials. Try storing them as GENERIC credetails.
 
                             // Create the NativeCredential object.
@@ -381,30 +439,41 @@ namespace XmlNotepad {
                             customCredential.targetName = CreateCustomTarget(target);
                             // Store credentials across sessions.
                             customCredential.persist = (uint)NativeMethods.CRED_PERSIST.LOCAL_MACHINE;
-                            if (!string.IsNullOrEmpty(password)) {
+                            if (!string.IsNullOrEmpty(password))
+                            {
                                 customCredential.credentialBlobSize = (uint)Marshal.SystemDefaultCharSize * ((uint)password.Length);
                                 customCredential.credentialBlob = Marshal.StringToCoTaskMemAuto(password);
                             }
 
-                            try {
+                            try
+                            {
                                 NativeMethods.CredWrite(ref customCredential, 0);
-                            } finally {
-                                if (customCredential.credentialBlob != IntPtr.Zero) {
+                            }
+                            finally
+                            {
+                                if (customCredential.credentialBlob != IntPtr.Zero)
+                                {
                                     Marshal.FreeCoTaskMem(customCredential.credentialBlob);
                                 }
 
                             }
                         }
                     }
-                } catch {
+                }
+                catch
+                {
                     // Ignore that failure to read back the credentials. We still have
                     // username and password to use in the current session.
                 }
 
                 retValue = DialogResult.OK;
-            } else if (result == NativeMethods.CredUIReturnCodes.ERROR_CANCELLED) {
+            }
+            else if (result == NativeMethods.CredUIReturnCodes.ERROR_CANCELLED)
+            {
                 retValue = DialogResult.Cancel;
-            } else {
+            }
+            else
+            {
                 Debug.Fail("CredUIPromptForCredentials failed with result = " + result.ToString());
                 retValue = DialogResult.Cancel;
             }
@@ -420,14 +489,20 @@ namespace XmlNotepad {
         /// <param name="username">username retrieved from user/registry.</param>
         /// <param name="password">password retrieved from user/registry.</param>
         /// <returns></returns>
-        private static NetworkCredential CreateCredentials(string username, string password, string targetServer) {
+        private static NetworkCredential CreateCredentials(string username, string password, string targetServer)
+        {
             NetworkCredential cred = null;
 
-            if ((!string.IsNullOrEmpty(username)) && (!string.IsNullOrEmpty(password))) {
-                if (ParseUsername(username, targetServer, out string user, out string domain)) {
-                    if (string.IsNullOrEmpty(domain)) {
+            if ((!string.IsNullOrEmpty(username)) && (!string.IsNullOrEmpty(password)))
+            {
+                if (ParseUsername(username, targetServer, out string user, out string domain))
+                {
+                    if (string.IsNullOrEmpty(domain))
+                    {
                         cred = new NetworkCredential(user, password);
-                    } else {
+                    }
+                    else
+                    {
                         cred = new NetworkCredential(user, password, domain);
                     }
                 }
@@ -444,11 +519,13 @@ namespace XmlNotepad {
         /// <param name="user">The user part of the username.</param>
         /// <param name="domain">The domain part of the username.</param>
         /// <returns>Returns true if it successfully parsed the username.</returns>
-        private static bool ParseUsername(string username, string targetServer, out string user, out string domain) {
+        private static bool ParseUsername(string username, string targetServer, out string user, out string domain)
+        {
             user = string.Empty;
             domain = string.Empty;
 
-            if (string.IsNullOrEmpty(username)) {
+            if (string.IsNullOrEmpty(username))
+            {
                 return false;
             }
 
@@ -465,7 +542,8 @@ namespace XmlNotepad {
 
             successfullyParsed = (result == NativeMethods.CredUIReturnCodes.NO_ERROR);
 
-            if (successfullyParsed) {
+            if (successfullyParsed)
+            {
                 user = strUser.ToString();
                 domain = strDomain.ToString();
 
@@ -474,7 +552,8 @@ namespace XmlNotepad {
                 // domain component.
                 // Read comments in ShowOSCredentialDialog() for more details.
                 if (!string.IsNullOrEmpty(domain) &&
-                    string.Equals(domain, targetServer, StringComparison.OrdinalIgnoreCase)) {
+                    string.Equals(domain, targetServer, StringComparison.OrdinalIgnoreCase))
+                {
                     domain = string.Empty;
                 }
             }
@@ -489,18 +568,21 @@ namespace XmlNotepad {
         /// <param name="username">The retrieved username.</param>
         /// <param name="password">The retrieved password.</param>
         /// <returns>Returns true if it successfully reads the OS credentials.</returns>
-        private static bool ReadOSCredentials(string target, out string username, out string password) {
+        private static bool ReadOSCredentials(string target, out string username, out string password)
+        {
             username = string.Empty;
             password = string.Empty;
 
-            if (string.IsNullOrEmpty(target)) {
+            if (string.IsNullOrEmpty(target))
+            {
                 return false;
             }
 
             IntPtr credPtr = IntPtr.Zero;
             IntPtr customCredPtr = IntPtr.Zero;
 
-            try {
+            try
+            {
                 bool queriedDomainPassword = false;
                 bool readCredentials = true;
 
@@ -509,27 +591,31 @@ namespace XmlNotepad {
                         target,
                         NativeMethods.CRED_TYPE_GENERIC,
                         0,
-                        out credPtr)) {
+                        out credPtr))
+                {
                     readCredentials = false;
 
                     // Query for the DOMAIN_PASSWORD credential type to retrieve the 
                     // credentials. CredUPromptForCredentials will store credentials
                     // as DOMAIN_PASSWORD credential type if it is not able to resolve
                     // the target using CredGetTargetInfo() function.
-                    if (Marshal.GetLastWin32Error() == NativeMethods.ERROR_NOT_FOUND) {
+                    if (Marshal.GetLastWin32Error() == NativeMethods.ERROR_NOT_FOUND)
+                    {
                         queriedDomainPassword = true;
                         // try queryiing for CRED_TYPE_DOMAIN_PASSWORD
                         if (NativeMethods.CredRead(
                             target,
                             NativeMethods.CRED_TYPE_DOMAIN_PASSWORD,
                             0,
-                            out credPtr)) {
+                            out credPtr))
+                        {
                             readCredentials = true;
                         }
                     }
                 }
 
-                if (readCredentials) {
+                if (readCredentials)
+                {
                     // Get the native credentials if CredRead succeeds.
                     NativeMethods.NativeCredential nativeCredential = (NativeMethods.NativeCredential)Marshal.PtrToStructure(credPtr, typeof(NativeMethods.NativeCredential));
                     password = (nativeCredential.credentialBlob != IntPtr.Zero) ?
@@ -542,15 +628,18 @@ namespace XmlNotepad {
                     // we are not able to retrieve password, we query the GENERIC credentials to
                     // retrieve the password. Read comments in the ShowOSCredentialDialog() funtion
                     // for more details.
-                    if (string.IsNullOrEmpty(password) && queriedDomainPassword) {
+                    if (string.IsNullOrEmpty(password) && queriedDomainPassword)
+                    {
                         // Read custom credentials.
                         if (NativeMethods.CredRead(
                                 CreateCustomTarget(target),
                                 NativeMethods.CRED_TYPE_GENERIC,
                                 0,
-                                out customCredPtr)) {
+                                out customCredPtr))
+                        {
                             NativeMethods.NativeCredential customNativeCredential = (NativeMethods.NativeCredential)Marshal.PtrToStructure(customCredPtr, typeof(NativeMethods.NativeCredential));
-                            if (string.Equals(username, customNativeCredential.userName, StringComparison.OrdinalIgnoreCase)) {
+                            if (string.Equals(username, customNativeCredential.userName, StringComparison.OrdinalIgnoreCase))
+                            {
                                 password = (customNativeCredential.credentialBlob != IntPtr.Zero) ?
                                                         Marshal.PtrToStringUni(customNativeCredential.credentialBlob, (int)(customNativeCredential.credentialBlobSize / Marshal.SystemDefaultCharSize))
                                                         : string.Empty;
@@ -558,15 +647,21 @@ namespace XmlNotepad {
                         }
                     }
                 }
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 username = string.Empty;
                 password = string.Empty;
-            } finally {
-                if (credPtr != IntPtr.Zero) {
+            }
+            finally
+            {
+                if (credPtr != IntPtr.Zero)
+                {
                     NativeMethods.CredFree(credPtr);
                 }
 
-                if (customCredPtr != IntPtr.Zero) {
+                if (customCredPtr != IntPtr.Zero)
+                {
                     NativeMethods.CredFree(customCredPtr);
                 }
             }
@@ -574,7 +669,8 @@ namespace XmlNotepad {
             bool successfullyReadCredentials = true;
 
             if (string.IsNullOrEmpty(username) ||
-                string.IsNullOrEmpty(password)) {
+                string.IsNullOrEmpty(password))
+            {
                 username = string.Empty;
                 password = string.Empty;
                 successfullyReadCredentials = false;
@@ -588,8 +684,10 @@ namespace XmlNotepad {
         /// </summary>
         /// <param name="target">The credetial target.</param>
         /// <returns>The generic target.</returns>
-        private static string CreateCustomTarget(string target) {
-            if (string.IsNullOrEmpty(target)) {
+        private static string CreateCustomTarget(string target)
+        {
+            if (string.IsNullOrEmpty(target))
+            {
                 return string.Empty;
             }
 
@@ -600,7 +698,8 @@ namespace XmlNotepad {
 
     #region NativeMethods
 
-    static class NativeMethods {
+    static class NativeMethods
+    {
         private const string advapi32Dll = "advapi32.dll";
         private const string credUIDll = "credui.dll";
 
@@ -611,7 +710,8 @@ namespace XmlNotepad {
         ERROR_LOGON_FAILURE = 1326;  // Logon failure: unknown user name or bad password.
 
         [Flags]
-        public enum CREDUI_FLAGS : uint {
+        public enum CREDUI_FLAGS : uint
+        {
             INCORRECT_PASSWORD = 0x1,
             DO_NOT_PERSIST = 0x2,
             REQUEST_ADMINISTRATOR = 0x4,
@@ -632,7 +732,8 @@ namespace XmlNotepad {
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public class CREDUI_INFO : IDisposable {
+        public class CREDUI_INFO : IDisposable
+        {
             public int cbSize;
             public IntPtr hwndParentCERParent;
             [MarshalAs(UnmanagedType.LPWStr)]
@@ -641,12 +742,14 @@ namespace XmlNotepad {
             public string pszCaptionText;
             public IntPtr hbmBannerCERHandle;
 
-            public void Dispose() {
+            public void Dispose()
+            {
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }
 
-            protected virtual void Dispose(bool disposing) {
+            protected virtual void Dispose(bool disposing)
+            {
 
                 // Free the unmanaged resource ...
                 hwndParentCERParent = IntPtr.Zero;
@@ -654,12 +757,14 @@ namespace XmlNotepad {
 
             }
 
-            ~CREDUI_INFO() {
+            ~CREDUI_INFO()
+            {
                 Dispose(false);
             }
         }
 
-        public enum CredUIReturnCodes : uint {
+        public enum CredUIReturnCodes : uint
+        {
             NO_ERROR = 0,
             ERROR_CANCELLED = 1223,
             ERROR_NO_SUCH_LOGON_SESSION = 1312,
@@ -672,7 +777,7 @@ namespace XmlNotepad {
 
         // Copied from wincred.h
         public const uint
-            // Values of the Credential Type field.
+        // Values of the Credential Type field.
         CRED_TYPE_GENERIC = 1,
         CRED_TYPE_DOMAIN_PASSWORD = 2,
         CRED_TYPE_DOMAIN_CERTIFICATE = 3,
@@ -695,7 +800,8 @@ namespace XmlNotepad {
         CREDUI_MAX_USERNAME_LENGTH = CRED_MAX_USERNAME_LENGTH,
         CREDUI_MAX_PASSWORD_LENGTH = (CRED_MAX_CREDENTIAL_BLOB_SIZE / 2);
 
-        internal enum CRED_PERSIST : uint {
+        internal enum CRED_PERSIST : uint
+        {
             NONE = 0,
             SESSION = 1,
             LOCAL_MACHINE = 2,
@@ -703,7 +809,8 @@ namespace XmlNotepad {
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct NativeCredential {
+        public struct NativeCredential
+        {
             public uint flags;
             public uint type;
             public string targetName;
@@ -724,11 +831,11 @@ namespace XmlNotepad {
         public static extern bool
         CredRead(
             [MarshalAs(UnmanagedType.LPWStr)]
-			string targetName,
+            string targetName,
             [MarshalAs(UnmanagedType.U4)]
-			uint type,
+            uint type,
             [MarshalAs(UnmanagedType.U4)]
-			uint flags,
+            uint flags,
             out IntPtr credential
             );
 
@@ -738,7 +845,7 @@ namespace XmlNotepad {
         CredWrite(
             ref NativeCredential Credential,
             [MarshalAs(UnmanagedType.U4)]
-			uint flags
+            uint flags
             );
 
         [DllImport(advapi32Dll)]
@@ -751,17 +858,17 @@ namespace XmlNotepad {
         public static extern CredUIReturnCodes CredUIPromptForCredentials(
             CREDUI_INFO pUiInfo,  // Optional (one can pass null here)
             [MarshalAs(UnmanagedType.LPWStr)]
-			string targetName,
+            string targetName,
             IntPtr Reserved,      // Must be 0 (IntPtr.Zero)
             int iError,
             [MarshalAs(UnmanagedType.LPWStr)]
-			StringBuilder pszUserName,
+            StringBuilder pszUserName,
             [MarshalAs(UnmanagedType.U4)]
-			uint ulUserNameMaxChars,
+            uint ulUserNameMaxChars,
             [MarshalAs(UnmanagedType.LPWStr)]
-			StringBuilder pszPassword,
+            StringBuilder pszPassword,
             [MarshalAs(UnmanagedType.U4)]
-			uint ulPasswordMaxChars,
+            uint ulPasswordMaxChars,
             ref int pfSave,
             CREDUI_FLAGS dwFlags);
 
@@ -775,15 +882,15 @@ namespace XmlNotepad {
         [DllImport(credUIDll, CharSet = CharSet.Auto, SetLastError = true, EntryPoint = "CredUIParseUserNameW")]
         public static extern CredUIReturnCodes CredUIParseUserName(
             [MarshalAs(UnmanagedType.LPWStr)]
-			string strUserName,
+            string strUserName,
             [MarshalAs(UnmanagedType.LPWStr)]
-			StringBuilder strUser,
+            StringBuilder strUser,
             [MarshalAs(UnmanagedType.U4)]
-			uint iUserMaxChars,
+            uint iUserMaxChars,
             [MarshalAs(UnmanagedType.LPWStr)]
-			StringBuilder strDomain,
+            StringBuilder strDomain,
             [MarshalAs(UnmanagedType.U4)]
-			uint iDomainMaxChars
+            uint iDomainMaxChars
             );
     }
 

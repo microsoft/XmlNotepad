@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Xml;
@@ -44,6 +45,8 @@ namespace XmlNotepad
         private readonly Hashtable _map = new Hashtable();
         private Timer _timer;
         private PersistentFileNames _persistentFileNames;
+
+        public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
 
         /// <summary>
         /// This event is raised when a particular setting has been changed.
@@ -457,6 +460,59 @@ namespace XmlNotepad
         {
             object settingValue = this[settingName];
             return settingValue != null ? settingValue.ToString() : defaultValue;
+        }
+
+        public Hashtable GetDefaultColors(ColorTheme theme)
+        {
+            if (theme == ColorTheme.Light)
+            {
+                System.Collections.Hashtable light = new System.Collections.Hashtable();
+                light["Element"] = Color.FromArgb(0, 64, 128);
+                light["Attribute"] = Color.Maroon;
+                light["Text"] = Color.Black;
+                light["Comment"] = Color.Green;
+                light["PI"] = Color.Purple;
+                light["CDATA"] = Color.Gray;
+                light["Background"] = Color.White;
+                light["ContainerBackground"] = Color.AliceBlue;
+                light["EditorBackground"] = Color.LightSteelBlue;
+                return light;
+            }
+            else
+            {
+                System.Collections.Hashtable dark = new System.Collections.Hashtable();
+                dark["Element"] = Color.FromArgb(0x35, 0x7D, 0xCE);
+                dark["Attribute"] = Color.FromArgb(0x92, 0xCA, 0xF3);
+                dark["Text"] = Color.FromArgb(0x94, 0xB7, 0xC8);
+                dark["Comment"] = Color.FromArgb(0x45, 0x62, 0x23);
+                dark["PI"] = Color.FromArgb(0xAC, 0x91, 0x6A);
+                dark["CDATA"] = Color.FromArgb(0xC2, 0xCB, 0x85);
+                dark["Background"] = Color.FromArgb(0x1e, 0x1e, 0x1e);
+                dark["ContainerBackground"] = Color.FromArgb(0x25, 0x25, 0x26);
+                dark["EditorBackground"] = Color.FromArgb(24, 24, 44);
+                return dark;
+            }
+        }
+
+        public void AddDefaultColors(string name, ColorTheme theme)
+        {
+            Hashtable table = (Hashtable)this[name];
+            if (table == null)
+            {
+                table = new Hashtable();
+                this[name] = table;
+            }
+
+            Hashtable defaults = this.GetDefaultColors(theme);
+
+            // Merge any undefined colors.
+            foreach (string key in defaults.Keys)
+            {
+                if (!table.ContainsKey(key))
+                {
+                    table.Add(key, defaults[key]);
+                }
+            }
         }
 
     }

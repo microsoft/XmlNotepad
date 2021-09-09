@@ -19,32 +19,34 @@ namespace XmlNotepad
 
     public partial class XsltControl : UserControl
     {
-        readonly Stopwatch urlWatch = new Stopwatch();
-        string html;
-        private string filename;
-        DateTime loaded;
-        Uri baseUri;
-        PerformanceInfo info = null;
-        XslCompiledTransform xslt;
-        XmlDocument xsltdoc;
-        XslCompiledTransform defaultss;
-        Uri xsltUri;
-        ISite site;
-        XmlUrlResolver resolver;
-        private Settings settings;
-        string defaultSSResource = "XmlNotepad.DefaultSS.xslt";
-        readonly IDictionary<Uri, bool> trusted = new Dictionary<Uri, bool>();
-        bool webInitialized;
-        bool webView2Supported;
-        string tempFile;
-        string previousOutputFile;
+        private readonly Stopwatch _urlWatch = new Stopwatch();
+        private string _html;
+        private string _fileName;
+        private DateTime _loaded;
+        private Uri _baseUri;
+        private PerformanceInfo _info = null;
+        private XslCompiledTransform _xslt;
+        private XmlDocument _xsltdoc;
+        private XslCompiledTransform _defaultss;
+        private Uri _xsltUri;
+        private ISite _site;
+        private XmlUrlResolver _resolver;
+        private Settings _settings;
+        private string _defaultSSResource = "XmlNotepad.DefaultSS.xslt";
+        private readonly IDictionary<Uri, bool> _trusted = new Dictionary<Uri, bool>();
+        private bool _webInitialized;
+        private bool _webView2Supported;
+        private string _tempFile;
+        private string _previousOutputFile;
 
         public event EventHandler<Exception> WebBrowserException;
+
+        public event EventHandler<PerformanceInfo> LoadCompleted;
 
         public XsltControl()
         {
             InitializeComponent();
-            resolver = new XmlUrlResolver();
+            _resolver = new XmlUrlResolver();
         }
 
         /// <summary>
@@ -58,17 +60,17 @@ namespace XmlNotepad
             CleanupTempFile();
         }
 
-        void CleanupTempFile() 
-        { 
-            if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
+        void CleanupTempFile()
+        {
+            if (!string.IsNullOrEmpty(_tempFile) && File.Exists(_tempFile))
             {
                 try
                 {
-                    File.Delete(tempFile);
+                    File.Delete(_tempFile);
                 }
                 catch { }
             }
-            this.tempFile = null;
+            this._tempFile = null;
         }
 
         private async void InitializeBrowser(string version)
@@ -78,7 +80,7 @@ namespace XmlNotepad
                 this.BrowserVersion = version;
                 if (version == "WebView2")
                 {
-                    if (!this.webView2Supported)
+                    if (!this._webView2Supported)
                     {
                         this.webBrowser2.CoreWebView2InitializationCompleted -= OnCoreWebView2InitializationCompleted;
                         this.webBrowser2.CoreWebView2InitializationCompleted += OnCoreWebView2InitializationCompleted;
@@ -96,27 +98,27 @@ namespace XmlNotepad
                 }
 
                 Reload();
-            } 
+            }
             catch (Exception ex)
             {
                 // fall back on old web browser control
                 RaiseBrowserException(new WebView2Exception(ex.Message));
                 this.BrowserVersion = "WebBrowser";
-                this.settings["BrowserVersion"] = "WebBrowser";
+                this._settings["BrowserVersion"] = "WebBrowser";
                 WebBrowserFallback();
-                this.settings["WebView2Exception"] = ex.Message;
+                this._settings["WebView2Exception"] = ex.Message;
             }
         }
 
         private void Reload()
         {
-            if (!string.IsNullOrEmpty(this.filename))
+            if (!string.IsNullOrEmpty(this._fileName))
             {
-                DisplayFile(filename);
+                DisplayFile(_fileName);
             }
-            else if (!string.IsNullOrEmpty(html))
+            else if (!string.IsNullOrEmpty(_html))
             {
-                Display(html);
+                Display(_html);
             }
         }
 
@@ -132,11 +134,11 @@ namespace XmlNotepad
 
         private void OnWebDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (LoadCompleted != null && this.info != null)
+            if (LoadCompleted != null && this._info != null)
             {
-                this.info.BrowserMilliseconds = this.urlWatch.ElapsedMilliseconds;
-                this.info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
-                LoadCompleted(this, this.info);
+                this._info.BrowserMilliseconds = this._urlWatch.ElapsedMilliseconds;
+                this._info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
+                LoadCompleted(this, this._info);
             }
         }
 
@@ -157,13 +159,13 @@ namespace XmlNotepad
                 this.webBrowser2.Visible = true;
                 this.webBrowser1.Visible = false;
                 this.webBrowser2.ZoomFactor = 1.25;
-                this.webView2Supported = true;
+                this._webView2Supported = true;
             }
             else
             {
                 WebBrowserFallback();
             }
-            webInitialized = true;
+            _webInitialized = true;
         }
 
         private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
@@ -182,52 +184,50 @@ namespace XmlNotepad
             this.webBrowser1.ScriptErrorsSuppressed = true;
             this.webBrowser1.WebBrowserShortcutsEnabled = true;
             this.webBrowser1.DocumentCompleted += OnWebDocumentCompleted;
-            this.webInitialized = true; // no callback from this guy.
+            this._webInitialized = true; // no callback from this guy.
         }
 
         private void CoreWebView2_DOMContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
         {
-            if (LoadCompleted != null && this.info != null)
+            if (LoadCompleted != null && this._info != null)
             {
-                this.info.BrowserMilliseconds = this.urlWatch.ElapsedMilliseconds;
-                this.info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
-                LoadCompleted(this, this.info);
+                this._info.BrowserMilliseconds = this._urlWatch.ElapsedMilliseconds;
+                this._info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
+                LoadCompleted(this, this._info);
             }
         }
 
         internal void DeletePreviousOutput()
         {
-            if (!string.IsNullOrEmpty(this.previousOutputFile) && this.tempFile != this.previousOutputFile)
+            if (!string.IsNullOrEmpty(this._previousOutputFile) && this._tempFile != this._previousOutputFile)
             {
-                if (File.Exists(this.previousOutputFile))
+                if (File.Exists(this._previousOutputFile))
                 {
                     try
                     {
-                        File.Delete(this.previousOutputFile);
-                        this.previousOutputFile = null;
+                        File.Delete(this._previousOutputFile);
+                        this._previousOutputFile = null;
                     }
                     catch { }
                 }
             }
         }
 
-        public event EventHandler<PerformanceInfo> LoadCompleted;
-
         private bool UseWebView2()
         {
-            return this.webView2Supported && this.BrowserVersion == "WebView2";
+            return this._webView2Supported && this.BrowserVersion == "WebView2";
         }
 
         public void DisplayFile(string filename)
         {
-            if (!this.webInitialized)
+            if (!this._webInitialized)
             {
                 return;
             }
-            this.html = null;
-            this.filename = filename;
-            urlWatch.Reset();
-            urlWatch.Start();
+            this._html = null;
+            this._fileName = filename;
+            _urlWatch.Reset();
+            _urlWatch.Start();
 
             this.webBrowser2.Visible = UseWebView2();
             this.webBrowser1.Visible = !UseWebView2();
@@ -245,12 +245,12 @@ namespace XmlNotepad
                     {
                         this.webBrowser2.Source = uri;
                     }
-                } 
+                }
                 catch (Exception e)
                 {
                     RaiseBrowserException(e);
                     // revert, did user uninstall WebView2?
-                    this.webView2Supported = false;
+                    this._webView2Supported = false;
                     WebBrowserFallback();
                 }
             }
@@ -261,7 +261,7 @@ namespace XmlNotepad
                 try
                 {
                     this.webBrowser1.Navigate(filename);
-                } 
+                }
                 catch (Exception e)
                 {
                     // tell the user?
@@ -272,27 +272,27 @@ namespace XmlNotepad
 
         public Uri BaseUri
         {
-            get { return this.baseUri; }
-            set { this.baseUri = value; }
+            get { return this._baseUri; }
+            set { this._baseUri = value; }
         }
 
         Uri GetBaseUri()
         {
-            if (this.baseUri == null)
-            {   
-                this.baseUri = new Uri(Application.StartupPath + "/");
+            if (this._baseUri == null)
+            {
+                this._baseUri = new Uri(Application.StartupPath + "/");
             }
 
-            return this.baseUri;
+            return this._baseUri;
         }
 
         private void Display(string content)
         {
             CleanupTempFile();
-            if (content != this.html && webInitialized)
+            if (content != this._html && _webInitialized)
             {
-                urlWatch.Reset();
-                urlWatch.Start();
+                _urlWatch.Reset();
+                _urlWatch.Start();
 
                 this.webBrowser2.Visible = UseWebView2();
                 this.webBrowser1.Visible = !UseWebView2();
@@ -307,17 +307,17 @@ namespace XmlNotepad
                         }
                         // this has a 1mb limit for some unknown reason.
                         this.webBrowser2.NavigateToString(content);
-                        this.html = content;
-                        this.filename = null;
+                        this._html = content;
+                        this._fileName = null;
                         return;
-                    } 
+                    }
                     catch (Exception e)
                     {
                         RaiseBrowserException(e);
                         // revert, did user uninstall WebView2?
                         this.webBrowser2.Visible = false;
                         this.webBrowser1.Visible = true;
-                        this.webView2Supported = false;
+                        this._webView2Supported = false;
 
                     }
                 }
@@ -327,13 +327,13 @@ namespace XmlNotepad
                     try
                     {
                         this.webBrowser1.DocumentText = content;
-                    } 
+                    }
                     catch (Exception e)
                     {
                         RaiseBrowserException(e);
                     }
-                    this.html = content;
-                    this.filename = null;
+                    this._html = content;
+                    this._fileName = null;
                 }
             }
         }
@@ -354,37 +354,37 @@ namespace XmlNotepad
 
         public string DefaultStylesheetResource
         {
-            get { return this.defaultSSResource; }
-            set { this.defaultSSResource = value; }
+            get { return this._defaultSSResource; }
+            set { this._defaultSSResource = value; }
         }
 
         public void SetSite(ISite site)
         {
-            this.site = site;
+            this._site = site;
             IServiceProvider sp = (IServiceProvider)site;
-            this.resolver = new XmlProxyResolver(sp);
-            this.settings = (Settings)sp.GetService(typeof(Settings));
-            this.settings.Changed += OnSettingsChanged;
+            this._resolver = new XmlProxyResolver(sp);
+            this._settings = (Settings)sp.GetService(typeof(Settings));
+            this._settings.Changed += OnSettingsChanged;
 
             // initial settings.
-            this.IgnoreDTD = this.settings.GetBoolean("IgnoreDTD");
-            this.EnableScripts = this.settings.GetBoolean("EnableXsltScripts");
-            this.InitializeBrowser(this.settings.GetString("BrowserVersion"));
+            this.IgnoreDTD = this._settings.GetBoolean("IgnoreDTD");
+            this.EnableScripts = this._settings.GetBoolean("EnableXsltScripts");
+            this.InitializeBrowser(this._settings.GetString("BrowserVersion"));
         }
 
         private void OnSettingsChanged(object sender, string name)
         {
             if (name == "IgnoreDTD")
             {
-                this.IgnoreDTD = this.settings.GetBoolean("IgnoreDTD");
+                this.IgnoreDTD = this._settings.GetBoolean("IgnoreDTD");
             }
             else if (name == "EnableXsltScripts")
             {
-                this.EnableScripts = this.settings.GetBoolean("EnableXsltScripts");
+                this.EnableScripts = this._settings.GetBoolean("EnableXsltScripts");
             }
             else if (name == "BrowserVersion")
             {
-                this.InitializeBrowser(this.settings.GetString("BrowserVersion"));
+                this.InitializeBrowser(this._settings.GetString("BrowserVersion"));
             }
         }
 
@@ -397,7 +397,7 @@ namespace XmlNotepad
         /// <returns>The output file name or null if DisableOutputFile is true</returns>
         public string DisplayXsltResults(XmlDocument context, string xsltfilename, string outpath = null)
         {
-            if (!this.webInitialized)
+            if (!this._webInitialized)
             {
                 return null;
             }
@@ -413,26 +413,26 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    resolved = new Uri(baseUri, xsltfilename);
-                    if (resolved != this.xsltUri || IsModified())
+                    resolved = new Uri(_baseUri, xsltfilename);
+                    if (resolved != this._xsltUri || IsModified())
                     {
-                        xslt = new XslCompiledTransform();
-                        this.loaded = DateTime.Now;
+                        _xslt = new XslCompiledTransform();
+                        this._loaded = DateTime.Now;
                         var settings = new XsltSettings(true, this.EnableScripts);
-                        settings.EnableScript = (trusted.ContainsKey(resolved));
+                        settings.EnableScript = (_trusted.ContainsKey(resolved));
                         var rs = new XmlReaderSettings();
                         rs.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                        rs.XmlResolver = resolver;
+                        rs.XmlResolver = _resolver;
                         using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
                         {
-                            xslt.Load(r, settings, resolver);
+                            _xslt.Load(r, settings, _resolver);
                         }
 
                         // the XSLT DOM is also handy to have around for GetOutputMethod
-                        this.xsltdoc = new XmlDocument();
-                        this.xsltdoc.Load(resolved.AbsoluteUri);
+                        this._xsltdoc = new XmlDocument();
+                        this._xsltdoc.Load(resolved.AbsoluteUri);
                     }
-                    transform = xslt;
+                    transform = _xslt;
                 }
 
                 if (string.IsNullOrEmpty(outpath))
@@ -440,13 +440,13 @@ namespace XmlNotepad
                     if (!DisableOutputFile)
                     {
                         if (!string.IsNullOrEmpty(xsltfilename))
-                        {                            
+                        {
                             outpath = this.GetXsltOutputFileName(xsltfilename);
                         }
                         else
                         {
                             // default stylesheet produces html
-                            this.tempFile = outpath = GetWritableFileName("DefaultXsltOutput.htm");
+                            this._tempFile = outpath = GetWritableFileName("DefaultXsltOutput.htm");
                         }
                     }
                 }
@@ -467,7 +467,7 @@ namespace XmlNotepad
                     }
 
                     var settings = new XmlReaderSettings();
-                    settings.XmlResolver = new XmlProxyResolver(this.site);
+                    settings.XmlResolver = new XmlProxyResolver(this._site);
                     settings.DtdProcessing = this.IgnoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
                     var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, GetBaseUri().AbsoluteUri);
                     if (string.IsNullOrEmpty(outpath))
@@ -475,14 +475,14 @@ namespace XmlNotepad
                         using (StringWriter writer = new StringWriter())
                         {
                             transform.Transform(xmlReader, null, writer);
-                            this.xsltUri = resolved;
+                            this._xsltUri = resolved;
                             Display(writer.ToString());
                         }
                     }
                     else
                     {
                         bool noBom = false;
-                        Settings appSettings = (Settings)this.site.GetService(typeof(Settings));
+                        Settings appSettings = (Settings)this._site.GetService(typeof(Settings));
                         if (appSettings != null)
                         {
                             noBom = (bool)appSettings["NoByteOrderMark"];
@@ -505,10 +505,10 @@ namespace XmlNotepad
                                 watch.Start();
                                 transform.Transform(xmlReader, null, writer);
                                 watch.Stop();
-                                this.info = new PerformanceInfo();
-                                this.info.XsltMilliseconds = watch.ElapsedMilliseconds;
+                                this._info = new PerformanceInfo();
+                                this._info.XsltMilliseconds = watch.ElapsedMilliseconds;
                                 Debug.WriteLine("Transform in {0} milliseconds", watch.ElapsedMilliseconds);
-                                this.xsltUri = resolved;
+                                this._xsltUri = resolved;
                             }
                         }
 
@@ -520,11 +520,11 @@ namespace XmlNotepad
             {
                 if (x.Message.Contains("XsltSettings"))
                 {
-                    if (!trusted.ContainsKey(resolved) &&
+                    if (!_trusted.ContainsKey(resolved) &&
                         MessageBox.Show(this, SR.XslScriptCodePrompt, SR.XslScriptCodeCaption,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        trusted[resolved] = true;
+                        _trusted[resolved] = true;
                         return DisplayXsltResults(context, xsltfilename, outpath);
                     }
                 }
@@ -535,7 +535,7 @@ namespace XmlNotepad
                 WriteError(x);
             }
 
-            this.previousOutputFile = outpath;
+            this._previousOutputFile = outpath;
             return outpath;
         }
 
@@ -547,10 +547,10 @@ namespace XmlNotepad
             string outpath = null;
             if (string.IsNullOrEmpty(xsltfilename))
             {
-                var basePath = Path.GetFileNameWithoutExtension(this.baseUri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped));
+                var basePath = Path.GetFileNameWithoutExtension(this._baseUri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped));
                 outpath = basePath + "_output" + ext;
             }
-            else 
+            else
             {
                 outpath = Path.GetFileNameWithoutExtension(xsltfilename) + "_output" + ext;
             }
@@ -568,25 +568,25 @@ namespace XmlNotepad
 
                 // if the fileName is a full path then honor that request.
                 Uri uri = new Uri(fileName, UriKind.RelativeOrAbsolute);
-                var resolved = new Uri(this.baseUri, uri);
+                var resolved = new Uri(this._baseUri, uri);
 
                 // If the XML file is from HTTP then put XSLT output in the %TEMP% folder.
                 if (resolved.Scheme != "file")
                 {
                     uri = new Uri(Path.GetTempPath());
-                    this.tempFile = new Uri(uri, fileName).LocalPath;
-                    return this.tempFile;
+                    this._tempFile = new Uri(uri, fileName).LocalPath;
+                    return this._tempFile;
                 }
 
                 string path = resolved.LocalPath;
-                if (resolved == this.baseUri)
+                if (resolved == this._baseUri)
                 {
                     // can't write to the same location as the XML file or we will lose the XML file!
                     path = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_output" + Path.GetExtension(path));
                 }
 
                 var dir = Path.GetDirectoryName(path);
-                if (!Directory.Exists(dir))
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
@@ -607,8 +607,8 @@ namespace XmlNotepad
 
             // We don't have write permissions?
             Uri baseUri = new Uri(Path.GetTempPath());
-            this.tempFile = new Uri(baseUri, fileName).LocalPath;
-            return this.tempFile;
+            this._tempFile = new Uri(baseUri, fileName).LocalPath;
+            return this._tempFile;
         }
 
         public string GetOutputFileFilter(string customFileName = null)
@@ -633,14 +633,14 @@ namespace XmlNotepad
             string ext = ".xml";
             try
             {
-                if (this.xsltdoc == null)
+                if (this._xsltdoc == null)
                 {
                     string path = customFileName;
-                    var resolved = new Uri(baseUri, path);
-                    this.xsltdoc = new XmlDocument();
-                    this.xsltdoc.Load(resolved.AbsoluteUri);
+                    var resolved = new Uri(_baseUri, path);
+                    this._xsltdoc = new XmlDocument();
+                    this._xsltdoc.Load(resolved.AbsoluteUri);
                 }
-                var method = GetOutputMethod(this.xsltdoc);
+                var method = GetOutputMethod(this._xsltdoc);
                 if (method.ToLower() == "html")
                 {
                     ext = ".htm";
@@ -720,11 +720,11 @@ namespace XmlNotepad
 
         XslCompiledTransform GetDefaultStylesheet()
         {
-            if (defaultss != null)
+            if (_defaultss != null)
             {
-                return defaultss;
+                return _defaultss;
             }
-            using (Stream stream = this.GetType().Assembly.GetManifestResourceStream(this.defaultSSResource))
+            using (Stream stream = this.GetType().Assembly.GetManifestResourceStream(this._defaultSSResource))
             {
                 if (null != stream)
                 {
@@ -732,28 +732,28 @@ namespace XmlNotepad
                     {
                         XslCompiledTransform t = new XslCompiledTransform();
                         t.Load(reader);
-                        defaultss = t;
+                        _defaultss = t;
                     }
                     // the XSLT DOM is also handy to have around for GetOutputMethod
                     stream.Seek(0, SeekOrigin.Begin);
-                    this.xsltdoc = new XmlDocument();
-                    this.xsltdoc.Load(stream);
+                    this._xsltdoc = new XmlDocument();
+                    this._xsltdoc.Load(stream);
                 }
                 else
                 {
-                    throw new Exception(string.Format("You have a build problem: resource '{0} not found", this.defaultSSResource));                    
+                    throw new Exception(string.Format("You have a build problem: resource '{0} not found", this._defaultSSResource));
                 }
             }
-            return defaultss;
+            return _defaultss;
         }
 
         bool IsModified()
         {
-            if (this.xsltUri.IsFile)
+            if (this._xsltUri.IsFile)
             {
-                string path = this.xsltUri.LocalPath;
+                string path = this._xsltUri.LocalPath;
                 DateTime lastWrite = File.GetLastWriteTime(path);
-                return this.loaded < lastWrite;
+                return this._loaded < lastWrite;
             }
             return false;
         }

@@ -4,6 +4,25 @@ You can build and test XML Notepad using [Visual Studio 2019](https://visualstud
 .NET frameworks, so be sure to install the ".NET desktop development" feature when using the Visual Studio Installer.
 XML Notepad targets .NET Framework version 4.7.2 which is the default target for VS 2019.
 
+### Coding Guidelines
+
+XmlNotepad follows the standard [C# Coding Guidelines](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) with
+the default C# formatting settings that ship with VS 2019.
+
+The following additional conventions are also followed:
+
+1. All if/else statements use curly brackets.
+1. Add private/internal/public access explicitly on all members.
+1. Do not use "s_" prefix on statics, instead use Class name qualification.
+1. All private fields prefixed with `_` except for WinForms generated code.
+1. Accessing fields with `this.` is ok, do not strip `this.` prefix if used.
+1. Constants are CamelCased even if they are private to a class.
+1. Try and collect all private fields at the top of the class.
+1. Public fields are CamelCased like public properties and methods.
+1. Generally one class per file, unless there is a super natural family of classes, like Commands.cs, that would cause an unnecessary explosion in number of files.
+1. Nice to have blank line between methods.
+1. Use "Remove and Sort Usings" command in VS.
+
 ### Build the code
 
 First clone the repo:

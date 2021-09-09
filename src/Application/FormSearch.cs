@@ -8,18 +8,20 @@ using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
-    public partial class FormSearch : Form {
-        IFindTarget target;
-        Settings settings;
-        bool findOnly;
-        TabNavigator tnav;
-        FindFlags lastFlags = FindFlags.Normal;
-        string lastExpression;
-        const int MaxRecentlyUsed = 15;
+    public partial class FormSearch : Form
+    {
+        private IFindTarget _target;
+        private Settings _settings;
+        private bool _findOnly;
+        private TabNavigator _tnav;
+        private FindFlags _lastFlags = FindFlags.Normal;
+        private string _lastExpression;
+        private const int MaxRecentlyUsed = 15;
 
-        SearchFilter filter;
+        private SearchFilter _filter;
 
-        public FormSearch() {            
+        public FormSearch()
+        {
             this.SetStyle(ControlStyles.Selectable, true);
             this.KeyPreview = true;
             InitializeComponent();
@@ -30,9 +32,9 @@ namespace XmlNotepad
             this.comboBoxFind.LostFocus += new EventHandler(comboBoxFind_LostFocus);
 
             this.comboBoxFilter.Items.AddRange(new object[] { SearchFilter.Everything, SearchFilter.Names, SearchFilter.Text, SearchFilter.Comments });
-            this.comboBoxFilter.SelectedItem = this.filter;
+            this.comboBoxFilter.SelectedItem = this._filter;
             this.comboBoxFilter.SelectedValueChanged += new EventHandler(comboBoxFilter_SelectedValueChanged);
-            this.tnav = new TabNavigator(this);
+            this._tnav = new TabNavigator(this);
         }
 
         protected override void OnDpiChanged(DpiChangedEventArgs e)
@@ -41,17 +43,22 @@ namespace XmlNotepad
             this.PerformLayout();
         }
 
-        void comboBoxFind_LostFocus(object sender, EventArgs e) {
+        void comboBoxFind_LostFocus(object sender, EventArgs e)
+        {
             return;
         }
 
-        void comboBoxFilter_SelectedValueChanged(object sender, EventArgs e) {
-            this.filter = (SearchFilter)this.comboBoxFilter.SelectedItem;
+        void comboBoxFilter_SelectedValueChanged(object sender, EventArgs e)
+        {
+            this._filter = (SearchFilter)this.comboBoxFilter.SelectedItem;
         }
 
-        public FormSearch(FormSearch old, ISite site) : this() {
-            if (old != null){
-                foreach (string s in old.comboBoxFind.Items){
+        public FormSearch(FormSearch old, ISite site) : this()
+        {
+            if (old != null)
+            {
+                foreach (string s in old.comboBoxFind.Items)
+                {
                     this.comboBoxFind.Items.Add(s);
                 }
                 this.comboBoxFilter.SelectedItem = old.comboBoxFilter.SelectedItem;
@@ -59,90 +66,116 @@ namespace XmlNotepad
             this.Site = site;
         }
 
-        public override ISite Site {
-            get {
+        public override ISite Site
+        {
+            get
+            {
                 return base.Site;
             }
-            set {
+            set
+            {
                 base.Site = value;
                 OnSiteChanged();
             }
         }
 
-        public SearchFilter Filter {
-            get { return filter; }
-            set { filter = value; }
+        public SearchFilter Filter
+        {
+            get { return _filter; }
+            set { _filter = value; }
         }
 
-        void buttonFindNext_Click(object sender, EventArgs e) {
+        void buttonFindNext_Click(object sender, EventArgs e)
+        {
             DoFind();
         }
-        
-        void buttonReplace_Click(object sender, EventArgs e) {
+
+        void buttonReplace_Click(object sender, EventArgs e)
+        {
             DoReplace();
         }
 
-        Control Window {
+        Control Window
+        {
             get { return this.IsDisposed ? null : this; }
         }
 
-        void OnNotFound() {
+        void OnNotFound()
+        {
             MessageBox.Show(this.Window, SR.TextNotFoundPrompt, SR.FindErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.comboBoxFind.Focus();
         }
 
-        void OnFindDone() {
+        void OnFindDone()
+        {
             MessageBox.Show(this.Window, SR.FindNextDonePrompt, SR.ReplaceCompleteCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.comboBoxFind.Focus();
         }
 
-        void OnError(Exception e, string caption) {
+        void OnError(Exception e, string caption)
+        {
             MessageBox.Show(this.Window, e.Message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             this.comboBoxFind.Focus();
         }
 
-        void DoFind() {
-            try {
-                FindNext(false);                
-            } catch (Exception ex) {
+        void DoFind()
+        {
+            try
+            {
+                FindNext(false);
+            }
+            catch (Exception ex)
+            {
                 OnError(ex, SR.FindErrorCaption);
             }
         }
 
-        void DoReplace() {
-            try {                
+        void DoReplace()
+        {
+            try
+            {
                 string replacement = this.comboBoxReplace.Text;
-                target.ReplaceCurrent(replacement);
+                _target.ReplaceCurrent(replacement);
                 FindNext(false);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 OnError(ex, SR.ReplaceErrorCaption);
             }
         }
 
-        void buttonReplaceAll_Click(object sender, EventArgs e) {
+        void buttonReplaceAll_Click(object sender, EventArgs e)
+        {
 
             // todo: replace all is too slow on large files, it should do this in batch mode.
             // todo: would be nice if XPath could select elements or attribute for deletion.
 
             UndoManager mgr = (UndoManager)this.Site.GetService(typeof(UndoManager));
             mgr.OpenCompoundAction("Replace All");
-            try {
+            try
+            {
                 string replacement = this.comboBoxReplace.Text;
-                target.ReplaceCurrent(replacement);
+                _target.ReplaceCurrent(replacement);
                 bool rc = FindNext(false);
-                while (rc) {
+                while (rc)
+                {
                     Application.DoEvents();
-                    target.ReplaceCurrent(replacement);
+                    _target.ReplaceCurrent(replacement);
                     rc = FindNext(true);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 OnError(ex, SR.ReplaceErrorCaption);
-            } finally {
+            }
+            finally
+            {
                 mgr.CloseCompoundAction();
             }
         }
 
-        bool FindNext(bool quiet) {
+        bool FindNext(bool quiet)
+        {
 
             FindFlags flags = FindFlags.Normal;
             if (this.checkBoxRegex.Checked) flags |= FindFlags.Regex;
@@ -152,59 +185,80 @@ namespace XmlNotepad
             if (this.radioButtonUp.Checked) flags |= FindFlags.Backwards;
 
             string expr = this.Expression;
-            if (!this.comboBoxFind.Items.Contains(expr)) {
+            if (!this.comboBoxFind.Items.Contains(expr))
+            {
                 this.comboBoxFind.Items.Add(expr);
-                if (this.comboBoxFind.Items.Count > MaxRecentlyUsed) {
+                if (this.comboBoxFind.Items.Count > MaxRecentlyUsed)
+                {
                     this.comboBoxFind.Items.RemoveAt(0);
                 }
             }
-                
-            lastFlags = flags;
-            lastExpression = expr;
 
-            FindResult rc = target.FindNext(expr, flags, filter);
-            if (rc == FindResult.Found && !this.IsDisposed) {
-                this.MoveFindDialog(target.MatchRect);
+            _lastFlags = flags;
+            _lastExpression = expr;
+
+            FindResult rc = _target.FindNext(expr, flags, _filter);
+            if (rc == FindResult.Found && !this.IsDisposed)
+            {
+                this.MoveFindDialog(_target.MatchRect);
             }
-            if (!quiet) {
-                if (rc == FindResult.None) {
+            if (!quiet)
+            {
+                if (rc == FindResult.None)
+                {
                     OnNotFound();
-                } else if (rc == FindResult.NoMore) {
+                }
+                else if (rc == FindResult.NoMore)
+                {
                     OnFindDone();
                 }
             }
             return rc == FindResult.Found;
         }
 
-        public void FindAgain(bool reverse) {
+        public void FindAgain(bool reverse)
+        {
             // The find dialog might have been disposed, so we can only find using previous 
             // find state information.
-            if (string.IsNullOrEmpty(lastExpression)) {
+            if (string.IsNullOrEmpty(_lastExpression))
+            {
                 return;
             }
-            try {
-                if (reverse) {
-                    lastFlags |= FindFlags.Backwards;
-                } else {
-                    lastFlags &= ~FindFlags.Backwards;
+            try
+            {
+                if (reverse)
+                {
+                    _lastFlags |= FindFlags.Backwards;
                 }
-                FindResult rc = target.FindNext(lastExpression, lastFlags, filter);
-                if (rc == FindResult.Found && !this.IsDisposed) {
-                    this.MoveFindDialog(target.MatchRect);
+                else
+                {
+                    _lastFlags &= ~FindFlags.Backwards;
                 }
-                if (rc == FindResult.None) {
+                FindResult rc = _target.FindNext(_lastExpression, _lastFlags, _filter);
+                if (rc == FindResult.Found && !this.IsDisposed)
+                {
+                    this.MoveFindDialog(_target.MatchRect);
+                }
+                if (rc == FindResult.None)
+                {
                     OnNotFound();
-                } else if (rc == FindResult.NoMore) {
+                }
+                else if (rc == FindResult.NoMore)
+                {
                     OnFindDone();
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 OnError(ex, SR.FindErrorCaption);
             }
         }
 
-        void MoveFindDialog(Rectangle selection) {
+        void MoveFindDialog(Rectangle selection)
+        {
             Rectangle r = this.Bounds;
-            if (r.IntersectsWith(selection)) {
+            if (r.IntersectsWith(selection))
+            {
                 // find smallest adjustment (left,right,up,down) that still fits on screen.
                 List<Adjustment> list = new List<Adjustment>();
                 list.Add(new Adjustment(Direction.Up, this, selection));
@@ -218,60 +272,71 @@ namespace XmlNotepad
                 return;
             }
         }
- 
+
         enum Direction { Up, Down, Left, Right };
-        class Adjustment : IComparable {
+        class Adjustment : IComparable
+        {
             Direction dir;
             Form dialog;
             Rectangle selection;
             Rectangle formBounds;
 
-            public Adjustment(Direction dir, Form dialog, Rectangle selection) {
+            public Adjustment(Direction dir, Form dialog, Rectangle selection)
+            {
                 this.dir = dir;
                 this.dialog = dialog;
                 this.selection = selection;
                 this.formBounds = this.dialog.Bounds;
             }
 
-            public int Delta {
-                get {
+            public int Delta
+            {
+                get
+                {
                     int delta = 0;
                     Rectangle screen = Screen.FromControl(dialog).Bounds;
-                    switch (this.dir) {
+                    switch (this.dir)
+                    {
                         case Direction.Up:
                             delta = formBounds.Bottom - selection.Top;
-                            if (formBounds.Top - delta < screen.Top) {
+                            if (formBounds.Top - delta < screen.Top)
+                            {
                                 delta = Int32.MaxValue; // don't choose this one then.
                             }
                             break;
                         case Direction.Down:
                             delta = selection.Bottom - formBounds.Top;
-                            if (formBounds.Bottom + delta > screen.Bottom) {
+                            if (formBounds.Bottom + delta > screen.Bottom)
+                            {
                                 delta = Int32.MaxValue; // don't choose this one then.
                             }
                             break;
                         case Direction.Left:
                             delta = formBounds.Right - selection.Left;
-                            if (formBounds.Right - delta < screen.Left) {
+                            if (formBounds.Right - delta < screen.Left)
+                            {
                                 delta = Int32.MaxValue; // don't choose this one then.
                             }
                             break;
                         case Direction.Right:
                             delta = selection.Right - formBounds.Left;
-                            if (formBounds.Right + delta > screen.Right) {
+                            if (formBounds.Right + delta > screen.Right)
+                            {
                                 delta = Int32.MaxValue; // don't choose this one then.
                             }
                             break;
                     }
-                    return delta ;
+                    return delta;
                 }
             }
 
-            public void AdjustDialog() {
+            public void AdjustDialog()
+            {
                 if (this.Delta == Int32.MaxValue)
                     return; // none of the choices were ideal
 
-                switch (this.dir) {
+                switch (this.dir)
+                {
                     case Direction.Up:
                         this.dialog.Top -= this.Delta;
                         break;
@@ -287,23 +352,28 @@ namespace XmlNotepad
                 }
             }
 
-            public int CompareTo(object obj) {
+            public int CompareTo(object obj)
+            {
                 Adjustment a = obj as Adjustment;
-                if (a != null) {
+                if (a != null)
+                {
                     return this.Delta - a.Delta;
                 }
                 return 0;
             }
         }
 
-        void SetCheckBoxValue(CheckBox box, string name) {
-            object value = this.settings[name];
-            if (value != null) {
+        void SetCheckBoxValue(CheckBox box, string name)
+        {
+            object value = this._settings[name];
+            if (value != null)
+            {
                 box.Checked = (bool)value;
             }
         }
 
-        public virtual void OnSiteChanged() {
+        public virtual void OnSiteChanged()
+        {
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
             if (hp != null && Utilities.DynamicHelpEnabled)
             {
@@ -312,7 +382,7 @@ namespace XmlNotepad
 
             this.SuspendLayout();
 
-            settings = (Settings)this.Site.GetService(typeof(Settings));
+            _settings = (Settings)this.Site.GetService(typeof(Settings));
 
             SetCheckBoxValue(this.checkBoxXPath, "SearchXPath");
             SetCheckBoxValue(this.checkBoxWholeWord, "SearchWholeWord");
@@ -320,27 +390,34 @@ namespace XmlNotepad
             SetCheckBoxValue(this.checkBoxMatchCase, "SearchMatchCase");
 
             Size s = this.ClientSize;
-            object o = this.settings["FindMode"];
-            if (o != null) {
-                this.findOnly = (bool)o;
-                SetFindModeControls(!this.findOnly);
+            object o = this._settings["FindMode"];
+            if (o != null)
+            {
+                this._findOnly = (bool)o;
+                SetFindModeControls(!this._findOnly);
             }
 
-            object size = this.settings["SearchSize"];
-            if (size != null && (Size)size != Size.Empty) {
+            object size = this._settings["SearchSize"];
+            if (size != null && (Size)size != Size.Empty)
+            {
                 Size cs = (Size)size;
                 s = new Size(cs.Width, cs.Height);
             }
             this.ClientSize = s;
-            
-            object location = this.settings["SearchWindowLocation"];
-            if (location != null && (Point)location != Point.Empty) {
+
+            object location = this._settings["SearchWindowLocation"];
+            if (location != null && (Point)location != Point.Empty)
+            {
                 Control ctrl = this.Site as Control;
-                if (ctrl != null) {
+                if (ctrl != null)
+                {
                     Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
-                    if (IsSameScreen((Point)location, ownerBounds)) {
+                    if (IsSameScreen((Point)location, ownerBounds))
+                    {
                         this.Location = (Point)location;
-                    } else {
+                    }
+                    else
+                    {
                         this.Location = CenterPosition(ownerBounds);
                     }
                     this.StartPosition = FormStartPosition.Manual;
@@ -350,7 +427,8 @@ namespace XmlNotepad
             this.ResumeLayout();
         }
 
-        Point CenterPosition(Rectangle bounds) {
+        Point CenterPosition(Rectangle bounds)
+        {
             Size s = this.ClientSize;
             Point center = new Point(bounds.Left + (bounds.Width / 2) - (s.Width / 2),
                 bounds.Top + (bounds.Height / 2) - (s.Height / 2));
@@ -361,13 +439,16 @@ namespace XmlNotepad
             return center;
         }
 
-        bool IsSameScreen(Point location, Rectangle ownerBounds) {
-            Point center = new Point(ownerBounds.Left + ownerBounds.Width/2, 
-                ownerBounds.Top + ownerBounds.Height/2);
+        bool IsSameScreen(Point location, Rectangle ownerBounds)
+        {
+            Point center = new Point(ownerBounds.Left + ownerBounds.Width / 2,
+                ownerBounds.Top + ownerBounds.Height / 2);
 
-            foreach (Screen s in Screen.AllScreens) {
+            foreach (Screen s in Screen.AllScreens)
+            {
                 Rectangle sb = s.WorkingArea;
-                if (sb.Contains(location)) {
+                if (sb.Contains(location))
+                {
                     return sb.Contains(center);
                 }
             }
@@ -376,16 +457,17 @@ namespace XmlNotepad
             return false;
         }
 
-        protected override void OnClosing(CancelEventArgs e) {
-            this.settings["SearchWindowLocation"] = this.Location;
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            this._settings["SearchWindowLocation"] = this.Location;
             // save replace mode size, since we will shink the size next time findOnly is set.
-            this.settings["SearchSize"] = this.ClientSize;
-            this.settings["FindMode"] = this.findOnly;
-            this.settings["SearchXPath"] = this.checkBoxXPath.Checked;
-            this.settings["SearchWholeWord"] = this.checkBoxWholeWord.Checked;
-            this.settings["SearchRegex"] = this.checkBoxRegex.Checked;
-            this.settings["SearchMatchCase"] = this.checkBoxMatchCase.Checked; 
-            
+            this._settings["SearchSize"] = this.ClientSize;
+            this._settings["FindMode"] = this._findOnly;
+            this._settings["SearchXPath"] = this.checkBoxXPath.Checked;
+            this._settings["SearchWholeWord"] = this.checkBoxWholeWord.Checked;
+            this._settings["SearchRegex"] = this.checkBoxRegex.Checked;
+            this._settings["SearchMatchCase"] = this.checkBoxMatchCase.Checked;
+
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
             if (hp != null && Utilities.DynamicHelpEnabled)
             {
@@ -395,22 +477,27 @@ namespace XmlNotepad
             base.OnClosing(e);
         }
 
-        public IFindTarget Target {
-            get { return this.target; }
-            set { this.target = value; OnTargetChanged(); }
+        public IFindTarget Target
+        {
+            get { return this._target; }
+            set { this._target = value; OnTargetChanged(); }
         }
 
-        public bool ReplaceMode {
-            get { return !findOnly; }
-            set {
-                if (findOnly != !value) {
-                    findOnly = !value;
-                    SetFindModeControls(!findOnly);                    
+        public bool ReplaceMode
+        {
+            get { return !_findOnly; }
+            set
+            {
+                if (_findOnly != !value)
+                {
+                    _findOnly = !value;
+                    SetFindModeControls(!_findOnly);
                 }
             }
         }
 
-        void SetFindModeControls(bool visible) {
+        void SetFindModeControls(bool visible)
+        {
             this.comboBoxReplace.Visible = visible;
             this.label2.Visible = visible;
             this.buttonReplace.Visible = visible;
@@ -418,99 +505,131 @@ namespace XmlNotepad
             this.Text = visible ? SR.FindWindowReplaceTitle : SR.FindWindowFindTitle;
         }
 
-        public string Expression {
+        public string Expression
+        {
             get { return this.comboBoxFind.Text; }
             set { this.comboBoxFind.Text = value; }
         }
 
-        protected override void OnKeyDown(KeyEventArgs e) {
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
             HandleKeyDown(e);
-            if (!e.Handled) {
+            if (!e.Handled)
+            {
                 base.OnKeyDown(e);
             }
-            }
+        }
 
-        void comboBoxFind_KeyDown(object sender, KeyEventArgs e) {
+        void comboBoxFind_KeyDown(object sender, KeyEventArgs e)
+        {
             HandleKeyDown(e);
         }
-        protected override bool ProcessDialogKey(Keys keyData) {
-            if (keyData == Keys.Tab || (keyData == (Keys.Tab | Keys.Shift))) {
-                tnav.HandleTab(new KeyEventArgs(keyData));
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (keyData == Keys.Tab || (keyData == (Keys.Tab | Keys.Shift)))
+            {
+                _tnav.HandleTab(new KeyEventArgs(keyData));
                 return true;
-            } else {
+            }
+            else
+            {
                 return base.ProcessDialogKey(keyData);
             }
         }
 
-        void HandleKeyDown(KeyEventArgs e) {
-            if (e.KeyCode == Keys.Escape) {
+        void HandleKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
                 this.Close();
                 e.Handled = true;
-            } else if (e.KeyCode == Keys.Enter) {
-                if (this.buttonReplace.Focused) {
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                if (this.buttonReplace.Focused)
+                {
                     DoReplace();
-                } else {
+                }
+                else
+                {
                     DoFind();
                 }
                 e.Handled = true;
-            } else if ((e.Modifiers & Keys.Control) != 0) {
-                if (e.KeyCode == Keys.H) {
+            }
+            else if ((e.Modifiers & Keys.Control) != 0)
+            {
+                if (e.KeyCode == Keys.H)
+                {
                     ReplaceMode = true;
                     e.Handled = true;
-                } else if (e.KeyCode == Keys.F) {
+                }
+                else if (e.KeyCode == Keys.F)
+                {
                     ReplaceMode = false;
                     e.Handled = true;
                 }
             }
         }
 
-        void OnTargetChanged() {
+        void OnTargetChanged()
+        {
             this.dataTableNamespaces.Clear();
-            if (target != null && ShowNamespaces) {
-                this.Expression = target.Location;
-                XmlNamespaceManager nsmgr = target.Namespaces;
-                foreach (string prefix in nsmgr) {
-                    if (!string.IsNullOrEmpty(prefix) && prefix != "xmlns") {
+            if (_target != null && ShowNamespaces)
+            {
+                this.Expression = _target.Location;
+                XmlNamespaceManager nsmgr = _target.Namespaces;
+                foreach (string prefix in nsmgr)
+                {
+                    if (!string.IsNullOrEmpty(prefix) && prefix != "xmlns")
+                    {
                         string uri = nsmgr.LookupNamespace(prefix);
                         this.dataTableNamespaces.Rows.Add(new object[] { prefix, uri });
                     }
                 }
-            } else {
+            }
+            else
+            {
                 this.Expression = null;
             }
         }
 
-        private void checkBoxXPath_CheckedChanged(object sender, EventArgs e) {
+        private void checkBoxXPath_CheckedChanged(object sender, EventArgs e)
+        {
             bool namespaces = this.ShowNamespaces;
 
-            if (namespaces && string.IsNullOrEmpty(this.comboBoxFind.Text)) {
+            if (namespaces && string.IsNullOrEmpty(this.comboBoxFind.Text))
+            {
                 OnTargetChanged();
-            }            
+            }
             dataGridViewNamespaces.Visible = namespaces;
-            if (checkBoxRegex.Checked) {
+            if (checkBoxRegex.Checked)
+            {
                 ManualToggle(checkBoxRegex, false);
             }
         }
 
-        bool ShowNamespaces {
+        bool ShowNamespaces
+        {
             get { return checkBoxXPath.Checked; }
         }
-        
+
         bool checkBoxLatch;
-        void ManualToggle(CheckBox box, bool value) {
-            if (!checkBoxLatch) {
+        void ManualToggle(CheckBox box, bool value)
+        {
+            if (!checkBoxLatch)
+            {
                 checkBoxLatch = true;
                 box.Checked = value;
                 checkBoxLatch = false;
             }
         }
 
-        private void checkBoxRegex_CheckedChanged(object sender, EventArgs e) {
-            if (checkBoxRegex.Checked) {
+        private void checkBoxRegex_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxRegex.Checked)
+            {
                 ManualToggle(checkBoxXPath, false);
             }
         }
-
     }
-
 }

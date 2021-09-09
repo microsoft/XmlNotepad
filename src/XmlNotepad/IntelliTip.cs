@@ -6,10 +6,12 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace XmlNotepad {
+namespace XmlNotepad
+{
     public enum TipRequestType { Default, Hover };
 
-    public class IntelliTipEventArgs : EventArgs {
+    public class IntelliTipEventArgs : EventArgs
+    {
         public TipRequestType Type;
         public string ToolTip;
         public Point Location;
@@ -24,139 +26,154 @@ namespace XmlNotepad {
     /// able to Start() the tip operation based on some other event, (like list box
     /// selection changed) and word wrapping of the tooltip text string.
     /// </summary>
-    public class IntelliTip {
-
-        private Control owner;
-        private ToolTip tip = new ToolTip();
-        int tipTime;
-        List<Control> watch = new List<Control>();
-        bool tipVisible;
-        TipRequestType type;
-        Timer popupDelay;
-        bool resetpending = true;
-        Rectangle lastHover;
-        Control showing;
-        int hoverWidth;
-        int hoverHeight;
-        bool tracking;
+    public class IntelliTip
+    {
+        private Control _owner;
+        private ToolTip _tip = new ToolTip();
+        private List<Control> _watch = new List<Control>();
+        private bool _tipVisible;
+        private TipRequestType _type;
+        private Timer _popupDelay;
+        private bool _resetpending = true;
+        private Rectangle _lastHover;
+        private Control _showing;
+        private int _hoverWidth;
+        private int _hoverHeight;
+        private bool _tracking;
 
         public event IntelliTipEventHandler ShowToolTip;
 
-        public IntelliTip(Control owner) {
-            this.owner = owner;
-            this.tip.Popup += new PopupEventHandler(OnTipPopup);
-            
-            this.popupDelay = new Timer();
-            this.popupDelay.Tick += new EventHandler(popupDelay_Tick);
-            this.popupDelay.Interval = GetMouseHoverTime();
-            this.hoverWidth = GetMouseHoverWidth();
-            this.hoverHeight = GetMouseHoverHeight();
+        public IntelliTip(Control owner)
+        {
+            this._owner = owner;
+            this._tip.Popup += new PopupEventHandler(OnTipPopup);
 
-            this.tip.AutoPopDelay = 0;
-            this.tip.AutomaticDelay = 0;
-            this.tip.UseAnimation = false;
-            this.tip.UseFading = false;
+            this._popupDelay = new Timer();
+            this._popupDelay.Tick += new EventHandler(popupDelay_Tick);
+            this._popupDelay.Interval = GetMouseHoverTime();
+            this._hoverWidth = GetMouseHoverWidth();
+            this._hoverHeight = GetMouseHoverHeight();
+
+            this._tip.AutoPopDelay = 0;
+            this._tip.AutomaticDelay = 0;
+            this._tip.UseAnimation = false;
+            this._tip.UseFading = false;
         }
 
         internal void Close()
         {
             Stop();
-            foreach (Control c in watch)
+            foreach (Control c in _watch)
             {
                 c.MouseMove -= new MouseEventHandler(OnWatchMouseMove);
                 c.KeyDown -= new KeyEventHandler(OnWatchKeyDown);
                 c.MouseLeave -= new EventHandler(OnWatchMouseLeave);
             }
-            watch.Clear();
+            _watch.Clear();
         }
 
-        public int PopupDelay {
-            get { return this.popupDelay.Interval; }
-            set { this.popupDelay.Interval = value; }
+        public int PopupDelay
+        {
+            get { return this._popupDelay.Interval; }
+            set { this._popupDelay.Interval = value; }
         }
 
-        public void AddWatch(Control c) {
+        public void AddWatch(Control c)
+        {
             c.MouseMove += new MouseEventHandler(OnWatchMouseMove);
             c.KeyDown += new KeyEventHandler(OnWatchKeyDown);
-            watch.Add(c);
+            _watch.Add(c);
         }
 
-        public bool Visible {
-            get { return this.tipVisible; }
+        public bool Visible
+        {
+            get { return this._tipVisible; }
         }
 
-        public void Hide() {
-            if (showing != null) {
-                this.tip.Hide(showing);
+        public void Hide()
+        {
+            if (_showing != null)
+            {
+                this._tip.Hide(_showing);
             }
-            showing = null;
-            this.tip.RemoveAll();                    
-            this.tipVisible = false;
+            _showing = null;
+            this._tip.RemoveAll();
+            this._tipVisible = false;
         }
 
         //=============================== Private methods ===============================
         void popupDelay_Tick(object sender, EventArgs e)
         {
-            this.type = TipRequestType.Hover;
-            popupDelay.Stop();
-            this.owner.Invoke(new EventHandler(OnPopupDelay), new object[] { this, EventArgs.Empty });
+            this._type = TipRequestType.Hover;
+            _popupDelay.Stop();
+            this._owner.Invoke(new EventHandler(OnPopupDelay), new object[] { this, EventArgs.Empty });
         }
 
-        void OnPopupDelay(object sender, EventArgs e) {
+        void OnPopupDelay(object sender, EventArgs e)
+        {
             this.OnShowToolTip();
         }
 
-        void OnTipPopup(object sender, PopupEventArgs e) {
-            this.tipVisible = true;
+        void OnTipPopup(object sender, PopupEventArgs e)
+        {
+            this._tipVisible = true;
         }
 
-        void OnWatchKeyDown(object sender, KeyEventArgs e) {
-            Hide();  
+        void OnWatchKeyDown(object sender, KeyEventArgs e)
+        {
+            Hide();
         }
 
-        void Start() {
-            this.popupDelay.Stop();
-            this.popupDelay.Start();
+        void Start()
+        {
+            this._popupDelay.Stop();
+            this._popupDelay.Start();
         }
         void Stop()
         {
-            this.popupDelay.Stop();
+            this._popupDelay.Stop();
         }
 
-        Control GetFocus() {
-            foreach (Control c in this.watch) {
+        Control GetFocus()
+        {
+            foreach (Control c in this._watch)
+            {
                 if (c.Focused) return c;
             }
-            return this.owner;
+            return this._owner;
         }
 
-        internal void OnShowToolTip() {
+        internal void OnShowToolTip()
+        {
 
-            if (ShowToolTip != null && !owner.Capture) {
+            if (ShowToolTip != null && !_owner.Capture)
+            {
                 Control c = GetFocus();
                 Point local = c.PointToClient(Cursor.Position);
                 IntelliTipEventArgs args = new IntelliTipEventArgs();
-                args.Type = this.type;
+                args.Type = this._type;
                 args.Focus = c;
                 args.Location = local;
                 ShowToolTip(this, args);
                 string toolTip = args.ToolTip;
-                if (!string.IsNullOrEmpty(toolTip)) {
-                    this.tip.ShowAlways = true;
-                    this.tip.Active = true;
+                if (!string.IsNullOrEmpty(toolTip))
+                {
+                    this._tip.ShowAlways = true;
+                    this._tip.Active = true;
                     Point p = args.Location;
-                    if (p.X == local.X && p.Y == local.Y) {
+                    if (p.X == local.X && p.Y == local.Y)
+                    {
                         p.Y += 10;
                         p.Y += 10;
                     }
-                    this.tipTime = Environment.TickCount;
-                    showing = c;
-                    this.tip.Show(WordWrap(toolTip), (IWin32Window)c, p);
+
+                    _showing = c;
+                    this._tip.Show(WordWrap(toolTip), (IWin32Window)c, p);
                     return;
                 }
             }
-            this.tip.Hide(owner);
-            this.type = TipRequestType.Default;
+            this._tip.Hide(_owner);
+            this._type = TipRequestType.Default;
         }
 
         private void OnWatchMouseLeave(object sender, EventArgs e)
@@ -164,66 +181,73 @@ namespace XmlNotepad {
             Control c = (Control)sender;
             Stop();
             Hide();
-            resetpending = true;
-            tracking = false;
+            _resetpending = true;
+            _tracking = false;
             c.MouseLeave -= new EventHandler(OnWatchMouseLeave);
         }
 
-        void OnWatchMouseMove(object sender, MouseEventArgs e) {
+        void OnWatchMouseMove(object sender, MouseEventArgs e)
+        {
 
             Control c = (Control)sender;
-            if (!tracking)
+            if (!_tracking)
             {
-                if (!watch.Contains(c))
+                if (!_watch.Contains(c))
                 {
                     Debug.WriteLine("????");
                 }
-                tracking = true;
+                _tracking = true;
                 TrackMouseLeave(c.Handle);
 
                 c.MouseLeave += new EventHandler(OnWatchMouseLeave);
             }
             Point local = c.PointToClient(Cursor.Position);
-            bool outside = !lastHover.Contains(local);
+            bool outside = !_lastHover.Contains(local);
             if (outside)
             {
                 // if mouse moves outside the hover rect then we are not hovering.
                 Stop();
                 Hide();
-                resetpending = true;
+                _resetpending = true;
             }
 
-            if (!this.tipVisible)
+            if (!this._tipVisible)
             {
-                if (resetpending)
+                if (_resetpending)
                 {
-                    resetpending = false;
-                    lastHover = new Rectangle(local, Size.Empty);
-                    lastHover.Inflate(this.hoverWidth / 2, this.hoverHeight / 2);
+                    _resetpending = false;
+                    _lastHover = new Rectangle(local, Size.Empty);
+                    _lastHover.Inflate(this._hoverWidth / 2, this._hoverHeight / 2);
                     // start the timer, if we remain inside this hover rect until timer
                     // fires, then show tooltip.  
-                    Start(); 
-                }                
+                    Start();
+                }
             }
 
         }
 
-        string WordWrap(string tip) {
-            Screen screen = Screen.FromControl(owner);
+        string WordWrap(string tip)
+        {
+            Screen screen = Screen.FromControl(_owner);
             int width = screen.Bounds.Width / 2;
             StringBuilder sb = new StringBuilder();
-            using (Graphics g = owner.CreateGraphics()) {
-                Font f = owner.Font;
+            using (Graphics g = _owner.CreateGraphics())
+            {
+                Font f = _owner.Font;
                 int wrap = 0;
-                foreach (string word in tip.Split(' ', '\t', '\r', '\n')) {
+                foreach (string word in tip.Split(' ', '\t', '\r', '\n'))
+                {
                     if (string.IsNullOrEmpty(word)) continue;
                     SizeF size = g.MeasureString(word + " ", f);
                     wrap += (int)size.Width;
                     sb.Append(word);
-                    if (wrap > width) {
+                    if (wrap > width)
+                    {
                         sb.Append('\n');
                         wrap = 0;
-                    } else {
+                    }
+                    else
+                    {
                         sb.Append(' ');
                     }
                 }
@@ -267,8 +291,8 @@ namespace XmlNotepad {
         {
             return GetSystemParameter(SPI_GETMOUSEHOVERHEIGHT);
         }
-        #endregion 
-        
+        #endregion
+
         #region HoverTracking
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -301,7 +325,7 @@ namespace XmlNotepad {
             }
         }
 
-        #endregion 
-    
+        #endregion
+
     }
 }

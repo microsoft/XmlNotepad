@@ -9,155 +9,180 @@ using SR = XmlNotepad.StringResources;
 namespace XmlNotepad
 {
 
-    public class TextEditorEventArgs : EventArgs {
-        string text;
-        bool cancelled;
+    public class TextEditorEventArgs : EventArgs
+    {
+        private string _text;
+        private bool _cancelled;
 
-        public string Text {
-            get { return text; }
+        public string Text
+        {
+            get { return _text; }
         }
 
-        public bool Cancelled {
-            get { return cancelled; }
-            set { this.cancelled = value; }
+        public bool Cancelled
+        {
+            get { return _cancelled; }
+            set { this._cancelled = value; }
         }
 
-        public TextEditorEventArgs(string text, bool cancelled) {
-            this.text = text;
-            this.cancelled = cancelled;
+        public TextEditorEventArgs(string text, bool cancelled)
+        {
+            this._text = text;
+            this._cancelled = cancelled;
         }
     }
 
-    public class TextEditorLayoutEventArgs : EventArgs {
-        string text;
-        Rectangle preferredBounds;
-        Rectangle maxBounds;
-        
-        public string Text {
-            get { return text; }
-        }
-        
-        public Rectangle PreferredBounds {
-            get { return preferredBounds; }
-            set { preferredBounds = value; }
+    public class TextEditorLayoutEventArgs : EventArgs
+    {
+        private string _text;
+        private Rectangle _preferredBounds;
+        private Rectangle _maxBounds;
+
+        public string Text
+        {
+            get { return _text; }
         }
 
-        public Rectangle MaxBounds {
-            get { return maxBounds; }
-            set { maxBounds = value; }
+        public Rectangle PreferredBounds
+        {
+            get { return _preferredBounds; }
+            set { _preferredBounds = value; }
         }
 
-        public TextEditorLayoutEventArgs(string text) {
-            this.text = text; 
+        public Rectangle MaxBounds
+        {
+            get { return _maxBounds; }
+            set { _maxBounds = value; }
+        }
+
+        public TextEditorLayoutEventArgs(string text)
+        {
+            this._text = text;
         }
     }
 
     public enum EditMode { Name, Value };
 
-    public class TextEditorOverlay : IDisposable {
-        private TextBox textEditor;
-        private Control parent;
-        private bool autoSize;
-        private CompletionSet cset;
-        private IXmlEditor editor;
-        private Control currentEditor;
-        private XmlSchemaType schemaType;
-        private ISite site;
+    public class TextEditorOverlay : IDisposable
+    {
+        private TextBox _textEditor;
+        private Control _parent;
+        private bool _autoSize;
+        private CompletionSet _cset;
+        private IXmlEditor _editor;
+        private Control _currentEditor;
+        private XmlSchemaType _schemaType;
+        private ISite _site;
 
         public event EventHandler<TextEditorEventArgs> CommitEdit;
         public event EventHandler<TextEditorLayoutEventArgs> LayoutEditor;
 
-        public TextEditorOverlay(Control parent) {
-            this.parent = parent;
-            this.textEditor = new TextBox();
-            string name = parent.Name + "Editor"; 
-            this.textEditor.Name = name;
-            this.textEditor.AccessibleName = name;
-            this.textEditor.Visible = false;
-            this.textEditor.BorderStyle = BorderStyle.None;
-            this.textEditor.BackColor = Color.LightSteelBlue;
-            this.textEditor.AutoSize = false;
-            this.textEditor.Multiline = true; // this fixes layout problems in single line case also.
-            this.textEditor.Margin = new Padding(1, 0, 0, 0);
-            this.textEditor.HideSelection = false;
-            parent.Controls.Add(this.textEditor);
-            this.textEditor.KeyDown += new KeyEventHandler(editor_KeyDown);
-            this.textEditor.LostFocus += new EventHandler(editor_LostFocus);
-            this.textEditor.GotFocus += new EventHandler(editor_GotFocus);
-            this.textEditor.TextChanged += new EventHandler(editor_TextChanged);
-            this.currentEditor = this.textEditor;
+        public TextEditorOverlay(Control parent)
+        {
+            this._parent = parent;
+            this._textEditor = new TextBox();
+            string name = parent.Name + "Editor";
+            this._textEditor.Name = name;
+            this._textEditor.AccessibleName = name;
+            this._textEditor.Visible = false;
+            this._textEditor.BorderStyle = BorderStyle.None;
+            this._textEditor.BackColor = Color.LightSteelBlue;
+            this._textEditor.AutoSize = false;
+            this._textEditor.Multiline = true; // this fixes layout problems in single line case also.
+            this._textEditor.Margin = new Padding(1, 0, 0, 0);
+            this._textEditor.HideSelection = false;
+            parent.Controls.Add(this._textEditor);
+            this._textEditor.KeyDown += new KeyEventHandler(editor_KeyDown);
+            this._textEditor.LostFocus += new EventHandler(editor_LostFocus);
+            this._textEditor.GotFocus += new EventHandler(editor_GotFocus);
+            this._textEditor.TextChanged += new EventHandler(editor_TextChanged);
+            this._currentEditor = this._textEditor;
 
-            this.cset = new CompletionSet(this.textEditor);
-            this.cset.KeyDown += new KeyEventHandler(editor_KeyDown);
-            this.cset.DoubleClick += new EventHandler(cset_DoubleClick);
+            this._cset = new CompletionSet(this._textEditor);
+            this._cset.KeyDown += new KeyEventHandler(editor_KeyDown);
+            this._cset.DoubleClick += new EventHandler(cset_DoubleClick);
         }
 
-        ~TextEditorOverlay() {
+        ~TextEditorOverlay()
+        {
             Dispose(false);
         }
 
         public Color EditorBackgroundColor
         {
-            get { return this.textEditor.BackColor; }
-            set { this.textEditor.BackColor = value; }
+            get { return this._textEditor.BackColor; }
+            set { this._textEditor.BackColor = value; }
         }
 
-        public ISite Site {
-            get { return site; }
-            set { site = this.cset.Site = value; }
+        public ISite Site
+        {
+            get { return _site; }
+            set { _site = this._cset.Site = value; }
         }
 
         public int MaximumLineLength
         {
-            get { return this.textEditor.MaxLength;  }
-            set { this.textEditor.MaxLength = value; }
+            get { return this._textEditor.MaxLength; }
+            set { this._textEditor.MaxLength = value; }
         }
 
-        public bool AutoSize {
-            get { return this.autoSize; }
-            set { this.autoSize = value; }
+        public bool AutoSize
+        {
+            get { return this._autoSize; }
+            set { this._autoSize = value; }
         }
 
-        public bool MultiLine {
-            get { 
-                return this.textEditor.Multiline;
+        public bool MultiLine
+        {
+            get
+            {
+                return this._textEditor.Multiline;
             }
-            set {
-                this.textEditor.ScrollBars = value ? ScrollBars.Vertical : ScrollBars.None;
-                this.textEditor.Multiline = value;  
+            set
+            {
+                this._textEditor.ScrollBars = value ? ScrollBars.Vertical : ScrollBars.None;
+                this._textEditor.Multiline = value;
             }
         }
 
-        public bool IsEditing { get { return this.currentEditor.Visible; } }
+        public bool IsEditing { get { return this._currentEditor.Visible; } }
 
-        public Rectangle Bounds {
-            get { return currentEditor.RectangleToScreen(currentEditor.ClientRectangle); }
+        public Rectangle Bounds
+        {
+            get { return _currentEditor.RectangleToScreen(_currentEditor.ClientRectangle); }
         }
 
-        internal CompletionSet CompletionSet {
-            get { return this.cset; }
+        internal CompletionSet CompletionSet
+        {
+            get { return this._cset; }
         }
 
-        public void PerformLayout() {
-            if (this.LayoutEditor != null) {
-                TextEditorLayoutEventArgs args = new TextEditorLayoutEventArgs(this.currentEditor.Text);
+        public void PerformLayout()
+        {
+            if (this.LayoutEditor != null)
+            {
+                TextEditorLayoutEventArgs args = new TextEditorLayoutEventArgs(this._currentEditor.Text);
                 LayoutEditor(this, args);
                 SetEditorBounds(args);
             }
-        }        
+        }
 
-        public void BeginEdit(string text, IIntellisenseProvider provider, EditMode mode, Color color, bool focus) {
+        public void BeginEdit(string text, IIntellisenseProvider provider, EditMode mode, Color color, bool focus)
+        {
             IXmlBuilder builder = null;
 
             IIntellisenseList list = null;
-            if (focus) {
-                switch (mode) {
+            if (focus)
+            {
+                switch (mode)
+                {
                     case EditMode.Value:
                         builder = provider.Builder;
-                        this.cset.Builder = builder;
-                        this.editor = provider.Editor;
-                        if (this.editor != null) {
-                            this.editor.Site = this.site;
+                        this._cset.Builder = builder;
+                        this._editor = provider.Editor;
+                        if (this._editor != null)
+                        {
+                            this._editor.Site = this._site;
                         }
                         list = provider.GetExpectedValues();
                         break;
@@ -166,60 +191,72 @@ namespace XmlNotepad
                         break;
                 }
             }
-            this.schemaType = provider.GetSchemaType();
+            this._schemaType = provider.GetSchemaType();
 
-            if (this.editor != null) {
-                this.currentEditor = this.editor.Editor as Control;
-                parent.Controls.Add(this.currentEditor);
-                this.editor.SchemaType = this.schemaType;    
-                this.currentEditor.KeyDown += new KeyEventHandler(editor_KeyDown);
-                this.editor.XmlValue = text;
-            } else {
-                this.currentEditor = this.textEditor;
-                this.currentEditor.Text = text;
+            if (this._editor != null)
+            {
+                this._currentEditor = this._editor.Editor as Control;
+                _parent.Controls.Add(this._currentEditor);
+                this._editor.SchemaType = this._schemaType;
+                this._currentEditor.KeyDown += new KeyEventHandler(editor_KeyDown);
+                this._editor.XmlValue = text;
+            }
+            else
+            {
+                this._currentEditor = this._textEditor;
+                this._currentEditor.Text = text;
             }
 
-            this.currentEditor.ForeColor = color;            
+            this._currentEditor.ForeColor = color;
             PerformLayout();
-            this.currentEditor.Visible = true;
-            if (focus) {
-                this.currentEditor.Focus();
-                if (this.currentEditor == this.textEditor) {
-                    this.textEditor.SelectAll();
+            this._currentEditor.Visible = true;
+            if (focus)
+            {
+                this._currentEditor.Focus();
+                if (this._currentEditor == this._textEditor)
+                {
+                    this._textEditor.SelectAll();
                 }
 
                 // see if this node needs a dropdown.
-                if (builder != null || (list != null && list.Count > 0)) {
-                    cset.BeginEdit(list, this.schemaType);
-                } 
+                if (builder != null || (list != null && list.Count > 0))
+                {
+                    _cset.BeginEdit(list, this._schemaType);
+                }
             }
 
         }
 
-        public void SelectEnd() {
-            if (this.currentEditor == this.textEditor && this.currentEditor.Visible) {
-                this.textEditor.SelectionStart = this.textEditor.Text.Length;
+        public void SelectEnd()
+        {
+            if (this._currentEditor == this._textEditor && this._currentEditor.Visible)
+            {
+                this._textEditor.SelectionStart = this._textEditor.Text.Length;
             }
         }
 
-        public void Select(int index, int length) {
-            if (this.currentEditor == this.textEditor && this.currentEditor.Visible) {
-                this.textEditor.SelectionStart = index;
-                this.textEditor.SelectionLength = length;
+        public void Select(int index, int length)
+        {
+            if (this._currentEditor == this._textEditor && this._currentEditor.Visible)
+            {
+                this._textEditor.SelectionStart = index;
+                this._textEditor.SelectionLength = length;
             }
         }
 
-        public int SelectionStart { get { return this.textEditor.SelectionStart; } }
+        public int SelectionStart { get { return this._textEditor.SelectionStart; } }
 
-        public int SelectionLength { get { return this.textEditor.SelectionLength; } }
+        public int SelectionLength { get { return this._textEditor.SelectionLength; } }
 
-        public bool Replace(int index, int length, string replacement) {
-            if (this.currentEditor == this.textEditor && this.currentEditor.Visible) {
+        public bool Replace(int index, int length, string replacement)
+        {
+            if (this._currentEditor == this._textEditor && this._currentEditor.Visible)
+            {
                 int end = index + length;
-                string s = this.currentEditor.Text;
+                string s = this._currentEditor.Text;
                 string head = (index > 0) ? s.Substring(0, index) : "";
                 string tail = (end < s.Length) ? s.Substring(end) : "";
-                this.currentEditor.Text = head + replacement + tail;
+                this._currentEditor.Text = head + replacement + tail;
                 return true;
             }
             return false;
@@ -227,9 +264,11 @@ namespace XmlNotepad
 
         bool cancel;
         Timer at;
-        public void StartEndEdit(bool cancel) {
+        public void StartEndEdit(bool cancel)
+        {
             this.cancel = cancel;
-            if (at == null) {
+            if (at == null)
+            {
                 at = new Timer();
                 at.Interval = 10;
                 at.Tick += new EventHandler(OnEndTick);
@@ -237,21 +276,26 @@ namespace XmlNotepad
             at.Start();
         }
 
-        void OnEndTick(object sender, EventArgs e) {
+        void OnEndTick(object sender, EventArgs e)
+        {
             at.Stop();
             EndEdit(cancel);
         }
 
         bool ending;
-        public bool EndEdit(bool cancel) {
+        public bool EndEdit(bool cancel)
+        {
             if (ending) return false; // don't let it be re-entrant!
             ending = true;
-                            
-            cset.EndEdit(cancel);
-            try {
-                if (this.currentEditor.Visible) {
-                    if (this.CommitEdit != null) {
-                        string value = (this.editor != null) ? this.editor.XmlValue : this.currentEditor.Text;
+
+            _cset.EndEdit(cancel);
+            try
+            {
+                if (this._currentEditor.Visible)
+                {
+                    if (this.CommitEdit != null)
+                    {
+                        string value = (this._editor != null) ? this._editor.XmlValue : this._currentEditor.Text;
                         TextEditorEventArgs args = new TextEditorEventArgs(value, cancel);
                         CommitEdit(this, args);
                         if (args.Cancelled && !cancel)
@@ -259,9 +303,13 @@ namespace XmlNotepad
                     }
                     HideEdit();
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 MessageBox.Show(e.Message, SR.EditErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            } finally {                
+            }
+            finally
+            {
                 ending = false;
             }
             return true;
@@ -270,12 +318,15 @@ namespace XmlNotepad
         const ushort WM_CHAR = 0x0102;
         Keys lastKey;
 
-        private void editor_KeyDown(object sender, KeyEventArgs e) {
+        private void editor_KeyDown(object sender, KeyEventArgs e)
+        {
             CurrentEvent.Event = e;
             this.lastKey = e.KeyCode;
-            switch (e.KeyCode) {
+            switch (e.KeyCode)
+            {
                 case Keys.Enter:
-                    if (e.Modifiers == 0) {
+                    if (e.Modifiers == 0)
+                    {
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         StartEndEdit(false); // must be async!
@@ -283,24 +334,33 @@ namespace XmlNotepad
                     break;
                 case Keys.Escape:
                     e.Handled = true;
-                    if (this.cset.ToolTipVisible) {
-                        this.cset.HideToolTip();
-                    } else if (this.cset.Visible) {
-                        this.cset.EndEdit(true);
-                        this.currentEditor.Focus();
-                    } else {
+                    if (this._cset.ToolTipVisible)
+                    {
+                        this._cset.HideToolTip();
+                    }
+                    else if (this._cset.Visible)
+                    {
+                        this._cset.EndEdit(true);
+                        this._currentEditor.Focus();
+                    }
+                    else
+                    {
                         StartEndEdit(true);
                     }
                     break;
                 default:
-                    IEditableView v = this.parent as IEditableView;
-                    if (v != null){
+                    IEditableView v = this._parent as IEditableView;
+                    if (v != null)
+                    {
                         bool old = e.SuppressKeyPress;
                         e.SuppressKeyPress = true;
-                        try {
+                        try
+                        {
                             e.Handled = false;
                             v.BubbleKeyDown(e);
-                        } finally {
+                        }
+                        finally
+                        {
                             e.SuppressKeyPress = old;
                         }
                     }
@@ -308,51 +368,64 @@ namespace XmlNotepad
             }
         }
 
-        void cset_DoubleClick(object sender, EventArgs e) {
+        void cset_DoubleClick(object sender, EventArgs e)
+        {
             EndEdit(false);
         }
 
-        private void editor_LostFocus(object sender, EventArgs e){
-            if (!parent.ContainsFocus && !cset.ContainsFocus){
+        private void editor_LostFocus(object sender, EventArgs e)
+        {
+            if (!_parent.ContainsFocus && !_cset.ContainsFocus)
+            {
                 EndEdit(false);
-            }            
+            }
         }
 
-        private void editor_GotFocus(object sender, EventArgs e) {
+        private void editor_GotFocus(object sender, EventArgs e)
+        {
             return;
         }
 
-        private void editor_TextChanged(object sender, EventArgs e) {
+        private void editor_TextChanged(object sender, EventArgs e)
+        {
             PerformLayout();
         }
 
-        void AdjustBounds(string text, Graphics g, TextEditorLayoutEventArgs args) {
+        void AdjustBounds(string text, Graphics g, TextEditorLayoutEventArgs args)
+        {
             Rectangle r = args.PreferredBounds;
-            if (AutoSize) {
+            if (AutoSize)
+            {
                 if (string.IsNullOrEmpty(text))
                     text = "W"; // double the size if it was empty to begin with.
                 text += "W"; // leave room to grow by one more char
             }
             if (text.EndsWith("\n")) text += "."; // cause MeasureString to include space for newlines.
             SizeF size = SizeF.Empty;
-            int maxHeight = (this.parent.Height * 2) / 3;
-            try {
-                if (text.Length >= 10000) {
+            int maxHeight = (this._parent.Height * 2) / 3;
+            try
+            {
+                if (text.Length >= 10000)
+                {
                     // MeasureString gets too slow after a certain size.
                     text = text.Substring(0, 10000);
                 }
-                size = g.MeasureString(text, this.parent.Font, this.parent.Width, StringFormat.GenericDefault);
-            } catch (Exception) {
+                size = g.MeasureString(text, this._parent.Font, this._parent.Width, StringFormat.GenericDefault);
+            }
+            catch (Exception)
+            {
                 // string might be too long to measure!
                 size = new SizeF(r.Width, maxHeight);
             }
             int h = (int)Math.Max(r.Height, Math.Ceiling(size.Height));
-            if (h > r.Height ) {
+            if (h > r.Height)
+            {
                 // when multiline, add padding so that it aligns correctly.
-                h += this.parent.Font.Height / 2;
-            }            
+                h += this._parent.Font.Height / 2;
+            }
             r.Height = Math.Min(maxHeight, h); // no more than 2/3rd of the window.
-            if (AutoSize) {
+            if (AutoSize)
+            {
                 r.Width = Math.Max(r.Width, (int)size.Width + 2);
             }
             if (r.Right > args.MaxBounds.Right)
@@ -360,75 +433,88 @@ namespace XmlNotepad
             args.PreferredBounds = r;
         }
 
-        void SetEditorBounds(TextEditorLayoutEventArgs args) {
-            string text = this.currentEditor.Text;
-            Graphics g = this.parent.CreateGraphics();            
-            using (g) {
+        void SetEditorBounds(TextEditorLayoutEventArgs args)
+        {
+            string text = this._currentEditor.Text;
+            Graphics g = this._parent.CreateGraphics();
+            using (g)
+            {
                 AdjustBounds(text, g, args);
             }
             Rectangle r = args.PreferredBounds;
-            if (r.Bottom > this.parent.Height) {
+            if (r.Bottom > this._parent.Height)
+            {
                 // todo: scroll the view so we don't have to pop-up backwards, but this is tricky because
                 // we may need to scroll more than the XmlTreeView scrollbar maximum in the case where the 
                 // last node has a lot of text...
-                r.Offset(new Point(0, this.parent.Height - r.Bottom));
+                r.Offset(new Point(0, this._parent.Height - r.Bottom));
             }
-            int maxHeight = (this.parent.Height * 2) / 3;
-            if (r.Height < maxHeight) {
-                int h = this.currentEditor.PreferredSize.Height;
-                if (r.Height < h) {
+            int maxHeight = (this._parent.Height * 2) / 3;
+            if (r.Height < maxHeight)
+            {
+                int h = this._currentEditor.PreferredSize.Height;
+                if (r.Height < h)
+                {
                     r.Y -= (h - r.Height) / 2;
                     if (r.Y < 0) r.Y = 0;
                     r.Height = h;
                 }
             }
-            Rectangle or = this.currentEditor.Bounds;
-            if (or.Left != r.Left || or.Right != r.Right || or.Top != r.Top || or.Bottom != r.Bottom) {
-                this.currentEditor.Bounds = r;
+            Rectangle or = this._currentEditor.Bounds;
+            if (or.Left != r.Left || or.Right != r.Right || or.Top != r.Top || or.Bottom != r.Bottom)
+            {
+                this._currentEditor.Bounds = r;
             }
         }
 
-        void HideEdit() {
-            if (this.currentEditor.Visible) {
-                bool wasFocused = this.currentEditor.ContainsFocus || this.cset.ContainsFocus;
-                this.currentEditor.Visible = false;
-                this.cset.Visible = false;
-                if (this.editor != null && this.currentEditor != this.textEditor) {
-                    parent.Controls.Remove(this.currentEditor);
-                    this.currentEditor.KeyDown -= new KeyEventHandler(editor_KeyDown);
-                    this.currentEditor.LostFocus -= new EventHandler(editor_LostFocus);
-                    this.currentEditor = this.textEditor;
+        void HideEdit()
+        {
+            if (this._currentEditor.Visible)
+            {
+                bool wasFocused = this._currentEditor.ContainsFocus || this._cset.ContainsFocus;
+                this._currentEditor.Visible = false;
+                this._cset.Visible = false;
+                if (this._editor != null && this._currentEditor != this._textEditor)
+                {
+                    _parent.Controls.Remove(this._currentEditor);
+                    this._currentEditor.KeyDown -= new KeyEventHandler(editor_KeyDown);
+                    this._currentEditor.LostFocus -= new EventHandler(editor_LostFocus);
+                    this._currentEditor = this._textEditor;
                     DisposeEditor();
                 }
-                if (wasFocused) this.parent.Focus();
+                if (wasFocused) this._parent.Focus();
             }
         }
 
         private void DisposeEditor()
         {
-            if (this.editor is IDisposable d)
+            if (this._editor is IDisposable d)
             {
                 d.Dispose();
             }
-            this.editor = null;
+            this._editor = null;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) {
-            if (this.textEditor != null) {
-                this.parent.Controls.Remove(this.textEditor);
-                this.textEditor.Dispose();
-                this.textEditor = null;
-                this.textEditor = null;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this._textEditor != null)
+            {
+                this._parent.Controls.Remove(this._textEditor);
+                this._textEditor.Dispose();
+                this._textEditor = null;
+                this._textEditor = null;
             }
-            if (this.cset != null) {
-                this.cset.Builder = null;
-                this.cset.Dispose();
-                this.cset = null;
+            if (this._cset != null)
+            {
+                this._cset.Builder = null;
+                this._cset.Dispose();
+                this._cset = null;
             }
 
             DisposeEditor();
@@ -440,88 +526,101 @@ namespace XmlNotepad
     // what the user is doing.
     class CompletionSet : Control, IHostWindow
     {
-        bool parented;
-        TextBox editor;
-        ListBox listBox;
-        IXmlBuilder builder;
-        Button button;
-        XmlSchemaType type;
-        IIntellisenseList list;
-        IntelliTip tip;
+        private bool _parented;
+        private TextBox _editor;
+        private ListBox _listBox;
+        private IXmlBuilder _builder;
+        private Button _button;
+        private XmlSchemaType _type;
+        private IIntellisenseList _list;
+        private IntelliTip _tip;
 
-        public CompletionSet(TextBox editor) {
+        public CompletionSet(TextBox editor)
+        {
             this.SetStyle(ControlStyles.Selectable, true);
-            this.listBox = new ListBox();
-            this.listBox.Name = "CompletionList";
-            this.listBox.AccessibleName = "CompletionList";
-            this.listBox.BorderStyle = BorderStyle.Fixed3D;
-            this.listBox.KeyDown += new KeyEventHandler(listBox_KeyDown);
-            this.listBox.DoubleClick += new EventHandler(listBox_DoubleClick);
-            this.listBox.AutoSize = true;
-            this.listBox.SelectedIndexChanged += new EventHandler(listBox_SelectedIndexChanged);
+            this._listBox = new ListBox();
+            this._listBox.Name = "CompletionList";
+            this._listBox.AccessibleName = "CompletionList";
+            this._listBox.BorderStyle = BorderStyle.Fixed3D;
+            this._listBox.KeyDown += new KeyEventHandler(listBox_KeyDown);
+            this._listBox.DoubleClick += new EventHandler(listBox_DoubleClick);
+            this._listBox.AutoSize = true;
+            this._listBox.SelectedIndexChanged += new EventHandler(listBox_SelectedIndexChanged);
 
-            this.editor = editor;
-            this.editor.TextChanged += new EventHandler(editor_TextChanged);
-            this.editor.KeyDown += new KeyEventHandler(editor_KeyDown);
+            this._editor = editor;
+            this._editor.TextChanged += new EventHandler(editor_TextChanged);
+            this._editor.KeyDown += new KeyEventHandler(editor_KeyDown);
 
-            this.button = new Button();
-            this.button.Name = "BuilderButton";
-            this.button.AccessibleName = "BuilderButton";
-            this.button.Visible = false;
-            this.button.Click += new EventHandler(button_Click);
-            this.button.AutoSize = true;
-            this.button.KeyDown += new KeyEventHandler(editor_KeyDown);
+            this._button = new Button();
+            this._button.Name = "BuilderButton";
+            this._button.AccessibleName = "BuilderButton";
+            this._button.Visible = false;
+            this._button.Click += new EventHandler(button_Click);
+            this._button.AutoSize = true;
+            this._button.KeyDown += new KeyEventHandler(editor_KeyDown);
 
             this.Visible = false;
-            this.tip = new IntelliTip(editor);
-            this.tip.AddWatch(this.listBox);
-            this.tip.ShowToolTip += new IntelliTipEventHandler(OnShowToolTip);
+            this._tip = new IntelliTip(editor);
+            this._tip.AddWatch(this._listBox);
+            this._tip.ShowToolTip += new IntelliTipEventHandler(OnShowToolTip);
 
-            this.Controls.Add(this.listBox);
-            this.Controls.Add(this.button);
+            this.Controls.Add(this._listBox);
+            this.Controls.Add(this._button);
 
             this.AccessibleName = "CompletionSet";
         }
 
-        void listBox_SelectedIndexChanged(object sender, EventArgs e) {
+        void listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
             this.HideToolTip();
-            this.tip.OnShowToolTip();
+            this._tip.OnShowToolTip();
         }
 
-        public bool ToolTipVisible {
-            get { return this.tip.Visible;  }
+        public bool ToolTipVisible
+        {
+            get { return this._tip.Visible; }
         }
 
-        public void HideToolTip() {
-            this.tip.Hide(); 
+        public void HideToolTip()
+        {
+            this._tip.Hide();
         }
 
-        void OnShowToolTip(object sender, IntelliTipEventArgs args) {
-            if (list != null) {
-                int i = this.listBox.SelectedIndex;
-                if (args.Type == TipRequestType.Hover) {
+        void OnShowToolTip(object sender, IntelliTipEventArgs args)
+        {
+            if (_list != null)
+            {
+                int i = this._listBox.SelectedIndex;
+                if (args.Type == TipRequestType.Hover)
+                {
                     Point pt = args.Location;
-                    for (int j = 0, n = this.listBox.Items.Count; j < n; j++) {
-                        Rectangle r = this.listBox.GetItemRectangle(j);
-                        if (r.Contains(pt)) {
+                    for (int j = 0, n = this._listBox.Items.Count; j < n; j++)
+                    {
+                        Rectangle r = this._listBox.GetItemRectangle(j);
+                        if (r.Contains(pt))
+                        {
                             i = j;
                             break;
                         }
                     }
                 }
-                if (i >= 0 && i < list.Count) {
-                    string t = list.GetTooltip(i);
-                    if (!string.IsNullOrEmpty(t)) {
-                        Rectangle r = this.listBox.GetItemRectangle(i);
+                if (i >= 0 && i < _list.Count)
+                {
+                    string t = _list.GetTooltip(i);
+                    if (!string.IsNullOrEmpty(t))
+                    {
+                        Rectangle r = this._listBox.GetItemRectangle(i);
                         Point p = new Point(r.Right, r.Top);
-                        p = this.listBox.PointToScreen(p);
+                        p = this._listBox.PointToScreen(p);
                         Screen screen = Screen.FromPoint(p);
-                        using (Graphics g = this.CreateGraphics()) {
+                        using (Graphics g = this.CreateGraphics())
+                        {
                             SizeF s = g.MeasureString(t, SystemFonts.MenuFont);
-                            if (p.X + s.Width > screen.Bounds.Right) {
+                            if (p.X + s.Width > screen.Bounds.Right)
+                            {
                                 p.X = screen.Bounds.Right - (int)s.Width;
                                 if (p.X < 0) p.X = 0;
-                                p.Y += this.listBox.ItemHeight;
+                                p.Y += this._listBox.ItemHeight;
                             }
                         }
                         args.Location = args.Focus.PointToClient(p);
@@ -531,39 +630,49 @@ namespace XmlNotepad
             }
         }
 
-        void button_Click(object sender, EventArgs e) {
-            if (builder != null) {
-                string result = this.editor.Text;
-                if (builder.EditValue(this, type, result, out result)) {
-                    this.editor.Text = result;
+        void button_Click(object sender, EventArgs e)
+        {
+            if (_builder != null)
+            {
+                string result = this._editor.Text;
+                if (_builder.EditValue(this, _type, result, out result))
+                {
+                    this._editor.Text = result;
                 }
             }
         }
 
-        void listBox_DoubleClick(object sender, EventArgs e) {
+        void listBox_DoubleClick(object sender, EventArgs e)
+        {
             this.OnDoubleClick(e);
         }
 
-        void listBox_KeyDown(object sender, KeyEventArgs e) {
+        void listBox_KeyDown(object sender, KeyEventArgs e)
+        {
             CurrentEvent.Event = e;
             this.OnKeyDown(e);
         }
 
-        public IXmlBuilder Builder {
-            get { return this.builder; }
-            set { 
-                this.builder = value;
-                if (value != null) {
+        public IXmlBuilder Builder
+        {
+            get { return this._builder; }
+            set
+            {
+                this._builder = value;
+                if (value != null)
+                {
                     value.Site = this.Site;
                 }
             }
-        }        
+        }
 
-        void editor_KeyDown(object sender, KeyEventArgs e) {
+        void editor_KeyDown(object sender, KeyEventArgs e)
+        {
             CurrentEvent.Event = e;
             if (e.Handled) return; // some other listener already handled the event.
-            int i = this.listBox.SelectedIndex;
-            switch (e.KeyCode) {
+            int i = this._listBox.SelectedIndex;
+            switch (e.KeyCode)
+            {
                 case Keys.Down:
                     i++;
                     break;
@@ -574,30 +683,33 @@ namespace XmlNotepad
                     i = 0;
                     break;
                 case Keys.End:
-                    i = this.listBox.Items.Count - 1;
+                    i = this._listBox.Items.Count - 1;
                     break;
                 case Keys.PageUp:
-                    i -= this.Height / this.listBox.ItemHeight;
+                    i -= this.Height / this._listBox.ItemHeight;
                     break;
                 case Keys.PageDown:
-                    i += this.Height / this.listBox.ItemHeight;
+                    i += this.Height / this._listBox.ItemHeight;
                     break;
                 case Keys.Enter:
                     OnKeyDown(e);
-                    break;                
+                    break;
             }
-            if (i != this.listBox.SelectedIndex && this.listBox.Items.Count > 0) {
-                if (i > this.listBox.Items.Count - 1) i = this.listBox.Items.Count - 1;
+            if (i != this._listBox.SelectedIndex && this._listBox.Items.Count > 0)
+            {
+                if (i > this._listBox.Items.Count - 1) i = this._listBox.Items.Count - 1;
                 if (i < 0) i = 0;
-                this.listBox.SelectedIndex = i;
+                this._listBox.SelectedIndex = i;
             }
         }
 
-        const uint WS_POPUP =  0x80000000;
+        const uint WS_POPUP = 0x80000000;
         const uint WS_EX_TOPMOST = 0x00000008;
 
-        protected override CreateParams CreateParams {
-            get {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
                 CreateParams cp = base.CreateParams;
                 cp.Style |= ForceCast(WS_POPUP);
                 cp.ExStyle |= ForceCast(WS_EX_TOPMOST);
@@ -605,132 +717,164 @@ namespace XmlNotepad
             }
         }
 
-        static int ForceCast(uint i) {
-            unchecked {
+        static int ForceCast(uint i)
+        {
+            unchecked
+            {
                 return (int)i;
             }
         }
-        
-        void OnWindowMoved(object sender, EventArgs e) {
-            if (this.Visible) {
+
+        void OnWindowMoved(object sender, EventArgs e)
+        {
+            if (this.Visible)
+            {
                 PositionPopup();
             }
         }
 
-        void editor_TextChanged(object sender, EventArgs e) {
+        void editor_TextChanged(object sender, EventArgs e)
+        {
             // find best match & scroll it into view and select it
-            string s = this.editor.Text;
-            if (string.IsNullOrEmpty(s)) {
-                this.listBox.SelectedItem = null;
-            } else {
-                int i = this.listBox.FindString(s);
-                if (i >= 0) {
-                    this.listBox.SelectedIndex = i;
+            string s = this._editor.Text;
+            if (string.IsNullOrEmpty(s))
+            {
+                this._listBox.SelectedItem = null;
+            }
+            else
+            {
+                int i = this._listBox.FindString(s);
+                if (i >= 0)
+                {
+                    this._listBox.SelectedIndex = i;
                     return;
-                } else {
+                }
+                else
+                {
                     // Find case-insensitive.
                     i = 0;
-                    foreach (string value in this.listBox.Items) {
-                        if (value.StartsWith(s, StringComparison.CurrentCultureIgnoreCase)) {
-                            this.listBox.SelectedIndex = i;
+                    foreach (string value in this._listBox.Items)
+                    {
+                        if (value.StartsWith(s, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this._listBox.SelectedIndex = i;
                             return;
                         }
                         i++;
                     }
                 }
-                this.listBox.SelectedItem = null;
+                this._listBox.SelectedItem = null;
             }
         }
 
-        public void BeginEdit(IIntellisenseList list, XmlSchemaType type) {
-            this.type = type;
-            this.listBox.Font = this.button.Font = this.editor.Font;
-            this.listBox.ForeColor = this.editor.ForeColor;
-            this.list = list;
+        public void BeginEdit(IIntellisenseList list, XmlSchemaType type)
+        {
+            this._type = type;
+            this._listBox.Font = this._button.Font = this._editor.Font;
+            this._listBox.ForeColor = this._editor.ForeColor;
+            this._list = list;
 
             // populate the list and display it under (or above) the editor.
-            this.listBox.Items.Clear();
-            if (list != null) {
-                for (int i = 0, n = list.Count; i<n; i++) {
+            this._listBox.Items.Clear();
+            if (list != null)
+            {
+                for (int i = 0, n = list.Count; i < n; i++)
+                {
                     string s = list.GetValue(i);
-                    int j = this.listBox.Items.Add(s);
-                    if (s == this.editor.Text) {
-                        this.listBox.SelectedIndex = j;
+                    int j = this._listBox.Items.Add(s);
+                    if (s == this._editor.Text)
+                    {
+                        this._listBox.SelectedIndex = j;
                     }
                 }
-                
+
             }
-            if (!parented) {
+            if (!_parented)
+            {
                 SetParent(this.Handle, IntPtr.Zero); // popup on desktop.
-                parented = true;
-                Control p = this.editor;
-                while (p.Parent != null) {
+                _parented = true;
+                Control p = this._editor;
+                while (p.Parent != null)
+                {
                     p = p.Parent;
                 }
-                p.Move += new EventHandler(OnWindowMoved);            
+                p.Move += new EventHandler(OnWindowMoved);
             }
             PositionPopup();
             this.Visible = true;
-            this.editor.Focus();
+            this._editor.Focus();
         }
 
-        public void EndEdit(bool cancel) {
+        public void EndEdit(bool cancel)
+        {
             this.HideToolTip();
-            if (!cancel && this.Visible && this.listBox.SelectedItem != null) {
-                this.editor.Text = (string)this.listBox.SelectedItem;
-                this.editor.Focus();
+            if (!cancel && this.Visible && this._listBox.SelectedItem != null)
+            {
+                this._editor.Text = (string)this._listBox.SelectedItem;
+                this._editor.Focus();
             }
             this.Visible = false;
         }
 
-        void PositionPopup() {
+        void PositionPopup()
+        {
             PerformLayout();
-            Rectangle r = this.editor.Parent.RectangleToScreen(this.editor.Bounds);
+            Rectangle r = this._editor.Parent.RectangleToScreen(this._editor.Bounds);
             Screen s = Screen.FromRectangle(r);
             Point p = new Point(r.Left, r.Bottom);
-            if (r.Bottom + this.Height > s.WorkingArea.Height) {
+            if (r.Bottom + this.Height > s.WorkingArea.Height)
+            {
                 // pop up instead of down!
                 p = new Point(r.Left, r.Top - this.Height);
             }
             this.Location = p;
         }
 
-        protected override void OnLayout(LayoutEventArgs levent) {
-            Rectangle r = this.editor.Parent.RectangleToScreen(this.editor.Bounds);
+        protected override void OnLayout(LayoutEventArgs levent)
+        {
+            Rectangle r = this._editor.Parent.RectangleToScreen(this._editor.Bounds);
             Screen s = Screen.FromRectangle(r);
-            Size max = new Size(s.WorkingArea.Width / 3, (this.listBox.ItemHeight * 10) + 4);
-            this.listBox.MaximumSize = max;
+            Size max = new Size(s.WorkingArea.Width / 3, (this._listBox.ItemHeight * 10) + 4);
+            this._listBox.MaximumSize = max;
             Size size = new Size(0, 0);
-            bool listVisible = (this.listBox.Items.Count > 0);
-            if (!listVisible) {
-                this.listBox.Size = size;
-                this.listBox.Visible = false;
-            } else {
-                this.listBox.Visible = true;
-                size = this.listBox.PreferredSize;
-                if (size.Height > max.Height) {
+            bool listVisible = (this._listBox.Items.Count > 0);
+            if (!listVisible)
+            {
+                this._listBox.Size = size;
+                this._listBox.Visible = false;
+            }
+            else
+            {
+                this._listBox.Visible = true;
+                size = this._listBox.PreferredSize;
+                if (size.Height > max.Height)
+                {
                     size.Height = max.Height;
                 }
-                this.listBox.Size = size;
+                this._listBox.Size = size;
             }
-            size = this.listBox.Size; // just in case listBox snapped to a different bounds.
-            if (this.builder != null) {
-                this.button.Text = this.builder.Caption;
-                this.button.Visible = true;
-                this.button.Size = new Size(10, 10);
-                this.button.Size = this.button.PreferredSize;
-                if (size.Width < this.button.Width) {
-                    size.Width = this.button.Width;
-                    if (listVisible) this.listBox.Width = size.Width;
-                } 
-                this.button.Width = size.Width;
-                this.listBox.Location = new Point(0, this.button.Height);                
-                size.Height += this.button.Height;
-            } else {
-                this.listBox.Location = new Point(0, 0);
-                this.button.Visible = false;
+            size = this._listBox.Size; // just in case listBox snapped to a different bounds.
+            if (this._builder != null)
+            {
+                this._button.Text = this._builder.Caption;
+                this._button.Visible = true;
+                this._button.Size = new Size(10, 10);
+                this._button.Size = this._button.PreferredSize;
+                if (size.Width < this._button.Width)
+                {
+                    size.Width = this._button.Width;
+                    if (listVisible) this._listBox.Width = size.Width;
+                }
+                this._button.Width = size.Width;
+                this._listBox.Location = new Point(0, this._button.Height);
+                size.Height += this._button.Height;
             }
-            this.Size = size;            
+            else
+            {
+                this._listBox.Location = new Point(0, 0);
+                this._button.Visible = false;
+            }
+            this.Size = size;
         }
 
         [DllImport("User32.dll", EntryPoint = "SetParent")]

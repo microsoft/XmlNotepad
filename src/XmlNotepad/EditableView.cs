@@ -3,8 +3,10 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace XmlNotepad {
-    public interface IEditableView {
+namespace XmlNotepad
+{
+    public interface IEditableView
+    {
         bool BeginEdit(string value);
         bool EndEdit(bool cancel);
         bool IsEditing { get; }

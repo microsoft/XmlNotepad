@@ -14,36 +14,46 @@ namespace XmlNotepad
     /// This class represents a cached schema which may or may not be loaded yet.
     /// This allows delay loading of schemas.
     /// </summary>
-    public class CacheEntry {
-        string targetNamespace;
-        Uri location;
-        XmlSchema schema;
-        bool disabled;
-        string fileName;
-        DateTime lastModified;
-        CacheEntry next; // entry with same targetNamespace;
+    public class CacheEntry
+    {
+        private string _targetNamespace;
+        private Uri _location;
+        private XmlSchema _schema;
+        private bool _disabled;
+        private string _fileName;
+        private DateTime _lastModified;
+        private CacheEntry _next; // entry with same targetNamespace;
 
-        public string TargetNamespace {
-            get { return targetNamespace; }
-            set { targetNamespace = value; }
+        public string TargetNamespace
+        {
+            get { return _targetNamespace; }
+            set { _targetNamespace = value; }
         }
 
-        public Uri Location {
-            get { return location; }
-            set { location = value; 
-                schema = null;
-                if (location.IsFile) {
-                    fileName = location.LocalPath;
+        public Uri Location
+        {
+            get { return _location; }
+            set
+            {
+                _location = value;
+                _schema = null;
+                if (_location.IsFile)
+                {
+                    _fileName = _location.LocalPath;
                 }
             }
         }
 
-        public bool HasUpToDateSchema {
-            get {
-                if (schema == null) return false;
-                if (fileName != null) {
-                    DateTime lastWriteTime = File.GetLastWriteTime(fileName);
-                    if (lastWriteTime > this.lastModified) {
+        public bool HasUpToDateSchema
+        {
+            get
+            {
+                if (_schema == null) return false;
+                if (_fileName != null)
+                {
+                    DateTime lastWriteTime = File.GetLastWriteTime(_fileName);
+                    if (lastWriteTime > this._lastModified)
+                    {
                         return false;
                     }
                 }
@@ -51,74 +61,92 @@ namespace XmlNotepad
             }
         }
 
-        public XmlSchema Schema {
-            get { return schema; }
-            set {
-                if (schema != value) {
-                    schema = value;
-                    if (fileName != null) {
-                        this.lastModified = File.GetLastWriteTime(fileName);
+        public XmlSchema Schema
+        {
+            get { return _schema; }
+            set
+            {
+                if (_schema != value)
+                {
+                    _schema = value;
+                    if (_fileName != null)
+                    {
+                        this._lastModified = File.GetLastWriteTime(_fileName);
                     }
                 }
             }
         }
 
-        public CacheEntry Next {
-            get { return next; }
-            set { next = value; }
+        public CacheEntry Next
+        {
+            get { return _next; }
+            set { _next = value; }
         }
 
-        public bool Disabled {
-            get { return disabled; }
-            set { disabled = value; }
+        public bool Disabled
+        {
+            get { return _disabled; }
+            set { _disabled = value; }
         }
 
-        public CacheEntry FindByUri(Uri uri) {
+        public CacheEntry FindByUri(Uri uri)
+        {
             CacheEntry e = this;
-            while (e != null) {
-                if (e.location == uri) {
+            while (e != null)
+            {
+                if (e._location == uri)
+                {
                     return e;
                 }
-                e = e.next;
+                e = e._next;
             }
             return null;
         }
 
         // Remove the given cache entry and return the new head of the linked list.
-        public CacheEntry RemoveUri(Uri uri) {
+        public CacheEntry RemoveUri(Uri uri)
+        {
             CacheEntry e = this;
             CacheEntry previous = null;
-            while (e != null) {
-                if (e.location == uri) {
-                    if (previous == null) {
-                        return e.next; // return new head
+            while (e != null)
+            {
+                if (e._location == uri)
+                {
+                    if (previous == null)
+                    {
+                        return e._next; // return new head
                     }
-                    previous.next = e.next; //unlink it
+                    previous._next = e._next; //unlink it
                     return this; // head is unchanged.
                 }
                 previous = e;
-                e = e.next;
+                e = e._next;
             }
             return this;
         }
 
-        public void Add(CacheEntry newEntry) {
+        public void Add(CacheEntry newEntry)
+        {
             CacheEntry e = this;
-            while (e != null) {
-                if (e == newEntry) {
+            while (e != null)
+            {
+                if (e == newEntry)
+                {
                     return;
                 }
-                if (e.location == newEntry.location) {
-                    e.schema = newEntry.schema;
-                    e.lastModified = newEntry.lastModified;
-                    e.disabled = newEntry.disabled;
+                if (e._location == newEntry._location)
+                {
+                    e._schema = newEntry._schema;
+                    e._lastModified = newEntry._lastModified;
+                    e._disabled = newEntry._disabled;
                     return;
                 }
-                if (e.next == null) {
-                    e.next = newEntry;
+                if (e._next == null)
+                {
+                    e._next = newEntry;
                     break;
                 }
-                e = e.next;
+                e = e._next;
             }
         }
 
@@ -140,29 +168,34 @@ namespace XmlNotepad
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
         PersistentFileNames pfn;
 
-        public SchemaCache(IServiceProvider site) {
+        public SchemaCache(IServiceProvider site)
+        {
             this.site = site;
             this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
         }
 
         void FireOnChanged()
         {
-            if (null!=this.Changed  )
+            if (null != this.Changed)
             {
                 this.Changed(this, EventArgs.Empty);
             }
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             namespaceMap.Clear();
             uriMap.Clear();
         }
 
-        public IList<CacheEntry> GetSchemas() {
+        public IList<CacheEntry> GetSchemas()
+        {
             List<CacheEntry> list = new List<CacheEntry>();
-            foreach (CacheEntry ce in namespaceMap.Values) {
+            foreach (CacheEntry ce in namespaceMap.Values)
+            {
                 CacheEntry e = ce;
-                while (e != null) {
+                while (e != null)
+                {
                     list.Add(e);
                     e = e.Next;
                 }
@@ -170,35 +203,44 @@ namespace XmlNotepad
             return list;
         }
 
-        public CacheEntry Add(string nsuri, Uri uri, bool disabled) {
+        public CacheEntry Add(string nsuri, Uri uri, bool disabled)
+        {
             if (nsuri == null) nsuri = "";
 
             CacheEntry existing = null;
             CacheEntry e = null;
 
-            if (namespaceMap.ContainsKey(nsuri)) {
+            if (namespaceMap.ContainsKey(nsuri))
+            {
                 existing = namespaceMap[nsuri];
-                e = existing.FindByUri(uri);                
+                e = existing.FindByUri(uri);
             }
-            if (e == null) {
+            if (e == null)
+            {
                 e = new CacheEntry();
                 e.Location = uri;
                 e.TargetNamespace = nsuri;
 
-                if (existing != null) {
+                if (existing != null)
+                {
                     existing.Add(e);
-                } else {
+                }
+                else
+                {
                     namespaceMap[nsuri] = e;
                 }
             }
             e.Disabled = disabled;
-            if (uriMap.ContainsKey(uri)) {
+            if (uriMap.ContainsKey(uri))
+            {
                 CacheEntry oe = (CacheEntry)uriMap[uri];
-                if (oe != e) {
+                if (oe != e)
+                {
                     // target namespace must have changed!
                     nsuri = oe.TargetNamespace;
                     if (nsuri == null) nsuri = "";
-                    if (namespaceMap.ContainsKey(nsuri)) {
+                    if (namespaceMap.ContainsKey(nsuri))
+                    {
                         namespaceMap.Remove(nsuri);
                     }
                 }
@@ -209,29 +251,38 @@ namespace XmlNotepad
             return e;
         }
 
-        public CacheEntry Add(XmlSchema s) {
+        public CacheEntry Add(XmlSchema s)
+        {
             CacheEntry e = Add(s.TargetNamespace, new Uri(s.SourceUri), false);
-            if (e.Schema != null) {
+            if (e.Schema != null)
+            {
                 e.Schema = s;
             }
             return e;
         }
 
-        public void Remove(CacheEntry ce) {
+        public void Remove(CacheEntry ce)
+        {
             Remove(ce.Location);
         }
 
-        public void Remove(Uri uri) {
-            if (uriMap.ContainsKey(uri)) {
+        public void Remove(Uri uri)
+        {
+            if (uriMap.ContainsKey(uri))
+            {
                 CacheEntry e = uriMap[uri];
                 uriMap.Remove(uri);
                 string key = e.TargetNamespace;
-                if (namespaceMap.ContainsKey(key)) {
+                if (namespaceMap.ContainsKey(key))
+                {
                     CacheEntry head = namespaceMap[key];
                     CacheEntry newHead = head.RemoveUri(uri);
-                    if (newHead == null) {
+                    if (newHead == null)
+                    {
                         namespaceMap.Remove(key);
-                    } else if (newHead != head) {
+                    }
+                    else if (newHead != head)
+                    {
                         namespaceMap[key] = newHead;
                     }
                     this.FireOnChanged();
@@ -239,36 +290,45 @@ namespace XmlNotepad
             }
         }
 
-        public void Remove(string filename) {
+        public void Remove(string filename)
+        {
             Uri uri = new Uri(filename);
             Remove(uri);
         }
 
-        public void Remove(XmlSchema s) {
+        public void Remove(XmlSchema s)
+        {
             Remove(s.SourceUri);
-        }        
+        }
 
-        public CacheEntry FindSchemasByNamespace(string targetNamespace) {
-            if (namespaceMap.ContainsKey(targetNamespace)) {
-                return namespaceMap[targetNamespace];                
+        public CacheEntry FindSchemasByNamespace(string targetNamespace)
+        {
+            if (namespaceMap.ContainsKey(targetNamespace))
+            {
+                return namespaceMap[targetNamespace];
             }
             return null;
         }
 
-        public CacheEntry FindSchemaByUri(string sourceUri) {
+        public CacheEntry FindSchemaByUri(string sourceUri)
+        {
             if (string.IsNullOrEmpty(sourceUri)) return null;
             return FindSchemaByUri(new Uri(sourceUri));
         }
 
-        public CacheEntry FindSchemaByUri(Uri uri) {
-            if (uriMap.ContainsKey(uri)) {
+        public CacheEntry FindSchemaByUri(Uri uri)
+        {
+            if (uriMap.ContainsKey(uri))
+            {
                 return uriMap[uri];
             }
             return null;
         }
 
-        public XmlResolver Resolver {
-            get {
+        public XmlResolver Resolver
+        {
+            get
+            {
                 return new SchemaResolver(this, site);
             }
         }
@@ -278,13 +338,16 @@ namespace XmlNotepad
             return this.FindSchemaType(qname);
         }
 
-        public XmlSchemaType FindSchemaType(XmlQualifiedName qname) {
+        public XmlSchemaType FindSchemaType(XmlQualifiedName qname)
+        {
             string tns = qname.Namespace == null ? "" : qname.Namespace;
             CacheEntry e = this.FindSchemasByNamespace(tns);
             if (e == null) return null;
-            while (e != null) {
+            while (e != null)
+            {
                 XmlSchema s = e.Schema;
-                if (s != null) {
+                if (s != null)
+                {
                     XmlSchemaObject so = s.SchemaTypes[qname];
                     if (so is XmlSchemaType)
                         return (XmlSchemaType)so;
@@ -342,35 +405,49 @@ namespace XmlNotepad
             return null;
         }
 
-        public IIntellisenseList GetExpectedValues(XmlSchemaType si) {
+        public IIntellisenseList GetExpectedValues(XmlSchemaType si)
+        {
             if (si == null) return null;
             XmlIntellisenseList list = new XmlIntellisenseList();
             GetExpectedValues(si, list);
             return list;
         }
 
-        public void GetExpectedValues(XmlSchemaType si, XmlIntellisenseList list) {
+        public void GetExpectedValues(XmlSchemaType si, XmlIntellisenseList list)
+        {
             if (si == null) return;
-            if (si is XmlSchemaSimpleType) {
+            if (si is XmlSchemaSimpleType)
+            {
                 XmlSchemaSimpleType st = (XmlSchemaSimpleType)si;
                 GetExpectedValues(st, list);
-            } else if (si is XmlSchemaComplexType) {
+            }
+            else if (si is XmlSchemaComplexType)
+            {
                 XmlSchemaComplexType ct = (XmlSchemaComplexType)si;
-                if (ct.ContentModel is XmlSchemaComplexContent) {
+                if (ct.ContentModel is XmlSchemaComplexContent)
+                {
                     XmlSchemaComplexContent cc = (XmlSchemaComplexContent)ct.ContentModel;
-                    if (cc.Content is XmlSchemaComplexContentExtension) {
+                    if (cc.Content is XmlSchemaComplexContentExtension)
+                    {
                         XmlSchemaComplexContentExtension ce = (XmlSchemaComplexContentExtension)cc.Content;
                         GetExpectedValues(GetTypeInfo(ce.BaseTypeName), list);
-                    } else if (cc.Content is XmlSchemaComplexContentRestriction) {
+                    }
+                    else if (cc.Content is XmlSchemaComplexContentRestriction)
+                    {
                         XmlSchemaComplexContentRestriction cr = (XmlSchemaComplexContentRestriction)cc.Content;
                         GetExpectedValues(GetTypeInfo(cr.BaseTypeName), list);
                     }
-                } else if (ct.ContentModel is XmlSchemaSimpleContent) {
+                }
+                else if (ct.ContentModel is XmlSchemaSimpleContent)
+                {
                     XmlSchemaSimpleContent sc = (XmlSchemaSimpleContent)ct.ContentModel;
-                    if (sc.Content is XmlSchemaSimpleContentExtension) {
+                    if (sc.Content is XmlSchemaSimpleContentExtension)
+                    {
                         XmlSchemaSimpleContentExtension ce = (XmlSchemaSimpleContentExtension)sc.Content;
                         GetExpectedValues(GetTypeInfo(ce.BaseTypeName), list);
-                    } else if (sc.Content is XmlSchemaSimpleContentRestriction) {
+                    }
+                    else if (sc.Content is XmlSchemaSimpleContentRestriction)
+                    {
                         XmlSchemaSimpleContentRestriction cr = (XmlSchemaSimpleContentRestriction)sc.Content;
                         GetExpectedValues(GetTypeInfo(cr.BaseTypeName), list);
                     }
@@ -379,12 +456,16 @@ namespace XmlNotepad
             return;
         }
 
-        void GetExpectedValues(XmlSchemaSimpleType st, XmlIntellisenseList list) {
+        void GetExpectedValues(XmlSchemaSimpleType st, XmlIntellisenseList list)
+        {
             if (st == null) return;
-            if (st.Datatype != null) {
-                switch (st.Datatype.TypeCode) {
+            if (st.Datatype != null)
+            {
+                switch (st.Datatype.TypeCode)
+                {
                     case XmlTypeCode.Language:
-                        foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures)) {
+                        foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
+                        {
                             list.Add(ci.Name, ci.DisplayName);
                         }
                         list.Sort();
@@ -398,36 +479,46 @@ namespace XmlNotepad
                 }
             }
 
-            if (st.Content is XmlSchemaSimpleTypeList) {
+            if (st.Content is XmlSchemaSimpleTypeList)
+            {
                 XmlSchemaSimpleTypeList ce = (XmlSchemaSimpleTypeList)st.Content;
                 GetExpectedValues(ce.ItemType, list);
-            } else if (st.Content is XmlSchemaSimpleTypeUnion) {
+            }
+            else if (st.Content is XmlSchemaSimpleTypeUnion)
+            {
                 XmlSchemaSimpleTypeUnion cr = (XmlSchemaSimpleTypeUnion)st.Content;
-                if (cr.BaseMemberTypes != null) {
-                    foreach (XmlSchemaSimpleType bt in cr.BaseMemberTypes) {
+                if (cr.BaseMemberTypes != null)
+                {
+                    foreach (XmlSchemaSimpleType bt in cr.BaseMemberTypes)
+                    {
                         GetExpectedValues(bt, list);
                     }
                 }
-            } else if (st.Content is XmlSchemaSimpleTypeRestriction) {
+            }
+            else if (st.Content is XmlSchemaSimpleTypeRestriction)
+            {
                 XmlSchemaSimpleTypeRestriction cr = (XmlSchemaSimpleTypeRestriction)st.Content;
                 GetExpectedValues(FindSchemaType(cr.BaseTypeName), list);
-                foreach (XmlSchemaFacet f in cr.Facets) {
-                    if (f is XmlSchemaEnumerationFacet) {
+                foreach (XmlSchemaFacet f in cr.Facets)
+                {
+                    if (f is XmlSchemaEnumerationFacet)
+                    {
                         XmlSchemaEnumerationFacet ef = (XmlSchemaEnumerationFacet)f;
                         list.Add(ef.Value, GetAnnotation(ef, SchemaCache.AnnotationNode.Tooltip, null));
                     }
-                }                
+                }
             }
             return;
         }
 
-        public enum AnnotationNode { Default, Suggestion, Tooltip  }
+        public enum AnnotationNode { Default, Suggestion, Tooltip }
 
         public static XmlSchemaDocumentation GetDocumentation(XmlSchemaAnnotated a, string language)
         {
             XmlSchemaAnnotation ann = a.Annotation;
             if (ann == null) return null;
-            foreach (XmlSchemaObject o in ann.Items) {
+            foreach (XmlSchemaObject o in ann.Items)
+            {
                 // search for xs:documentation nodes
                 XmlSchemaDocumentation doc = o as XmlSchemaDocumentation;
                 if (doc != null)
@@ -441,7 +532,8 @@ namespace XmlNotepad
             return null;
         }
 
-        public static string GetAnnotation(XmlSchemaAnnotated a, AnnotationNode node, string language) {
+        public static string GetAnnotation(XmlSchemaAnnotated a, AnnotationNode node, string language)
+        {
             XmlSchemaAnnotation ann = a.Annotation;
             if (ann == null) return null;
             string filter = node.ToString().ToLowerInvariant();
@@ -451,11 +543,14 @@ namespace XmlNotepad
             return GetMarkup(ann, null, language);
         }
 
-        static string GetMarkup(XmlSchemaAnnotation ann, string filter, string language) {
+        static string GetMarkup(XmlSchemaAnnotation ann, string filter, string language)
+        {
             StringBuilder sb = new StringBuilder();
-            foreach (XmlSchemaObject o in ann.Items) {
+            foreach (XmlSchemaObject o in ann.Items)
+            {
                 // for xs:documentation nodes
-                if (o is XmlSchemaDocumentation) {
+                if (o is XmlSchemaDocumentation)
+                {
                     XmlSchemaDocumentation d = (XmlSchemaDocumentation)o;
                     if (string.IsNullOrEmpty(language) || d.Language == language)
                     {
@@ -486,19 +581,24 @@ namespace XmlNotepad
 
         #region IXmlSerializable Members
 
-        public XmlSchema GetSchema() {
+        public XmlSchema GetSchema()
+        {
             return null;
         }
 
-        public void ReadXml(XmlReader r) {
+        public void ReadXml(XmlReader r)
+        {
             this.Clear();
             if (r.IsEmptyElement) return;
-            while (r.Read() && r.NodeType != XmlNodeType.EndElement) {
-                if (r.NodeType == XmlNodeType.Element) {
+            while (r.Read() && r.NodeType != XmlNodeType.EndElement)
+            {
+                if (r.NodeType == XmlNodeType.Element)
+                {
                     string nsuri = r.GetAttribute("nsuri");
                     bool disabled = false;
                     string s = r.GetAttribute("disabled");
-                    if (!string.IsNullOrEmpty(s)) {
+                    if (!string.IsNullOrEmpty(s))
+                    {
                         bool.TryParse(s, out disabled);
                     }
                     string filename = r.ReadString();
@@ -507,23 +607,30 @@ namespace XmlNotepad
             }
         }
 
-        public void WriteXml(XmlWriter w) {
-            try {
-                foreach (CacheEntry e in this.GetSchemas()) {
+        public void WriteXml(XmlWriter w)
+        {
+            try
+            {
+                foreach (CacheEntry e in this.GetSchemas())
+                {
                     string path = pfn.GetPersistentFileName(e.Location);
-                    if (path != null) {
+                    if (path != null)
+                    {
                         w.WriteStartElement("Schema");
                         string uri = e.TargetNamespace;
                         if (uri == null) uri = "";
                         w.WriteAttributeString("nsuri", uri);
-                        if (e.Disabled) {
+                        if (e.Disabled)
+                        {
                             w.WriteAttributeString("disabled", "true");
                         }
                         w.WriteString(path);
                         w.WriteEndElement();
                     }
                 }
-            } catch (Exception x) {
+            }
+            catch (Exception x)
+            {
                 Console.WriteLine(x.Message);
             }
         }
@@ -537,18 +644,20 @@ namespace XmlNotepad
         ValidationEventHandler handler;
         IServiceProvider site;
 
-        public SchemaResolver(SchemaCache cache, IServiceProvider site) {
+        public SchemaResolver(SchemaCache cache, IServiceProvider site)
+        {
             this.site = site;
             this.cache = cache;
         }
 
-        public ValidationEventHandler Handler {
+        public ValidationEventHandler Handler
+        {
             get { return handler; }
             set { handler = value; }
         }
 
         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
-        { 
+        {
             CacheEntry ce = cache.FindSchemaByUri(absoluteUri);
             if (ce != null && ce.HasUpToDateSchema) return ce.Schema;
 
@@ -582,7 +691,7 @@ namespace XmlNotepad
             {
                 return base.GetEntity(absoluteUri, role, typeof(Stream)) as Stream;
             }
-            
+
             return null;
         }
     }

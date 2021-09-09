@@ -12,7 +12,7 @@ using System.Net.Cache;
 using System.Timers;
 
 namespace XmlNotepad
-{   
+{
     /// <summary>
     /// XmlCache wraps an XmlDocument and provides the stuff necessary for an "editor" in terms
     /// of watching for changes on disk, notification when the file has been reloaded, and keeping
@@ -20,46 +20,49 @@ namespace XmlNotepad
     /// </summary>
     public class XmlCache : IDisposable
     {
-        string filename;
-        bool dirty;
-        DomLoader loader;
-        XmlDocument doc;
-        FileSystemWatcher watcher;
-        int retries;
-        //string namespaceUri = string.Empty;
-        SchemaCache schemaCache;
-        Dictionary<XmlNode, XmlSchemaInfo> typeInfo;
-        int batch;
-        DateTime lastModified;
-        Checker checker;
-        IServiceProvider site;
-        DelayedActions actions;
-        Settings settings;
+        private string _fileName;
+        private bool _dirty;
+        private DomLoader _loader;
+        private XmlDocument _doc;
+        private FileSystemWatcher _watcher;
+        private int _retries;
+        private SchemaCache _schemaCache;
+        private Dictionary<XmlNode, XmlSchemaInfo> _typeInfo;
+        private int _batch;
+        private DateTime _lastModified;
+        private Checker _checker;
+        private IServiceProvider _site;
+        private DelayedActions _actions;
+        private Settings _settings;
 
         public event EventHandler FileChanged;
         public event EventHandler<ModelChangedEventArgs> ModelChanged;
 
         public XmlCache(IServiceProvider site, DelayedActions handler)
         {
-            this.loader = new DomLoader(site);
-            this.schemaCache = new SchemaCache(site);
-            this.site = site;
+            this._loader = new DomLoader(site);
+            this._schemaCache = new SchemaCache(site);
+            this._site = site;
             this.Document = new XmlDocument();
-            this.actions = handler;
-            this.settings = (Settings)this.site.GetService(typeof(Settings));
+            this._actions = handler;
+            this._settings = (Settings)this._site.GetService(typeof(Settings));
         }
 
-        ~XmlCache() {
+        ~XmlCache()
+        {
             Dispose(false);
         }
 
-        public Uri Location => new Uri(this.filename); 
+        public Uri Location => new Uri(this._fileName);
 
-        public string FileName => this.filename; 
+        public string FileName => this._fileName;
 
-        public bool IsFile {
-            get {
-                if (!string.IsNullOrEmpty(this.filename)) {
+        public bool IsFile
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this._fileName))
+                {
                     return this.Location.IsFile;
                 }
                 return false;
@@ -76,76 +79,80 @@ namespace XmlNotepad
         /// </summary>
         public string XsltDefaultOutput { get; set; }
 
-        public bool Dirty => this.dirty; 
+        public bool Dirty => this._dirty;
 
-        public Settings Settings => this.settings;
+        public Settings Settings => this._settings;
 
-        public XmlResolver SchemaResolver => this.schemaCache.Resolver;
+        public XmlResolver SchemaResolver => this._schemaCache.Resolver;
 
         public XPathNavigator Navigator
         {
             get
             {
-                XPathDocument xdoc = new XPathDocument(this.filename);
+                XPathDocument xdoc = new XPathDocument(this._fileName);
                 XPathNavigator nav = xdoc.CreateNavigator();
                 return nav;
             }
         }
 
-        public void ValidateModel(ErrorHandler handler) {
-            this.checker = new Checker(handler);
-            checker.Validate(this);
+        public void ValidateModel(ErrorHandler handler)
+        {
+            this._checker = new Checker(handler);
+            _checker.Validate(this);
         }
-      
+
 
         public XmlDocument Document
         {
-            get { return this.doc; }
+            get { return this._doc; }
             set
             {
-                if (this.doc != null)
+                if (this._doc != null)
                 {
-                    this.doc.NodeChanged -= new XmlNodeChangedEventHandler(OnDocumentChanged);
-                    this.doc.NodeInserted -= new XmlNodeChangedEventHandler(OnDocumentChanged);
-                    this.doc.NodeRemoved -= new XmlNodeChangedEventHandler(OnDocumentChanged);
+                    this._doc.NodeChanged -= new XmlNodeChangedEventHandler(OnDocumentChanged);
+                    this._doc.NodeInserted -= new XmlNodeChangedEventHandler(OnDocumentChanged);
+                    this._doc.NodeRemoved -= new XmlNodeChangedEventHandler(OnDocumentChanged);
                 }
-                this.doc = value;
-                if (this.doc != null)
+                this._doc = value;
+                if (this._doc != null)
                 {
-                    this.doc.NodeChanged += new XmlNodeChangedEventHandler(OnDocumentChanged);
-                    this.doc.NodeInserted += new XmlNodeChangedEventHandler(OnDocumentChanged);
-                    this.doc.NodeRemoved += new XmlNodeChangedEventHandler(OnDocumentChanged);
+                    this._doc.NodeChanged += new XmlNodeChangedEventHandler(OnDocumentChanged);
+                    this._doc.NodeInserted += new XmlNodeChangedEventHandler(OnDocumentChanged);
+                    this._doc.NodeRemoved += new XmlNodeChangedEventHandler(OnDocumentChanged);
                 }
             }
         }
 
-        public Dictionary<XmlNode, XmlSchemaInfo> TypeInfoMap {
-            get { return this.typeInfo; }
-            set { this.typeInfo = value; }
+        public Dictionary<XmlNode, XmlSchemaInfo> TypeInfoMap
+        {
+            get { return this._typeInfo; }
+            set { this._typeInfo = value; }
         }
 
-        public XmlSchemaInfo GetTypeInfo(XmlNode node) {
-            if (this.typeInfo == null) return null;
-            if (this.typeInfo.ContainsKey(node)) {
-                return this.typeInfo[node];
+        public XmlSchemaInfo GetTypeInfo(XmlNode node)
+        {
+            if (this._typeInfo == null) return null;
+            if (this._typeInfo.ContainsKey(node))
+            {
+                return this._typeInfo[node];
             }
             return null;
         }
 
         public XmlSchemaElement GetElementType(XmlQualifiedName xmlQualifiedName)
         {
-            if (this.schemaCache != null)
+            if (this._schemaCache != null)
             {
-                return this.schemaCache.GetElementType(xmlQualifiedName);
+                return this._schemaCache.GetElementType(xmlQualifiedName);
             }
             return null;
         }
 
         public XmlSchemaAttribute GetAttributeType(XmlQualifiedName xmlQualifiedName)
         {
-            if (this.schemaCache != null)
+            if (this._schemaCache != null)
             {
-                return this.schemaCache.GetAttributeType(xmlQualifiedName);
+                return this._schemaCache.GetAttributeType(xmlQualifiedName);
             }
             return null;
         }
@@ -155,10 +162,10 @@ namespace XmlNotepad
         /// </summary>
         public SchemaCache SchemaCache
         {
-            get { return this.schemaCache; }
-            set { this.schemaCache = value; }
+            get { return this._schemaCache; }
+            set { this._schemaCache = value; }
         }
-        
+
         /// <summary>
         /// Loads an instance of xml.
         /// Load updated to handle validation when instance doc refers to schema.
@@ -168,7 +175,8 @@ namespace XmlNotepad
         public void Load(string file)
         {
             Uri uri = new Uri(file, UriKind.RelativeOrAbsolute);
-            if (!uri.IsAbsoluteUri) {
+            if (!uri.IsAbsoluteUri)
+            {
                 Uri resolved = new Uri(new Uri(Directory.GetCurrentDirectory() + "\\"), uri);
                 file = resolved.LocalPath;
                 uri = resolved;
@@ -185,7 +193,7 @@ namespace XmlNotepad
         public void Load(XmlReader reader, string fileName)
         {
             this.Clear();
-            loader = new DomLoader(this.site);
+            _loader = new DomLoader(this._site);
             StopFileWatch();
 
             Uri uri = new Uri(fileName, UriKind.RelativeOrAbsolute);
@@ -196,66 +204,73 @@ namespace XmlNotepad
                 uri = resolved;
             }
 
-            this.filename = fileName;
-            this.lastModified = this.LastModTime;
-            this.dirty = false;
+            this._fileName = fileName;
+            this._lastModified = this.LastModTime;
+            this._dirty = false;
             StartFileWatch();
 
-            this.Document = loader.Load(reader);
-            this.XsltFileName = this.loader.XsltFileName;
-            this.XsltDefaultOutput = this.loader.XsltDefaultOutput;
+            this.Document = _loader.Load(reader);
+            this.XsltFileName = this._loader.XsltFileName;
+            this.XsltDefaultOutput = this._loader.XsltDefaultOutput;
 
             // calling this event will cause the XmlTreeView to populate
-            FireModelChanged(ModelChangeType.Reloaded, this.doc);
+            FireModelChanged(ModelChangeType.Reloaded, this._doc);
         }
 
-        public XmlReaderSettings GetReaderSettings() {
+        public XmlReaderSettings GetReaderSettings()
+        {
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.DtdProcessing = this.settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
+            settings.DtdProcessing = this._settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
             settings.CheckCharacters = false;
             settings.XmlResolver = Settings.Instance.Resolver;
             return settings;
         }
 
-        public void ExpandIncludes() {
-            if (this.Document != null) {
-                this.dirty = true;
+        public void ExpandIncludes()
+        {
+            if (this.Document != null)
+            {
+                this._dirty = true;
                 XmlReaderSettings s = new XmlReaderSettings();
-                s.DtdProcessing = this.settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                s.DtdProcessing = this._settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
                 s.XmlResolver = Settings.Instance.Resolver;
-                using (XmlReader r = XmlIncludeReader.CreateIncludeReader(this.Document, s, this.FileName)) {
-                    this.Document = loader.Load(r);
+                using (XmlReader r = XmlIncludeReader.CreateIncludeReader(this.Document, s, this.FileName))
+                {
+                    this.Document = _loader.Load(r);
                 }
 
                 // calling this event will cause the XmlTreeView to populate
-                FireModelChanged(ModelChangeType.Reloaded, this.doc);
+                FireModelChanged(ModelChangeType.Reloaded, this._doc);
             }
         }
 
-        public void BeginUpdate() {
-            if (batch == 0)
-                FireModelChanged(ModelChangeType.BeginBatchUpdate, this.doc);
-            batch++;
+        public void BeginUpdate()
+        {
+            if (_batch == 0)
+                FireModelChanged(ModelChangeType.BeginBatchUpdate, this._doc);
+            _batch++;
         }
 
-        public void EndUpdate() {
-            batch--;
-            if (batch == 0)
-                FireModelChanged(ModelChangeType.EndBatchUpdate, this.doc);
+        public void EndUpdate()
+        {
+            _batch--;
+            if (_batch == 0)
+                FireModelChanged(ModelChangeType.EndBatchUpdate, this._doc);
         }
 
-        public LineInfo GetLineInfo(XmlNode node) {
-            return loader.GetLineInfo(node);
+        public LineInfo GetLineInfo(XmlNode node)
+        {
+            return _loader.GetLineInfo(node);
         }
 
         void OnValidationEvent(object sender, ValidationEventArgs e)
         {
             // todo: log errors in error list window.
-        }                
+        }
 
         public void Reload()
         {
-            string filename = this.filename;
+            string filename = this._fileName;
             Clear();
             Load(filename);
         }
@@ -264,17 +279,18 @@ namespace XmlNotepad
         {
             this.Document = new XmlDocument();
             StopFileWatch();
-            this.filename = null;
-            FireModelChanged(ModelChangeType.Reloaded, this.doc);
+            this._fileName = null;
+            FireModelChanged(ModelChangeType.Reloaded, this._doc);
         }
 
         public void Save()
         {
-            Save(this.filename);
+            Save(this._fileName);
         }
 
-        public Encoding GetEncoding() {
-            XmlDeclaration xmldecl = doc.FirstChild as XmlDeclaration;
+        public Encoding GetEncoding()
+        {
+            XmlDeclaration xmldecl = _doc.FirstChild as XmlDeclaration;
             Encoding result = null;
             if (xmldecl != null)
             {
@@ -299,13 +315,13 @@ namespace XmlNotepad
             }
             return result;
         }
-        
+
         public void AddXmlDeclarationWithEncoding()
         {
-            XmlDeclaration xmldecl = doc.FirstChild as XmlDeclaration;
+            XmlDeclaration xmldecl = _doc.FirstChild as XmlDeclaration;
             if (xmldecl == null)
             {
-                doc.InsertBefore(doc.CreateXmlDeclaration("1.0", "utf-8", null), doc.FirstChild);
+                _doc.InsertBefore(_doc.CreateXmlDeclaration("1.0", "utf-8", null), _doc.FirstChild);
             }
             else
             {
@@ -320,10 +336,10 @@ namespace XmlNotepad
         public void Save(string name)
         {
             SaveCopy(name);
-            this.dirty = false;
-            this.filename = name;
-            this.lastModified = this.LastModTime;
-            FireModelChanged(ModelChangeType.Saved, this.doc);
+            this._dirty = false;
+            this._fileName = name;
+            this._lastModified = this.LastModTime;
+            FireModelChanged(ModelChangeType.Saved, this._doc);
         }
 
         public void SaveCopy(string filename)
@@ -332,14 +348,14 @@ namespace XmlNotepad
             {
                 StopFileWatch();
                 XmlWriterSettings s = new XmlWriterSettings();
-                Utilities.InitializeWriterSettings(s, this.site);
+                Utilities.InitializeWriterSettings(s, this._site);
 
                 var encoding = GetEncoding();
                 s.Encoding = encoding;
                 bool noBom = false;
-                if (this.site != null)
+                if (this._site != null)
                 {
-                    Settings settings = (Settings)this.site.GetService(typeof(Settings));
+                    Settings settings = (Settings)this._site.GetService(typeof(Settings));
                     if (settings != null)
                     {
                         noBom = (bool)settings["NoByteOrderMark"];
@@ -355,7 +371,7 @@ namespace XmlNotepad
                     MemoryStream ms = new MemoryStream();
                     using (XmlWriter w = XmlWriter.Create(ms, s))
                     {
-                        doc.Save(w);
+                        _doc.Save(w);
                     }
                     ms.Seek(0, SeekOrigin.Begin);
 
@@ -366,7 +382,7 @@ namespace XmlNotepad
                 {
                     using (XmlWriter w = XmlWriter.Create(filename, s))
                     {
-                        doc.Save(w);
+                        _doc.Save(w);
                     }
                 }
             }
@@ -376,41 +392,46 @@ namespace XmlNotepad
             }
         }
 
-        public bool IsReadOnly(string filename) {
+        public bool IsReadOnly(string filename)
+        {
             return File.Exists(filename) &&
                 (File.GetAttributes(filename) & FileAttributes.ReadOnly) != 0;
         }
 
-        public void MakeReadWrite(string filename) {
+        public void MakeReadWrite(string filename)
+        {
             if (!File.Exists(filename))
                 return;
 
             StopFileWatch();
-            try {
-                FileAttributes attrsMinusReadOnly = File.GetAttributes(this.filename) & ~FileAttributes.ReadOnly;
+            try
+            {
+                FileAttributes attrsMinusReadOnly = File.GetAttributes(this._fileName) & ~FileAttributes.ReadOnly;
                 File.SetAttributes(filename, attrsMinusReadOnly);
-            } finally {
+            }
+            finally
+            {
                 StartFileWatch();
-            }           
+            }
         }
 
         void StopFileWatch()
         {
-            if (this.watcher != null)
+            if (this._watcher != null)
             {
-                this.watcher.Dispose();
-                this.watcher = null;
+                this._watcher.Dispose();
+                this._watcher = null;
             }
         }
         private void StartFileWatch()
         {
-            if (this.filename != null && Location.IsFile && File.Exists(this.filename))
+            if (this._fileName != null && Location.IsFile && File.Exists(this._fileName))
             {
-                string dir = Path.GetDirectoryName(this.filename) + "\\";
-                this.watcher = new FileSystemWatcher(dir, "*.*");
-                this.watcher.Changed += new FileSystemEventHandler(watcher_Changed);
-                this.watcher.Renamed += new RenamedEventHandler(watcher_Renamed);
-                this.watcher.EnableRaisingEvents = true;
+                string dir = Path.GetDirectoryName(this._fileName) + "\\";
+                this._watcher = new FileSystemWatcher(dir, "*.*");
+                this._watcher.Changed += new FileSystemEventHandler(watcher_Changed);
+                this._watcher.Renamed += new RenamedEventHandler(watcher_Renamed);
+                this._watcher.EnableRaisingEvents = true;
             }
             else
             {
@@ -422,27 +443,30 @@ namespace XmlNotepad
         {
             // Apart from retrying, the DelayedActions has the nice side effect of also 
             // collapsing multiple file system events into one action callback.
-            retries = 3;
-            actions.StartDelayedAction("reload", CheckReload, TimeSpan.FromSeconds(1));
+            _retries = 3;
+            string temp = this._fileName; // capture file name in case it changes.
+            _actions.StartDelayedAction("reload", () => { CheckReload(temp); }, TimeSpan.FromSeconds(1));
         }
 
-        DateTime LastModTime {
-            get {
-                if (Location.IsFile) return File.GetLastWriteTime(this.filename);
+        DateTime LastModTime
+        {
+            get
+            {
+                if (Location.IsFile) return File.GetLastWriteTime(this._fileName);
                 return DateTime.Now;
             }
         }
 
-        void CheckReload()
+        void CheckReload(string fileName)
         {
             try
             {
                 // Only do the reload if the file on disk really is different from
                 // what we last loaded.
-                if (this.lastModified < LastModTime) {
-
+                if (this._lastModified < LastModTime && this._fileName == fileName)
+                {
                     // Test if we can open the file (it might still be locked).
-                    using (FileStream fs = new FileStream(this.filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (FileStream fs = new FileStream(this._fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         fs.Close();
                     }
@@ -452,18 +476,18 @@ namespace XmlNotepad
             }
             finally
             {
-                retries--;
-                if (retries > 0)
+                _retries--;
+                if (_retries > 0)
                 {
-                    actions.StartDelayedAction("reload", Reload, TimeSpan.FromSeconds(1));
+                    _actions.StartDelayedAction("reload", Reload, TimeSpan.FromSeconds(1));
                 }
             }
         }
 
         private void watcher_Changed(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType == WatcherChangeTypes.Changed && 
-                IsSamePath(this.filename, e.FullPath))
+            if (e.ChangeType == WatcherChangeTypes.Changed &&
+                IsSamePath(this._fileName, e.FullPath))
             {
                 StartReload();
             }
@@ -473,17 +497,17 @@ namespace XmlNotepad
         {
             // Some editors rename the file to *.bak then save the new version and
             // in that case we do not want XmlNotepad to switch to the .bak file.
-            if (IsSamePath(this.filename, e.OldFullPath))
+            if (IsSamePath(this._fileName, e.OldFullPath))
             {
                 // switch to UI thread
-                actions.StartDelayedAction("renamed", OnRenamed, TimeSpan.FromMilliseconds(1));
+                _actions.StartDelayedAction("renamed", OnRenamed, TimeSpan.FromMilliseconds(1));
             }
         }
 
         private void OnRenamed()
         {
-            this.dirty = true;
-            FireModelChanged(ModelChangeType.Renamed, this.doc);
+            this._dirty = true;
+            FireModelChanged(ModelChangeType.Renamed, this._doc);
         }
 
         static bool IsSamePath(string a, string b)
@@ -505,14 +529,18 @@ namespace XmlNotepad
                 this.ModelChanged(this, new ModelChangedEventArgs(t, node));
         }
 
-        void OnPIChange(XmlNodeChangedEventArgs e) {
+        void OnPIChange(XmlNodeChangedEventArgs e)
+        {
             XmlProcessingInstruction pi = (XmlProcessingInstruction)e.Node;
-            if (pi.Name == "xml-stylesheet") {
-                if (e.Action == XmlNodeChangedAction.Remove) {
+            if (pi.Name == "xml-stylesheet")
+            {
+                if (e.Action == XmlNodeChangedAction.Remove)
+                {
                     // see if there's another!
-                    pi = this.doc.SelectSingleNode("processing-instruction('xml-stylesheet')") as XmlProcessingInstruction;
+                    pi = this._doc.SelectSingleNode("processing-instruction('xml-stylesheet')") as XmlProcessingInstruction;
                 }
-                if (pi != null) {
+                if (pi != null)
+                {
                     this.XsltFileName = DomLoader.ParseXsltArgs(pi.Data);
                 }
                 else
@@ -525,7 +553,7 @@ namespace XmlNotepad
                 if (e.Action == XmlNodeChangedAction.Remove)
                 {
                     // see if there's another!
-                    pi = this.doc.SelectSingleNode("processing-instruction('xsl-output')") as XmlProcessingInstruction;
+                    pi = this._doc.SelectSingleNode("processing-instruction('xsl-output')") as XmlProcessingInstruction;
                 }
                 if (pi != null)
                 {
@@ -542,22 +570,28 @@ namespace XmlNotepad
         {
             // initialize t
             ModelChangeType t = ModelChangeType.NodeChanged;
-            if (e.Node is XmlProcessingInstruction) {
+            if (e.Node is XmlProcessingInstruction)
+            {
                 OnPIChange(e);
             }
 
-            if (XmlHelpers.IsXmlnsNode(e.NewParent) || XmlHelpers.IsXmlnsNode(e.Node)) {
+            if (XmlHelpers.IsXmlnsNode(e.NewParent) || XmlHelpers.IsXmlnsNode(e.Node))
+            {
 
                 // we flag a namespace change whenever an xmlns attribute changes.
                 t = ModelChangeType.NamespaceChanged;
                 XmlNode node = e.Node;
-                if (e.Action == XmlNodeChangedAction.Remove) {
+                if (e.Action == XmlNodeChangedAction.Remove)
+                {
                     node = e.OldParent; // since node.OwnerElement link has been severed!
                 }
-                this.dirty = true;
+                this._dirty = true;
                 FireModelChanged(t, node);
-            } else {
-                switch (e.Action) {
+            }
+            else
+            {
+                switch (e.Action)
+                {
                     case XmlNodeChangedAction.Change:
                         t = ModelChangeType.NodeChanged;
                         break;
@@ -568,18 +602,20 @@ namespace XmlNotepad
                         t = ModelChangeType.NodeRemoved;
                         break;
                 }
-                this.dirty = true;
+                this._dirty = true;
                 FireModelChanged(t, e.Node);
             }
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) {
-            this.actions.CancelDelayedAction("reload");
+        protected virtual void Dispose(bool disposing)
+        {
+            this._actions.CancelDelayedAction("reload");
             StopFileWatch();
         }
 
@@ -609,7 +645,8 @@ namespace XmlNotepad
             this.node = node;
         }
 
-        public XmlNode Node {
+        public XmlNode Node
+        {
             get { return node; }
             set { node = value; }
         }
@@ -622,7 +659,8 @@ namespace XmlNotepad
 
     }
 
-    public enum IndentChar {
+    public enum IndentChar
+    {
         Space,
         Tab
     }

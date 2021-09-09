@@ -3,7 +3,8 @@ using System.Collections;
 using System.Text;
 using System.Xml;
 
-namespace Microsoft.Xml {
+namespace Microsoft.Xml
+{
 
     /// <summary>
     /// The XPathGenerator takes an XmlNode object, and an XmlNamespaceManager as follows:
@@ -35,15 +36,16 @@ namespace Microsoft.Xml {
     /// <line><span style='color:teal'>Debug</span>.Assert(found == node);</line>
     /// </code>
     /// </summary>
-    public class XPathGenerator {
-
-        int nextPrefix;
-        bool useIndices;
+    public class XPathGenerator
+    {
+        private int _nextPrefix;
+        private bool _useIndices;
 
         /// <summary>
         /// Construct new XPathGenerator.  
         /// </summary>        
-        public XPathGenerator() {
+        public XPathGenerator()
+        {
         }
 
         /// <summary>
@@ -63,8 +65,9 @@ namespace Microsoft.Xml {
         /// <param name="useIndices">Specify whether you want the XPathGenerator
         /// to always include child index positions.  Default is false.
         /// </param>
-        public XPathGenerator(bool useIndices) {
-            this.useIndices = useIndices;
+        public XPathGenerator(bool useIndices)
+        {
+            this._useIndices = useIndices;
         }
 
         /// <summary>
@@ -83,16 +86,20 @@ namespace Microsoft.Xml {
         /// <returns>The XPath expression needed to locate the given node
         /// or null if the node is not locatable by XPath because of it's
         /// NodeType.</returns>
-        public string GetXPath(XmlNode node, XmlNamespaceManager nsmgr) {
-            if (node == null) {
+        public string GetXPath(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node == null)
+            {
                 throw new System.ArgumentNullException("node");
             }
-            if (nsmgr == null) {
+            if (nsmgr == null)
+            {
                 throw new System.ArgumentNullException("nsmgr");
             }
-            nextPrefix = 0;
+            _nextPrefix = 0;
             StringBuilder sb = new StringBuilder();
-            switch (node.NodeType) {
+            switch (node.NodeType)
+            {
                 // these node types are not accessible to XPath
                 case XmlNodeType.Document:
                 case XmlNodeType.DocumentType:
@@ -106,63 +113,81 @@ namespace Microsoft.Xml {
                 case XmlNodeType.XmlDeclaration:
                     return null;
             }
-            
+
             NodeToXPath(node, sb, nsmgr);
             return sb.ToString();
         }
 
-        void NodeToXPath(XmlNode node, StringBuilder sb, XmlNamespaceManager nsmgr) {
-            if (node != null) {
+        void NodeToXPath(XmlNode node, StringBuilder sb, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
                 XmlNode parent = node.ParentNode;
-                if (parent == null) {
+                if (parent == null)
+                {
                     // ParentNode doesn't work on Attributes!
                     parent = node.SelectSingleNode("..");
                 }
                 NodeToXPath(parent, sb, nsmgr);
                 string path = GetPathInParent(node, nsmgr);
-                if (path != null) {
+                if (path != null)
+                {
                     sb.Append("/");
                     sb.Append(path);
                 }
             }
         }
 
-        string GetPathInParent(XmlNode node, XmlNamespaceManager nsmgr) {
+        string GetPathInParent(XmlNode node, XmlNamespaceManager nsmgr)
+        {
             XmlNodeType nt = node.NodeType;
-            if (nt == XmlNodeType.Attribute) {
-                if (node.NamespaceURI == "http://www.w3.org/2000/xmlns/") {
+            if (nt == XmlNodeType.Attribute)
+            {
+                if (node.NamespaceURI == "http://www.w3.org/2000/xmlns/")
+                {
                     if (string.IsNullOrEmpty(node.Prefix) &&
-                        node.LocalName == "xmlns") {
+                        node.LocalName == "xmlns")
+                    {
                         return "namespace::*[local-name()='']";// and .='" + node.Value + "']";
-                    } else {
+                    }
+                    else
+                    {
                         return "namespace::" + node.LocalName;
                     }
                 }
                 // attributes are unique by definition, so no indices are
                 // required.
-                return string.Format("@{0}", GetQualifiedPath(node, nsmgr)); 
+                return string.Format("@{0}", GetQualifiedPath(node, nsmgr));
             }
-                            
+
             XmlNode parent = node.ParentNode;
-            if (parent != null) {
+            if (parent != null)
+            {
                 int count = 0;
                 int index = 0;
                 bool wasText = false;
                 XmlNode child = parent.FirstChild;
-                while (child != null) {
-                    if (child == node) {
+                while (child != null)
+                {
+                    if (child == node)
+                    {
                         index = count;
                     }
                     XmlNodeType ct = child.NodeType;
-                    if (IsTextNode(ct)) {
-                        if (IsTextNode(nt)) {      
+                    if (IsTextNode(ct))
+                    {
+                        if (IsTextNode(nt))
+                        {
                             // Adjacent text nodes are merged in XPath model.
-                            if (!wasText) count++;                             
+                            if (!wasText) count++;
                         }
                         wasText = true;
-                    } else {
+                    }
+                    else
+                    {
                         wasText = false;
-                        if (ct == nt && child.Name == node.Name) {
+                        if (ct == nt && child.Name == node.Name)
+                        {
                             count++;
                         }
                     }
@@ -170,7 +195,8 @@ namespace Microsoft.Xml {
                 }
 
                 string selector = null;
-                switch (node.NodeType) {
+                switch (node.NodeType)
+                {
                     case XmlNodeType.CDATA:
                     case XmlNodeType.Text:
                     case XmlNodeType.Whitespace:
@@ -188,17 +214,21 @@ namespace Microsoft.Xml {
                         break;
                 }
 
-                if (!this.useIndices && count < 2) { // it's unique already, so no need for indices.
+                if (!this._useIndices && count < 2)
+                { // it's unique already, so no need for indices.
                     return selector;
                 }
                 index++; // XPath indices are 1-based
                 return string.Format("{0}[{1}]", selector, index.ToString());
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
 
-        static bool IsTextNode(XmlNodeType nt) {
+        static bool IsTextNode(XmlNodeType nt)
+        {
             return nt == XmlNodeType.SignificantWhitespace ||
                   nt == XmlNodeType.Whitespace ||
                   nt == XmlNodeType.Text ||
@@ -206,29 +236,40 @@ namespace Microsoft.Xml {
                   nt == XmlNodeType.EntityReference;
         }
 
-        string GetQualifiedPath(XmlNode node, XmlNamespaceManager nsmgr) {
+        string GetQualifiedPath(XmlNode node, XmlNamespaceManager nsmgr)
+        {
             string nsuri = node.NamespaceURI;
             string prefix = node.Prefix;
             string localName = node.LocalName;
 
-            if (!string.IsNullOrEmpty(nsuri)) {
+            if (!string.IsNullOrEmpty(nsuri))
+            {
                 string p = nsmgr.LookupPrefix(nsuri);
-                if (!string.IsNullOrEmpty(p)) {
+                if (!string.IsNullOrEmpty(p))
+                {
                     // Use previously defined prefix for this namespace.
                     prefix = p;
-                } else {
+                }
+                else
+                {
                     string found = nsmgr.LookupNamespace(prefix);
-                    if (found == null && !string.IsNullOrEmpty(prefix)) {
+                    if (found == null && !string.IsNullOrEmpty(prefix))
+                    {
                         nsmgr.AddNamespace(prefix, nsuri);
-                    } else if (found != node.NamespaceURI) {
+                    }
+                    else if (found != node.NamespaceURI)
+                    {
                         // we have a prefix conflict, so need to invent a new 
                         // prefix for this part of the query.
-                        int i = nextPrefix++;
+                        int i = _nextPrefix++;
                         int number = (i / 26);
                         char letter = Convert.ToChar('a' + i - (26 * number));
-                        if (number == 0) {
+                        if (number == 0)
+                        {
                             prefix = letter.ToString();
-                        } else {
+                        }
+                        else
+                        {
                             prefix = string.Format("{0}{1}", letter, number);
                         }
                         nsmgr.AddNamespace(prefix, nsuri);
