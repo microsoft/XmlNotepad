@@ -38,13 +38,13 @@ namespace XmlNotepad
     /// </list>
     /// </summary>
     public class Settings : IDisposable
-	{
-        static Settings _instance;
-        string filename;
-        FileSystemWatcher watcher;
-        Hashtable map = new Hashtable();
-        System.Threading.Timer timer;
-        PersistentFileNames pfn;
+    {
+        private static Settings _instance;
+        private string filename;
+        private FileSystemWatcher watcher;
+        private Hashtable map = new Hashtable();
+        private System.Threading.Timer timer;
+        private PersistentFileNames pfn;
 
         public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
 
@@ -60,7 +60,8 @@ namespace XmlNotepad
         /// Note this is an IDisposable object, so remember to call Dispose() on it during
         /// application shutdown.
         /// </summary>
-        public Settings() {
+        public Settings()
+        {
             _instance = this;
         }
 
@@ -100,8 +101,10 @@ namespace XmlNotepad
         /// This method is usually called right before you update the settings and save
         /// them to disk.
         /// </summary>
-        public void StopWatchingFileChanges(){
-            if (this.watcher != null){
+        public void StopWatchingFileChanges()
+        {
+            if (this.watcher != null)
+            {
                 this.watcher.Dispose();
                 this.watcher = null;
             }
@@ -113,7 +116,8 @@ namespace XmlNotepad
         /// change the setting object instance below.
         /// </summary>
         /// <param name="name"></param>
-        public void OnChanged(string name) {
+        public void OnChanged(string name)
+        {
             var handler = this.Changed;
             if (DelayedActions != null && handler != null)
             {
@@ -129,12 +133,15 @@ namespace XmlNotepad
         /// </summary>
         /// <param name="name">The setting name</param>
         /// <returns>The setting value or null if not found.</returns>
-        public object this[string name] {
+        public object this[string name]
+        {
             get { return this.map[name]; }
-            set { 
-                if (this.map[name] != value){
+            set
+            {
+                if (this.map[name] != value)
+                {
                     this.map[name] = value;
-                    OnChanged(name); 
+                    OnChanged(name);
                 }
             }
         }
@@ -142,7 +149,8 @@ namespace XmlNotepad
         /// <summary>
         /// Reloads the settings from the current file on disk.
         /// </summary>
-        public void Reload() {
+        public void Reload()
+        {
             Load(this.filename);
         }
 
@@ -156,7 +164,7 @@ namespace XmlNotepad
             pfn = new PersistentFileNames(Settings.Instance.StartupPath);
 
             // we don't use the serializer because it's too slow to fire up.
-            try 
+            try
             {
                 using (var r = new XmlTextReader(filename))
                 {
@@ -200,7 +208,7 @@ namespace XmlNotepad
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // Hey, at least we tried!
                 Debug.WriteLine("Load settings failed: " + ex.Message);
@@ -209,10 +217,13 @@ namespace XmlNotepad
             this.FileName = filename;
         }
 
-        public string FileName {
+        public string FileName
+        {
             get { return this.filename; }
-            set {
-                if (this.filename != value) {
+            set
+            {
+                if (this.filename != value)
+                {
                     this.filename = value;
 
                     StopWatchingFileChanges();
@@ -226,14 +237,21 @@ namespace XmlNotepad
             }
         }
 
-        string ConvertToString(object value) {
-            if (value is Uri) {
-                return pfn.GetPersistentFileName((Uri)value);                
-            } else if (value is string) {
+        string ConvertToString(object value)
+        {
+            if (value is Uri)
+            {
+                return pfn.GetPersistentFileName((Uri)value);
+            }
+            else if (value is string)
+            {
                 return (string)value;
-            } else {
+            }
+            else
+            {
                 TypeConverter tc = TypeDescriptor.GetConverter(value.GetType());
-                if (tc != null) {
+                if (tc != null)
+                {
                     string s = tc.ConvertToString(value);
                     return s;
                 }
@@ -241,14 +259,21 @@ namespace XmlNotepad
             }
         }
 
-        object ConvertToType(string value, Type type) {
-            if (type == typeof(Uri)) {
+        object ConvertToType(string value, Type type)
+        {
+            if (type == typeof(Uri))
+            {
                 return pfn.GetAbsoluteFilename(value);
-            } else if (type == typeof(string)) {
+            }
+            else if (type == typeof(string))
+            {
                 return value;
-            } else {
+            }
+            else
+            {
                 TypeConverter tc = TypeDescriptor.GetConverter(type);
-                if (tc != null) {
+                if (tc != null)
+                {
                     return tc.ConvertFromString(value);
                 }
                 throw new ApplicationException(string.Format(Strings.TypeConvertError, type.FullName));
@@ -259,10 +284,12 @@ namespace XmlNotepad
         /// Serializes property values to the settings file.
         /// </summary>
         /// <param name="filename">The name of the settings file to write to.</param>
-        public void Save(string filename) {
+        public void Save(string filename)
+        {
             // make sure directory exists!
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
-            try {
+            try
+            {
                 using (var w = new XmlTextWriter(filename, System.Text.Encoding.UTF8))
                 {
                     w.Formatting = Formatting.Indented;
@@ -297,22 +324,30 @@ namespace XmlNotepad
                         }
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
-            } 
+            }
         }
 
-        private void ReadHashTable(XmlReader r, Hashtable ht) {
+        private void ReadHashTable(XmlReader r, Hashtable ht)
+        {
             Type et = typeof(string);
-            foreach (DictionaryEntry item in ht) {
-                if (item.Value != null) {
+            foreach (DictionaryEntry item in ht)
+            {
+                if (item.Value != null)
+                {
                     et = item.Value.GetType();
                     break;
                 }
             }
-            if (!r.IsEmptyElement) {
-                while (r.Read() && r.NodeType != XmlNodeType.EndElement) {
-                    if (r.NodeType == XmlNodeType.Element) {
+            if (!r.IsEmptyElement)
+            {
+                while (r.Read() && r.NodeType != XmlNodeType.EndElement)
+                {
+                    if (r.NodeType == XmlNodeType.Element)
+                    {
                         string key = XmlConvert.DecodeName(r.LocalName);
                         string value = r.ReadString();
                         ht[key] = ConvertToType(value, et);
@@ -320,27 +355,36 @@ namespace XmlNotepad
                 }
             }
         }
-        
-        private void WriteHashTable(XmlWriter w, Hashtable value) {
-            try {
-                foreach (DictionaryEntry item in value) {
+
+        private void WriteHashTable(XmlWriter w, Hashtable value)
+        {
+            try
+            {
+                foreach (DictionaryEntry item in value)
+                {
                     string key = XmlConvert.EncodeName(item.Key.ToString());
                     w.WriteStartElement(key);
                     object o = item.Value;
                     w.WriteString(this.ConvertToString(o));
                     w.WriteEndElement();
                 }
-            } catch (Exception x) {
+            }
+            catch (Exception x)
+            {
                 Console.WriteLine(x.Message);
             }
         }
 
-        Array ReadArray(string name, Array a, XmlReader r) {
+        Array ReadArray(string name, Array a, XmlReader r)
+        {
             Type et = a.GetType().GetElementType();
             ArrayList list = new ArrayList();
-            if (!r.IsEmptyElement) {
-                while (r.Read() && r.NodeType != XmlNodeType.EndElement) {
-                    if (r.NodeType == XmlNodeType.Element) {
+            if (!r.IsEmptyElement)
+            {
+                while (r.Read() && r.NodeType != XmlNodeType.EndElement)
+                {
+                    if (r.NodeType == XmlNodeType.Element)
+                    {
                         string value = r.ReadString();
                         list.Add(ConvertToType(value, et));
                     }
@@ -349,49 +393,62 @@ namespace XmlNotepad
             return (Array)list.ToArray(et);
         }
 
-        void WriteArray(XmlWriter w, string key, Array array) {
+        void WriteArray(XmlWriter w, string key, Array array)
+        {
             w.WriteStartElement(key); // container element
-            try {
+            try
+            {
                 string name = array.GetType().GetElementType().Name;
-                foreach (object o in array) {
+                foreach (object o in array)
+                {
                     string s = ConvertToString(o);
-                    if (s != null) w.WriteElementString(name, s);                    
+                    if (s != null) w.WriteElementString(name, s);
                 }
-            } catch (Exception x) {
+            }
+            catch (Exception x)
+            {
                 Console.WriteLine(x.Message);
             }
             w.WriteEndElement();
         }
 
-        private void watcher_Changed(object sender, FileSystemEventArgs e) {
+        private void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
             // The trick here is that the file system seems to generate lots of
             // events and we don't want to have lots of dialogs popping up asking the
             // user to reload settings, so we insert a delay to let the events
             // settle down, then we tell the hosting app that the settings have changed.
-            if (e.ChangeType == WatcherChangeTypes.Changed && this.timer == null) {
+            if (e.ChangeType == WatcherChangeTypes.Changed && this.timer == null)
+            {
                 this.timer = new System.Threading.Timer(new TimerCallback(OnDelay), this, 2000, Timeout.Infinite);
             }
         }
 
-        void OnDelay(object state) {
+        void OnDelay(object state)
+        {
             OnChanged("File");
-            if (this.timer != null) {
+            if (this.timer != null)
+            {
                 this.timer.Dispose();
                 this.timer = null;
             }
         }
 
-        ~Settings() {
+        ~Settings()
+        {
             Dispose(false);
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
         }
 
-        protected virtual void Dispose(bool disposing) {
+        protected virtual void Dispose(bool disposing)
+        {
             this.StopWatchingFileChanges();
-            if (this.timer != null) {
+            if (this.timer != null)
+            {
                 this.timer.Dispose();
             }
             this.timer = null;
@@ -492,27 +549,32 @@ namespace XmlNotepad
     /// correctly. It also replaces well known paths with the variables %StartupPath%, %ProgramFiles, 
     /// %UserProfile% and %SystemRoot%.  
     /// </summary>
-    class PersistentFileNames {
+    class PersistentFileNames
+    {
         Hashtable variables = new Hashtable();
-        
-        public PersistentFileNames(string startupPath) {
+
+        public PersistentFileNames(string startupPath)
+        {
             variables["StartupPath"] = startupPath;
             variables["ProgramFiles"] = Environment.GetEnvironmentVariable("ProgramFiles");
             variables["UserProfile"] = Environment.GetEnvironmentVariable("UserProfile");
             variables["SystemRoot"] = Environment.GetEnvironmentVariable("SystemRoot");
         }
 
-        public string GetPersistentFileName(Uri uri) {
+        public string GetPersistentFileName(Uri uri)
+        {
             if (!uri.IsAbsoluteUri) return uri.OriginalString;
             string result = uri.OriginalString;
-            try {
+            try
+            {
                 int len = 0;
                 string path = uri.AbsolutePath;
                 if (uri.IsFile && !File.Exists(uri.LocalPath)) // sanity check!
                     return null;
 
                 // replace absolute paths with variables.
-                foreach (string key in variables.Keys) {
+                foreach (string key in variables.Keys)
+                {
                     string baseDir = (string)variables[key];
                     if (!baseDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                         baseDir += Path.DirectorySeparatorChar;
@@ -520,36 +582,46 @@ namespace XmlNotepad
                     Uri rel = baseUri.MakeRelativeUri(uri);
                     string relPath = rel.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped);
                     Uri test = new Uri(relPath, UriKind.RelativeOrAbsolute);
-                    if (! test.IsAbsoluteUri) {
+                    if (!test.IsAbsoluteUri)
+                    {
                         // Keep track of the shortest relative path.
-                        if (len == 0 || relPath.Length < len) {
+                        if (len == 0 || relPath.Length < len)
+                        {
                             result = "%" + key + "%" + relPath;
                             len = relPath.Length;
                         }
                     }
                 }
-            } catch (UriFormatException e) {
+            }
+            catch (UriFormatException e)
+            {
                 // swallow any bad URI noise.
                 Trace.WriteLine(e.Message);
             }
             return result;
         }
 
-        public Uri GetAbsoluteFilename(string filename) {
-            try {
+        public Uri GetAbsoluteFilename(string filename)
+        {
+            try
+            {
                 // replace variables with absolute paths.
-                foreach (string key in variables.Keys) {
+                foreach (string key in variables.Keys)
+                {
                     string var = "%" + key + "%";
-                    if (filename.StartsWith(var, StringComparison.CurrentCultureIgnoreCase)) {
+                    if (filename.StartsWith(var, StringComparison.CurrentCultureIgnoreCase))
+                    {
                         string baseDir = (string)variables[key];
                         string relPath = filename.Substring(var.Length);
                         if (!baseDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                            baseDir += Path.DirectorySeparatorChar;                        
+                            baseDir += Path.DirectorySeparatorChar;
                         Uri resolved = new Uri(new Uri(baseDir), relPath);
                         return resolved;
                     }
                 }
-            } catch (UriFormatException e) {
+            }
+            catch (UriFormatException e)
+            {
                 // swallow any bad URI noise.
                 Trace.WriteLine(e.Message);
             }
