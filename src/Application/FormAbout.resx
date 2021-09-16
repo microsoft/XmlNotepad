@@ -344,7 +344,7 @@
     <value>9</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>© 2006 Microsoft Corporation.  All Rights Reserved.</value>
+    <value>© {0} Microsoft Corporation.  All Rights Reserved.</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>

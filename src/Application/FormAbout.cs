@@ -17,8 +17,8 @@ namespace XmlNotepad
         public FormAbout()
         {
             InitializeComponent();
-
             this.labelVersion.Text = string.Format(this.labelVersion.Text, GetVersion());
+            this.label1.Text = string.Format(this.label1.Text, DateTime.Now.Year.ToString());
         }
 
         string GetVersion()
