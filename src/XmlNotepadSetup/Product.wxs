@@ -7,7 +7,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="LovettSoftware" Name="LovettSoftware">
-          <Directory Id="RootDirectory" Name="XmlNotepad">
+          <Directory Id="APPINSTALLROOTDIR" Name="XmlNotepad">
             <Directory Id="Help" Name="Help" />
             <Directory Id="samples" Name="Samples" />
           </Directory>
@@ -20,7 +20,7 @@
       </Directory>
     </Directory>
     <!-- Step 2: Add files to your installer package -->
-    <DirectoryRef Id="RootDirectory" FileSource="$(var.Application.TargetDir)">
+    <DirectoryRef Id="APPINSTALLROOTDIR" FileSource="$(var.Application.TargetDir)">
       <Component Id="XmlNotepad.exe" Guid="37F5A68E-3507-44A6-BA7D-DC88FA074E88">
         <File Id="XmlNotepad.exe" KeyPath="yes" Checksum="yes" />
       </Component>
@@ -260,7 +260,7 @@
     <!-- shortcut in start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="01D93FF2-E181-4C0A-B0FC-D85B413DDB8D">
-        <Shortcut Id="ApplicationStartMenuShortcut" Name="XML Notepad" Description="Simple XML Editor" Target="[#XmlNotepad.exe]" WorkingDirectory="RootDirectory" />
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="XML Notepad" Description="Simple XML Editor" Target="[#XmlNotepad.exe]" WorkingDirectory="APPINSTALLROOTDIR" />
         <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
         <RemoveFolder Id="RemoveCompanyProgramsFolder" Directory="CompanyProgramsFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\LovettSoftware\XmlNotepad" Name="installed" Type="integer" Value="1" KeyPath="yes" />
@@ -338,7 +338,8 @@
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />
     <!-- Step 2: Add UI to your installer / Step 4: Trigger the custom action -->
     <UI>
-      <UIRef Id="WixUI_Minimal" />
+      <Property Id="WIXUI_INSTALLDIR" Value="APPINSTALLROOTDIR" />
+      <UIRef Id="WixUI_InstallDir" />
       <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
     </UI>
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch XML Notepad" />
