@@ -16,9 +16,9 @@ The following additional conventions are also followed:
 1. Do not use "s_" prefix on statics, instead use Class name qualification.
 1. All private fields prefixed with `_` except for WinForms generated code.
 1. Accessing fields with `this.` is ok, do not strip `this.` prefix if used.
-1. Constants are CamelCased even if they are private to a class.
+1. Constants are PascalCased even if they are private to a class.
 1. Try and collect all private fields at the top of the class.
-1. Public fields are CamelCased like public properties and methods.
+1. Public fields are PascalCased like public properties and methods.
 1. Generally one class per file, unless there is a super natural family of classes, like Commands.cs, that would cause an unnecessary explosion in number of files.
 1. Nice to have blank line between methods.
 1. Use "Remove and Sort Usings" command in VS.
