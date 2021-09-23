@@ -443,7 +443,7 @@ namespace XmlNotepad
         {
             this._updater = new Updater(this._settings, this._delayedActions);
             this._updater.Title = this.Caption;
-            this._updater.UpdateRequired += new EventHandler<bool>(OnUpdateRequired);
+            this._updater.UpdateAvailable += new EventHandler<UpdateStatus>(OnUpdateAvailable);
             LoadConfig();
             this.xmlTreeView1.OnLoaded();
             EnsureWindowBounds();
@@ -460,32 +460,64 @@ namespace XmlNotepad
             }
         }
 
-        void OnUpdateRequired(object sender, bool updateAvailable)
+        void OnUpdateAvailable(object sender, UpdateStatus status)
         {
             if (this.Disposing)
             {
                 return;
             }
-            this.toolStripMenuItemUpdate.Tag = updateAvailable;
-            if (updateAvailable)
+
+            if (UpdateTooltips(status) != null)
             {
-                this.toolStripMenuItemUpdate.Text = SR.UpdateAvailableCaption;
-                this.toolStripMenuItemUpdate.ToolTipText = string.Format(SR.UpdateAvailableTooltip, this.caption, _updater.Version) + "\r\n" +
-                    SR.ShowInstallPage;
-                this.menuStrip1.ShowItemToolTips = true;
+                ShowUpdateButton();
             }
-            else
-            {
-                this.toolStripMenuItemUpdate.Text = SR.UpToDate;
-                this.toolStripMenuItemUpdate.ToolTipText = string.Format(SR.UpToDateTooltip, _updater.Version) + "\r\n" +
-                    SR.ShowUpdateHistory;
-                this.menuStrip1.ShowItemToolTips = true;
-            }
+        }
+
+        void ShowUpdateButton() 
+        { 
             this.toolStripMenuItemUpdate.Visible = true;
             this._delayedActions.StartDelayedAction(HideUpdateButtonAction, () =>
             {
                 this.toolStripMenuItemUpdate.Visible = false;
             }, TimeSpan.FromSeconds(30));
+        }
+
+        string UpdateTooltips(UpdateStatus status)
+        {
+            if (this.Disposing)
+            {
+                return null;
+            }
+
+            string label = null;
+
+            // happens from a background update check
+            if (status.Error != null)
+            {
+                ShowStatus(status.Error);
+            }
+            else
+            {
+                bool updateAvailable = UpdateRequired(status.Latest);
+                
+                this.toolStripMenuItemUpdate.Tag = updateAvailable;
+                if (updateAvailable)
+                {
+                    this.toolStripMenuItemUpdate.Text = label = SR.UpdateAvailableCaption;
+                    this.toolStripMenuItemUpdate.ToolTipText = string.Format(SR.UpdateAvailableTooltip, this.caption, _updater.Version) + "\r\n" +
+                        SR.ShowInstallPage;
+                    this.menuStrip1.ShowItemToolTips = true;
+                }
+                else
+                {
+                    this.toolStripMenuItemUpdate.Text = label = SR.UpToDate;
+                    this.toolStripMenuItemUpdate.ToolTipText = string.Format(SR.UpToDateTooltip, _updater.Version) + "\r\n" +
+                        SR.ShowUpdateHistory;
+                    this.menuStrip1.ShowItemToolTips = true;
+                }
+            }
+            
+            return label;
         }
 
         void toolStripMenuItemUpdate_Click(object sender, EventArgs e)
@@ -693,21 +725,37 @@ namespace XmlNotepad
 
         const string HideUpdateButtonAction = "HideUpdateButton";
 
+        private bool UpdateRequired(Version v)
+        {
+            if (v != null)
+            {
+                Version v2 = GetType().Assembly.GetName().Version;
+                return v2 > v;
+            }
+            return false;
+        }
+
         private async void checkUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var saved = this.statusStrip1.BackColor;
             this.statusStrip1.BackColor = this.toolStripMenuItemUpdate.BackColor;
             this.toolStripMenuItemUpdate.Visible = false;
             this._delayedActions.CancelDelayedAction(HideUpdateButtonAction);
-            ShowStatus("Checking for updates...");
+            ShowStatus(SR.CheckUpdatesStatus);
             try
             {
-                bool update = await this._updater.CheckNow();
-
-                string line = this.toolStripMenuItemUpdate.Text.Split('\r')[0];
-                ShowStatus(line);
-
-                AnimateUpdateButton(update);
+                var update = await this._updater.CheckNow();
+                if (update.Error != null)
+                {
+                    ShowStatus(update.Error);
+                }
+                else
+                {
+                    var label = UpdateTooltips(update);
+                    string line = label.Split('\r')[0];
+                    ShowStatus(line);
+                    AnimateUpdateButton(UpdateRequired(update.Latest));
+                }
             }
             catch
             {
@@ -763,7 +811,7 @@ namespace XmlNotepad
             animation.Completed += (s, e) =>
             {
                 this.Controls.Remove(animationCanvas1);
-                OnUpdateRequired(this, updateAvailable);
+                ShowUpdateButton();
             };
 
             shape.BeginAnimation(animation);

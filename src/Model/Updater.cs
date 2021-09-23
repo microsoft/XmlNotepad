@@ -9,6 +9,12 @@ using System.Net.Http;
 
 namespace XmlNotepad
 {
+    public class UpdateStatus
+    {
+        public Version Latest;
+        public string Error;
+    }
+
     public class Updater : IDisposable
     {
         private Settings _settings;
@@ -30,7 +36,7 @@ namespace XmlNotepad
         private const int MaxRetries = 10;
         private TimeSpan _minimumUpdateFrequency = TimeSpan.FromSeconds(5);
 
-        public event EventHandler<bool> UpdateRequired;
+        public event EventHandler<UpdateStatus> UpdateAvailable;
 
         public Updater(Settings s, DelayedActions handler)
         {
@@ -153,20 +159,23 @@ namespace XmlNotepad
               this._updateFrequency == TimeSpan.MaxValue ||
               this._lastCheck + this._updateFrequency < DateTime.Now)
             {
-                bool update = await CheckForUpdate();
-                FireUpdate(update);
+                var update = await CheckForUpdate();
+                if (update != null)
+                {
+                    FireUpdate(update);
+                }
             }
         }
 
         bool busy;
 
-        async Task<bool> CheckForUpdate(bool retry = true)
+        async Task<UpdateStatus> CheckForUpdate(bool retry = true)
         {
             if (busy)
             {
-                return false;
+                return null;
             }
-            bool update = false;
+            UpdateStatus update = null;
             busy = true;
             if (this._updateUri != null)
             {
@@ -194,8 +203,9 @@ namespace XmlNotepad
                     }
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    update = new UpdateStatus() { Error = ex.Message };
                     // try again in a bit...
                     this._retryCount++;
                     if (retry && this._retryCount < MaxRetries)
@@ -234,11 +244,8 @@ namespace XmlNotepad
             }
         }
 
-        bool ProcessUpdate(XmlDocument doc)
+        UpdateStatus ProcessUpdate(XmlDocument doc)
         {
-            Version v = GetType().Assembly.GetName().Version;
-            string ver = v.ToString();
-
             XmlElement loc = doc.SelectSingleNode("updates/application/location") as XmlElement;
             if (loc != null)
             {
@@ -249,7 +256,7 @@ namespace XmlNotepad
                     {
                         string location = uri.IsFile ? uri.LocalPath : uri.AbsoluteUri;
                         SetUpdateLocation(location);
-                        return false; // page has been moved - start over!
+                        return new UpdateStatus() { Error = "update page has been moved - check your settings" };
                     }
                 }
                 catch (Exception e)
@@ -294,29 +301,31 @@ namespace XmlNotepad
                 string n = e.GetAttribute("number");
                 if (!string.IsNullOrEmpty(n))
                 {
-                    Version v2 = new Version(n);
-                    if (v2 > v)
+                    try
                     {
-                        // new version is available!
+                        Version v2 = new Version(n);
                         this._version = n;
-                        newVersion = true;
-                        break;
+                        return new UpdateStatus() { Latest = v2 };
+                    } 
+                    catch (Exception)
+                    {
+                        return new UpdateStatus() { Error = "found badly formatted version: " + n };
                     }
                 }
             }
 
-            return newVersion;
+            return null;
         }
 
-        public void FireUpdate(bool newVersion)
+        public void FireUpdate(UpdateStatus status)
         {
             // Make sure we switch back to the UI thread.
-            var handler = this.UpdateRequired;
+            var handler = this.UpdateAvailable;
             if (handler != null)
             {
                 this._delayedActions.StartDelayedAction("UpdateRequired", () =>
                 {
-                    handler(this, newVersion);
+                    handler(this, status);
                 }, TimeSpan.FromMilliseconds(1));
             }
         }
@@ -338,14 +347,14 @@ namespace XmlNotepad
             }
         }
 
-        public async Task<bool> CheckNow()
+        public async Task<UpdateStatus> CheckNow()
         {
             StopTimer();
             if (this._updateUri != null)
             {
                 return await CheckForUpdate(false);
             }
-            return false;
+            return null;
         }
     }
 }

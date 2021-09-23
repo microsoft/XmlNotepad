@@ -252,6 +252,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking for updates....
+        /// </summary>
+        public static string CheckUpdatesStatus {
+            get {
+                return ResourceManager.GetString("CheckUpdatesStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Colors.
         /// </summary>
         public static string ColorCategory {
