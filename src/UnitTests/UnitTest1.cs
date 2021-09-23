@@ -1626,15 +1626,15 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("Failed replace, via replace button");
             w.SendKeystrokes("{HOME}");
             findDialog = OpenReplaceDialog();
-            findDialog.Window.SendKeystrokes("will not find%R");
+            findDialog.Window.SendKeystrokes("will not find%r");
             var popup = findDialog.Window.ExpectingPopup("Find Error");
             popup.DismissPopUp("{ENTER}");
 
             Trace.WriteLine("Test we can replace 2 things in sequence");
             w.SendKeystrokes("{HOME}");
-            findDialog.Window.SendKeystrokes("XML{TAB}XXXXX%w%R");
-            findDialog.Window.SendKeystrokes("%R"); // make the first change
-            findDialog.Window.SendKeystrokes("%R"); // make the second change
+            findDialog.Window.SendKeystrokes("XML{TAB}XXXXX%w%r");
+            findDialog.Window.SendKeystrokes("%r"); // make the first change
+            findDialog.Window.SendKeystrokes("%r"); // make the second change
             popup = findDialog.Window.ExpectingPopup("Replace Complete");
             popup.DismissPopUp("{ENTER}");
 
@@ -1674,11 +1674,11 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Test we can replace 2 things in backwards sequence");
             w.SendKeystrokes("{HOME}");
-            findDialog.Window.SendKeystrokes("XML{TAB}XXXXX%m%w%u%R");
+            findDialog.Window.SendKeystrokes("XML{TAB}XXXXX%m%w%u%r");
             Sleep(100);
-            findDialog.Window.SendKeystrokes("%R"); // make the first change
+            findDialog.Window.SendKeystrokes("%r"); // make the first change
             Sleep(100);
-            findDialog.Window.SendKeystrokes("%R"); // make the second change
+            findDialog.Window.SendKeystrokes("%r"); // make the second change
             var popup = findDialog.Window.ExpectingPopup("Replace Complete");
             popup.DismissPopUp("{ENTER}");
             findDialog.Window.DismissPopUp("{ESC}");
