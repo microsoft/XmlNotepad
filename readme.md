@@ -25,7 +25,7 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Change History
 
-See [Change History](http://microsoft.github.io/XmlNotepad/help/updates/) for list of new features and bug fixes.
+See [Change History](http://microsoft.github.io/XmlNotepad/help/updates/) for a list of new features and bug fixes.
 
 ## Help
 
