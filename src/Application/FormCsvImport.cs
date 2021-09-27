@@ -16,7 +16,7 @@ namespace XmlNotepad
         {
             InitializeComponent();
 
-            // remove the test label we use just for design mode.
+            // Remove the test label we use only for design mode.
             this.flowLayoutPanel1.Controls.Remove(this.labelTest);
 
             foreach (var delim in FormCsvImport._delimiterNames)
@@ -47,7 +47,7 @@ namespace XmlNotepad
         {
             flowLayoutPanel1.Controls.Clear();
 
-            // sniff the file, see if we can figure out the delimiter
+            // Sniff the file, see if we can figure out the delimiter
             if (string.IsNullOrEmpty(this._fileName) || !File.Exists(this._fileName))
             {
                 return;
@@ -58,13 +58,13 @@ namespace XmlNotepad
             {
                 if (this.comboBoxDelimiters.Text != FormCsvImport._delimiterNames[this.comboBoxDelimiters.SelectedIndex])
                 {
-                    // user is typing in something new
+                    // User is typing in something new
                     userText = this.comboBoxDelimiters.Text;
                 }
             }
             else
             {
-                // user is typing in something new
+                // User is typing in something new
                 userText = this.comboBoxDelimiters.Text;
 
             }
@@ -110,7 +110,7 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    ShowStatus("Now rows found in that file");
+                    ShowStatus("No rows found in that file.");
                 }
             }
         }
