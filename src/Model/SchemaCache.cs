@@ -602,7 +602,7 @@ namespace XmlNotepad
                         bool.TryParse(s, out disabled);
                     }
                     string filename = r.ReadString();
-                    this.Add(nsuri, pfn.GetAbsoluteFilename(filename), disabled);
+                    this.Add(nsuri, pfn.GetAbsoluteFileName(filename), disabled);
                 }
             }
         }

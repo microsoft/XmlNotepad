@@ -40,11 +40,11 @@ namespace XmlNotepad
     public class Settings : IDisposable
     {
         private static Settings _instance;
-        private string filename;
-        private FileSystemWatcher watcher;
-        private Hashtable map = new Hashtable();
-        private System.Threading.Timer timer;
-        private PersistentFileNames pfn;
+        private string _filename;
+        private FileSystemWatcher _watcher;
+        private Hashtable _map = new Hashtable();
+        private System.Threading.Timer _timer;
+        private PersistentFileNames _pfn;
 
         public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
 
@@ -103,10 +103,10 @@ namespace XmlNotepad
         /// </summary>
         public void StopWatchingFileChanges()
         {
-            if (this.watcher != null)
+            if (this._watcher != null)
             {
-                this.watcher.Dispose();
-                this.watcher = null;
+                this._watcher.Dispose();
+                this._watcher = null;
             }
         }
 
@@ -135,12 +135,12 @@ namespace XmlNotepad
         /// <returns>The setting value or null if not found.</returns>
         public object this[string name]
         {
-            get { return this.map[name]; }
+            get { return this._map[name]; }
             set
             {
-                if (this.map[name] != value)
+                if (this._map[name] != value)
                 {
-                    this.map[name] = value;
+                    this._map[name] = value;
                     OnChanged(name);
                 }
             }
@@ -151,7 +151,7 @@ namespace XmlNotepad
         /// </summary>
         public void Reload()
         {
-            Load(this.filename);
+            Load(this._filename);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace XmlNotepad
         /// <param name="filename">XmlNotepad settings xml file.</param>
         public void Load(string filename)
         {
-            pfn = new PersistentFileNames(Settings.Instance.StartupPath);
+            _pfn = new PersistentFileNames(Settings.Instance.StartupPath);
 
             // we don't use the serializer because it's too slow to fire up.
             try
@@ -175,7 +175,7 @@ namespace XmlNotepad
                             if (r.NodeType == XmlNodeType.Element)
                             {
                                 string name = r.Name;
-                                object o = map[name];
+                                object o = _map[name];
                                 if (o != null)
                                 {
                                     object value = null;
@@ -219,20 +219,20 @@ namespace XmlNotepad
 
         public string FileName
         {
-            get { return this.filename; }
+            get { return this._filename; }
             set
             {
-                if (this.filename != value)
+                if (this._filename != value)
                 {
-                    this.filename = value;
+                    this._filename = value;
 
                     StopWatchingFileChanges();
 
-                    this.watcher = new FileSystemWatcher(Path.GetDirectoryName(filename),
-                        Path.GetFileName(filename));
+                    this._watcher = new FileSystemWatcher(Path.GetDirectoryName(_filename),
+                        Path.GetFileName(_filename));
 
-                    this.watcher.Changed += new FileSystemEventHandler(watcher_Changed);
-                    this.watcher.EnableRaisingEvents = true;
+                    this._watcher.Changed += new FileSystemEventHandler(watcher_Changed);
+                    this._watcher.EnableRaisingEvents = true;
                 }
             }
         }
@@ -241,7 +241,7 @@ namespace XmlNotepad
         {
             if (value is Uri)
             {
-                return pfn.GetPersistentFileName((Uri)value);
+                return _pfn.GetPersistentFileName((Uri)value);
             }
             else if (value is string)
             {
@@ -263,7 +263,7 @@ namespace XmlNotepad
         {
             if (type == typeof(Uri))
             {
-                return pfn.GetAbsoluteFilename(value);
+                return _pfn.GetAbsoluteFileName(value);
             }
             else if (type == typeof(string))
             {
@@ -294,9 +294,9 @@ namespace XmlNotepad
                 {
                     w.Formatting = Formatting.Indented;
                     w.WriteStartElement("Settings");
-                    foreach (string key in map.Keys)
+                    foreach (string key in _map.Keys)
                     {
-                        object value = map[key];
+                        object value = _map[key];
                         if (value != null)
                         {
                             if (value is Hashtable)
@@ -418,19 +418,19 @@ namespace XmlNotepad
             // events and we don't want to have lots of dialogs popping up asking the
             // user to reload settings, so we insert a delay to let the events
             // settle down, then we tell the hosting app that the settings have changed.
-            if (e.ChangeType == WatcherChangeTypes.Changed && this.timer == null)
+            if (e.ChangeType == WatcherChangeTypes.Changed && this._timer == null)
             {
-                this.timer = new System.Threading.Timer(new TimerCallback(OnDelay), this, 2000, Timeout.Infinite);
+                this._timer = new System.Threading.Timer(new TimerCallback(OnDelay), this, 2000, Timeout.Infinite);
             }
         }
 
         void OnDelay(object state)
         {
             OnChanged("File");
-            if (this.timer != null)
+            if (this._timer != null)
             {
-                this.timer.Dispose();
-                this.timer = null;
+                this._timer.Dispose();
+                this._timer = null;
             }
         }
 
@@ -447,11 +447,11 @@ namespace XmlNotepad
         protected virtual void Dispose(bool disposing)
         {
             this.StopWatchingFileChanges();
-            if (this.timer != null)
+            if (this._timer != null)
             {
-                this.timer.Dispose();
+                this._timer.Dispose();
             }
-            this.timer = null;
+            this._timer = null;
             GC.SuppressFinalize(this);
         }
 
@@ -461,31 +461,19 @@ namespace XmlNotepad
         public bool GetBoolean(string settingName, bool defaultValue = false)
         {
             object settingValue = this[settingName];
-            if (settingValue is bool)
-            {
-                return (bool)settingValue;
-            }
-            return defaultValue;
+            return settingValue is bool value ? value : defaultValue;
         }
 
         public int GetInteger(string settingName, int defaultValue = 0)
         {
             object settingValue = this[settingName];
-            if (settingValue is int)
-            {
-                return (int)settingValue;
-            }
-            return defaultValue;
+            return settingValue is int value ? value : defaultValue;
         }
 
         public string GetString(string settingName, string defaultValue = "")
         {
             object settingValue = this[settingName];
-            if (settingValue != null)
-            {
-                return settingValue.ToString();
-            }
-            return defaultValue;
+            return settingValue != null ? settingValue.ToString() : defaultValue;
         }
 
         public Hashtable GetDefaultColors(ColorTheme theme)
@@ -551,14 +539,14 @@ namespace XmlNotepad
     /// </summary>
     class PersistentFileNames
     {
-        Hashtable variables = new Hashtable();
+        private readonly Hashtable _variables = new Hashtable();
 
         public PersistentFileNames(string startupPath)
         {
-            variables["StartupPath"] = startupPath;
-            variables["ProgramFiles"] = Environment.GetEnvironmentVariable("ProgramFiles");
-            variables["UserProfile"] = Environment.GetEnvironmentVariable("UserProfile");
-            variables["SystemRoot"] = Environment.GetEnvironmentVariable("SystemRoot");
+            _variables["StartupPath"] = startupPath;
+            _variables["ProgramFiles"] = Environment.GetEnvironmentVariable("ProgramFiles");
+            _variables["UserProfile"] = Environment.GetEnvironmentVariable("UserProfile");
+            _variables["SystemRoot"] = Environment.GetEnvironmentVariable("SystemRoot");
         }
 
         public string GetPersistentFileName(Uri uri)
@@ -574,9 +562,9 @@ namespace XmlNotepad
                     return null;
 
                 // replace absolute paths with variables.
-                foreach (string key in variables.Keys)
+                foreach (string key in _variables.Keys)
                 {
-                    string baseDir = (string)variables[key];
+                    string baseDir = (string)_variables[key];
                     if (!baseDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                         baseDir += Path.DirectorySeparatorChar;
                     Uri baseUri = new Uri(baseDir);
@@ -602,17 +590,17 @@ namespace XmlNotepad
             return result;
         }
 
-        public Uri GetAbsoluteFilename(string filename)
+        public Uri GetAbsoluteFileName(string filename)
         {
             try
             {
                 // replace variables with absolute paths.
-                foreach (string key in variables.Keys)
+                foreach (string key in _variables.Keys)
                 {
                     string var = "%" + key + "%";
                     if (filename.StartsWith(var, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        string baseDir = (string)variables[key];
+                        string baseDir = (string)_variables[key];
                         string relPath = filename.Substring(var.Length);
                         if (!baseDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                             baseDir += Path.DirectorySeparatorChar;

@@ -109,7 +109,7 @@ namespace XmlNotepad
                 output = this._model.XsltDefaultOutput;
             }
             output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output);
-            if (!string.IsNullOrEmpty(output))
+            if (!string.IsNullOrWhiteSpace(output))
             {
                 this.OutputFileName.Text = MakeRelative(output);
             }

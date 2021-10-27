@@ -48,10 +48,13 @@ namespace XmlNotepad
 
         public FormMain()
         {
-            this._settings = new Settings();
-            this._settings.StartupPath = Application.StartupPath;
-            this._settings.ExecutablePath = Application.ExecutablePath;
-            this._settings.Resolver = new XmlProxyResolver(this);
+            this.DoubleBuffered = true;
+            this._settings = new Settings()
+            {
+                StartupPath = Application.StartupPath,
+                ExecutablePath = Application.ExecutablePath,
+                Resolver = new XmlProxyResolver(this)
+            };
 
             this._delayedActions = _settings.DelayedActions = new DelayedActions((action) =>
             {
@@ -184,10 +187,10 @@ namespace XmlNotepad
             // install Xml notepad as an available editor for .xml files.
             FileAssociation.AddXmlProgids(Application.ExecutablePath);
 
-            CheckNetwork();
+            await CheckNetwork();
         }
 
-        private void CheckNetwork()
+        private async System.Threading.Tasks.Task CheckNetwork()
         {
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
@@ -196,7 +199,7 @@ namespace XmlNotepad
                     client.UseDefaultCredentials = true;
                     try
                     {
-                        string html = client.DownloadString(Utilities.HelpBaseUri);
+                        string html = await client.DownloadStringTaskAsync(Utilities.HelpBaseUri);
                         if (html.Contains("XML Notepad"))
                         {
                             this.BeginInvoke(new Action(FoundOnlineHelp));
