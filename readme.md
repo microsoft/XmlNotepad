@@ -1,4 +1,4 @@
-XML Notepad provides a simple intuitive User Interface for browsing and editing XML documents. There are four ways to install it:
+XML Notepad is a Windows program that provides a simple intuitive User Interface for browsing and editing XML documents. There are four ways to install it:
 1. [ClickOnce® installer](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application) - this is the most convenient, install it directly from the web browser.
 2. [Standalone downloadable installer](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepadSetup.zip) if you need something that works offline.
 Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run `XmlNotepadSetup.msi`.
