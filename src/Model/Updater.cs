@@ -295,7 +295,7 @@ namespace XmlNotepad
                     Trace.WriteLine(ex.Message);
                 }
             }
-            bool newVersion = false;
+
             foreach (XmlElement e in doc.SelectNodes("updates/version"))
             {
                 string n = e.GetAttribute("number");

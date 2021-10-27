@@ -563,10 +563,11 @@ namespace XmlNotepad
 
         public string GetPersistentFileName(Uri uri)
         {
-            if (!uri.IsAbsoluteUri) return uri.OriginalString;
-            string result = uri.OriginalString;
+            string result = null;
             try
             {
+                if (!uri.IsAbsoluteUri) return uri.OriginalString;
+                result = uri.OriginalString;
                 int len = 0;
                 string path = uri.AbsolutePath;
                 if (uri.IsFile && !File.Exists(uri.LocalPath)) // sanity check!

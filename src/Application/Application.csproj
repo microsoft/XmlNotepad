@@ -84,7 +84,7 @@
       <HintPath>..\packages\Microsoft.Win32.Registry.6.0.0-preview.5.21301.5\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
     <Reference Include="SgmlReaderDll, Version=1.8.24.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.24\lib\net47\SgmlReaderDll.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.25\lib\net47\SgmlReaderDll.dll</HintPath>
     </Reference>
     <Reference Include="SimpleGoogleAnalytics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleGoogleAnalytics.1.0.1\lib\netstandard2.0\SimpleGoogleAnalytics.dll</HintPath>
@@ -102,11 +102,13 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="XmlDiffPatch, Version=1.0.2.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.2\lib\net47\XmlDiffPatch.dll</HintPath>
+    <Reference Include="XmlDiffPatch, Version=1.0.3.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.3\lib\net47\XmlDiffPatch.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="XmlDiffPatch.View, Version=1.0.2.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.2\lib\net47\XmlDiffPatch.View.dll</HintPath>
+    <Reference Include="XmlDiffPatch.View, Version=1.0.3.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.3\lib\net47\XmlDiffPatch.View.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -369,17 +371,17 @@
     <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncVersionsTarget</CoreBuildDependsOn>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.961.33\runtimes\win-x86\native\WebView2Loader.dll">
+    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.1020.30\runtimes\win-x86\native\WebView2Loader.dll">
       <Link>runtimes\win-x86\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.961.33\runtimes\win-x64\native\WebView2Loader.dll">
+    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.1020.30\runtimes\win-x64\native\WebView2Loader.dll">
       <Link>runtimes\win-x64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.961.33\runtimes\win-arm64\native\WebView2Loader.dll">
+    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.1020.30\runtimes\win-arm64\native\WebView2Loader.dll">
       <Link>runtimes\win-arm64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

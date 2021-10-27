@@ -609,7 +609,6 @@ namespace XmlNotepad
             //this.taskList.Location = new Point(0, top + this.xmlTreeView1.Height + this.resizer.Height);
             this.tabControlLists.Size = new Size(w, this.tabControlLists.Height);
             this.tabControlLists.Location = new Point(0, top + this.tabControlViews.Height + this.resizer.Height);
-            base.OnLayout(levent);
         }
 
 
