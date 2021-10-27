@@ -241,6 +241,10 @@ namespace XmlNotepad
         {
             if (value is Uri)
             {
+                if (_pfn == null)
+                {
+                    _pfn = new PersistentFileNames(Settings.Instance.StartupPath);
+                }
                 return _pfn.GetPersistentFileName((Uri)value);
             }
             else if (value is string)

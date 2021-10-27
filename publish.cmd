@@ -37,6 +37,11 @@ pwsh -command "Compress-Archive -Path src\XmlNotepadSetup\bin\Release\* -Destina
 
 if not EXIST src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle goto :noappx
 
+echo Binaries to publish:
+echo %ROOT%publish\XmlNotepadSetup.zip
+echo %ROOT%src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+set /p response=Please publish github release using the above binaries and press ENTER to continue...
+
 echo Uploading ClickOnce installer to XmlNotepad
 AzurePublishClickOnce %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
 if ERRORLEVEL 1 goto :eof
@@ -73,7 +78,7 @@ git commit -m "new XML Noteapd version %VERSION%"
 git push -u origin "clovett/xmlnotepad_%VERSION%"
 
 echo =============================================================================================================
-echo Please create github release, then commit these local changes and create pull request for new winget package.
+echo Please commit these local changes and create pull request for new winget package.
 echo Please verify the github release contains this link:
 echo https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
 call gitweb
@@ -105,4 +110,4 @@ exit /b 1
 
 :nowinget
 echo Please clone git@github.com:lovettchris/winget-pkgs.git into %WINGET_SRC%
-ecit /b 1
+exit /b 1
