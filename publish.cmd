@@ -1,13 +1,13 @@
 @echo off
 cd %~dp0
-
+SET ROOT=%~dp0
+set DRIVE=%~dd0
+set WINGET_SRC=%ROOT%..\winget-pkgs
 for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version.props`) do (
     set VERSION=%%i
 )
 
 set WINGET=1
-set APPX_DROPS=D:\XmlNotepadReleases
-if not exist %APPX_DROPS% mkdir %APPX_DROPS%
 
 echo ### Publishing version %VERSION%...
 where sed > nul 2>&1
@@ -36,10 +36,6 @@ if exist publish\XmlNotepadSetup.zip del publish\XmlNotepadSetup.zip
 pwsh -command "Compress-Archive -Path src\XmlNotepadSetup\bin\Release\* -DestinationPath publish\XmlNotepadSetup.zip"
 
 if not EXIST src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle goto :noappx
-xcopy /y /s src\XmlNotepadPackage\AppPackages\%VERSION%\ %APPX_DROPS%\%VERSION%\
-if ERRORLEVEL 1 goto :eof
-copy /y src\XmlNotepadPackage\AppPackages\%VERSION%\index.html %APPX_DROPS%
-if ERRORLEVEL 1 goto :eof
 
 echo Uploading ClickOnce installer to XmlNotepad
 AzurePublishClickOnce %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
@@ -47,9 +43,11 @@ if ERRORLEVEL 1 goto :eof
 
 if "%WINGET%"=="0" goto :eof
 
+if not exist %WINGET_SRC% goto :nowinget
+
 :winget
 echo Syncing winget master branch
-pushd d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad
+pushd %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad
 git checkout master
 git pull
 git fetch upstream master
@@ -58,10 +56,10 @@ git push
 popd
 
 echo Preparing winget package
-set TARGET=d:\git\lovettchris\winget-pkgs\manifests\m\Microsoft\XMLNotepad\%VERSION%\
+set TARGET=%WINGET_SRC%\manifests\m\Microsoft\XMLNotepad\%VERSION%\
 if not exist %TARGET% mkdir %TARGET%
 copy /y tools\Microsoft.XMLNotepad*.yaml  %TARGET%
-wingetcreate update Microsoft.XMLNotepad --version %VERSION% -o d:\git\lovettchris\winget-pkgs -u https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+wingetcreate update Microsoft.XMLNotepad --version %VERSION% -o %WINGET_SRC% -u https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
 if ERRORLEVEL 1 goto :eof
 
 pushd %TARGET%
@@ -104,3 +102,7 @@ exit /b 1
 :installfailed
 echo winget install failed
 exit /b 1
+
+:nowinget
+echo Please clone git@github.com:lovettchris/winget-pkgs.git into %WINGET_SRC%
+ecit /b 1

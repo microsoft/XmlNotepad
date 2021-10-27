@@ -23,7 +23,7 @@
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <NuGetPackageImportStamp></NuGetPackageImportStamp>
-    <PublishUrl>d:\git\lovettchris\XmlNotepad\publish\</PublishUrl>
+    <PublishUrl>$(MSBuildProjectDirectory)\..\..\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
