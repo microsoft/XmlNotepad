@@ -394,8 +394,9 @@ namespace XmlNotepad
         /// <param name="context">The document to transform</param>
         /// <param name="xsltfilename">The xslt file to use</param>
         /// <param name="outpath">Output file name hint.</param>
+        /// <param name="userSpecifiedOutput">Whether output name is non-negotiable.</param>
         /// <returns>The output file name or null if DisableOutputFile is true</returns>
-        public string DisplayXsltResults(XmlDocument context, string xsltfilename, string outpath = null)
+        public string DisplayXsltResults(XmlDocument context, string xsltfilename, string outpath = null, bool userSpecifiedOutput = false)
         {
             if (!this._webInitialized)
             {
@@ -450,11 +451,15 @@ namespace XmlNotepad
                         }
                     }
                 }
-                else
+                else if (!userSpecifiedOutput)
                 {
                     var ext = GetDefaultOutputExtension();
                     var basePath = Path.Combine(Path.GetDirectoryName(outpath), Path.GetFileNameWithoutExtension(outpath));
                     outpath = basePath + ext;
+                    outpath = GetWritableFileName(outpath);
+                }
+                else
+                {
                     outpath = GetWritableFileName(outpath);
                 }
 

@@ -108,7 +108,7 @@ namespace XmlNotepad
             {
                 output = this._model.XsltDefaultOutput;
             }
-            output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output);
+            output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output, _userSpecifiedOutput);
             if (!string.IsNullOrWhiteSpace(output))
             {
                 this.OutputFileName.Text = MakeRelative(output);
@@ -186,7 +186,13 @@ namespace XmlNotepad
             {
                 return relative.LocalPath;
             }
-            return relative.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
+            string result = relative.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
+            if (result.Length > path.Length)
+            {
+                // keep the full path then, it's shorter!
+                result = path;
+            }
+            return result;
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -194,21 +200,27 @@ namespace XmlNotepad
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = SR.XSLFileFilter;
+                ofd.CheckPathExists = true;
+                ofd.CheckFileExists = true;
                 if (ofd.ShowDialog(this) == DialogResult.OK)
                 {
-                    this.SourceFileName.Text = MakeRelative(ofd.FileName);
+                    var rel = MakeRelative(ofd.FileName);
+                    this.SourceFileName.Text = rel;
                 }
             }
         }
 
         private void BrowseOutputButton_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using (SaveFileDialog ofd = new SaveFileDialog())
             {
                 ofd.Filter = this.xsltControl.GetOutputFileFilter(this.SourceFileName.Text.Trim());
+                ofd.CheckPathExists = true;
                 if (ofd.ShowDialog(this) == DialogResult.OK)
                 {
-                    this.OutputFileName.Text = MakeRelative(ofd.FileName);
+                    var rel = MakeRelative(ofd.FileName);
+                    this.OutputFileName.Text = rel;
+                    _userSpecifiedOutput = true;
                 }
             }
         }
