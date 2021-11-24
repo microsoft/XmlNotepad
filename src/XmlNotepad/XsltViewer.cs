@@ -14,6 +14,8 @@ namespace XmlNotepad
         private ISite _site;
         private XmlCache _model;
         private bool _userSpecifiedOutput;
+        private RecentFiles _xsltFiles;
+        private RecentFilesComboBox _recentFilesCombo;
 
         public XsltViewer()
         {
@@ -103,6 +105,14 @@ namespace XmlNotepad
         public void DisplayXsltResults()
         {
             string xpath = this.SourceFileName.Text.Trim();
+            if (!string.IsNullOrEmpty(xpath) && this._xsltFiles != null)
+            {
+                Uri uri = this.xsltControl.ResolveRelativePath(xpath);
+                if (uri != null)
+                {
+                    this._xsltFiles.AddRecentFile(uri);
+                }
+            }
             string output = this.OutputFileName.Text.Trim();
             if (!_userSpecifiedOutput && !string.IsNullOrEmpty(this._model.XsltDefaultOutput))
             {
@@ -158,6 +168,7 @@ namespace XmlNotepad
                     if (uri != this.xsltControl.BaseUri)
                     {
                         this.xsltControl.BaseUri = uri;
+                        this._xsltFiles.BaseUri = uri;
                         this.OutputFileName.Text = ""; // reset it since the file type might need to change...
                         _userSpecifiedOutput = false;
                     }
@@ -229,6 +240,21 @@ namespace XmlNotepad
         {
             this.xsltControl.DeletePreviousOutput();
             this.DisplayXsltResults();
+        }
+
+        public void SetRecentFiles(RecentFiles recentXsltFiles)
+        {
+            _xsltFiles = recentXsltFiles;
+            if (recentXsltFiles != null)
+            {
+                _recentFilesCombo = new RecentFilesComboBox(recentXsltFiles, this.SourceFileName);
+                recentXsltFiles.RecentFileSelected += OnRecentFileSelected;
+            }
+        }
+
+        private void OnRecentFileSelected(object sender, RecentFileEventArgs args)
+        {
+            // do something?
         }
     }
 }

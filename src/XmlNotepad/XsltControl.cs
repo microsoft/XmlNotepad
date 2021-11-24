@@ -388,6 +388,18 @@ namespace XmlNotepad
             }
         }
 
+        public Uri ResolveRelativePath(string filename)
+        {
+            try
+            {
+                return new Uri(_baseUri, filename);
+            } 
+            catch
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Run an XSLT transform and show the results.
         /// </summary>

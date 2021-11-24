@@ -24,7 +24,10 @@ namespace XmlNotepad
         private Settings _settings;
         private readonly string[] _args;
         private readonly DataFormats.Format _urlFormat;
-        private readonly RecentFilesMenu _recentFiles;
+        private readonly RecentFiles _recentFiles;
+        private readonly RecentFiles _recentXsltFiles;
+        private readonly RecentFilesMenu _recentFileMenu;
+        private readonly RecentFilesComboBox _recentFilesCombo;
         private TaskList _taskList;
         private XsltControl _dynamicHelpViewer;
         private FormSearch _search;
@@ -99,8 +102,12 @@ namespace XmlNotepad
             _model.FileChanged += new EventHandler(OnFileChanged);
             _model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
 
-            _recentFiles = new RecentFilesMenu(recentFilesToolStripMenuItem, this.comboBoxLocation);
-            this._recentFiles.RecentFileSelected += new RecentFileHandler(OnRecentFileSelected);
+            _recentFiles = new RecentFiles();
+            _recentFiles.RecentFileSelected += new RecentFileHandler(OnRecentFileSelected);
+            _recentFileMenu = new RecentFilesMenu(_recentFiles, recentFilesToolStripMenuItem);
+            _recentFilesCombo = new RecentFilesComboBox(_recentFiles, this.comboBoxLocation);
+
+            _recentXsltFiles = new RecentFiles();
 
             //this.resizer.Pane1 = this.xmlTreeView1;
             this.resizer.Pane1 = this.tabControlViews;
@@ -238,6 +245,7 @@ namespace XmlNotepad
             this._settings["TaskListSize"] = 0;
             this._settings["TreeViewSize"] = 0;
             this._settings["RecentFiles"] = new Uri[0];
+            this._settings["RecentXsltFiles"] = new Uri[0];
             this._settings["SearchWindowLocation"] = new Point(0, 0);
             this._settings["SearchSize"] = new Size(0, 0);
             this._settings["DynamicHelpVisible"] = false;
@@ -1401,6 +1409,7 @@ namespace XmlNotepad
         {
             // now that we have loaded the settings, we can finish initializing the XsltControls.
             this.xsltViewer.SetSite(this);
+            this.xsltViewer.SetRecentFiles(_recentXsltFiles);
             this.xsltViewer.Completed += OnXsltComplete;
             this.xsltViewer.GetXsltControl().WebBrowserException += OnWebBrowserException;
         }
@@ -1454,6 +1463,7 @@ namespace XmlNotepad
             this._settings["TaskListSize"] = this.tabControlLists.Height;
             this._settings["TreeViewSize"] = this.xmlTreeView1.ResizerPosition;
             this._settings["RecentFiles"] = this._recentFiles.ToArray();
+            this._settings["RecentXsltFiles"] = this._recentXsltFiles.ToArray();
             var path = this._settings.FileName;
             if (string.IsNullOrEmpty(path))
             {
@@ -1558,12 +1568,23 @@ namespace XmlNotepad
                     this.Font = (Font)this._settings["Font"];
                     break;
                 case "RecentFiles":
-                    Uri[] files = (Uri[])this._settings["RecentFiles"];
-                    if (files != null)
                     {
-                        this._recentFiles.SetFiles(files);
+                        Uri[] files = (Uri[])this._settings["RecentFiles"];
+                        if (files != null)
+                        {
+                            this._recentFiles.SetFiles(files);
+                        }
+                        break;
                     }
-                    break;
+                case "RecentXsltFiles":
+                    {
+                        Uri[] files = (Uri[])this._settings["RecentXsltFiles"];
+                        if (files != null)
+                        {
+                            this._recentXsltFiles.SetFiles(files);
+                        }
+                        break;
+                    }
             }
         }
 
