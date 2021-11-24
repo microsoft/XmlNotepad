@@ -128,8 +128,8 @@ namespace XmlNotepad
             }
         }
 
-        protected virtual void SyncRecentFilesUI() 
-        { 
+        protected virtual void SyncRecentFilesUI()
+        {
             if (RecentFilesChanged != null)
             {
                 RecentFilesChanged(this, EventArgs.Empty);
@@ -160,7 +160,7 @@ namespace XmlNotepad
             {
                 return relative;
             }
-            string original= uri.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
+            string original = uri.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
             string result = relative.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
             if (result.Length > original.Length)
             {
@@ -293,7 +293,7 @@ namespace XmlNotepad
 
     }
 
-    public class RecentFilesMenu 
+    public class RecentFilesMenu
     {
         private const int _maxRecentMenuFiles = 20;
         private ToolStripMenuItem _parent;
@@ -306,34 +306,24 @@ namespace XmlNotepad
             files.RecentFilesChanged += OnRecentFilesChanged;
         }
 
-        bool addingFile;
-
         private void OnRecentFilesChanged(object sender, EventArgs e)
         {
             // Synchronize menu items.
             this._parent.Enabled = true;
-            this.addingFile = true;
 
-            try
-            {
-                ToolStripItemCollection ic = this._parent.DropDownItems;
-                ic.Clear();
+            ToolStripItemCollection ic = this._parent.DropDownItems;
+            ic.Clear();
 
-                // Add most recent files first.
-                Uri[] recentFiles = this._files.GetRelativeUris();
-                for (int i = recentFiles.Length - 1, j = 0; i >= 0 && j < _maxRecentMenuFiles; i--, j++)
-                {
-                    Uri uri = recentFiles[i];
-                    ToolStripItem item = new ToolStripMenuItem();
-                    item.Click += new EventHandler(OnRecentFile);
-                    ic.Add(item);
-                    item.Text = uri.IsFile ? uri.LocalPath : uri.AbsoluteUri;
-                    item.Tag = uri;
-                }
-            }
-            finally
+            // Add most recent files first.
+            Uri[] recentFiles = this._files.GetRelativeUris();
+            for (int i = recentFiles.Length - 1, j = 0; i >= 0 && j < _maxRecentMenuFiles; i--, j++)
             {
-                this.addingFile = false;
+                Uri uri = recentFiles[i];
+                ToolStripItem item = new ToolStripMenuItem();
+                item.Click += new EventHandler(OnRecentFile);
+                ic.Add(item);
+                item.Text = uri.IsFile ? uri.LocalPath : uri.AbsoluteUri;
+                item.Tag = uri;
             }
         }
 
