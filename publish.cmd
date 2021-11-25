@@ -43,10 +43,12 @@ echo %ROOT%src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSIO
 set /p response=Please publish github release using the above binaries and press ENTER to continue...
 
 echo Uploading ClickOnce installer to XmlNotepad
-AzurePublishClickOnce %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
-if ERRORLEVEL 1 goto :eof
+call AzurePublishClickOnce.cmd %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
+if ERRORLEVEL 1 goto :uploadfailed
 
-if "%WINGET%"=="0" goto :eof
+echo ============ Done publishing ClickOnce installer to XmlNotepad ==============
+ 
+if "%WINGET%"=="0" goto :skipwinget
 
 if not exist %WINGET_SRC% goto :nowinget
 
@@ -78,9 +80,8 @@ git commit -m "new XML Noteapd version %VERSION%"
 git push -u origin "clovett/xmlnotepad_%VERSION%"
 
 echo =============================================================================================================
-echo Please commit these local changes and create pull request for new winget package.
-echo Please verify the github release contains this link:
-echo https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+echo Please create Pull Request for the new "clovett/xmlnotepad_%VERSION%" branch.
+
 call gitweb
 goto :eof
 
@@ -110,4 +111,12 @@ exit /b 1
 
 :nowinget
 echo Please clone git@github.com:lovettchris/winget-pkgs.git into %WINGET_SRC%
+exit /b 1
+
+:skipwinget
+echo Skipping winget setup
+exit /b 1
+
+:uploadfailed
+echo Upload to Azure failed.
 exit /b 1
