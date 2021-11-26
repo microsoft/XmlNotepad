@@ -199,7 +199,7 @@
     <value>SourceFileName</value>
   </data>
   <data name="&gt;&gt;SourceFileName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;SourceFileName.Parent" xml:space="preserve">
     <value>tableLayoutPanel1</value>
@@ -471,7 +471,7 @@
     <value>xsltControl</value>
   </data>
   <data name="&gt;&gt;xsltControl.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.42, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.47, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;xsltControl.Parent" xml:space="preserve">
     <value>tableLayoutPanel2</value>

@@ -87,7 +87,7 @@ namespace XmlNotepad
             this._textEditor.Visible = false;
             this._textEditor.BorderStyle = BorderStyle.None;
             this._textEditor.BackColor = Color.LightSteelBlue;
-            this._textEditor.AutoSize = false;
+            this._textEditor.AutoSize = true;
             this._textEditor.Multiline = true; // this fixes layout problems in single line case also.
             this._textEditor.Margin = new Padding(1, 0, 0, 0);
             this._textEditor.HideSelection = false;
@@ -140,7 +140,6 @@ namespace XmlNotepad
             }
             set
             {
-                this._textEditor.ScrollBars = value ? ScrollBars.Vertical : ScrollBars.None;
                 this._textEditor.Multiline = value;
             }
         }
@@ -417,13 +416,26 @@ namespace XmlNotepad
                 // string might be too long to measure!
                 size = new SizeF(r.Width, maxHeight);
             }
+            // make sure we don't measure smaller than r.Height!
             int h = (int)Math.Max(r.Height, Math.Ceiling(size.Height));
-            if (h > r.Height)
+
+            if (h > r.Height * 2)
             {
                 // when multiline, add padding so that it aligns correctly.
                 h += this._parent.Font.Height / 2;
             }
-            r.Height = Math.Min(maxHeight, h); // no more than 2/3rd of the window.
+
+            if (h > maxHeight) { 
+                h = maxHeight;
+                // and we need scrollbars.
+                this._textEditor.ScrollBars = ScrollBars.Vertical;
+            }
+            else
+            {
+                this._textEditor.ScrollBars = ScrollBars.None;
+            }
+
+            r.Height = h; // no more than 2/3rd of the window.
             if (AutoSize)
             {
                 r.Width = Math.Max(r.Width, (int)size.Width + 2);

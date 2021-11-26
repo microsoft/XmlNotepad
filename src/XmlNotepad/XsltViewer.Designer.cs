@@ -29,7 +29,7 @@ namespace XmlNotepad {
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.SourceFileName = new System.Windows.Forms.TextBox();
+            this.SourceFileName = new System.Windows.Forms.ComboBox();
             this.BrowseButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.TransformButton = new System.Windows.Forms.Button();
@@ -156,7 +156,7 @@ namespace XmlNotepad {
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox SourceFileName;
+        private System.Windows.Forms.ComboBox SourceFileName;
         private System.Windows.Forms.Button BrowseButton;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button TransformButton;

@@ -14,6 +14,8 @@ namespace XmlNotepad
         private ISite _site;
         private XmlCache _model;
         private bool _userSpecifiedOutput;
+        private RecentFiles _xsltFiles;
+        private RecentFilesComboBox _recentFilesCombo;
 
         public XsltViewer()
         {
@@ -103,12 +105,20 @@ namespace XmlNotepad
         public void DisplayXsltResults()
         {
             string xpath = this.SourceFileName.Text.Trim();
+            if (!string.IsNullOrEmpty(xpath) && this._xsltFiles != null)
+            {
+                Uri uri = this.xsltControl.ResolveRelativePath(xpath);
+                if (uri != null)
+                {
+                    this._xsltFiles.AddRecentFile(uri);
+                }
+            }
             string output = this.OutputFileName.Text.Trim();
             if (!_userSpecifiedOutput && !string.IsNullOrEmpty(this._model.XsltDefaultOutput))
             {
                 output = this._model.XsltDefaultOutput;
             }
-            output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output);
+            output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output, _userSpecifiedOutput);
             if (!string.IsNullOrWhiteSpace(output))
             {
                 this.OutputFileName.Text = MakeRelative(output);
@@ -158,6 +168,7 @@ namespace XmlNotepad
                     if (uri != this.xsltControl.BaseUri)
                     {
                         this.xsltControl.BaseUri = uri;
+                        this._xsltFiles.BaseUri = uri;
                         this.OutputFileName.Text = ""; // reset it since the file type might need to change...
                         _userSpecifiedOutput = false;
                     }
@@ -186,7 +197,13 @@ namespace XmlNotepad
             {
                 return relative.LocalPath;
             }
-            return relative.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
+            string result = relative.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
+            if (result.Length > path.Length)
+            {
+                // keep the full path then, it's shorter!
+                result = path;
+            }
+            return result;
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -194,21 +211,27 @@ namespace XmlNotepad
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = SR.XSLFileFilter;
+                ofd.CheckPathExists = true;
+                ofd.CheckFileExists = true;
                 if (ofd.ShowDialog(this) == DialogResult.OK)
                 {
-                    this.SourceFileName.Text = MakeRelative(ofd.FileName);
+                    var rel = MakeRelative(ofd.FileName);
+                    this.SourceFileName.Text = rel;
                 }
             }
         }
 
         private void BrowseOutputButton_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using (SaveFileDialog ofd = new SaveFileDialog())
             {
                 ofd.Filter = this.xsltControl.GetOutputFileFilter(this.SourceFileName.Text.Trim());
+                ofd.CheckPathExists = true;
                 if (ofd.ShowDialog(this) == DialogResult.OK)
                 {
-                    this.OutputFileName.Text = MakeRelative(ofd.FileName);
+                    var rel = MakeRelative(ofd.FileName);
+                    this.OutputFileName.Text = rel;
+                    _userSpecifiedOutput = true;
                 }
             }
         }
@@ -217,6 +240,21 @@ namespace XmlNotepad
         {
             this.xsltControl.DeletePreviousOutput();
             this.DisplayXsltResults();
+        }
+
+        public void SetRecentFiles(RecentFiles recentXsltFiles)
+        {
+            _xsltFiles = recentXsltFiles;
+            if (recentXsltFiles != null)
+            {
+                _recentFilesCombo = new RecentFilesComboBox(recentXsltFiles, this.SourceFileName);
+                recentXsltFiles.RecentFileSelected += OnRecentFileSelected;
+            }
+        }
+
+        private void OnRecentFileSelected(object sender, RecentFileEventArgs args)
+        {
+            // do something?
         }
     }
 }

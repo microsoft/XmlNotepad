@@ -9,6 +9,12 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.48">
+    <bug>Fix single line text editor so it does not overlap the line below it.</bug>
+    <bug>Fix XSLT Output browse button so it brings up the Save As File Dialog.</bug>
+    <bug>Fix XSLT Output field so it honors a custom file extension entered by the user.</bug>
+    <feature>Add recent files drop down to XSLT input filename box</feature>
+  </version>
   <version number="2.8.0.47">
     <bug>Fix updater so it shows error messages if update check fails rather than misleading "up to date".</bug>
   </version>
