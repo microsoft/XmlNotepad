@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <!--
+  <!--
     Microsoft ResX Schema
 
     Version 2.0
@@ -59,825 +59,833 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-        <xsd:element name="root" msdata:IsDataSet="true">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
             <xsd:complexType>
-                <xsd:choice maxOccurs="unbounded">
-                    <xsd:element name="metadata">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-                            </xsd:sequence>
-                            <xsd:attribute name="name" use="required" type="xsd:string" />
-                            <xsd:attribute name="type" type="xsd:string" />
-                            <xsd:attribute name="mimetype" type="xsd:string" />
-                            <xsd:attribute ref="xml:space" />
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="assembly">
-                        <xsd:complexType>
-                            <xsd:attribute name="alias" type="xsd:string" />
-                            <xsd:attribute name="name" type="xsd:string" />
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="data">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-                            <xsd:attribute ref="xml:space" />
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="resheader">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required" />
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:choice>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
-        </xsd:element>
-    </xsd:schema>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>2.0</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="AssemblyLoadCaption" xml:space="preserve">
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AssemblyLoadCaption" xml:space="preserve">
     <value>Assembly Load Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="AssemblyLoadError" xml:space="preserve">
+  <data name="AssemblyLoadError" xml:space="preserve">
     <value>Could not load assembly '{0}'
 Reason:
 {1}</value>
     <comment>Message box contents, arg0=filename, arg1 is Exception.Message.</comment>
   </data>
-    <data name="BrowseButtonTooltip" xml:space="preserve">
+  <data name="BrowseButtonTooltip" xml:space="preserve">
     <value>Open File Dialog</value>
     <comment>Tooltip</comment>
   </data>
-    <data name="RecentFileNotFoundMessage" xml:space="preserve">
+  <data name="RecentFileNotFoundMessage" xml:space="preserve">
     <value>Do you want to remove it from recent files list?</value>
     <comment>Message box message</comment>
   </data>
-    <data name="RecentFileNotFoundCaption" xml:space="preserve">
+  <data name="RecentFileNotFoundCaption" xml:space="preserve">
     <value>File not found</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ColorPickerLabel" xml:space="preserve">
+  <data name="ColorPickerLabel" xml:space="preserve">
     <value>&amp;Color picker...</value>
     <comment>Button label</comment>
   </data>
-    <data name="DateFormat" xml:space="preserve">
+  <data name="DateFormat" xml:space="preserve">
     <value>yyyy-MM-dd</value>
     <comment>Format for other date time data types</comment>
   </data>
-    <data name="DateTimeFormat" xml:space="preserve">
+  <data name="DateTimeFormat" xml:space="preserve">
     <value>yyyy-MM-ddTHH:mm:ss</value>
     <comment>Format for XmlTypeCode.DateTime</comment>
   </data>
-    <data name="DiscardChanges" xml:space="preserve">
+  <data name="DiscardChanges" xml:space="preserve">
     <value>Do you want to discard the changes you've made so far?</value>
     <comment>Message box contents</comment>
   </data>
-    <data name="DiscardChangesCaption" xml:space="preserve">
+  <data name="DiscardChangesCaption" xml:space="preserve">
     <value>Discard Changes</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="DuplicateAttribute" xml:space="preserve">
+  <data name="DuplicateAttribute" xml:space="preserve">
     <value>Attribute with the same name already exists</value>
     <comment>Exception message</comment>
   </data>
-    <data name="DuplicateErrorCaption" xml:space="preserve">
+  <data name="DuplicateErrorCaption" xml:space="preserve">
     <value>Duplicate Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="EditErrorCaption" xml:space="preserve">
+  <data name="EditErrorCaption" xml:space="preserve">
     <value>Edit Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ErrorCreatingProcessPrompt" xml:space="preserve">
+  <data name="ErrorCreatingProcessPrompt" xml:space="preserve">
     <value>Error launching '{0}'</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="FileChagedOnDiskCaption" xml:space="preserve">
+  <data name="FileChagedOnDiskCaption" xml:space="preserve">
     <value>File Changed</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="FileChagedOnDiskPrompt" xml:space="preserve">
+  <data name="FileChagedOnDiskPrompt" xml:space="preserve">
     <value>The file you are editing has been changed on disk.  Would you like to reload this file?</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="FindErrorCaption" xml:space="preserve">
+  <data name="FindErrorCaption" xml:space="preserve">
     <value>Find Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="FindNextDonePrompt" xml:space="preserve">
+  <data name="FindNextDonePrompt" xml:space="preserve">
     <value>No more matching nodes</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="FindWindowFindTitle" xml:space="preserve">
+  <data name="FindWindowFindTitle" xml:space="preserve">
     <value> Find</value>
     <comment>Window title</comment>
   </data>
-    <data name="FindWindowReplaceTitle" xml:space="preserve">
+  <data name="FindWindowReplaceTitle" xml:space="preserve">
     <value> Replace</value>
     <comment>Window title</comment>
   </data>
-    <data name="InsertErrorCaption" xml:space="preserve">
+  <data name="InsertErrorCaption" xml:space="preserve">
     <value>Insert Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ISiteMissing" xml:space="preserve">
+  <data name="ISiteMissing" xml:space="preserve">
     <value>InternalError: ISite has not been provided, so model cannot be found</value>
     <comment>Exception</comment>
   </data>
-    <data name="LaunchErrorPrompt" xml:space="preserve">
+  <data name="LaunchErrorPrompt" xml:space="preserve">
     <value>Error Launching Process</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="LoadedTimeStatus" xml:space="preserve">
+  <data name="LoadedTimeStatus" xml:space="preserve">
     <value>Loaded in {0}</value>
     <comment>Status Text</comment>
   </data>
-    <data name="LoadErrorCaption" xml:space="preserve">
+  <data name="LoadErrorCaption" xml:space="preserve">
     <value>Load Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="LoadErrorPrompt" xml:space="preserve">
+  <data name="LoadErrorPrompt" xml:space="preserve">
     <value>Error loading: {0}
 {1}
 
 Would you like to open it using your text editor?</value>
     <comment>Message box prompt, arg0=filename, arg1=error message</comment>
   </data>
-    <data name="LongLineCaption" xml:space="preserve">
+  <data name="LongLineCaption" xml:space="preserve">
     <value>Very Long Lines</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="LongLinePrompt" xml:space="preserve">
+  <data name="LongLinePrompt" xml:space="preserve">
     <value>The text in this node contains some very long lines which may make editing this string very slow.
 Would you like to reformat the text into multiple lines?</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="MainFormTitle" xml:space="preserve">
+  <data name="MainFormTitle" xml:space="preserve">
     <value>XML Notepad</value>
     <comment>Window title</comment>
   </data>
-    <data name="MoveErrorCaption" xml:space="preserve">
+  <data name="MoveErrorCaption" xml:space="preserve">
     <value>Move Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="NodeNameNotEditable" xml:space="preserve">
+  <data name="NodeNameNotEditable" xml:space="preserve">
     <value>Cannot edit name of node of type '{0}'</value>
     <comment>Message box, arg0=node type enum</comment>
   </data>
-    <data name="NodeNameRequiredCaption" xml:space="preserve">
+  <data name="NodeNameRequiredCaption" xml:space="preserve">
     <value>Missing Name </value>
     <comment>Message box caption</comment>
   </data>
-    <data name="NodeNameRequiredPrompt" xml:space="preserve">
+  <data name="NodeNameRequiredPrompt" xml:space="preserve">
     <value>You cannot edit the value of a node until you provide a node name.</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="NodeNotCreated" xml:space="preserve">
+  <data name="NodeNotCreated" xml:space="preserve">
     <value>Cannot edit name of node, node not created yet!</value>
     <comment>Exception message</comment>
   </data>
-    <data name="NotAChild" xml:space="preserve">
+  <data name="NotAChild" xml:space="preserve">
     <value>Internal Error: node is not a child</value>
     <comment>Exception</comment>
   </data>
-    <data name="PasteErrorCaption" xml:space="preserve">
+  <data name="PasteErrorCaption" xml:space="preserve">
     <value>Paste Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ReadOnly" xml:space="preserve">
+  <data name="ReadOnly" xml:space="preserve">
     <value>The target file is read only, would you like to overwrite '{0}'?</value>
     <comment>Message box, arg0=file name</comment>
   </data>
-    <data name="ReadOnlyCaption" xml:space="preserve">
+  <data name="ReadOnlyCaption" xml:space="preserve">
     <value>Read Only File</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ReplaceCompleteCaption" xml:space="preserve">
+  <data name="ReplaceCompleteCaption" xml:space="preserve">
     <value>Replace Complete</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ReplaceErrorCaption" xml:space="preserve">
+  <data name="ReplaceErrorCaption" xml:space="preserve">
     <value>Replace Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="RootLevelAttributes" xml:space="preserve">
+  <data name="RootLevelAttributes" xml:space="preserve">
     <value>Cannot insert attributes at the root level</value>
     <comment>Exception message</comment>
   </data>
-    <data name="RootLevelBeforeXmlDecl" xml:space="preserve">
+  <data name="RootLevelBeforeXmlDecl" xml:space="preserve">
     <value>Cannot have anything before the XML declaration</value>
     <comment>Exception message</comment>
   </data>
-    <data name="RootLevelElements" xml:space="preserve">
+  <data name="RootLevelElements" xml:space="preserve">
     <value>Cannot have two top level elements</value>
     <comment>Exception message</comment>
   </data>
-    <data name="RootLevelText" xml:space="preserve">
+  <data name="RootLevelText" xml:space="preserve">
     <value>Cannot insert text at the root level</value>
     <comment>Exception message</comment>
   </data>
-    <data name="SaveAsFilter" xml:space="preserve">
+  <data name="SaveAsFilter" xml:space="preserve">
     <value>XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|All files (*.*)|*.*</value>
     <comment>Save as dialog filter</comment>
   </data>
-    <data name="SaveChangesCaption" xml:space="preserve">
+  <data name="SaveChangesCaption" xml:space="preserve">
     <value>Save Changes</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="SaveChangesPrompt" xml:space="preserve">
+  <data name="SaveChangesPrompt" xml:space="preserve">
     <value>Do you want to save your changes?</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="SaveErrorCaption" xml:space="preserve">
+  <data name="SaveErrorCaption" xml:space="preserve">
     <value>Save Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="SchemaError" xml:space="preserve">
+  <data name="SchemaError" xml:space="preserve">
     <value>Schema Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="SchemaLoadError" xml:space="preserve">
+  <data name="SchemaLoadError" xml:space="preserve">
     <value>Error loading schema '{0}'
 {1}</value>
     <comment>Message box contents, arg0=filename, arg1=Exception.Message.</comment>
   </data>
-    <data name="SystemError" xml:space="preserve">
+  <data name="SystemError" xml:space="preserve">
     <value>System Exception of type {0}
 {1}</value>
     <comment>Message Box, arg0=type name, arg1=message</comment>
   </data>
-    <data name="TextNotFoundPrompt" xml:space="preserve">
+  <data name="TextNotFoundPrompt" xml:space="preserve">
     <value>The specified text was not found</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="TimeFormat" xml:space="preserve">
+  <data name="TimeFormat" xml:space="preserve">
     <value>HH:mm:ss</value>
     <comment>Format for XmlTypeCode.Time</comment>
   </data>
-    <data name="TransformButtonTooltip" xml:space="preserve">
+  <data name="TransformButtonTooltip" xml:space="preserve">
     <value>Click here to execute XSLT transform</value>
     <comment>Tooltip</comment>
   </data>
-    <data name="TransformErrorCaption" xml:space="preserve">
+  <data name="TransformErrorCaption" xml:space="preserve">
     <value>Error Transforming XML</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="UnexpectedNodeType" xml:space="preserve">
+  <data name="UnexpectedNodeType" xml:space="preserve">
     <value>Unexpected node type '{0}'</value>
     <comment>Message box, arg0=node type enum</comment>
   </data>
-    <data name="UriBrowseLabel" xml:space="preserve">
+  <data name="UriBrowseLabel" xml:space="preserve">
     <value>&amp;Browse...</value>
     <comment>Button label</comment>
   </data>
-    <data name="XmlDiffErrorCaption" xml:space="preserve">
+  <data name="XmlDiffErrorCaption" xml:space="preserve">
     <value>XML Diff Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="XmlNameErrorCaption" xml:space="preserve">
+  <data name="XmlNameErrorCaption" xml:space="preserve">
     <value>Name Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="XmlNameEmptyPrompt" xml:space="preserve">
+  <data name="XmlNameEmptyPrompt" xml:space="preserve">
     <value>You must provide a non-empty name, are you sure you want to leave this name empty?</value>
     <comment>Message Box</comment>
   </data>
-    <data name="XSLFileFilter" xml:space="preserve">
+  <data name="XSLFileFilter" xml:space="preserve">
     <value>XSLT files (*.xslt;*.xsl)|*.xslt;*.xsl|All files (*.*)|*.*</value>
   </data>
-    <data name="XslFileNameTooltip" xml:space="preserve">
+  <data name="XslFileNameTooltip" xml:space="preserve">
     <value>Please enter location of XSLT stylesheet you want to use for transforming your XML document</value>
     <comment>Tooltip</comment>
   </data>
-    <data name="XslScriptCodeCaption" xml:space="preserve">
+  <data name="XslScriptCodeCaption" xml:space="preserve">
     <value>Untrusted Script Code</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="XslScriptCodePrompt" xml:space="preserve">
+  <data name="XslScriptCodePrompt" xml:space="preserve">
     <value>This stylesheet contains untrusted script code.
 Do you want to enable execution of this script code?</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="EditNamespaceCommand" xml:space="preserve">
+  <data name="EditNamespaceCommand" xml:space="preserve">
     <value>Edit Namespace</value>
     <comment>Command label</comment>
   </data>
-    <data name="FilesAreIdenticalCaption" xml:space="preserve">
+  <data name="FilesAreIdenticalCaption" xml:space="preserve">
     <value>Files Identical</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="FilesAreIdenticalPrompt" xml:space="preserve">
+  <data name="FilesAreIdenticalPrompt" xml:space="preserve">
     <value>Files are identical according to XML Diff</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="AddSchemaCommand" xml:space="preserve">
+  <data name="AddSchemaCommand" xml:space="preserve">
     <value>Add</value>
     <comment>Command label</comment>
   </data>
-    <data name="CutCommand" xml:space="preserve">
+  <data name="CutCommand" xml:space="preserve">
     <value>Cut</value>
     <comment>Command label</comment>
   </data>
-    <data name="CutSchemaCommand" xml:space="preserve">
+  <data name="CutSchemaCommand" xml:space="preserve">
     <value>Cut</value>
     <comment>Command label</comment>
   </data>
-    <data name="DeleteCommand" xml:space="preserve">
+  <data name="DeleteCommand" xml:space="preserve">
     <value>Delete</value>
     <comment>Command label</comment>
   </data>
-    <data name="EditNameCommand" xml:space="preserve">
+  <data name="EditNameCommand" xml:space="preserve">
     <value>Edit Name</value>
     <comment>Command label</comment>
   </data>
-    <data name="EditSchemaCommand" xml:space="preserve">
+  <data name="EditSchemaCommand" xml:space="preserve">
     <value>Edit</value>
     <comment>Command label</comment>
   </data>
-    <data name="EditValueCommand" xml:space="preserve">
+  <data name="EditValueCommand" xml:space="preserve">
     <value>Edit Value</value>
     <comment>Command label</comment>
   </data>
-    <data name="InsertNodeCommand" xml:space="preserve">
+  <data name="InsertNodeCommand" xml:space="preserve">
     <value>Insert</value>
     <comment>Command label</comment>
   </data>
-    <data name="MoveCommand" xml:space="preserve">
+  <data name="MoveCommand" xml:space="preserve">
     <value>Move</value>
     <comment>Command label</comment>
   </data>
-    <data name="NudgeCommand" xml:space="preserve">
+  <data name="NudgeCommand" xml:space="preserve">
     <value>Nudge</value>
     <comment>Command label</comment>
   </data>
-    <data name="PasteCommand" xml:space="preserve">
+  <data name="PasteCommand" xml:space="preserve">
     <value>Paste</value>
     <comment>Command label</comment>
   </data>
-    <data name="CreateFile" xml:space="preserve">
+  <data name="CreateFile" xml:space="preserve">
     <value>File '{0}' does not exist. Do you need to create the file?</value>
     <comment>MessageBox prompt</comment>
   </data>
-    <data name="CreateNodeFileCaption" xml:space="preserve">
+  <data name="CreateNodeFileCaption" xml:space="preserve">
     <value>Create New File</value>
     <comment>MessageBox caption</comment>
   </data>
-    <data name="XmlDiffBody" xml:space="preserve">
+  <data name="XmlDiffBody" xml:space="preserve">
     <value>&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td title='{0}'&gt;&lt;b&gt; File in editor : {1}&lt;/b&gt;&lt;/td&gt;
   &lt;td title='{2}'&gt;&lt;b&gt; File to compare : {3}&lt;/b&gt;&lt;/td&gt;
 &lt;/tr&gt;</value>
   </data>
-    <data name="SaveExpandedIncludesCaption" xml:space="preserve">
+  <data name="SaveExpandedIncludesCaption" xml:space="preserve">
     <value>Lose XInclude Information</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="SaveExpandedIncludesPrompt" xml:space="preserve">
+  <data name="SaveExpandedIncludesPrompt" xml:space="preserve">
     <value>You have expanded inline XIncludes, if you save this document you will lose the XInclude elements.  Are you sure you want to do that?</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="SaveErrorsCaption" xml:space="preserve">
+  <data name="SaveErrorsCaption" xml:space="preserve">
     <value>Save Errors</value>
     <comment>Saveas dialog title</comment>
   </data>
-    <data name="DynamicHelpAvailable" xml:space="preserve">
+  <data name="DynamicHelpAvailable" xml:space="preserve">
     <value>The Dynamic Help tab contains some schema documentation</value>
     <comment>Status bar message</comment>
   </data>
-    <data name="DynamicHelpTab" xml:space="preserve">
+  <data name="DynamicHelpTab" xml:space="preserve">
     <value>Dynamic Help</value>
     <comment>Tab caption</comment>
   </data>
-    <data name="ErrorListTab" xml:space="preserve">
+  <data name="ErrorListTab" xml:space="preserve">
     <value>Error List</value>
     <comment>Tab caption</comment>
   </data>
-    <data name="SavedStatus" xml:space="preserve">
+  <data name="SavedStatus" xml:space="preserve">
     <value>Saved</value>
     <comment>Status bar message</comment>
   </data>
-    <data name="UpdateAvailableCaption" xml:space="preserve">
+  <data name="UpdateAvailableCaption" xml:space="preserve">
     <value>Update Available</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="UpdateAvailableTooltip" xml:space="preserve">
+  <data name="UpdateAvailableTooltip" xml:space="preserve">
     <value>Version {1} of {0} is now available. </value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="ChangeErrorCaption" xml:space="preserve">
+  <data name="ChangeErrorCaption" xml:space="preserve">
     <value>Change Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="ChangeNodeCommand" xml:space="preserve">
+  <data name="ChangeNodeCommand" xml:space="preserve">
     <value>Change node to {0}</value>
     <comment>Command caption</comment>
   </data>
-    <data name="NudgeErrorCaption" xml:space="preserve">
+  <data name="NudgeErrorCaption" xml:space="preserve">
     <value>Nudge Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="RedoError" xml:space="preserve">
+  <data name="RedoError" xml:space="preserve">
     <value>Redo Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="UndoError" xml:space="preserve">
+  <data name="UndoError" xml:space="preserve">
     <value>Undo Error</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="CredentialDialog.TitleFormat" xml:space="preserve">
+  <data name="CredentialDialog.TitleFormat" xml:space="preserve">
     <value>Connect to {0}</value>
     <comment>The format for the VS Credendtial dialog title.</comment>
   </data>
-    <data name="CredentialDialog.DescriptionTextFormat" xml:space="preserve">
+  <data name="CredentialDialog.DescriptionTextFormat" xml:space="preserve">
     <value>Connecting to {0}</value>
     <comment>The format for the VS Credendtial dialog description.</comment>
   </data>
-    <data name="AttributeColor" xml:space="preserve">
+  <data name="AttributeColor" xml:space="preserve">
     <value>Attribute</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="AttributeColorDescription" xml:space="preserve">
+  <data name="AttributeColorDescription" xml:space="preserve">
     <value>Text color for attributes</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="AutoFormatOnSave" xml:space="preserve">
+  <data name="AutoFormatOnSave" xml:space="preserve">
     <value>Auto format on save</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="AutoFormatOnSaveDescription" xml:space="preserve">
+  <data name="AutoFormatOnSaveDescription" xml:space="preserve">
     <value>Whether to format the XML when it is saved</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="BackgroundColor" xml:space="preserve">
+  <data name="BackgroundColor" xml:space="preserve">
     <value>Background</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="BackgroundColorDescription" xml:space="preserve">
+  <data name="BackgroundColorDescription" xml:space="preserve">
     <value>Background color for XML notepad workspace</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="CDataColor" xml:space="preserve">
+  <data name="CDataColor" xml:space="preserve">
     <value>CDATA</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="CDataColorDescription" xml:space="preserve">
+  <data name="CDataColorDescription" xml:space="preserve">
     <value>Color of CData nodes</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="ColorCategory" xml:space="preserve">
+  <data name="ColorCategory" xml:space="preserve">
     <value>Colors</value>
     <comment>Property Grid Category </comment>
   </data>
-    <data name="CommentColor" xml:space="preserve">
+  <data name="CommentColor" xml:space="preserve">
     <value>Comment</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="CommentColorDescription" xml:space="preserve">
+  <data name="CommentColorDescription" xml:space="preserve">
     <value>Text color for comments</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="ElementColor" xml:space="preserve">
+  <data name="ElementColor" xml:space="preserve">
     <value>Element</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="ElementColorDescription" xml:space="preserve">
+  <data name="ElementColorDescription" xml:space="preserve">
     <value>Text color for elements</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="EnableUpdate" xml:space="preserve">
+  <data name="EnableUpdate" xml:space="preserve">
     <value>Enable updates</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="EnableUpdateDescription" xml:space="preserve">
+  <data name="EnableUpdateDescription" xml:space="preserve">
     <value>Whether to check for updates periodically</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="AnalyticsCategory" xml:space="preserve">
+  <data name="AnalyticsCategory" xml:space="preserve">
     <value>Analytics</value>
     <comment>Property Grid category</comment>
   </data>
-    <data name="AllowAnalytics" xml:space="preserve">
+  <data name="AllowAnalytics" xml:space="preserve">
     <value>Allow analytics</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="AllowAnalyticsDescription" xml:space="preserve">
+  <data name="AllowAnalyticsDescription" xml:space="preserve">
     <value>Allow anonymous analytics to be collected</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="FontPropertyName" xml:space="preserve">
+  <data name="FontPropertyName" xml:space="preserve">
     <value>Font</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="FontCategory" xml:space="preserve">
+  <data name="FontCategory" xml:space="preserve">
     <value>Fonts</value>
     <comment>Property Grid Category</comment>
   </data>
-    <data name="FontDesciption" xml:space="preserve">
+  <data name="FontDesciption" xml:space="preserve">
     <value>Font to use in XML notepad workspace</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="XsltCategory" xml:space="preserve">
+  <data name="XsltCategory" xml:space="preserve">
     <value>XSLT</value>
     <comment>Property Grid Category</comment>
   </data>
-    <data name="EnableXsltScriptsPropertyName" xml:space="preserve">
+  <data name="DisableDefaultXslt" xml:space="preserve">
+    <value>Disable default XSLT</value>
+    <comment>Property Grid property name</comment>
+  </data>
+  <data name="DisableDefaultXsltDescription" xml:space="preserve">
+    <value>Disable default XSLT that just colorizes your XML document in HTML.</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="EnableXsltScriptsPropertyName" xml:space="preserve">
     <value>Enable Scripts</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="EnableXsltScriptsDescription" xml:space="preserve">
+  <data name="EnableXsltScriptsDescription" xml:space="preserve">
     <value>Allow execution of script blocks in XSLT stylesheets.</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="WebBrowserPropertyName" xml:space="preserve">
+  <data name="WebBrowserPropertyName" xml:space="preserve">
     <value>Web Browser Version</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="WebBrowserDescription" xml:space="preserve">
+  <data name="WebBrowserDescription" xml:space="preserve">
     <value>Select which version of Web Browser to use to render XSLT output.</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="FormatCategory" xml:space="preserve">
+  <data name="FormatCategory" xml:space="preserve">
     <value>Formatting Options</value>
     <comment>Property Grid Category</comment>
   </data>
-    <data name="IndentChar" xml:space="preserve">
+  <data name="IndentChar" xml:space="preserve">
     <value>Indent char</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="IndentCharDescription" xml:space="preserve">
+  <data name="IndentCharDescription" xml:space="preserve">
     <value>The indent character to use</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="IndentLevel" xml:space="preserve">
+  <data name="IndentLevel" xml:space="preserve">
     <value>Indent level</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="IndentLevelDescription" xml:space="preserve">
+  <data name="IndentLevelDescription" xml:space="preserve">
     <value>Number of indent characters to use for one indent level</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="NewLineChars" xml:space="preserve">
+  <data name="NewLineChars" xml:space="preserve">
     <value>New line character</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="NewLineCharsDescription" xml:space="preserve">
+  <data name="NewLineCharsDescription" xml:space="preserve">
     <value>The character sequence to use for new lines.  "\r" means 0xD and "\n" means 0xA.  So "\r\n" gives you Windows style newlines.</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="PiColor" xml:space="preserve">
+  <data name="PiColor" xml:space="preserve">
     <value>PI</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="PiColorDescription" xml:space="preserve">
+  <data name="PiColorDescription" xml:space="preserve">
     <value>Color of Processing Instruction nodes</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="TextColor" xml:space="preserve">
+  <data name="TextColor" xml:space="preserve">
     <value>Text</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="TextColorDescription" xml:space="preserve">
+  <data name="TextColorDescription" xml:space="preserve">
     <value>Color of text nodes</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="UpdateCategory" xml:space="preserve">
+  <data name="UpdateCategory" xml:space="preserve">
     <value>Updates</value>
     <comment>Property Grid Category</comment>
   </data>
-    <data name="UpdateLocation" xml:space="preserve">
+  <data name="UpdateLocation" xml:space="preserve">
     <value>Update location</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="UpdateLocationDescription" xml:space="preserve">
+  <data name="UpdateLocationDescription" xml:space="preserve">
     <value>Location of special XML file containing update information</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="ResetOptionsPrompt" xml:space="preserve">
+  <data name="ResetOptionsPrompt" xml:space="preserve">
     <value>This will reset all options to the built in defaults, are you sure you want to do that?</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="ResetOptionsPromptCaption" xml:space="preserve">
+  <data name="ResetOptionsPromptCaption" xml:space="preserve">
     <value>Reset All Options</value>
     <comment>Message box caption</comment>
   </data>
-    <data name="LanguageCategory" xml:space="preserve">
+  <data name="LanguageCategory" xml:space="preserve">
     <value>Language Options</value>
   </data>
-    <data name="LanguageDescription" xml:space="preserve">
+  <data name="LanguageDescription" xml:space="preserve">
     <value>The language to select from XSD annotations</value>
   </data>
-    <data name="LanguagePropertyName" xml:space="preserve">
+  <data name="LanguagePropertyName" xml:space="preserve">
     <value>Language</value>
   </data>
-    <data name="AppDescription" xml:space="preserve">
+  <data name="AppDescription" xml:space="preserve">
     <value>A simple XML editor with XSD intellisense and XSLTpreview</value>
   </data>
-    <data name="AppProgId" xml:space="preserve">
+  <data name="AppProgId" xml:space="preserve">
     <value>XmlNotepad</value>
   </data>
-    <data name="AutoFormatLongLinesDescriptions" xml:space="preserve">
+  <data name="AutoFormatLongLinesDescriptions" xml:space="preserve">
     <value>Autoformat long lines instead of prompting</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="AutoFormatLongLinesProperty" xml:space="preserve">
+  <data name="AutoFormatLongLinesProperty" xml:space="preserve">
     <value>Autoformat Long Lines</value>
     <comment>Property Grid Property Name</comment>
   </data>
-    <data name="LongLineCategory" xml:space="preserve">
+  <data name="LongLineCategory" xml:space="preserve">
     <value>Long Lines</value>
     <comment>Property Grid Category</comment>
   </data>
-    <data name="MaximumLineLengthDescription" xml:space="preserve">
+  <data name="MaximumLineLengthDescription" xml:space="preserve">
     <value>What is the maximum line length before prompting for reformatting?</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="MaximumLineLengthProperty" xml:space="preserve">
+  <data name="MaximumLineLengthProperty" xml:space="preserve">
     <value>Maximum Line Length</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="MaximumValueLengthDescription" xml:space="preserve">
+  <data name="MaximumValueLengthDescription" xml:space="preserve">
     <value>What is the maximum length for the textbox</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="MaximumValueLengthProperty" xml:space="preserve">
+  <data name="MaximumValueLengthProperty" xml:space="preserve">
     <value>Maximum Value Length</value>
     <comment>Property Grid property name</comment>
   </data>
-    <data name="NoByteOrderMark" xml:space="preserve">
+  <data name="NoByteOrderMark" xml:space="preserve">
     <value>No byte order mark on save</value>
     <comment>Property grid property name</comment>
   </data>
-    <data name="NoByteOrderMarkDescription" xml:space="preserve">
+  <data name="NoByteOrderMarkDescription" xml:space="preserve">
     <value>Do not write any byte order mark at the beginning of the file for UTF-8 (0xef 0xbb 0xbf) or UTF-16 (0xff ffe)</value>
     <comment>Property Grid description</comment>
   </data>
-    <data name="OpenFileFilter" xml:space="preserve">
+  <data name="OpenFileFilter" xml:space="preserve">
     <value>XML files (*.xml)|*.xml|XSL files (*.xsl)|*.xsl|XSD files (*.xsd)|*.xsd|CSV files (*.csv)|*.csv|HTML files (*.htm;*.html)|*.htm;*.html|All files (*.*)|*.*</value>
     <comment>Open file dialog filter.</comment>
   </data>
-    <data name="IgnoreDTDDescription" xml:space="preserve">
+  <data name="IgnoreDTDDescription" xml:space="preserve">
     <value>Avoid DTD validations</value>
     <comment>Property Grid Description</comment>
   </data>
-    <data name="IgnoreDTDProperty" xml:space="preserve">
+  <data name="IgnoreDTDProperty" xml:space="preserve">
     <value>Ignore DTD</value>
     <comment>Property Grid Property Name</comment>
   </data>
-    <data name="XslOutputFileNameTooltip" xml:space="preserve">
+  <data name="XslOutputFileNameTooltip" xml:space="preserve">
     <value>Please enter the filename for storing the the XSLT output</value>
     <comment>Tooltip</comment>
   </data>
-    <data name="XmlDiffIgnoreChildOrderDescription" xml:space="preserve">
+  <data name="XmlDiffIgnoreChildOrderDescription" xml:space="preserve">
     <value>Ignore differences in the order of child elements</value>
   </data>
-    <data name="XmlDiffIgnoreChildOrderProperty" xml:space="preserve">
+  <data name="XmlDiffIgnoreChildOrderProperty" xml:space="preserve">
     <value>Ignore child order</value>
   </data>
-    <data name="XmlDiffIgnoreCommentsDescription" xml:space="preserve">
+  <data name="XmlDiffIgnoreCommentsDescription" xml:space="preserve">
     <value>Ignore differences in comments</value>
   </data>
-    <data name="XmlDiffIgnoreCommentsProperty" xml:space="preserve">
+  <data name="XmlDiffIgnoreCommentsProperty" xml:space="preserve">
     <value>Ignore comments</value>
   </data>
-    <data name="XmlDiffIgnoreDtdDescription" xml:space="preserve">
+  <data name="XmlDiffIgnoreDtdDescription" xml:space="preserve">
     <value>Ignore differences in DTD elements</value>
   </data>
-    <data name="XmlDiffIgnoreDtdProperty" xml:space="preserve">
+  <data name="XmlDiffIgnoreDtdProperty" xml:space="preserve">
     <value>Ignore DTD</value>
   </data>
-    <data name="XmlDiffIgnoreNamespacesDescription" xml:space="preserve">
+  <data name="XmlDiffIgnoreNamespacesDescription" xml:space="preserve">
     <value>Ignore differences in namespaces</value>
   </data>
-    <data name="XmlDiffIgnoreNamespacesProperty" xml:space="preserve">
+  <data name="XmlDiffIgnoreNamespacesProperty" xml:space="preserve">
     <value>Ignore namespaces</value>
   </data>
-    <data name="XmlDiffIgnorePIDescription" xml:space="preserve">
+  <data name="XmlDiffIgnorePIDescription" xml:space="preserve">
     <value>Ignore differences in processing instructions</value>
   </data>
-    <data name="XmlDiffIgnorePIProperty" xml:space="preserve">
+  <data name="XmlDiffIgnorePIProperty" xml:space="preserve">
     <value>Ignore processing instructions</value>
   </data>
-    <data name="XmlDiffIgnorePrefixesDescription" xml:space="preserve">
+  <data name="XmlDiffIgnorePrefixesDescription" xml:space="preserve">
     <value>Ignore differences in namespace prefixes</value>
   </data>
-    <data name="XmlDiffIgnorePrefixesProperty" xml:space="preserve">
+  <data name="XmlDiffIgnorePrefixesProperty" xml:space="preserve">
     <value>Ignore prefixes</value>
   </data>
-    <data name="XmlDiffIgnoreWhitespaceDescription" xml:space="preserve">
+  <data name="XmlDiffIgnoreWhitespaceDescription" xml:space="preserve">
     <value>Ignore differences in insignificant whitespace between elements</value>
   </data>
-    <data name="XmlDiffIgnoreWhitespaceProperty" xml:space="preserve">
+  <data name="XmlDiffIgnoreWhitespaceProperty" xml:space="preserve">
     <value>Ignore whitespace</value>
   </data>
-    <data name="XmlDiffIgnoreXmlDeclDescription" xml:space="preserve">
+  <data name="XmlDiffIgnoreXmlDeclDescription" xml:space="preserve">
     <value>Ignore differences in XML declarations</value>
   </data>
-    <data name="XmlDiffIgnoreXmlDeclProperty" xml:space="preserve">
+  <data name="XmlDiffIgnoreXmlDeclProperty" xml:space="preserve">
     <value>Ignore XML declarations</value>
   </data>
-    <data name="SamplesNotFound" xml:space="preserve">
+  <data name="SamplesNotFound" xml:space="preserve">
     <value>Samples folder not found</value>
   </data>
-    <data name="Theme" xml:space="preserve">
+  <data name="Theme" xml:space="preserve">
     <value>Name</value>
     <comment>Property Name</comment>
   </data>
-    <data name="ThemeCategory" xml:space="preserve">
+  <data name="ThemeCategory" xml:space="preserve">
     <value>Color Theme</value>
     <comment>Property Window Category</comment>
   </data>
-    <data name="ThemeDescription" xml:space="preserve">
+  <data name="ThemeDescription" xml:space="preserve">
     <value>Select the default color theme and theme to edit</value>
     <comment>Property Description</comment>
   </data>
-    <data name="ContainerBackgroundColor" xml:space="preserve">
+  <data name="ContainerBackgroundColor" xml:space="preserve">
     <value>Container background</value>
     <comment>Property Name</comment>
   </data>
-    <data name="ContainerBackgroundColorDescription" xml:space="preserve">
+  <data name="ContainerBackgroundColorDescription" xml:space="preserve">
     <value>The background color for non text nodes</value>
     <comment>Property description</comment>
   </data>
-    <data name="EditorBackgroundColor" xml:space="preserve">
+  <data name="EditorBackgroundColor" xml:space="preserve">
     <value>Editor background</value>
     <comment>Property Name</comment>
   </data>
-    <data name="EditorBackgroundColorDescription" xml:space="preserve">
+  <data name="EditorBackgroundColorDescription" xml:space="preserve">
     <value>Background color for text editor control</value>
     <comment>Property Description</comment>
   </data>
-    <data name="XmlDiffEmptyPrompt" xml:space="preserve">
+  <data name="XmlDiffEmptyPrompt" xml:space="preserve">
     <value>There is no file loaded to diff against.</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="XmlDiffSameFilePrompt" xml:space="preserve">
+  <data name="XmlDiffSameFilePrompt" xml:space="preserve">
     <value>You selected the same file, please select a different file.</value>
     <comment>Message box prompt</comment>
   </data>
-    <data name="ShowInstallPage" xml:space="preserve">
+  <data name="ShowInstallPage" xml:space="preserve">
     <value>Click here to open the installer web page.</value>
   </data>
-    <data name="ShowUpdateHistory" xml:space="preserve">
+  <data name="ShowUpdateHistory" xml:space="preserve">
     <value>Click here to visit the update history.</value>
   </data>
-    <data name="UpToDate" xml:space="preserve">
+  <data name="UpToDate" xml:space="preserve">
     <value>Up to date</value>
     <comment>Button caption.</comment>
   </data>
-    <data name="UpToDateTooltip" xml:space="preserve">
+  <data name="UpToDateTooltip" xml:space="preserve">
     <value>You have the latest version: {0}</value>
   </data>
-    <data name="TransformedTimeStatus" xml:space="preserve">
+  <data name="TransformedTimeStatus" xml:space="preserve">
     <value>Transformed in {0} ms and {2} loaded in {1} ms</value>
     <comment>status text</comment>
   </data>
-    <data name="EditingCategory" xml:space="preserve">
+  <data name="EditingCategory" xml:space="preserve">
     <value>Editor</value>
     <comment>Property grid category</comment>
   </data>
-    <data name="TextEditorDescription" xml:space="preserve">
+  <data name="TextEditorDescription" xml:space="preserve">
     <value>The text editor to use for View Source option</value>
     <comment>Property grid description</comment>
   </data>
-    <data name="TextEditorProperty" xml:space="preserve">
+  <data name="TextEditorProperty" xml:space="preserve">
     <value>Default text editor</value>
     <comment>Property grid name</comment>
   </data>
-    <data name="ConfigureDefaultApps">
-        <value>Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.</value>
-    </data>
+  <data name="ConfigureDefaultApps">
+    <value>Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.</value>
+  </data>
 
-    <data name="WebView2Error" xml:space="preserve">
+  <data name="WebView2Error" xml:space="preserve">
     <value>Error initializing WebView2 component. Please install WebView2 from https://developer.microsoft.com/en-us/microsoft-edge/webview2/ and check if you need to do a full reboot.
 
 {0}</value>
   </data>
-    <data name="InvalidFileName" xml:space="preserve">
+  <data name="InvalidFileName" xml:space="preserve">
     <value>Invalid file name '{0}'</value>
   </data>
-    <data name="CheckUpdatesStatus">
-        <value>Checking for updates...</value>
-    </data>
+  <data name="CheckUpdatesStatus">
+    <value>Checking for updates...</value>
+  </data>
 </root>

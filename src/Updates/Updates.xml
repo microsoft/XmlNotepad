@@ -9,6 +9,9 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.49">
+    <feature>Add option to disable default XSLT stylesheet.</feature>
+  </version>
   <version number="2.8.0.48">
     <bug>Fix single line text editor so it does not overlap the line below it.</bug>
     <bug>Fix XSLT Output browse button so it brings up the Save As File Dialog.</bug>

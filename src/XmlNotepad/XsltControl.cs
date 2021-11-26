@@ -423,6 +423,11 @@ namespace XmlNotepad
                 if (string.IsNullOrEmpty(xsltfilename))
                 {
                     transform = GetDefaultStylesheet();
+                    if (this._settings.GetBoolean("DisableDefaultXslt"))
+                    {
+                        context = new XmlDocument();
+                        context.LoadXml("<Note>Default styling of your XML documents is disabled in your Options</Note>");
+                    }
                 }
                 else
                 {

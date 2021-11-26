@@ -260,6 +260,7 @@ namespace XmlNotepad
             this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
             this._settings["UpdateEnabled"] = true;
 
+            this._settings["DisableDefaultXslt"] = false;
             this._settings["AutoFormatOnSave"] = true;
             this._settings["IndentLevel"] = 2;
             this._settings["IndentChar"] = IndentChar.Space;

@@ -405,6 +405,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable default XSLT.
+        /// </summary>
+        public static string DisableDefaultXslt {
+            get {
+                return ResourceManager.GetString("DisableDefaultXslt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable default XSLT that just colorizes your XML document in HTML..
+        /// </summary>
+        public static string DisableDefaultXsltDescription {
+            get {
+                return ResourceManager.GetString("DisableDefaultXsltDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to discard the changes you&apos;ve made so far?.
         /// </summary>
         public static string DiscardChanges {

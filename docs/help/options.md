@@ -35,6 +35,8 @@ documents.
 ### XSLT
 Options that control how the the XSLT Output works.
 Set `Enable Scripts` to false if you don't trust the script code in your XSLT stylesheets.
+Set the `Disable default XSLT` to true if you do not want a default XSLT transform
+on documents that have no `<?xml-stylesheet` processing instruction.
 Toggle the Web Browser Version to WebView2 if you have the new
 [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
 component installed on your machine.

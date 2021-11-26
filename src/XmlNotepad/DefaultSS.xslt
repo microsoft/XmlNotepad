@@ -91,7 +91,7 @@
         </SCRIPT>
       </HEAD>
       <BODY class="st">
-        <div  style="border:1 dashed navy; padding-left:5px;padding-right:5px;background-color:#FFFFB3">
+        <div style="padding:5px;background-color:#fffacd">
           <p>
             Your XML document contains no xml-stylesheet processing instruction. To provide
             an XSLT transform, add the following to the top of your file and edit the href
@@ -100,13 +100,15 @@
               <span class="d">&lt;?</span><span class="t">xml-stylesheet</span>&#160;<span class="at">type</span><span class="d">=</span>"<span class="av">text/xsl</span>" <span class="at">href</span><span class="d">=</span>"<span class="av">stylesheet.xsl</span>"<span class="d">?&gt;</span>
             </pre>
           <p>
-            You can also enter the XSLT file name using the above text box, but this will not
+            You can also enter the XSLT file name using the above "XSLT Location:" text box, but this will not
             persist with your XML document.
           </p>
           <p>
-            The following HTML is provided by the default XSLT transform which is designed
-            to pretty print your XML document.
+            You can specify a default output file name using the following in your XML documents:
           </p>
+          <pre style="font-size:small">
+            <span class="d">&lt;?</span><span class="t">xsl-output</span>&#160;<span class="at">default</span><span class="d">=</span>"<span class="av">xslt_output</span>" <span class="d">?&gt;</span>
+          </pre>
         </div>
         <x:apply-templates />
       </BODY>

@@ -41,3 +41,8 @@ for information on how to install this optional component.
 
 You will know it is using WebView2 if you see that name mentioned
 in the status bar.
+
+If there is no stylesheet associated with your XML document you will
+see a default stylesheet that produces an HTML document containing
+a colorized version of your XML document.  This default transform
+can be disabled in the Options dialog.

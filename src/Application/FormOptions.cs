@@ -132,6 +132,7 @@ namespace XmlNotepad
             private string _updateLocation;
             private bool _enableUpdate;
             private bool _noByteOrderMark;
+            private bool _disableDefaultXslt;
             private bool _autoFormatOnSave;
             private int _indentLevel;
             private IndentChar _indentChar;
@@ -165,6 +166,7 @@ namespace XmlNotepad
                 LoadColors();
                 _updateLocation = this._settings.GetString("UpdateLocation");
                 _enableUpdate = this._settings.GetBoolean("UpdateEnabled");
+                _disableDefaultXslt = this._settings.GetBoolean("DisableDefaultXslt");
                 _autoFormatOnSave = this._settings.GetBoolean("AutoFormatOnSave");
                 _noByteOrderMark = this._settings.GetBoolean("NoByteOrderMark");
                 _indentLevel = this._settings.GetInteger("IndentLevel");
@@ -230,6 +232,7 @@ namespace XmlNotepad
                 this._settings["UpdateEnabled"] = this._enableUpdate;
                 this._settings["UpdateLocation"] = this._updateLocation;
 
+                this._settings["DisableDefaultXslt"] = _disableDefaultXslt;
                 this._settings["AutoFormatOnSave"] = _autoFormatOnSave;
                 this._settings["IndentLevel"] = _indentLevel;
                 this._settings["IndentChar"] = _indentChar;
@@ -272,6 +275,7 @@ namespace XmlNotepad
                 _updateLocation = Settings.DefaultUpdateLocation;
                 _enableUpdate = true;
                 _autoFormatOnSave = true;
+                _disableDefaultXslt = false;
                 _noByteOrderMark = false;
                 _indentLevel = 2;
                 _indentChar = IndentChar.Space;
@@ -524,6 +528,7 @@ namespace XmlNotepad
                     this._autoFormatOnSave = value;
                 }
             }
+
             [SRCategory("FormatCategory")]
             [LocDisplayName("IndentLevel")]
             [SRDescription("IndentLevelDescription")]
@@ -656,6 +661,21 @@ namespace XmlNotepad
                 set
                 {
                     this._enableXsltScripts = value;
+                }
+            }
+
+            [SRCategory("XsltCategory")]
+            [LocDisplayName("DisableDefaultXslt")]
+            [SRDescription("DisableDefaultXsltDescription")]
+            public bool DisableDefaultXslt
+            {
+                get
+                {
+                    return this._disableDefaultXslt;
+                }
+                set
+                {
+                    this._disableDefaultXslt = value;
                 }
             }
 
