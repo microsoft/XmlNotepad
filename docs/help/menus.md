@@ -24,6 +24,7 @@ The edit menu contains the following commands:
 - **Paste** Parse the XML in the clipboard and create new nodes in the tree under the selected node.
 - **Delete** Delete the selected node.
 - **Insert** Insert a new node of the same type (element, attribute, processing instruction, comment, etc) as the currently selected node.  This makes it easy to build a list of nodes that have the same type.
+- **Rename** Enter edit mode on the current element or attribute so you can rename it (or type Enter key)
 - **Duplicate** Clone the selected node (and its children) and insert the clone as the next sibling.
 - **Change To** Changes the selected node to the specified node type.
 - **Goto Definition** Open the selected XInclude or open the XML Schema that defines the selected node in a new instance of XML Notepad.
@@ -45,6 +46,8 @@ The edit menu contains the following commands:
 - **Source** Show the current XML document in text form using "Notepad".
 - **Options...** Display the [Options Dialog](options.md).
 - **Schemas...** Display the [Schemas Dialog](schemas.md).
+- **Statistics...** Opens a command prompt with the results of running XmlStats.exe on the current file.
+The XmlStats.exe program is in the current working directory so you can play with it further.  Type `XmlStats -?` for help.
 - **Next Error** Navigate to the next error in the list of errors.
 - **Compare XML Files...** Launches XML Diff which compares the current document you are editing with another document on disk and displays the results.
 
