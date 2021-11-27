@@ -22,6 +22,9 @@
     .ci{color:$COMMENT_COLOR}                 /* comment value */    
     .side{background-color:$SIDENOTE_COLOR}   /* intro div */    
     .outputtip { display:$OUTPUT_TIP_DISPLAY }
+    a { color:$ELEMENT_COLOR }
+    a:visited { color:$PI_COLOR }
+    a:hover { color:$PI_COLOR }
     pre {margin:0px;display:inline}]]>
         </STYLE>
       </HEAD>
