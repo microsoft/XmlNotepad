@@ -18,11 +18,8 @@ namespace UnitTests {
         private Mouse() { }
 
         public static void MouseDown(Point pt, MouseButtons buttons) {
-            MouseInput input = new MouseInput();
-            input.type = (int)InputType.INPUT_MOUSE;
-            input.dx = pt.X;
-            input.dy = pt.Y;
-            MouseFlags flags = MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            MouseInput input = GetVirtualMouseInput(pt.X, pt.Y);
+            MouseFlags flags = (MouseFlags)input.dwFlags;
             if ((buttons & MouseButtons.Left) != 0)
             {
                 flags |= MouseFlags.MOUSEEVENTF_LEFTDOWN;
@@ -39,16 +36,13 @@ namespace UnitTests {
             {
                 flags |= MouseFlags.MOUSEEVENTF_XDOWN;
             }
-            input.dwFlags = (int)flags;
+            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_MOVE);
             SendInput(input);
         }
 
         public static void MouseUp(Point pt, MouseButtons buttons) {
-            MouseInput input = new MouseInput();
-            input.type = (int)InputType.INPUT_MOUSE;
-            input.dx = pt.X;
-            input.dy = pt.Y;
-            MouseFlags flags = MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            MouseInput input = GetVirtualMouseInput(pt.X, pt.Y);
+            MouseFlags flags = (MouseFlags)input.dwFlags;
             if ((buttons & MouseButtons.Left) != 0) {
                 flags |= MouseFlags.MOUSEEVENTF_LEFTUP;
             }
@@ -76,32 +70,40 @@ namespace UnitTests {
             MouseClick(pt, buttons);
         }
 
-        public static void MouseMoveTo(int x, int y, MouseButtons buttons) {
+        private static MouseInput GetVirtualMouseInput(int x, int y)
+        {
             MouseInput input = new MouseInput();
             input.type = (int)(InputType.INPUT_MOUSE);
-            int screenX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-            int screenY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-            input.dx = x * 65535 / screenX;
-            input.dy = y * 65535 / screenY;
-            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE + 
-                            (int)MouseFlags.MOUSEEVENTF_ABSOLUTE +
-                            (int)MouseFlags.MOUSEEVENTF_VIRTUALDESK;
+            long screenX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+            long screenY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+            long scale = 65535;
+            input.dx = (int)(((long)x * scale) / screenX);
+            input.dy = (int)(((long)y * scale) / screenY);
+            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_VIRTUALDESK + (int)MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            return input;
+        }
+
+        public static void MouseMoveTo(int x, int y, MouseButtons buttons) {
+            MouseInput input = GetVirtualMouseInput(x, y);
+            input.dwFlags += (int)MouseFlags.MOUSEEVENTF_MOVE + (int)MouseFlags.MOUSEEVENTF_ABSOLUTE;
             SendInput(input);
             Application.DoEvents();
         }
+
+        const int DragDelayDrop = 200;
 
         public static void MouseDragDrop(Point start, Point end, int step, MouseButtons buttons) {
             int s = Timeout;
             Timeout = 10;
             MouseDown(start, buttons);
             Application.DoEvents();
-            Thread.Sleep(200);
+            Thread.Sleep(DragDelayDrop);
             MouseDragTo(start, end, step, buttons);
-            Thread.Sleep(200);
+            Thread.Sleep(DragDelayDrop);
             
             MouseUp(end, buttons);
             Application.DoEvents();
-            Thread.Sleep(200);
+            Thread.Sleep(DragDelayDrop);
             Timeout = s;
         }
 
@@ -110,6 +112,7 @@ namespace UnitTests {
         }
 
         public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons) {
+            const int DelayDragDrop = 100;
             // Interpolate and move mouse smoothly over to given location.                
             int dx = end.X - start.X;
             int dy = end.Y - start.Y;
@@ -125,6 +128,7 @@ namespace UnitTests {
 
                 // Now calibrate movement based on current mouse position.
                 Application.DoEvents();
+                Thread.Sleep(DelayDragDrop);
             }
 
             MouseMoveTo(end.X, end.Y, buttons);
@@ -139,13 +143,9 @@ namespace UnitTests {
             {
                 c = w.PhysicalToLogicalPoint(c);
             }
-            MouseInput input = new MouseInput();
-            input.type = (int)InputType.INPUT_MOUSE;
+            MouseInput input = GetVirtualMouseInput(c.X, c.Y);
             input.mouseData = clicks;
-            MouseFlags flags = MouseFlags.MOUSEEVENTF_WHEEL;
-            input.dwFlags = (int)flags;
-            input.dx = c.X;
-            input.dy = c.Y;
+            input.dwFlags += (int)MouseFlags.MOUSEEVENTF_WHEEL;
             SendInput(input);
         }
 
@@ -154,6 +154,7 @@ namespace UnitTests {
             if ((input.dwFlags & (int)MouseFlags.MOUSEEVENTF_ABSOLUTE) != 0) {
                 Cursor.Position = new Point(input.dx, input.dy);
             }
+            Debug.WriteLine("SendInput x={0}, y={1}, flags={2}", input.dx, input.dy, input.dwFlags);
             input.time = Environment.TickCount;
             int cb = Marshal.SizeOf(input);
             Debug.Assert(cb == 28); // must match what C++ returns for the INPUT union.
