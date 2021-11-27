@@ -79,13 +79,13 @@ namespace UnitTests {
             long scale = 65535;
             input.dx = (int)(((long)x * scale) / screenX);
             input.dy = (int)(((long)y * scale) / screenY);
-            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_VIRTUALDESK + (int)MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            input.dwFlags = (int)(MouseFlags.MOUSEEVENTF_ABSOLUTE | MouseFlags.MOUSEEVENTF_VIRTUALDESK);
             return input;
         }
 
         public static void MouseMoveTo(int x, int y, MouseButtons buttons) {
             MouseInput input = GetVirtualMouseInput(x, y);
-            input.dwFlags += (int)MouseFlags.MOUSEEVENTF_MOVE + (int)MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            input.dwFlags |= (int)MouseFlags.MOUSEEVENTF_MOVE;
             SendInput(input);
             Application.DoEvents();
         }
@@ -112,7 +112,7 @@ namespace UnitTests {
         }
 
         public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons) {
-            const int DelayDragDrop = 100;
+            const int DelayDragDrop = 1;
             // Interpolate and move mouse smoothly over to given location.                
             int dx = end.X - start.X;
             int dy = end.Y - start.Y;
