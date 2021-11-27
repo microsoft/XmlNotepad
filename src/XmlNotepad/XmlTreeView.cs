@@ -868,7 +868,13 @@ namespace XmlNotepad
             if (this._myTreeView.SelectedNode != null)
             {
                 XmlTreeNode n = (XmlTreeNode)this._myTreeView.SelectedNode;
-                InsertNode(InsertPosition.After, n.Node.NodeType);
+                var newType = n.Node.NodeType;
+                if (newType == XmlNodeType.XmlDeclaration)
+                {
+                    // can't have 2 XML declarations...
+                    newType = XmlNodeType.ProcessingInstruction;
+                }
+                InsertNode(InsertPosition.After, newType);
                 return true;
             }
             return false;

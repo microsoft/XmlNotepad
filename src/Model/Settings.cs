@@ -32,9 +32,14 @@ namespace XmlNotepad
         public Color ContainerBackground = Color.Transparent;
         public Color EditorBackground = Color.Transparent;
         public Color Markup = Color.Transparent;
-        public Color SideNoteBackground = Color.Transparent;
         static TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
 
+        public override int GetHashCode()
+        {
+            return Element.GetHashCode() + Attribute.GetHashCode() + Text.GetHashCode() + Comment.GetHashCode() +
+                PI.GetHashCode() + CDATA.GetHashCode() + Background.GetHashCode() + ContainerBackground.GetHashCode() +
+                EditorBackground.GetHashCode() + Markup.GetHashCode();
+        }
 
         public static ThemeColors GetDefaultColors(ColorTheme theme)
         {
@@ -50,9 +55,8 @@ namespace XmlNotepad
                     CDATA = Color.Gray,
                     Background = Color.White,
                     ContainerBackground = Color.AliceBlue,
-                    EditorBackground = Color.LightSteelBlue,
+                    EditorBackground = Color.FromArgb(255, 250, 205),
                     Markup = Color.FromArgb(80, 80, 80),
-                    SideNoteBackground = Color.FromArgb(255, 250, 205)
                 };
             }
             else
@@ -69,7 +73,6 @@ namespace XmlNotepad
                     ContainerBackground = Color.FromArgb(0x25, 0x25, 0x26),
                     EditorBackground = Color.FromArgb(24, 24, 44),
                     Markup = Color.FromArgb(100,100,100),
-                    SideNoteBackground = Color.FromArgb(50, 40, 40)
                 };
             }
         }
@@ -670,7 +673,7 @@ namespace XmlNotepad
             return settingValue != null ? settingValue.ToString() : defaultValue;
         }
 
-        public void AddDefaultColors(string name, ColorTheme theme)
+        public ThemeColors AddDefaultColors(string name, ColorTheme theme)
         {
             ThemeColors table = (ThemeColors)this[name];
             if (table == null)
@@ -681,6 +684,7 @@ namespace XmlNotepad
 
             ThemeColors defaults = ThemeColors.GetDefaultColors(theme);
             table.Merge(defaults);
+            return table;
         }
 
     }

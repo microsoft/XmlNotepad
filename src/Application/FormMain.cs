@@ -1488,7 +1488,12 @@ namespace XmlNotepad
                     {
                         _settings.Load(path);
 
-                        _settings.AddDefaultColors("LightColors", ColorTheme.Light);
+                        var lightColors = _settings.AddDefaultColors("LightColors", ColorTheme.Light);
+                        if (lightColors.EditorBackground == Color.LightSteelBlue)
+                        {
+                            // migrate to new default that looks better.
+                            lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
+                        }
                         _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
 
                         string newLines = (string)this._settings["NewLineChars"];

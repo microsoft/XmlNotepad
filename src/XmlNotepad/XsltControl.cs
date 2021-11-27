@@ -40,6 +40,7 @@ namespace XmlNotepad
         private string _tempFile;
         private string _previousOutputFile;
         private bool _usingDefaultXslt;
+        private bool _hasXsltOutput; // whether DOM has <?xsl-output instruction.
 
         public event EventHandler<Exception> WebBrowserException;
 
@@ -359,6 +360,19 @@ namespace XmlNotepad
             set { this._defaultSSResource = value; }
         }
 
+        public bool HasXsltOutput
+        {
+            get => _hasXsltOutput;
+            set
+            {
+                if (value != _hasXsltOutput)
+                {
+                    _defaultss = null;
+                    _hasXsltOutput = value;
+                }
+            }
+        }
+
         public void SetSite(ISite site)
         {
             this._site = site;
@@ -403,7 +417,8 @@ namespace XmlNotepad
         {
             if (_previousTransform != null)
             {
-                DisplayXsltResults(_previousTransform.document, _previousTransform.xsltfilename, _previousTransform.outpath, _previousTransform.userSpecifiedOutput);
+                DisplayXsltResults(_previousTransform.document, _previousTransform.xsltfilename, _previousTransform.outpath, 
+                    _previousTransform.userSpecifiedOutput);
             }
         }
 
@@ -800,8 +815,8 @@ namespace XmlNotepad
             html = html.Replace("$COMMENT_COLOR", GetHexColor(colors.Comment));
             html = html.Replace("$ELEMENT_COLOR", GetHexColor(colors.Element));
             html = html.Replace("$MARKUP_COLOR", GetHexColor(colors.Markup));
-            html = html.Replace("$SIDENOTE_COLOR", GetHexColor(colors.SideNoteBackground));
-            
+            html = html.Replace("$SIDENOTE_COLOR", GetHexColor(colors.EditorBackground));
+            html = html.Replace("$OUTPUT_TIP_DISPLAY", this.HasXsltOutput ? "none" : "block");            
             return html;
         }
 

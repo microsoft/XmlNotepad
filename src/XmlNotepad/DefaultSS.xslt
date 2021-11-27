@@ -21,255 +21,148 @@
     .pi{color:$PI_COLOR}                      /* pi name and content */
     .ci{color:$COMMENT_COLOR}                 /* comment value */    
     .side{background-color:$SIDENOTE_COLOR}   /* intro div */    
+    .outputtip { display:$OUTPUT_TIP_DISPLAY }
     pre {margin:0px;display:inline}]]>
         </STYLE>
-        <SCRIPT>
-          <x:comment>
-            <![CDATA[
-  function f(e){
-    if (e.className=="ci"){
-      if (e.children(0).innerText.indexOf("\n")>0) fix(e,"cb");
-    }
-    if (e.className=="di"){
-      if (e.children(0).innerText.indexOf("\n")>0) fix(e,"db");
-    }
-    e.id="";
-  }
-  function fix(e,cl){
-    e.className=cl;
-    e.style.display="block";
-    j=e.parentElement.children(0);
-    j.className="c";
-    k=j.children(0);
-    k.style.visibility="visible";
-    k.href="#";
-  }
-  function ch(e){
-    mark=e.children(0).children(0);
-    if (mark.innerText=="+"){
-      mark.innerText="-";
-      for (var i=1;i<e.children.length;i++) e.children(i).style.display="block";
-    } else if (mark.innerText=="-"){
-      mark.innerText="+";
-      for (var i=1;i<e.children.length;i++) e.children(i).style.display="none";
-    }
-  }
-  function ch2(e){
-    mark=e.children(0).children(0);
-    contents=e.children(1);
-    if (mark.innerText=="+"){
-      mark.innerText="-";
-      if (contents.className=="db"||contents.className=="cb") contents.style.display="block";
-      else contents.style.display="inline";
-    } else if (mark.innerText=="-"){
-      mark.innerText="+";
-      contents.style.display="none";
-    }
-  }
-  function cl(){
-    e=window.event.srcElement;
-    if (e.className!="c"){
-      e=e.parentElement;
-      if (e.className!="c"){return;}
-    }
-    e=e.parentElement;
-    if (e.className=="e") ch(e);
-    if (e.className=="k") ch2(e);
-  }
-  function ex(){}
-  function h(){window.status=" ";}
-  document.onclick=cl;
-  ]]>
-          </x:comment>
-        </SCRIPT>
       </HEAD>
       <BODY class="st">
         <div style="padding:5px;" class="side tx">
           
             Your XML document contains no xml-stylesheet processing instruction. To provide
-            an XSLT transform, add the following to the top of your file and edit the href
+            an <a href="https://www.tutorialspoint.com/xslt/index.htm" target="_new">XSLT transform</a>, add the following to the top of your file and edit the href
             attribute accordingly:
-            
+
             <pre>
-              <span class="m">&lt;?</span><span class="pi">xml-stylesheet</span>&#160;<span class="at">type</span><span class="m">="</span><span class="av">text/xsl</span><span class="m">"</span> <span class="at">href</span><span class="m">="</span><span class="av">stylesheet.xsl</span><span class="m">" ?&gt;</span>
+              <span class="m">&lt;?</span><span class="pi">xml-stylesheet</span>&#160;<span class="at">type</span><span class="m">="</span><span class="av">text/xsl</span><span class="m">" </span><span class="at">href</span><span class="m">="</span><span class="av">stylesheet.xsl</span><span class="m">" ?&gt;</span>
             </pre>
           
           <p>
             You can also enter the XSLT file name using the above "XSLT Location:" text box, but this will not
             persist with your XML document.
           </p>
-          <p>
+          <div class="outputtip">
             You can specify a default output file name using the following in your XML documents:
             <pre>
               <span class="m">&lt;?</span><span class="pi">xsl-output</span>&#160;<span class="at">default</span><span class="m">="</span><span class="av">xslt_output</span><span class="m">" ?&gt;</span>
             </pre>
-          </p>
+          </div>
         </div>
         <x:apply-templates />
       </BODY>
     </HTML>
   </x:template>
-  <x:template match="processing-instruction()">
-    <DIV class="e">      
-      <SPAN class="m">&lt;?</SPAN>
-      <SPAN class="pi">
-        <x:value-of select="name()" />&#160;
-        <x:value-of select="."/>
-      </SPAN>
-      <SPAN class="m">?></SPAN>
-    </DIV>
-  </x:template>
+  <!-- try and pretty print xml declaration attributes, if xslt will match it -->
   <x:template match="processing-instruction('xml')">
-    <DIV class="e">
-      <SPAN class="b">
-        <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-      </SPAN>
-      <SPAN class="m">&lt;?</SPAN>
-      <SPAN class="t">
+    <div class="e">
+      <span class="m">&lt;?</span>
+      <span class="t">
         xml
         <x:for-each select="@*">
-          <SPAN class="at"><x:value-of select="name()" /></SPAN>
+          <span class="at"><x:value-of select="name()" /></span>
           ="
-          <SPAN class="av"><x:value-of select="."/></SPAN>
+          <span class="av"><x:value-of select="."/></span>
           "
         </x:for-each>
-      </SPAN>
-      <SPAN class="m">?></SPAN>
-    </DIV>
+      </span>
+      <span class="m">?></span>
+    </div>
   </x:template>
-  <x:template match="@*" xml:space="preserve"> <SPAN><x:attribute name="class"><x:if test="x:*/@*">x</x:if>at</x:attribute><x:value-of select="name()" /></SPAN><SPAN class="m">="</SPAN><SPAN class="av"><x:value-of select="."/></SPAN><SPAN class="m">"</SPAN></x:template>
+  <!-- all other processing instructions -->
+  <x:template match="processing-instruction()">
+    <div class="e">
+      <span class="m">&lt;?</span>
+      <span class="pi">
+        <x:value-of select="name()" />&#160;
+        <x:value-of select="."/>
+      </span>
+      <span class="m">?></span>
+    </div>
+  </x:template>
+  <!-- attributes -->
+  <x:template match="@*" xml:space="preserve"> 
+    <span><x:attribute name="class"><x:if test="x:*/@*">x</x:if>at</x:attribute><x:value-of select="name()" /></span><span class="m">="</span><span class="av"><x:value-of select="."/></span><span class="m">"</span>
+  </x:template>
 
+  <!-- comments -->
   <x:template match="comment()">
-    <DIV class="k">
-      <SPAN>
-        <A class="b" onclick="return false" onfocus="h()" STYLE="visibility:hidden"></A>
-        <SPAN class="m">&lt;!--</SPAN>
-      </SPAN>
-      <SPAN id="clean" class="ci">
-        <PRE>
-          <x:value-of select="."/>
-        </PRE>
-      </SPAN>
-      <SPAN class="b">
+    <div class="k">
+      <span>        
+        <span class="m">&lt;!--</span>
+      </span>
+      <span id="clean" class="ci">
+        <pre><x:value-of select="."/></pre>
+      </span>
+      <span class="b">
         <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-      </SPAN>
-      <SPAN class="m">--></SPAN>
-      <SCRIPT>f(clean);</SCRIPT>
-    </DIV>
+      </span>
+      <span class="m">--></span>     
+    </div>
   </x:template>
+  <!-- leaf nodes -->
   <x:template match="*">
-    <DIV class="e">
-      <DIV STYLE="margin-left:1em;text-indent:-2em">
-        <SPAN class="b">
+    <div class="e">
+      <div STYLE="margin-left:1em;text-indent:-2em">
+        <span class="b">
           <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-        </SPAN>
-        <SPAN class="m">&lt;</SPAN>
-        <SPAN class="t">
+        </span>
+        <span class="m">&lt;</span>
+        <span class="t">
           <x:value-of select="name()" />
-        </SPAN>
+        </span>
         <x:apply-templates select="@*" />
-        <SPAN class="m">/></SPAN>
-      </DIV>
-    </DIV>
+        <span class="m">/></span>
+      </div>
+    </div>
   </x:template>
-  <x:template match="*[node()]">
-    <DIV class="e">
-      <DIV class="c">
-        <A href="#" onclick="return false" onfocus="h()" class="b"></A>
-        <SPAN class="m">&lt;</SPAN>
-        <SPAN>
-          <x:attribute name="class">
-            <x:if test="x:*">x</x:if>
-            t
-          </x:attribute>
-          <x:value-of select="name()" />
-        </SPAN>
-        <x:apply-templates select="@*" />
-        <SPAN class="m">></SPAN>
-      </DIV>
-      <DIV>
-        <x:apply-templates />
-        <DIV>
-          <SPAN class="b">
-            <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-          </SPAN>
-          <SPAN class="m">&lt;/</SPAN>
-          <SPAN>
-            <x:attribute name="class">
-              <x:if test="x:*">x</x:if>
-              t
-            </x:attribute>
-            <x:value-of select="name()" />
-          </SPAN>
-          <SPAN class="m">></SPAN>
-        </DIV>
-      </DIV>
-    </DIV>
-  </x:template>
-  <x:template match="*[text() and not(comment() or processing-instruction())]">
-    <!--$or$cdata()-->
-    <DIV class="e">
-      <DIV STYLE="margin-left:1em;text-indent:-2em">
-        <SPAN class="b">
+  <!-- nodes containing text only -->
+  <x:template match="*[text() and not(comment() or processing-instruction())]">    
+    <div class="e">
+      <div STYLE="margin-left:1em;text-indent:-2em">
+        <span class="b">
           <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-        </SPAN>
-        <SPAN class="m">&lt;</SPAN>
-        <SPAN>
-          <x:attribute name="class">
-            <x:if test="x:*">x</x:if>
-            t
-          </x:attribute>
+        </span>
+        <span class="m">&lt;</span>
+        <span class="t">
           <x:value-of select="name()" />
-        </SPAN>
+        </span>
         <x:apply-templates select="@*" />
-        <SPAN class="m">></SPAN>
-        <SPAN class="tx">
+        <span class="m">></span>
+        <span class="tx">
           <x:value-of select="."/>
-        </SPAN>
-        <SPAN class="m">&lt;/</SPAN>
-        <SPAN>
-          <x:attribute name="class">
-            <x:if test="x:*">x</x:if>
-            t
-          </x:attribute>
+        </span>
+        <span class="m">&lt;/</span>
+        <span class="t">
           <x:value-of select="name()" />
-        </SPAN>
-        <SPAN class="m">></SPAN>
-      </DIV>
-    </DIV>
+        </span>
+        <span class="m">></span>
+      </div>
+    </div>
   </x:template>
+  <!-- nodes containing children -->
   <x:template match="*[*]">
-    <DIV class="e">
-      <DIV class="c" STYLE="margin-left:1em;text-indent:-2em">
+    <div class="e">      
+      <div class="c" STYLE="margin-left:1em;text-indent:-2em">
         <A href="#" onclick="return false" onfocus="h()" class="b"></A>
-        <SPAN class="m">&lt;</SPAN>
-        <SPAN>
-          <x:attribute name="class">
-            <x:if test="x:*">x</x:if>
-            t
-          </x:attribute>
+        <span class="m">&lt;</span>
+        <span class="t">
           <x:value-of select="name()" />
-        </SPAN>
+        </span>
         <x:apply-templates select="@*" />
-        <SPAN class="m">></SPAN>
-      </DIV>
-      <DIV>
+        <span class="m">></span>
+      </div>
+      <div>
         <x:apply-templates />
-        <DIV>
-          <SPAN class="b">
+        <div>
+          <span class="b">
             <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-          </SPAN>
-          <SPAN class="m">&lt;/</SPAN>
-          <SPAN>
-            <x:attribute name="class">
-              <x:if test="x:*">x</x:if>
-              t
-            </x:attribute>
+          </span>
+          <span class="m">&lt;/</span>
+          <span class="t">
             <x:value-of select="name()" />
-          </SPAN>
-          <SPAN class="m">></SPAN>
-        </DIV>
-      </DIV>
-    </DIV>
+          </span>
+          <span class="m">></span>
+        </div>
+      </div>
+    </div>
   </x:template>
 </x:stylesheet>

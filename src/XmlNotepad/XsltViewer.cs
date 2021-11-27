@@ -118,10 +118,13 @@ namespace XmlNotepad
             {
                 _userSpecifiedOutput = false;
             }
-            if (!_userSpecifiedOutput && !string.IsNullOrEmpty(this._model.XsltDefaultOutput))
+            bool hasXsltOutput = !string.IsNullOrEmpty(this._model.XsltDefaultOutput);
+            if (!_userSpecifiedOutput && hasXsltOutput)
             {
                 output = this._model.XsltDefaultOutput;
             }
+            this.xsltControl.HasXsltOutput = hasXsltOutput;
+
             output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output, _userSpecifiedOutput);
             if (!string.IsNullOrWhiteSpace(output))
             {
