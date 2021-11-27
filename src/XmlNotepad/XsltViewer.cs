@@ -114,6 +114,10 @@ namespace XmlNotepad
                 }
             }
             string output = this.OutputFileName.Text.Trim();
+            if (string.IsNullOrWhiteSpace(output))
+            {
+                _userSpecifiedOutput = false;
+            }
             if (!_userSpecifiedOutput && !string.IsNullOrEmpty(this._model.XsltDefaultOutput))
             {
                 output = this._model.XsltDefaultOutput;

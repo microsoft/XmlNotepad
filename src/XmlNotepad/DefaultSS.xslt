@@ -8,27 +8,20 @@
       <HEAD>
         <STYLE>
           <![CDATA[
-    BODY{font:x-small 'Verdana';margin-right:1.5em}
-    .c{cursor:hand}
-    .b{color:red;font-family:'Courier New';font-weight:bold;text-decoration:none}
-    .e{margin-left:1em;text-indent:-1em;margin-right:1em}
-    .k{margin-left:1em;text-indent:-1em;margin-right:1em}
-    .at{color:red}
-    .xat{color:#990099}
-    .t{color:#990000}
-    .xt{color:#990099}
-    .ns{color:red}
-    .dt{color:blue}
-    .m{color:blue}
-    .tx{font-weight:bold}
-    .db{text-indent:0px;margin-left:0;margin-top:-1em;margin-bottom:-1em;padding-left:0;border-left:1px solid #CCCCCC;font:small Courier}
-    .di{font:small Courier}
-    .d{color:blue}
-    .pi{color:blue}
-    .cb{text-indent:0px;margin-left:0;margin-top:-1em;margin-bottom:-1em;padding-left:0;font:small Courier;color:green}
-    .ci{font:small Courier;color:green}
-    .av {color:blue;}
-    PRE{margin:0px;display:inline}]]>
+    body {font-family:$FONT_FAMILY;font-size:$FONT_SIZE;margin-right:1.5em;background:$BACKGROUND_COLOR}
+    .c{ }
+    .m{color:$MARKUP_COLOR}                   /* markup */
+    .b{color:red;font-weight:bold;text-decoration:none}  /* non breaking space */
+    .e{margin-left:1em;text-indent:-1em;margin-right:1em}  /* expandable */
+    .k{margin-left:1em;text-indent:-1em;margin-right:1em}  /* outer comment (non-expandable)? */
+    .at{color:$ATTRIBUTE_NAME_COLOR}          /* attribute name */
+    .av {color:$ATTRIBUTE_VALUE_COLOR;}       /* attribute value */
+    .t {color:$ELEMENT_COLOR}                 /* element name */
+    .tx{color:$TEXT_COLOR}   /* text content */
+    .pi{color:$PI_COLOR}                      /* pi name and content */
+    .ci{color:$COMMENT_COLOR}                 /* comment value */    
+    .side{background-color:$SIDENOTE_COLOR}   /* intro div */    
+    pre {margin:0px;display:inline}]]>
         </STYLE>
         <SCRIPT>
           <x:comment>
@@ -91,34 +84,33 @@
         </SCRIPT>
       </HEAD>
       <BODY class="st">
-        <div style="padding:5px;background-color:#fffacd">
-          <p>
+        <div style="padding:5px;" class="side tx">
+          
             Your XML document contains no xml-stylesheet processing instruction. To provide
             an XSLT transform, add the following to the top of your file and edit the href
-            attribute accordingly:</p>
-            <pre style="font-size:small">
-              <span class="d">&lt;?</span><span class="t">xml-stylesheet</span>&#160;<span class="at">type</span><span class="d">=</span>"<span class="av">text/xsl</span>" <span class="at">href</span><span class="d">=</span>"<span class="av">stylesheet.xsl</span>"<span class="d">?&gt;</span>
+            attribute accordingly:
+            
+            <pre>
+              <span class="m">&lt;?</span><span class="pi">xml-stylesheet</span>&#160;<span class="at">type</span><span class="m">="</span><span class="av">text/xsl</span><span class="m">"</span> <span class="at">href</span><span class="m">="</span><span class="av">stylesheet.xsl</span><span class="m">" ?&gt;</span>
             </pre>
+          
           <p>
             You can also enter the XSLT file name using the above "XSLT Location:" text box, but this will not
             persist with your XML document.
           </p>
           <p>
             You can specify a default output file name using the following in your XML documents:
+            <pre>
+              <span class="m">&lt;?</span><span class="pi">xsl-output</span>&#160;<span class="at">default</span><span class="m">="</span><span class="av">xslt_output</span><span class="m">" ?&gt;</span>
+            </pre>
           </p>
-          <pre style="font-size:small">
-            <span class="d">&lt;?</span><span class="t">xsl-output</span>&#160;<span class="at">default</span><span class="d">=</span>"<span class="av">xslt_output</span>" <span class="d">?&gt;</span>
-          </pre>
         </div>
         <x:apply-templates />
       </BODY>
     </HTML>
   </x:template>
   <x:template match="processing-instruction()">
-    <DIV class="e">
-      <SPAN class="b">
-        <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-      </SPAN>
+    <DIV class="e">      
       <SPAN class="m">&lt;?</SPAN>
       <SPAN class="pi">
         <x:value-of select="name()" />&#160;
@@ -133,12 +125,12 @@
         <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
       </SPAN>
       <SPAN class="m">&lt;?</SPAN>
-      <SPAN class="pi">
+      <SPAN class="t">
         xml
         <x:for-each select="@*">
-          <x:value-of select="name()" />
+          <SPAN class="at"><x:value-of select="name()" /></SPAN>
           ="
-          <x:value-of select="."/>
+          <SPAN class="av"><x:value-of select="."/></SPAN>
           "
         </x:for-each>
       </SPAN>
@@ -146,30 +138,7 @@
     </DIV>
   </x:template>
   <x:template match="@*" xml:space="preserve"> <SPAN><x:attribute name="class"><x:if test="x:*/@*">x</x:if>at</x:attribute><x:value-of select="name()" /></SPAN><SPAN class="m">="</SPAN><SPAN class="av"><x:value-of select="."/></SPAN><SPAN class="m">"</SPAN></x:template>
-  <x:template match="*[starts-with(name(),'xml')]">
-    <SPAN class="ns">
-      <x:value-of select="name()" />
-    </SPAN>
-    <SPAN class="m">="</SPAN>
-    <B class="ns">
-      <x:value-of select="."/>
-    </B>
-    <SPAN class="m">"</SPAN>
-  </x:template>
-  <x:template match="@dt:*|@d2:*" xml:space="preserve">
-    <SPAN class="dt"><x:value-of select="name()" /></SPAN><SPAN class="m">="</SPAN><B class="dt"><x:value-of select="."/></B><SPAN class="m">"</SPAN></x:template>
-  <x:template match="text()">
-    <x:if test="string-length(normalize-space(.))>0">
-      <DIV class="e">
-        <SPAN class="b">
-          <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
-        </SPAN>
-        <SPAN class="tx">
-          <x:value-of select="."/>
-        </SPAN>
-      </DIV>
-    </x:if>
-  </x:template>
+
   <x:template match="comment()">
     <DIV class="k">
       <SPAN>
@@ -195,10 +164,7 @@
           <x:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></x:text>
         </SPAN>
         <SPAN class="m">&lt;</SPAN>
-        <SPAN>
-          <x:attribute name="class">
-            <x:if test="x:*">x</x:if>t
-          </x:attribute>
+        <SPAN class="t">
           <x:value-of select="name()" />
         </SPAN>
         <x:apply-templates select="@*" />

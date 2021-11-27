@@ -1161,17 +1161,17 @@ namespace XmlNotepad
         {
             bool update = false;
             // change the node colors.
-            if (name == "LightColors" || name == "DarkColors" || name == "Theme")
+            if (name == "LightColors" || name == "DarkColors" || name == "Theme" || name == "Colors")
             {
                 var theme = (ColorTheme)this._settings["Theme"];
                 var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-                System.Collections.Hashtable colors = (System.Collections.Hashtable)this._settings[colorSetName];
-                Color backColor = (Color)colors["Background"];
+                var colors = (ThemeColors)this._settings[colorSetName];
+                Color backColor = colors.Background;
                 this.BackColor = backColor;
                 this._myTreeView.BackColor = backColor;
                 this._nodeTextView.BackColor = backColor;
 
-                Color foreColor = (Color)colors["Text"];
+                Color foreColor = colors.Text;
                 this._myTreeView.ForeColor = foreColor;
                 this._nodeTextView.ForeColor = foreColor;
                 update = true;
@@ -1873,23 +1873,23 @@ namespace XmlNotepad
         {
             var theme = (ColorTheme)this._settings["Theme"];
             var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-            System.Collections.Hashtable colors = (System.Collections.Hashtable)this._settings[colorSetName];
+            ThemeColors colors = (ThemeColors)this._settings[colorSetName];
             switch (img)
             {
                 case NodeImage.Element:
                 case NodeImage.OpenElement:
                 case NodeImage.Leaf:
-                    return (Color)colors["Element"];
+                    return colors.Element;
                 case NodeImage.Attribute:
-                    return (Color)colors["Attribute"];
+                    return colors.Attribute;
                 case NodeImage.PI:
-                    return (Color)colors["PI"];
+                    return colors.PI;
                 case NodeImage.CData:
-                    return (Color)colors["CDATA"];
+                    return colors.CDATA;
                 case NodeImage.Comment:
-                    return (Color)colors["Comment"];
+                    return colors.Comment;
                 default:
-                    return (Color)colors["Text"];
+                    return colors.Text;
             }
         }
 

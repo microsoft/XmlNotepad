@@ -6,16 +6,204 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace XmlNotepad
 {
     public delegate void SettingsEventHandler(object sender, string name);
+    public delegate bool ValueMatchHandler(object existing, object newValue);
 
     public enum ColorTheme
     {
         Light,
         Dark
+    }
+
+    public class ThemeColors : IXmlSerializable
+    {
+        public Color Element = Color.Transparent;
+        public Color Attribute = Color.Transparent;
+        public Color Text = Color.Transparent;
+        public Color Comment = Color.Transparent;
+        public Color PI = Color.Transparent;
+        public Color CDATA = Color.Transparent;
+        public Color Background = Color.Transparent;
+        public Color ContainerBackground = Color.Transparent;
+        public Color EditorBackground = Color.Transparent;
+        public Color Markup = Color.Transparent;
+        public Color SideNoteBackground = Color.Transparent;
+        static TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
+
+
+        public static ThemeColors GetDefaultColors(ColorTheme theme)
+        {
+            if (theme == ColorTheme.Light)
+            {
+                return new ThemeColors()
+                {
+                    Element = Color.FromArgb(0, 64, 128),
+                    Attribute = Color.Maroon,
+                    Text = Color.Black,
+                    Comment = Color.Green,
+                    PI = Color.Purple,
+                    CDATA = Color.Gray,
+                    Background = Color.White,
+                    ContainerBackground = Color.AliceBlue,
+                    EditorBackground = Color.LightSteelBlue,
+                    Markup = Color.FromArgb(80, 80, 80),
+                    SideNoteBackground = Color.FromArgb(255, 250, 205)
+                };
+            }
+            else
+            {
+                return new ThemeColors()
+                {
+                    Element = Color.FromArgb(0x35, 0x7D, 0xCE),
+                    Attribute = Color.FromArgb(0x92, 0xCA, 0xF3),
+                    Text = Color.FromArgb(0xC0, 0xC0, 0xC0),
+                    Comment = Color.FromArgb(0x45, 0x8A, 0x23),
+                    PI = Color.FromArgb(0xAC, 0x91, 0x6A),
+                    CDATA = Color.FromArgb(0xC2, 0xCB, 0x85),
+                    Background = Color.FromArgb(0x1e, 0x1e, 0x1e),
+                    ContainerBackground = Color.FromArgb(0x25, 0x25, 0x26),
+                    EditorBackground = Color.FromArgb(24, 24, 44),
+                    Markup = Color.FromArgb(100,100,100),
+                    SideNoteBackground = Color.FromArgb(50, 40, 40)
+                };
+            }
+        }
+
+        private Color ConvertToColor(string value)
+        {
+            if (tc != null)
+            {
+                return (Color)tc.ConvertFromString(value);
+            }
+            throw new ApplicationException(string.Format(Strings.TypeConvertError, "Color"));
+        }
+
+        internal void Merge(ThemeColors defaults)
+        {
+            Element = MergeColor(this.Element, defaults.Element);
+            Attribute = MergeColor(this.Attribute, defaults.Attribute);
+            Text = MergeColor(this.Text, defaults.Text);
+            Comment = MergeColor(this.Comment, defaults.Comment);
+            PI = MergeColor(this.PI, defaults.PI);
+            CDATA = MergeColor(this.CDATA, defaults.CDATA);
+            Background = MergeColor(this.Background, defaults.Background);
+            ContainerBackground = MergeColor(this.ContainerBackground, defaults.ContainerBackground);
+            EditorBackground = MergeColor(this.EditorBackground, defaults.EditorBackground);
+        }
+
+        private Color MergeColor(Color c1, Color c2)
+        {
+            return c1 == Color.Transparent ? c2 : c1;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == (object)this)
+            {
+                return true;
+            }
+
+            if (obj is ThemeColors t)
+            {
+                return this.Element == t.Element &&
+                    this.Attribute == t.Attribute &&
+                    this.Text == t.Text &&
+                    this.Comment == t.Comment &&
+                    this.PI == t.PI &&
+                    this.CDATA == t.CDATA &&
+                    this.Background == t.Background &&
+                    this.ContainerBackground == t.ContainerBackground &&
+                    this.EditorBackground == t.EditorBackground;
+            }
+            return false;
+        }
+
+        public static bool operator ==(ThemeColors left, ThemeColors right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ThemeColors left, ThemeColors right)
+        {
+            return !left.Equals(right);
+        }
+
+        #region IXmlSerializable
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader r)
+        {
+            if (!r.IsEmptyElement)
+            {
+                while (r.Read() && r.NodeType != XmlNodeType.EndElement)
+                {
+                    if (r.NodeType == XmlNodeType.Element)
+                    {
+                        string name = r.LocalName;
+                        string value = r.ReadString();
+                        Color c = Color.Black;
+                        try
+                        {
+                            c = ConvertToColor(value);
+
+                            switch (name)
+                            {
+                                case "Element":
+                                    this.Element = c;
+                                    break;
+                                case "Attribute":
+                                    this.Attribute = c;
+                                    break;
+                                case "Text":
+                                    this.Text = c;
+                                    break;
+                                case "Comment":
+                                    this.Comment = c;
+                                    break;
+                                case "PI":
+                                    this.PI = c;
+                                    break;
+                                case "CDATA":
+                                    this.CDATA = c;
+                                    break;
+                                case "Background":
+                                    this.Background = c;
+                                    break;
+                                case "ContainerBackground":
+                                    this.ContainerBackground = c;
+                                    break;
+                                case "EditorBackground":
+                                    this.EditorBackground = c;
+                                    break;
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteElementString("Element", tc.ConvertToString(this.Element));
+            writer.WriteElementString("Attribute", tc.ConvertToString(this.Attribute));
+            writer.WriteElementString("Text", tc.ConvertToString(this.Text));
+            writer.WriteElementString("Comment", tc.ConvertToString(this.Comment));
+            writer.WriteElementString("PI", tc.ConvertToString(this.PI));
+            writer.WriteElementString("CDATA", tc.ConvertToString(this.CDATA));
+            writer.WriteElementString("Background", tc.ConvertToString(this.Background));
+            writer.WriteElementString("ContainerBackground", tc.ConvertToString(this.ContainerBackground));
+        }
+
+        #endregion IXmlSerializable
     }
 
     /// <summary>
@@ -64,6 +252,8 @@ namespace XmlNotepad
         {
             _instance = this;
         }
+
+        public ValueMatchHandler SettingValueEquality { get; set; }
 
         public static Settings Instance
         {
@@ -138,7 +328,7 @@ namespace XmlNotepad
             get { return this._map[name]; }
             set
             {
-                if (this._map[name] != value)
+                if (!this.SettingValueEquality(this._map[name], value))
                 {
                     this._map[name] = value;
                     OnChanged(name);
@@ -480,57 +670,17 @@ namespace XmlNotepad
             return settingValue != null ? settingValue.ToString() : defaultValue;
         }
 
-        public Hashtable GetDefaultColors(ColorTheme theme)
-        {
-            if (theme == ColorTheme.Light)
-            {
-                System.Collections.Hashtable light = new System.Collections.Hashtable();
-                light["Element"] = Color.FromArgb(0, 64, 128);
-                light["Attribute"] = Color.Maroon;
-                light["Text"] = Color.Black;
-                light["Comment"] = Color.Green;
-                light["PI"] = Color.Purple;
-                light["CDATA"] = Color.Gray;
-                light["Background"] = Color.White;
-                light["ContainerBackground"] = Color.AliceBlue;
-                light["EditorBackground"] = Color.LightSteelBlue;
-                return light;
-            }
-            else
-            {
-                System.Collections.Hashtable dark = new System.Collections.Hashtable();
-                dark["Element"] = Color.FromArgb(0x35, 0x7D, 0xCE);
-                dark["Attribute"] = Color.FromArgb(0x92, 0xCA, 0xF3);
-                dark["Text"] = Color.FromArgb(0x94, 0xB7, 0xC8);
-                dark["Comment"] = Color.FromArgb(0x45, 0x62, 0x23);
-                dark["PI"] = Color.FromArgb(0xAC, 0x91, 0x6A);
-                dark["CDATA"] = Color.FromArgb(0xC2, 0xCB, 0x85);
-                dark["Background"] = Color.FromArgb(0x1e, 0x1e, 0x1e);
-                dark["ContainerBackground"] = Color.FromArgb(0x25, 0x25, 0x26);
-                dark["EditorBackground"] = Color.FromArgb(24, 24, 44);
-                return dark;
-            }
-        }
-
         public void AddDefaultColors(string name, ColorTheme theme)
         {
-            Hashtable table = (Hashtable)this[name];
+            ThemeColors table = (ThemeColors)this[name];
             if (table == null)
             {
-                table = new Hashtable();
+                table = new ThemeColors();
                 this[name] = table;
             }
 
-            Hashtable defaults = this.GetDefaultColors(theme);
-
-            // Merge any undefined colors.
-            foreach (string key in defaults.Keys)
-            {
-                if (!table.ContainsKey(key))
-                {
-                    table.Add(key, defaults[key]);
-                }
-            }
+            ThemeColors defaults = ThemeColors.GetDefaultColors(theme);
+            table.Merge(defaults);
         }
 
     }

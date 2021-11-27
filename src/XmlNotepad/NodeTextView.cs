@@ -190,17 +190,11 @@ namespace XmlNotepad
                     case "Colors":
                         var theme = (ColorTheme)this._settings["Theme"];
                         string colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-                        System.Collections.Hashtable colors = (System.Collections.Hashtable)this._settings[colorSetName];
+                        ThemeColors colors = (ThemeColors)this._settings[colorSetName];
                         if (colors != null)
                         {
-                            if (colors["ContainerBackground"] is Color color)
-                            {
-                                this._containerBackground = color;
-                            }
-                            if (colors["EditorBackground"] is Color eback)
-                            {
-                                this._editor.EditorBackgroundColor = eback;
-                            }
+                            this._containerBackground = colors.ContainerBackground;
+                            this._editor.EditorBackgroundColor = colors.EditorBackground;
                         }
                         break;
                     case "MaximumValueLength":
