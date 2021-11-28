@@ -1963,6 +1963,9 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("TestDragDrop==========================================================");
             var w = this.LaunchNotepad();
 
+            // Save original settings.
+            using var rs = new ResetSettings();
+
             Rectangle treeBounds = this.TreeView.Bounds;
 
             Trace.WriteLine("OpenFileDialog");
@@ -2120,15 +2123,15 @@ Prefix 'user' is not defined. ");
             bounds = resizer.Bounds;
             Point mid = bounds.Center();
             // Drag the resizer up a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X, mid.Y - 15), 2, MouseButtons.Left);
+            Mouse.MouseDragDrop(mid, new Point(mid.X, mid.Y - 10), 2, MouseButtons.Left);
 
             Trace.WriteLine("Test tree view resizer");
             resizer = w.FindDescendant("XmlTreeResizer");
             Trace.WriteLine(resizer.Parent.Name);
             bounds = resizer.Bounds;
             mid = bounds.Center();
-            // Drag the resizer up a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X + 15, mid.Y), 2, MouseButtons.Left);
+            // Drag the resizer right a few pixels.
+            Mouse.MouseDragDrop(mid, new Point(mid.X + 10, mid.Y), 2, MouseButtons.Left);
 
             this.SaveAndCompare("out.xml", "test4.xml");
         }
