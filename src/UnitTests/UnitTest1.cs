@@ -1963,9 +1963,6 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("TestDragDrop==========================================================");
             var w = this.LaunchNotepad();
 
-            // Save original settings.
-            using var rs = new ResetSettings();
-
             Rectangle treeBounds = this.TreeView.Bounds;
 
             Trace.WriteLine("OpenFileDialog");
@@ -2116,14 +2113,29 @@ Prefix 'user' is not defined. ");
             Sleep(500);
             w.SendKeystrokes("{LEFT}");
 
+            this.SaveAndCompare("out.xml", "test4.xml");
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestResizePanes()
+        {
+            Trace.WriteLine("TestDragDrop==========================================================");
+            var w = this.LaunchNotepad();
+
+            // Save original settings.
+            using var rs = new ResetSettings();
+
             Sleep(1000);
             Trace.WriteLine("Test task list resizers");
             AutomationWrapper resizer = w.FindDescendant("TaskResizer");
             Trace.WriteLine(resizer.Parent.Name);
-            bounds = resizer.Bounds;
+            var bounds = resizer.Bounds;
             Point mid = bounds.Center();
             // Drag the resizer up a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X, mid.Y - 10), 2, MouseButtons.Left);
+            Mouse.MouseDragDrop(mid, new Point(mid.X, mid.Y - 20), 1, MouseButtons.Left);
+            var newbounds = resizer.Bounds;
+            Assert.IsTrue(newbounds.Center().Y < mid.Y);
 
             Trace.WriteLine("Test tree view resizer");
             resizer = w.FindDescendant("XmlTreeResizer");
@@ -2131,9 +2143,9 @@ Prefix 'user' is not defined. ");
             bounds = resizer.Bounds;
             mid = bounds.Center();
             // Drag the resizer right a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X + 10, mid.Y), 2, MouseButtons.Left);
-
-            this.SaveAndCompare("out.xml", "test4.xml");
+            Mouse.MouseDragDrop(mid, new Point(mid.X + 20, mid.Y), 1, MouseButtons.Left);
+            newbounds = resizer.Bounds;
+            Assert.IsTrue(newbounds.Center().X > mid.X);
         }
 
         /// <summary>
