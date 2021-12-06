@@ -106,12 +106,8 @@ namespace XmlNotepad
 
         public override bool Equals(object obj)
         {
-            if (obj == (object)this)
-            {
-                return true;
-            }
-
-            if (obj is ThemeColors t)
+            ThemeColors t = obj as ThemeColors;
+            if (t != null)
             {
                 return this.Element == t.Element &&
                     this.Attribute == t.Attribute &&
@@ -152,10 +148,9 @@ namespace XmlNotepad
                     {
                         string name = r.LocalName;
                         string value = r.ReadString();
-                        Color c = Color.Black;
                         try
                         {
-                            c = ConvertToColor(value);
+                            Color c = ConvertToColor(value);
 
                             switch (name)
                             {

@@ -179,8 +179,12 @@ Reason:
     <value>File Changed</value>
     <comment>Message box caption</comment>
   </data>
-  <data name="FileChagedOnDiskPrompt" xml:space="preserve">
+  <data name="FileChangedOnDiskPrompt" xml:space="preserve">
     <value>The file you are editing has been changed on disk.  Would you like to reload this file?</value>
+    <comment>Message box prompt</comment>
+  </data>
+  <data name="FileRenamedDiskPrompt" xml:space="preserve">
+    <value>The file you are editing has been renamed on disk.  Would you like to load the new file?</value>
     <comment>Message box prompt</comment>
   </data>
   <data name="FindErrorCaption" xml:space="preserve">
@@ -225,6 +229,10 @@ Reason:
 
 Would you like to open it using your text editor?</value>
     <comment>Message box prompt, arg0=filename, arg1=error message</comment>
+  </data>
+  <data name="FileRenamedOrDeleted" xml:space="preserve">
+    <value>The file you are trying to open no longer exists.</value>
+    <comment>Message box description</comment>
   </data>
   <data name="LongLineCaption" xml:space="preserve">
     <value>Very Long Lines</value>

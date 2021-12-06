@@ -21,6 +21,7 @@ namespace XmlNotepad
     public class XmlCache : IDisposable
     {
         private string _fileName;
+        private string _renamed;
         private bool _dirty;
         private DomLoader _loader;
         private XmlDocument _doc;
@@ -56,6 +57,7 @@ namespace XmlNotepad
         public Uri Location => new Uri(this._fileName);
 
         public string FileName => this._fileName;
+        public string NewName => this._renamed;
 
         public bool IsFile
         {
@@ -277,6 +279,7 @@ namespace XmlNotepad
 
         public void Clear()
         {
+            this._renamed = null;
             this.Document = new XmlDocument();
             StopFileWatch();
             this._fileName = null;
@@ -439,13 +442,33 @@ namespace XmlNotepad
             }
         }
 
+        class ReloadAction
+        {
+            public XmlCache Cache;
+            public string FileName;
+            public bool Renamed;
+
+            public void HandleReload()
+            {
+                if (!Renamed)
+                {
+                    Cache.CheckReload(FileName);
+                }
+            }
+        }
+
+        ReloadAction pending;
+
         void StartReload()
         {
             // Apart from retrying, the DelayedActions has the nice side effect of also 
             // collapsing multiple file system events into one action callback.
             _retries = 3;
-            string temp = this._fileName; // capture file name in case it changes.
-            _actions.StartDelayedAction("reload", () => { CheckReload(temp); }, TimeSpan.FromSeconds(1));
+            if (pending == null)
+            {
+                pending = new ReloadAction() { FileName = this._fileName, Cache = this };
+                _actions.StartDelayedAction("reload", () => pending.HandleReload(), TimeSpan.FromSeconds(1));
+            }
         }
 
         DateTime LastModTime
@@ -457,8 +480,14 @@ namespace XmlNotepad
             }
         }
 
-        void CheckReload(string fileName)
+        public void CheckReload(string fileName)
         {
+            if (!File.Exists(fileName))
+            {
+                // file was deleted...
+                return;
+            }
+            pending = null;
             try
             {
                 // Only do the reload if the file on disk really is different from
@@ -489,6 +518,7 @@ namespace XmlNotepad
             if (e.ChangeType == WatcherChangeTypes.Changed &&
                 IsSamePath(this._fileName, e.FullPath))
             {
+                Debug.WriteLine("### File changed " + this._fileName);
                 StartReload();
             }
         }
@@ -499,15 +529,44 @@ namespace XmlNotepad
             // in that case we do not want XmlNotepad to switch to the .bak file.
             if (IsSamePath(this._fileName, e.OldFullPath))
             {
+                Debug.WriteLine("### File renamed to " + e.FullPath);
+                var p = pending;
+                if (p != null)
+                {
+                    // we have a situation were file was modified AND renamed.  Tricky!
+                    p.Renamed = true;
+                }
+                
                 // switch to UI thread
-                _actions.StartDelayedAction("renamed", OnRenamed, TimeSpan.FromMilliseconds(1));
+                if (renamePending == null)
+                {
+                    renamePending = new RenameAction { OldName = e.OldFullPath, NewName = e.FullPath, Cache = this };
+                    _actions.StartDelayedAction("renamed", renamePending.HandleEvent, TimeSpan.FromMilliseconds(1));
+                }
             }
         }
 
-        private void OnRenamed()
+        class RenameAction {
+            public string OldName;
+            public string NewName;
+            public XmlCache Cache;
+            public void HandleEvent()
+            {
+                Cache.OnRenamed(OldName, NewName);
+            }
+        }
+
+        RenameAction renamePending;
+
+        private void OnRenamed(string oldName, string newName)
         {
+            this.renamePending = null;
             this._dirty = true;
-            FireModelChanged(ModelChangeType.Renamed, this._doc);
+            if (System.IO.Path.GetFullPath(this._fileName) == oldName)
+            {
+                this._renamed = newName;
+                FireFileChanged();
+            }
         }
 
         static bool IsSamePath(string a, string b)
@@ -630,8 +689,7 @@ namespace XmlNotepad
         NodeRemoved,
         NamespaceChanged,
         BeginBatchUpdate,
-        EndBatchUpdate,
-        Renamed,
+        EndBatchUpdate
     }
 
     public class ModelChangedEventArgs : EventArgs

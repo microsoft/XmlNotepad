@@ -283,10 +283,13 @@ namespace XmlNotepad
 
         void OnLayoutEditor(object sender, TextEditorLayoutEventArgs args)
         {
-            Rectangle r = this.GetTextBounds(this._selectedNode);
-            r.Offset(this._scrollPosition);
-            args.PreferredBounds = r;
-            args.MaxBounds = r;
+            if (this._selectedNode != null)
+            {
+                Rectangle r = this.GetTextBounds(this._selectedNode);
+                r.Offset(this._scrollPosition);
+                args.PreferredBounds = r;
+                args.MaxBounds = r;
+            }
         }
 
         string CheckTextLength(string text, out bool cancelled)

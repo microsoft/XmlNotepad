@@ -148,14 +148,14 @@ namespace UnitTests
         public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons)
         {
             // Interpolate and move mouse smoothly over to given location.                
-            int dx = end.X - start.X;
-            int dy = end.Y - start.Y;
-            int length = (int)Math.Sqrt((double)((dx * dx) + (dy * dy)));
+            double dx = end.X - start.X;
+            double dy = end.Y - start.Y;
+            int length = (int)Math.Sqrt((dx * dx) + (dy * dy));
             step = Math.Abs(step);
             for (int i = 0; i < length; i += step)
             {
-                int tx = start.X + (dx * i) / length;
-                int ty = start.Y + (dy * i) / length;
+                int tx = start.X + (int)((dx * i) / length);
+                int ty = start.Y + (int)((dy * i) / length);
                 MouseMoveTo(tx, ty, buttons);
             }
 

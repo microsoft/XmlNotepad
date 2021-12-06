@@ -632,9 +632,27 @@ namespace XmlNotepad {
         /// <summary>
         ///   Looks up a localized string similar to The file you are editing has been changed on disk.  Would you like to reload this file?.
         /// </summary>
-        public static string FileChagedOnDiskPrompt {
+        public static string FileChangedOnDiskPrompt {
             get {
-                return ResourceManager.GetString("FileChagedOnDiskPrompt", resourceCulture);
+                return ResourceManager.GetString("FileChangedOnDiskPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file you are editing has been renamed on disk.  Would you like to load the new file?.
+        /// </summary>
+        public static string FileRenamedDiskPrompt {
+            get {
+                return ResourceManager.GetString("FileRenamedDiskPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file you are trying to open no longer exists..
+        /// </summary>
+        public static string FileRenamedOrDeleted {
+            get {
+                return ResourceManager.GetString("FileRenamedOrDeleted", resourceCulture);
             }
         }
         

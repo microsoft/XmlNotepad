@@ -1135,6 +1135,11 @@ namespace XmlNotepad
                 try
                 {
                     uri = new Uri(filename);
+                    if (uri.Scheme == "file" && !File.Exists(uri.LocalPath))
+                    {
+                        MessageBox.Show(this, SR.FileRenamedOrDeleted, SR.LoadErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
                 catch
                 {
@@ -1419,7 +1424,17 @@ namespace XmlNotepad
                     this.WindowState = FormWindowState.Normal;
                 }
                 SelectTreeView();
-                if (MessageBox.Show(this, SR.FileChagedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (!string.IsNullOrEmpty(this._model.NewName))
+                {
+                    if (MessageBox.Show(this, SR.FileRenamedDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        string location = this.Model.NewName;
+                        this._model.Clear();
+                        this.Open(location);
+
+                    }
+                }
+                else if (MessageBox.Show(this, SR.FileChangedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     string location = this._model.Location.LocalPath;
                     this._model.Clear();
@@ -1622,7 +1637,7 @@ namespace XmlNotepad
         #endregion
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
-        {
+        {   
             if (e.ModelChangeType == ModelChangeType.Reloaded)
             {
                 this._undoManager.Clear();
