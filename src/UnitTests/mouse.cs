@@ -6,23 +6,20 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 
-namespace UnitTests {
+namespace UnitTests
+{
 
     // Why the heck does .NET provide SendKeys but not mouse simulation???
     // Another interesting tid-bit.  Reading the cursor position doesn't work over
     // terminal server!
-    public class Mouse 
+    public class Mouse
     {
         static int Timeout = 100;
 
         private Mouse() { }
 
-        public static void MouseDown(Point pt, MouseButtons buttons) {
-            MouseInput input = new MouseInput();
-            input.type = (int)InputType.INPUT_MOUSE;
-            input.dx = pt.X;
-            input.dy = pt.Y;
-            MouseFlags flags = MouseFlags.MOUSEEVENTF_ABSOLUTE;
+        private static MouseFlags AddMouseDownFlags(MouseFlags flags, MouseButtons buttons)
+        {
             if ((buttons & MouseButtons.Left) != 0)
             {
                 flags |= MouseFlags.MOUSEEVENTF_LEFTDOWN;
@@ -39,133 +36,170 @@ namespace UnitTests {
             {
                 flags |= MouseFlags.MOUSEEVENTF_XDOWN;
             }
-            input.dwFlags = (int)flags;
-            SendInput(input);
+            return flags;
         }
 
-        public static void MouseUp(Point pt, MouseButtons buttons) {
-            MouseInput input = new MouseInput();
-            input.type = (int)InputType.INPUT_MOUSE;
-            input.dx = pt.X;
-            input.dy = pt.Y;
-            MouseFlags flags = MouseFlags.MOUSEEVENTF_ABSOLUTE;
-            if ((buttons & MouseButtons.Left) != 0) {
+        private static MouseFlags AddMouseUpFlags(MouseFlags flags, MouseButtons buttons)
+        {
+            if ((buttons & MouseButtons.Left) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_LEFTUP;
             }
-            if ((buttons & MouseButtons.Right) != 0) {
+            if ((buttons & MouseButtons.Right) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_RIGHTUP;
             }
-            if ((buttons & MouseButtons.Middle) != 0) {
+            if ((buttons & MouseButtons.Middle) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_MIDDLEUP;
             }
-            if ((buttons & MouseButtons.XButton1) != 0) {
+            if ((buttons & MouseButtons.XButton1) != 0)
+            {
                 flags |= MouseFlags.MOUSEEVENTF_XUP;
             }
-            input.dwFlags = (int)flags;
+            return flags;
+        }
+
+        public static void MouseDown(Point pt, MouseButtons buttons)
+        {
+            MouseMoveTo(pt.X, pt.Y, MouseButtons.None);
+            MouseInput input = GetAbsoluteMouseInput(pt.X, pt.Y);
+            MouseFlags flags = AddMouseDownFlags((MouseFlags)input.dwFlags, buttons);
+            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_ABSOLUTE); // );// | MouseFlags.MOUSEEVENTF_MOVE 
             SendInput(input);
         }
 
-        public static void MouseClick(Point pt, MouseButtons buttons) {            
+        public static void MouseUp(Point pt, MouseButtons buttons)
+        {
+            MouseInput input = GetAbsoluteMouseInput(pt.X, pt.Y);
+            MouseFlags flags = AddMouseUpFlags((MouseFlags)input.dwFlags, buttons);
+            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_ABSOLUTE); // );// | MouseFlags.MOUSEEVENTF_MOVE 
+            SendInput(input);
+        }
+
+        public static void MouseClick(Point pt, MouseButtons buttons)
+        {
             MouseDown(pt, buttons);
             MouseUp(pt, buttons);
         }
 
-        public static void MouseDoubleClick(Point pt, MouseButtons buttons) {
+        public static void MouseDoubleClick(Point pt, MouseButtons buttons)
+        {
             MouseClick(pt, buttons);
             Thread.Sleep(1);
             MouseClick(pt, buttons);
         }
 
-        public static void MouseMoveTo(int x, int y, MouseButtons buttons) {
+        private static MouseInput GetAbsoluteMouseInput(int x, int y)
+        {
             MouseInput input = new MouseInput();
             input.type = (int)(InputType.INPUT_MOUSE);
-            int screenX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-            int screenY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-            input.dx = x * 65535 / screenX;
-            input.dy = y * 65535 / screenY;
-            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE + 
-                            (int)MouseFlags.MOUSEEVENTF_ABSOLUTE +
-                            (int)MouseFlags.MOUSEEVENTF_VIRTUALDESK;
+            input.dx = x;
+            input.dy = y;
+            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE_NOCOALESCE;
+            input.time = 0;
+            return input;
+        }
+
+        private static MouseInput GetVirtualMouseInput(int x, int y)
+        {
+            MouseInput input = new MouseInput();
+            input.type = (int)(InputType.INPUT_MOUSE);
+            input.dx = (x * 65536) / GetSystemMetrics(SM_CXSCREEN); ;
+            input.dy = (y * 65536) / GetSystemMetrics(SM_CYSCREEN); ;
+            input.dwFlags = (int)(MouseFlags.MOUSEEVENTF_MOVE_NOCOALESCE | MouseFlags.MOUSEEVENTF_VIRTUALDESK);
+            input.time = 0;
+            return input;
+        }
+
+        public static void MouseMoveTo(int x, int y, MouseButtons buttons)
+        {
+            MouseInput input = GetVirtualMouseInput(x, y);
+            MouseFlags flags = (MouseFlags)input.dwFlags;
+            flags |= MouseFlags.MOUSEEVENTF_MOVE | MouseFlags.MOUSEEVENTF_ABSOLUTE;
+            flags = AddMouseDownFlags(flags, buttons);
+            input.dwFlags = (int)flags;
             SendInput(input);
             Application.DoEvents();
         }
 
-        public static void MouseDragDrop(Point start, Point end, int step, MouseButtons buttons) {
+        const int DragDelayDrop = 200;
+
+        public static void MouseDragDrop(Point start, Point end, int step, MouseButtons buttons)
+        {
             int s = Timeout;
             Timeout = 10;
             MouseDown(start, buttons);
             Application.DoEvents();
-            Thread.Sleep(200);
+            Thread.Sleep(DragDelayDrop);
             MouseDragTo(start, end, step, buttons);
-            Thread.Sleep(200);
-            
+            Thread.Sleep(DragDelayDrop);
             MouseUp(end, buttons);
             Application.DoEvents();
-            Thread.Sleep(200);
+            Thread.Sleep(DragDelayDrop);
             Timeout = s;
         }
 
-        public static void MouseMoveTo(Point start, Point end, int step) {
+        public static void MouseMoveTo(Point start, Point end, int step)
+        {
             MouseDragTo(start, end, step, MouseButtons.None);
         }
 
-        public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons) {
+        public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons)
+        {
             // Interpolate and move mouse smoothly over to given location.                
-            int dx = end.X - start.X;
-            int dy = end.Y - start.Y;
-            int length = (int)Math.Sqrt((double)((dx * dx) + (dy * dy)));
+            double dx = end.X - start.X;
+            double dy = end.Y - start.Y;
+            int length = (int)Math.Sqrt((dx * dx) + (dy * dy));
             step = Math.Abs(step);
-            int s = Timeout;
-            Timeout = 10;
-            Application.DoEvents();
-            for (int i = 0; i < length; i += step) {
-                int tx = start.X + (dx * i) / length;
-                int ty = start.Y + (dy * i) / length;
+            for (int i = 0; i < length; i += step)
+            {
+                int tx = start.X + (int)((dx * i) / length);
+                int ty = start.Y + (int)((dy * i) / length);
                 MouseMoveTo(tx, ty, buttons);
-
-                // Now calibrate movement based on current mouse position.
-                Application.DoEvents();
             }
 
             MouseMoveTo(end.X, end.Y, buttons);
-            Application.DoEvents();
-
-            Timeout = s;
         }
 
-        public static void MouseWheel(AutomationWrapper w, int clicks) {
+        public static void MouseWheel(AutomationWrapper w, int clicks)
+        {
             var c = Cursor.Position;
             if (w != null)
             {
                 c = w.PhysicalToLogicalPoint(c);
             }
-            MouseInput input = new MouseInput();
-            input.type = (int)InputType.INPUT_MOUSE;
+            MouseInput input = GetAbsoluteMouseInput(c.X, c.Y);
             input.mouseData = clicks;
-            MouseFlags flags = MouseFlags.MOUSEEVENTF_WHEEL;
-            input.dwFlags = (int)flags;
-            input.dx = c.X;
-            input.dy = c.Y;
+            input.dwFlags |= (int)MouseFlags.MOUSEEVENTF_WHEEL;
             SendInput(input);
         }
 
-        static void SendInput(MouseInput input) {
+        static void SendInput(MouseInput input)
+        {
             //Trace.WriteLine("SendInput:" + input.dx + "," + input.dy + " cursor is at " + Cursor.Position.X + "," + Cursor.Position.Y);
-            if ((input.dwFlags & (int)MouseFlags.MOUSEEVENTF_ABSOLUTE) != 0) {
+            if ((input.dwFlags & (int)MouseFlags.MOUSEEVENTF_ABSOLUTE) != 0 &&
+                (input.dwFlags & (int)MouseFlags.MOUSEEVENTF_VIRTUALDESK) == 0)
+            {
                 Cursor.Position = new Point(input.dx, input.dy);
             }
+            Debug.WriteLine("SendInput x={0}, y={1}, flags={2:x}", input.dx, input.dy, input.dwFlags);
             input.time = Environment.TickCount;
             int cb = Marshal.SizeOf(input);
             Debug.Assert(cb == 28); // must match what C++ returns for the INPUT union.
             IntPtr ptr = Marshal.AllocCoTaskMem(cb);
-            try {
+            try
+            {
                 Marshal.StructureToPtr(input, ptr, false);
                 uint rc = SendInput(1, ptr, cb);
-                if (rc != 1) {
+                if (rc != 1)
+                {
                     int hr = GetLastError();
                     throw new ApplicationException("SendInput error " + hr);
-                }                
-            } finally {
+                }
+            }
+            finally
+            {
                 Marshal.FreeCoTaskMem(ptr);
             }
         }
@@ -177,7 +211,8 @@ namespace UnitTests {
 
         enum InputType { INPUT_MOUSE = 0, INPUT_KEYBOARD = 1, INPUT_HARDWARE = 2 };
 
-        enum MouseFlags {
+        enum MouseFlags
+        {
             MOUSEEVENTF_MOVE = 0x0001, /* mouse move */
             MOUSEEVENTF_LEFTDOWN = 0x0002, /* left button down */
             MOUSEEVENTF_LEFTUP = 0x0004, /* left button up */
@@ -188,12 +223,14 @@ namespace UnitTests {
             MOUSEEVENTF_XDOWN = 0x0080, /* x button down */
             MOUSEEVENTF_XUP = 0x0100, /* x button down */
             MOUSEEVENTF_WHEEL = 0x0800, /* wheel button rolled */
+            MOUSEEVENTF_MOVE_NOCOALESCE = 0x2000, /* The WM_MOUSEMOVE messages will not be coalesced. The default behavior is to coalesce WM_MOUSEMOVE messages. */
             MOUSEEVENTF_VIRTUALDESK = 0x4000, /* map to entire virtual desktop */
             MOUSEEVENTF_ABSOLUTE = 0x8000, /* absolute move */
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct MouseInput {
+        struct MouseInput
+        {
             public int type;
             public int dx;
             public int dy;
@@ -204,7 +241,8 @@ namespace UnitTests {
         };
 
         [StructLayout(LayoutKind.Sequential)]
-        struct MouseMovePoint {
+        struct MouseMovePoint
+        {
             public int x;
             public int y;
             public int time;
@@ -222,6 +260,8 @@ namespace UnitTests {
         public const int SM_CXVIRTUALSCREEN = 78;
         public const int SM_CYVIRTUALSCREEN = 79;
         public const int SM_SWAPBUTTON = 23;
+        public const int SM_CXSCREEN = 0;
+        public const int SM_CYSCREEN = 1;
 
         [DllImport("user32.dll")]
         public static extern int GetSystemMetrics(int metric);

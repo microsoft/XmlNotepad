@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -256,7 +256,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="duplicateToolStripMenuItem1.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+D</value>
+    <value>Ctrl+D</value>
   </data>
   <data name="duplicateToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 22</value>
@@ -352,7 +352,7 @@
     <value>ctxElementChildToolStripMenuItem</value>
   </data>
   <data name="ctxElementChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+Insert</value>
+    <value>Ctrl+Ins</value>
   </data>
   <data name="ctxElementChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>151, 22</value>
@@ -388,7 +388,7 @@
     <value>ctxAttributeChildToolStripMenuItem</value>
   </data>
   <data name="ctxAttributeChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+Insert</value>
+    <value>Alt+Ins</value>
   </data>
   <data name="ctxAttributeChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>147, 22</value>
@@ -585,7 +585,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="newToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+N</value>
+    <value>Ctrl+N</value>
   </data>
   <data name="newToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
@@ -619,7 +619,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="openToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+O</value>
+    <value>Ctrl+O</value>
   </data>
   <data name="openToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
@@ -668,7 +668,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="saveToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+S</value>
+    <value>Ctrl+S</value>
   </data>
   <data name="saveToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
@@ -764,7 +764,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="undoToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+Z</value>
+    <value>Ctrl+Z</value>
   </data>
   <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -794,7 +794,7 @@
     <value>Fuchsia</value>
   </data>
   <data name="redoToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+Y</value>
+    <value>Ctrl+Y</value>
   </data>
   <data name="redoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -932,7 +932,7 @@
     <value>repeatToolStripMenuItem</value>
   </data>
   <data name="repeatToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Insert</value>
+    <value>Ins</value>
   </data>
   <data name="repeatToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -959,7 +959,7 @@
     <value>duplicateToolStripMenuItem</value>
   </data>
   <data name="duplicateToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+D</value>
+    <value>Ctrl+D</value>
   </data>
   <data name="duplicateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1142,7 +1142,7 @@
     <value>findToolStripMenuItem</value>
   </data>
   <data name="findToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+F</value>
+    <value>Ctrl+F</value>
   </data>
   <data name="findToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1157,7 +1157,7 @@
     <value>replaceToolStripMenuItem</value>
   </data>
   <data name="replaceToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+H</value>
+    <value>Ctrl+H</value>
   </data>
   <data name="replaceToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1172,7 +1172,7 @@
     <value>incrementalSearchToolStripMenuItem</value>
   </data>
   <data name="incrementalSearchToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+I</value>
+    <value>Ctrl+I</value>
   </data>
   <data name="incrementalSearchToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 22</value>
@@ -1343,7 +1343,7 @@
     <value>elementChildToolStripMenuItem</value>
   </data>
   <data name="elementChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Control+Insert</value>
+    <value>Ctrl+Ins</value>
   </data>
   <data name="elementChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>151, 22</value>
@@ -1379,7 +1379,7 @@
     <value>attributeChildToolStripMenuItem</value>
   </data>
   <data name="attributeChildToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+Insert</value>
+    <value>Alt+Ins</value>
   </data>
   <data name="attributeChildToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>147, 22</value>
@@ -1567,15 +1567,6 @@
   <data name="contentsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Contents</value>
   </data>
-  <data name="indexToolStripMenuItem.AccessibleName" xml:space="preserve">
-    <value>indexToolStripMenuItem</value>
-  </data>
-  <data name="indexToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 22</value>
-  </data>
-  <data name="indexToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Index</value>
-  </data>
   <data name="sampleToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 22</value>
   </data>
@@ -1643,7 +1634,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>6</value>
   </data>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>0, 24</value>
@@ -2005,7 +1996,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>4</value>
   </data>
   <data name="comboBoxLocation.AccessibleName" xml:space="preserve">
     <value>comboBoxLocation</value>
@@ -2041,7 +2032,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;comboBoxLocation.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="tabControlViews.AccessibleName" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2068,7 +2059,7 @@
     <value>xmlTreeView1</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Type" xml:space="preserve">
-    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Parent" xml:space="preserve">
     <value>tabPageTreeView</value>
@@ -2095,13 +2086,13 @@
     <value>tabPageTreeView</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="tabPageHtmlView.AccessibleName" xml:space="preserve">
     <value>tabPageHtmlView</value>
@@ -2131,7 +2122,7 @@
     <value>xsltViewer</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Parent" xml:space="preserve">
     <value>tabPageHtmlView</value>
@@ -2158,7 +2149,7 @@
     <value>tabPageHtmlView</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2185,13 +2176,13 @@
     <value>tabControlViews</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tabControlViews.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="resizer.AccessibleName" xml:space="preserve">
     <value>TaskResizer</value>
@@ -2212,13 +2203,13 @@
     <value>resizer</value>
   </data>
   <data name="&gt;&gt;resizer.Type" xml:space="preserve">
-    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;resizer.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;resizer.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>5</value>
   </data>
   <data name="tabPageTaskList.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2236,7 +2227,7 @@
     <value>tabPageTaskList</value>
   </data>
   <data name="&gt;&gt;tabPageTaskList.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="tabPageDynamicHelp.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2254,59 +2245,62 @@
     <value>tabPageDynamicHelp</value>
   </data>
   <data name="&gt;&gt;tabPageDynamicHelp.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
-  <data name="taskList.AccessibleName" xml:space="preserve">
+  <data name="_taskList.AccessibleName" xml:space="preserve">
     <value>taskList</value>
   </data>
-  <data name="taskList.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="_taskList.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 9pt</value>
   </data>
-  <data name="taskList.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="_taskList.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="taskList.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="_taskList.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
-  <data name="taskList.ShowHelp" type="System.Boolean, mscorlib">
+  <data name="_taskList.ShowHelp" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="taskList.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="_taskList.Size" type="System.Drawing.Size, System.Drawing">
     <value>682, 150</value>
   </data>
-  <data name="taskList.TabIndex" type="System.Int32, mscorlib">
+  <data name="_taskList.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;taskList.Name" xml:space="preserve">
-    <value>taskList</value>
+  <data name="&gt;&gt;_taskList.Name" xml:space="preserve">
+    <value>_taskList</value>
   </data>
-  <data name="&gt;&gt;taskList.Type" xml:space="preserve">
-    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;_taskList.Type" xml:space="preserve">
+    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
-  <data name="dynamicHelpViewer.AccessibleName" xml:space="preserve">
+  <data name="_dynamicHelpViewer.AccessibleName" xml:space="preserve">
     <value>dynamicHelpViewer</value>
   </data>
-  <data name="dynamicHelpViewer.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="_dynamicHelpViewer.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="dynamicHelpViewer.ShowHelp" type="System.Boolean, mscorlib">
+  <data name="_dynamicHelpViewer.ShowHelp" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="dynamicHelpViewer.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="_dynamicHelpViewer.Size" type="System.Drawing.Size, System.Drawing">
     <value>701, 403</value>
   </data>
-  <data name="dynamicHelpViewer.TabIndex" type="System.Int32, mscorlib">
+  <data name="_dynamicHelpViewer.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;dynamicHelpViewer.Name" xml:space="preserve">
-    <value>dynamicHelpViewer</value>
+  <data name="&gt;&gt;_dynamicHelpViewer.Name" xml:space="preserve">
+    <value>_dynamicHelpViewer</value>
   </data>
-  <data name="&gt;&gt;dynamicHelpViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.35, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;_dynamicHelpViewer.Type" xml:space="preserve">
+    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>688, 17</value>
   </metadata>
+  <data name="toolStripStatusLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
+  </data>
   <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 502</value>
   </data>
@@ -2330,36 +2324,6 @@
   </data>
   <data name="&gt;&gt;statusStrip1.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <metadata name="statusStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>804, 17</value>
-  </metadata>
-  <data name="toolStripStatusLabel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 17</value>
-  </data>
-  <data name="statusStrip2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 480</value>
-  </data>
-  <data name="statusStrip2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>736, 22</value>
-  </data>
-  <data name="statusStrip2.TabIndex" type="System.Int32, mscorlib">
-    <value>13</value>
-  </data>
-  <data name="statusStrip2.Text" xml:space="preserve">
-    <value>statusStrip2</value>
-  </data>
-  <data name="&gt;&gt;statusStrip2.Name" xml:space="preserve">
-    <value>statusStrip2</value>
-  </data>
-  <data name="&gt;&gt;statusStrip2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.StatusStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;statusStrip2.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;statusStrip2.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -3678,12 +3642,6 @@
     <value>contentsToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;contentsToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;indexToolStripMenuItem.Name" xml:space="preserve">
-    <value>indexToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;indexToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;sampleToolStripMenuItem.Name" xml:space="preserve">

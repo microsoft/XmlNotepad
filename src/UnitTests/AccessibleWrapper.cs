@@ -75,7 +75,14 @@ namespace UnitTests {
         {
             get
             {
-                AutomationElement parent = TreeWalker.RawViewWalker.GetParent(e);
+                AutomationElement parent = null;
+                try
+                {
+                    parent = TreeWalker.RawViewWalker.GetParent(e);
+                } 
+                catch
+                {
+                }
                 if (parent != null)
                 {
                     return new AutomationWrapper(parent);

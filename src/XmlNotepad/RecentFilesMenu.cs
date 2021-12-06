@@ -189,6 +189,8 @@ namespace XmlNotepad
             this._location.AutoCompleteSource = AutoCompleteSource.CustomSource;
         }
 
+        public bool SelectFirstItemByDefault { get; set; }
+
         void OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (!this.addingFile)
@@ -215,7 +217,7 @@ namespace XmlNotepad
                     {
                         var filename = this._location.Text.Trim('\"');
                         this._location.Text = filename;
-                        uri = new Uri(filename);
+                        uri = new Uri(filename, UriKind.RelativeOrAbsolute);
                         this._files.OnRecentFileSelected(uri);
                     }
                     catch
@@ -253,7 +255,7 @@ namespace XmlNotepad
                     this._location.Items.Add(new ComboFileItem(uri));
                 }
 
-                if (this._location.Items.Count > 0)
+                if (this._location.Items.Count > 0 && this.SelectFirstItemByDefault)
                 {
                     this._location.SelectedIndex = 0;
                 }

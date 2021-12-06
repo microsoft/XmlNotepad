@@ -114,10 +114,17 @@ namespace XmlNotepad
                 }
             }
             string output = this.OutputFileName.Text.Trim();
-            if (!_userSpecifiedOutput && !string.IsNullOrEmpty(this._model.XsltDefaultOutput))
+            if (string.IsNullOrWhiteSpace(output))
+            {
+                _userSpecifiedOutput = false;
+            }
+            bool hasXsltOutput = !string.IsNullOrEmpty(this._model.XsltDefaultOutput);
+            if (!_userSpecifiedOutput && hasXsltOutput)
             {
                 output = this._model.XsltDefaultOutput;
             }
+            this.xsltControl.HasXsltOutput = hasXsltOutput;
+
             output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output, _userSpecifiedOutput);
             if (!string.IsNullOrWhiteSpace(output))
             {

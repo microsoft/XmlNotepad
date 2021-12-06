@@ -9,6 +9,14 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.51">
+    <bug>Improve handling of on changes made to the loaded XML file outside of XML notepad.</bug>
+    <feature>Add theming to the default stylesheet</feature>
+  </version>
+  <version number="2.8.0.50">
+    <feature>Update icon on the XSLT output tab.</feature>
+    <feature>Connect color theming to the default XSLT stylesheet.</feature>
+  </version>
   <version number="2.8.0.49">
     <feature>Add option to disable default XSLT stylesheet.</feature>
   </version>

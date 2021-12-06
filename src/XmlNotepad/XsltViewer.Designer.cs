@@ -31,17 +31,16 @@ namespace XmlNotepad {
             this.label1 = new System.Windows.Forms.Label();
             this.SourceFileName = new System.Windows.Forms.ComboBox();
             this.BrowseButton = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.TransformButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.OutputFileName = new System.Windows.Forms.TextBox();
             this.BrowseOutputButton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.xsltControl = new XmlNotepad.XsltControl();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -65,11 +64,11 @@ namespace XmlNotepad {
             this.tableLayoutPanel1.Controls.Add(this.label1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.SourceFileName, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.BrowseButton, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.TransformButton, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.OutputFileName, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.BrowseOutputButton, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             // 
             // label1
@@ -87,12 +86,6 @@ namespace XmlNotepad {
             resources.ApplyResources(this.BrowseButton, "BrowseButton");
             this.BrowseButton.Name = "BrowseButton";
             this.BrowseButton.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox1
-            // 
-            resources.ApplyResources(this.pictureBox1, "pictureBox1");
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.TabStop = false;
             // 
             // TransformButton
             // 
@@ -117,6 +110,11 @@ namespace XmlNotepad {
             this.BrowseOutputButton.Name = "BrowseOutputButton";
             this.BrowseOutputButton.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            // 
             // xsltControl
             // 
             this.xsltControl.BaseUri = null;
@@ -140,7 +138,6 @@ namespace XmlNotepad {
             this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -158,11 +155,11 @@ namespace XmlNotepad {
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox SourceFileName;
         private System.Windows.Forms.Button BrowseButton;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button TransformButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox OutputFileName;
         private System.Windows.Forms.Button BrowseOutputButton;
         private XsltControl xsltControl;
+        private System.Windows.Forms.Label label3;
     }
 }

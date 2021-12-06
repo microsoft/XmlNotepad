@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -38,6 +39,8 @@ namespace XmlNotepad
         private bool _webView2Supported;
         private string _tempFile;
         private string _previousOutputFile;
+        private bool _usingDefaultXslt;
+        private bool _hasXsltOutput; // whether DOM has <?xsl-output instruction.
 
         public event EventHandler<Exception> WebBrowserException;
 
@@ -158,7 +161,6 @@ namespace XmlNotepad
                 this.webBrowser2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
                 this.webBrowser2.Visible = true;
                 this.webBrowser1.Visible = false;
-                this.webBrowser2.ZoomFactor = 1.25;
                 this._webView2Supported = true;
             }
             else
@@ -358,12 +360,26 @@ namespace XmlNotepad
             set { this._defaultSSResource = value; }
         }
 
+        public bool HasXsltOutput
+        {
+            get => _hasXsltOutput;
+            set
+            {
+                if (value != _hasXsltOutput)
+                {
+                    _defaultss = null;
+                    _hasXsltOutput = value;
+                }
+            }
+        }
+
         public void SetSite(ISite site)
         {
             this._site = site;
             IServiceProvider sp = (IServiceProvider)site;
             this._resolver = new XmlProxyResolver(sp);
             this._settings = (Settings)sp.GetService(typeof(Settings));
+            this._settings.Changed -= OnSettingsChanged;
             this._settings.Changed += OnSettingsChanged;
 
             // initial settings.
@@ -386,6 +402,24 @@ namespace XmlNotepad
             {
                 this.InitializeBrowser(this._settings.GetString("BrowserVersion"));
             }
+            else if (name == "Font" || name == "Theme" || name == "Colors" || name == "LightColors" || name == "DarkColors")
+            {
+                _defaultss = null;
+                if (this._usingDefaultXslt)
+                {
+                    string id = this.Handle.ToString(); // make sure action is unique to this control instance since we have 2!
+                    _settings.DelayedActions.StartDelayedAction("Transform" + id, UpdateTransform, TimeSpan.FromMilliseconds(50));
+                }
+            }
+        }
+
+        private void UpdateTransform()
+        {
+            if (_previousTransform != null)
+            {
+                DisplayXsltResults(_previousTransform.document, _previousTransform.xsltfilename, _previousTransform.outpath, 
+                    _previousTransform.userSpecifiedOutput);
+            }
         }
 
         public Uri ResolveRelativePath(string filename)
@@ -393,12 +427,22 @@ namespace XmlNotepad
             try
             {
                 return new Uri(_baseUri, filename);
-            } 
+            }
             catch
             {
                 return null;
             }
         }
+
+        class Context
+        {
+            public XmlDocument document;
+            public string xsltfilename;
+            public string outpath;
+            public bool userSpecifiedOutput;
+        }
+
+        Context _previousTransform;
 
         /// <summary>
         /// Run an XSLT transform and show the results.
@@ -415,6 +459,14 @@ namespace XmlNotepad
                 return null;
             }
 
+            _previousTransform = new Context()
+            {
+                document = context,
+                xsltfilename = xsltfilename,
+                outpath = outpath,
+                userSpecifiedOutput = userSpecifiedOutput
+            };
+
             this.CleanupTempFile();
             Uri resolved = null;
             try
@@ -423,6 +475,7 @@ namespace XmlNotepad
                 if (string.IsNullOrEmpty(xsltfilename))
                 {
                     transform = GetDefaultStylesheet();
+                    this._usingDefaultXslt = true;
                     if (this._settings.GetBoolean("DisableDefaultXslt"))
                     {
                         context = new XmlDocument();
@@ -451,6 +504,7 @@ namespace XmlNotepad
                         this._xsltdoc.Load(resolved.AbsoluteUri);
                     }
                     transform = _xslt;
+                    this._usingDefaultXslt = false;
                 }
 
                 if (string.IsNullOrEmpty(outpath))
@@ -740,6 +794,32 @@ namespace XmlNotepad
             }
         }
 
+        string GetHexColor(Color c)
+        {
+            return System.Drawing.ColorTranslator.ToHtml(c);
+        }
+
+        string GetDefaultStyles(string html)
+        {
+            var font = (Font)this._settings["Font"];
+            html = html.Replace("$FONT_FAMILY", font != null ? font.FontFamily.Name : "Consolas, Courier New");
+            html = html.Replace("$FONT_SIZE", font != null ? font.SizeInPoints + "pt" : "10pt");
+
+            var theme = (ColorTheme)_settings["Theme"];
+            var colors = (ThemeColors)_settings[theme == ColorTheme.Light ? "LightColors" : "DarkColors"];
+            html = html.Replace("$BACKGROUND_COLOR", GetHexColor(colors.ContainerBackground));
+            html = html.Replace("$ATTRIBUTE_NAME_COLOR", GetHexColor(colors.Attribute));
+            html = html.Replace("$ATTRIBUTE_VALUE_COLOR", GetHexColor(colors.Text));
+            html = html.Replace("$PI_COLOR", GetHexColor(colors.PI));
+            html = html.Replace("$TEXT_COLOR", GetHexColor(colors.Text));
+            html = html.Replace("$COMMENT_COLOR", GetHexColor(colors.Comment));
+            html = html.Replace("$ELEMENT_COLOR", GetHexColor(colors.Element));
+            html = html.Replace("$MARKUP_COLOR", GetHexColor(colors.Markup));
+            html = html.Replace("$SIDENOTE_COLOR", GetHexColor(colors.EditorBackground));
+            html = html.Replace("$OUTPUT_TIP_DISPLAY", this.HasXsltOutput ? "none" : "block");            
+            return html;
+        }
+
         XslCompiledTransform GetDefaultStylesheet()
         {
             if (_defaultss != null)
@@ -750,16 +830,22 @@ namespace XmlNotepad
             {
                 if (null != stream)
                 {
-                    using (XmlReader reader = XmlReader.Create(stream))
+                    using (StreamReader sr = new StreamReader(stream))
                     {
-                        XslCompiledTransform t = new XslCompiledTransform();
-                        t.Load(reader);
-                        _defaultss = t;
+                        string html = null;
+                        html = GetDefaultStyles(sr.ReadToEnd());
+
+                        using (XmlReader reader = XmlReader.Create(new StringReader(html)))
+                        {
+                            XslCompiledTransform t = new XslCompiledTransform();
+                            t.Load(reader);
+                            _defaultss = t;
+                        }
+                        // the XSLT DOM is also handy to have around for GetOutputMethod
+                        stream.Seek(0, SeekOrigin.Begin);
+                        this._xsltdoc = new XmlDocument();
+                        this._xsltdoc.Load(stream);
                     }
-                    // the XSLT DOM is also handy to have around for GetOutputMethod
-                    stream.Seek(0, SeekOrigin.Begin);
-                    this._xsltdoc = new XmlDocument();
-                    this._xsltdoc.Load(stream);
                 }
                 else
                 {

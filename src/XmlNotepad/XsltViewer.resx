@@ -148,10 +148,10 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>32, 3</value>
+    <value>33, 3</value>
   </data>
   <data name="label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 0, 3</value>
+    <value>0, 3, 0, 3</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 23</value>
@@ -184,13 +184,13 @@
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="SourceFileName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>113, 3</value>
+    <value>114, 3</value>
   </data>
   <data name="SourceFileName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 3, 3, 3</value>
   </data>
   <data name="SourceFileName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>196, 20</value>
+    <value>200, 21</value>
   </data>
   <data name="SourceFileName.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -217,7 +217,7 @@
     <value>NoControl</value>
   </data>
   <data name="BrowseButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>315, 3</value>
+    <value>320, 3</value>
   </data>
   <data name="BrowseButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -240,59 +240,6 @@
   <data name="&gt;&gt;BrowseButton.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAD/UlEQVRIS9WVe0yVZRzHX5QgFFiaUrY0
-        LbWmbIr+oU50lhq2NLl0uIRABowIZBKB3PWgcuDILeQi985JJG4pdxQsbhEK2gnJ6DInbMfUFBVYtQP4
-        Cd685DjHcNYffbfv9u59n9/38/s9e569wv9CmjMu9FcuF/3rCSfuvH48oU5E0/4WN2vXjgt8ZIhUlkBS
-        Siapn1ZSWJDA1YbNXK5aRmJM8ON1a+fsgTQ5j7JTF1BdGkBz9TB0LedC2TpqutQklKtwDEwiIj5vHOha
-        jY1ueGSUjLXWroRkVxNV2sbnp+q53hXE0NfzOV3hQsbpayQ3/kh83Vlkxzuw3ZOOi3/UxKeZb7mV9cEK
-        3pYf4liLjKEuFzFcmhWMVdxxbBML2ZZSiP2hCqwVzdgWncEiJBOJ7wQgz5ivZrr1bjZG7OJkhw90O/J7
-        2yKik7yJO9JAUV0r4dklLN5bgHlmyz2/mFSPsU3AwwFefoEIC214PdiTJpWb2PlI+2LkcodxhR8XncBE
-        Vo1ZciMz4+uYFl2NiW8ay7Z46IbMnruaddusqetwZrDTU9yW3Jw3CJCmai1aGH4Yg9gWnowswzi0mKk+
-        WRgstdUNsFhhgeKoHRe/2QEti2ivWYmZVQCWNv74ROfgHpuPe3wh3unleGdVMm9fmQjQ33WMSZ456NnH
-        Ipjb6QaESNfQ0urPUOMq+ltns94vCGGJL3pOaTyx/zwmCT1MSVWLNsq8hEFaL/oHVEwOqxcBwpt7RYB/
-        sFQ7JFtpx+UvJaPdGxKd5oqwQS4WGQeeZJasXfRz8gf9rPQLZnxYxFOuKZhujsB43gbxUt6JvK8bN5Jp
-        q3WCEzPpLFvA9HeUImDyB5V47UnRPfZENazJ4remddyuEXCI3I2wqRA9x1xxW94NT9YK2JdbTtDBEtEB
-        8jzxMPgGhI9fy0gpt/tioMKImqxXMHKsHd0aBfo+9cxQXOeFiCqtALM4ldiAQeBZJrk3iRObzFmhHfDH
-        OQduHpmEvcQSYWMxepIijEI7mJWrZmnVIBaJDbhFf0J4egluBz7j5ZSzzFZewTjmu/uA0QMRti9eC0BT
-        QF/VS/RWrRI/mph7i4Cp0d3MUahZc3IAt27wuzCM9/m/nl9r0jBXqcY07gcMgzoRrFKxctihdVJhZCCb
-        XqUpv7SH3Vvw9NqPxM7GJhgDjIUn3IKDgxBwcYSNzYP3JhhrZquHjqM5pqG+TH7KmDJugSS0lGlezUzZ
-        34t5cR9bmm9h3TrI6uo+nk/vwXDnVyx5P1938F0N9x/l59TxgLsqz3lPvLnbFd8jyVCxPftbwvLP/HPw
-        33Wl8lXOZax8oOhW606ulG96tKCH6XqjMz3KBaL/tZ/3fytB+BPsBL56Bm3rXgAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="pictureBox1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>5, 3</value>
-  </data>
-  <data name="pictureBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 3, 0, 0</value>
-  </data>
-  <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
-  </data>
-  <data name="pictureBox1.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
-    <value>AutoSize</value>
-  </data>
-  <data name="pictureBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.Name" xml:space="preserve">
-    <value>pictureBox1</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.Parent" xml:space="preserve">
-    <value>tableLayoutPanel1</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
   <data name="TransformButton.AccessibleName" xml:space="preserve">
     <value>TransformButton</value>
   </data>
@@ -300,7 +247,7 @@
     <value>NoControl</value>
   </data>
   <data name="TransformButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>623, 3</value>
+    <value>632, 3</value>
   </data>
   <data name="TransformButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -321,7 +268,7 @@
     <value>tableLayoutPanel1</value>
   </data>
   <data name="&gt;&gt;TransformButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left</value>
@@ -333,7 +280,7 @@
     <value>NoControl</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>347, 3</value>
+    <value>352, 3</value>
   </data>
   <data name="label2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 0, 3</value>
@@ -360,7 +307,7 @@
     <value>tableLayoutPanel1</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>4</value>
   </data>
   <data name="OutputFileName.AccessibleName" xml:space="preserve">
     <value>OutputFileName</value>
@@ -369,13 +316,13 @@
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="OutputFileName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>389, 3</value>
+    <value>394, 3</value>
   </data>
   <data name="OutputFileName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 3, 3, 3</value>
   </data>
   <data name="OutputFileName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>196, 20</value>
+    <value>200, 20</value>
   </data>
   <data name="OutputFileName.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -390,7 +337,7 @@
     <value>tableLayoutPanel1</value>
   </data>
   <data name="&gt;&gt;OutputFileName.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>5</value>
   </data>
   <data name="BrowseOutputButton.AccessibleName" xml:space="preserve">
     <value>BrowseOutputButton</value>
@@ -402,7 +349,7 @@
     <value>NoControl</value>
   </data>
   <data name="BrowseOutputButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>591, 3</value>
+    <value>600, 3</value>
   </data>
   <data name="BrowseOutputButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -423,6 +370,39 @@
     <value>tableLayoutPanel1</value>
   </data>
   <data name="&gt;&gt;BrowseOutputButton.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label3.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI Symbol, 12pt</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 4</value>
+  </data>
+  <data name="label3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 4, 0, 3</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>30, 21</value>
+  </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>tableLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
   <data name="tableLayoutPanel1.Location" type="System.Drawing.Point, System.Drawing">
@@ -435,7 +415,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>701, 29</value>
+    <value>710, 29</value>
   </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -453,7 +433,7 @@
     <value>0</value>
   </data>
   <data name="tableLayoutPanel1.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="label1" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="SourceFileName" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="BrowseButton" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="pictureBox1" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="TransformButton" Row="0" RowSpan="1" Column="7" ColumnSpan="1" /&gt;&lt;Control Name="label2" Row="0" RowSpan="1" Column="4" ColumnSpan="1" /&gt;&lt;Control Name="OutputFileName" Row="0" RowSpan="1" Column="5" ColumnSpan="1" /&gt;&lt;Control Name="BrowseOutputButton" Row="0" RowSpan="1" Column="6" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="AutoSize,0,AutoSize,0,Percent,50,Absolute,32,AutoSize,0,Percent,50,Absolute,32,AutoSize,0" /&gt;&lt;Rows Styles="Percent,100" /&gt;&lt;/TableLayoutSettings&gt;</value>
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="label1" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="SourceFileName" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="BrowseButton" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="TransformButton" Row="0" RowSpan="1" Column="7" ColumnSpan="1" /&gt;&lt;Control Name="label2" Row="0" RowSpan="1" Column="4" ColumnSpan="1" /&gt;&lt;Control Name="OutputFileName" Row="0" RowSpan="1" Column="5" ColumnSpan="1" /&gt;&lt;Control Name="BrowseOutputButton" Row="0" RowSpan="1" Column="6" ColumnSpan="1" /&gt;&lt;Control Name="label3" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="AutoSize,0,AutoSize,0,Percent,50,Absolute,32,AutoSize,0,Percent,50,Absolute,32,AutoSize,0" /&gt;&lt;Rows Styles="Percent,100" /&gt;&lt;/TableLayoutSettings&gt;</value>
   </data>
   <data name="xsltControl.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
@@ -462,7 +442,7 @@
     <value>3, 32</value>
   </data>
   <data name="xsltControl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>695, 368</value>
+    <value>704, 368</value>
   </data>
   <data name="xsltControl.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -471,7 +451,7 @@
     <value>xsltControl</value>
   </data>
   <data name="&gt;&gt;xsltControl.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.47, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
+    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.49, Culture=neutral, PublicKeyToken=ab3ea86545595e2b</value>
   </data>
   <data name="&gt;&gt;xsltControl.Parent" xml:space="preserve">
     <value>tableLayoutPanel2</value>

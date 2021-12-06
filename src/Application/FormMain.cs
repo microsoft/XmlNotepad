@@ -4,6 +4,7 @@ using Microsoft.Xml;
 using Microsoft.XmlDiffPatch;
 using Sgml;
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -56,7 +57,8 @@ namespace XmlNotepad
             {
                 StartupPath = Application.StartupPath,
                 ExecutablePath = Application.ExecutablePath,
-                Resolver = new XmlProxyResolver(this)
+                Resolver = new XmlProxyResolver(this),
+                SettingValueEquality = SettingValueMatches
             };
 
             this._delayedActions = _settings.DelayedActions = new DelayedActions((action) =>
@@ -106,6 +108,7 @@ namespace XmlNotepad
             _recentFiles.RecentFileSelected += new RecentFileHandler(OnRecentFileSelected);
             _recentFileMenu = new RecentFilesMenu(_recentFiles, recentFilesToolStripMenuItem);
             _recentFilesCombo = new RecentFilesComboBox(_recentFiles, this.comboBoxLocation);
+            _recentFilesCombo.SelectFirstItemByDefault = true;
 
             _recentXsltFiles = new RecentFiles();
 
@@ -238,8 +241,8 @@ namespace XmlNotepad
             Font f = new Font("Courier New", 10, FontStyle.Regular);
             this._settings["Font"] = f;
             this._settings["Theme"] = ColorTheme.Light;
-            this._settings["LightColors"] = Settings.GetDefaultColors(ColorTheme.Light);
-            this._settings["DarkColors"] = Settings.GetDefaultColors(ColorTheme.Dark);
+            this._settings["LightColors"] = ThemeColors.GetDefaultColors(ColorTheme.Light);
+            this._settings["DarkColors"] = ThemeColors.GetDefaultColors(ColorTheme.Dark);
             this._settings["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
             this._settings["WindowBounds"] = new Rectangle(0, 0, 0, 0);
             this._settings["TaskListSize"] = 0;
@@ -296,6 +299,117 @@ namespace XmlNotepad
             // default text editor
             string sysdir = Environment.SystemDirectory;
             this.Settings["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
+        }
+
+
+        private bool SettingValueMatches(object existing, object newValue)
+        {
+            if (existing == null && newValue != null)
+            {
+                return false;
+            }
+            else if (existing != null && newValue == null)
+            {
+                return false;
+            }
+            else if (existing is int i1)
+            {
+                return newValue is int i2 && i1 == i2;
+            }
+            else if (existing is string s1)
+            {
+                return newValue is String s2 && s1 == s2;
+            }
+            else if (existing is bool b1)
+            {
+                return newValue is bool b2 && b1 == b2;
+            }
+            else if (existing is Font f1)
+            {
+                return newValue is Font f2 && f1 == f2;
+            }
+            else if (existing is ColorTheme ct1)
+            {
+                return newValue is ColorTheme ct2 && ct1 == ct2;
+            }
+            else if (existing is Uri u1)
+            {
+                return newValue is Uri u2 && u1 == u2;
+            }
+            else if (existing is Rectangle w1)
+            {
+                return newValue is Rectangle w2 && w1 == w2;
+            }
+            else if (existing is Point p1)
+            {
+                return newValue is Point p2 && p1 == p2;
+            }
+            else if (existing is Size z1)
+            {
+                return newValue is Size z2 && z1 == z2;
+            }
+            else if (existing is DateTime dt1)
+            {
+                return newValue is DateTime dt2 && dt1 == dt2;
+            }
+            else if (existing is TimeSpan ts1)
+            {
+                return newValue is TimeSpan ts2 && ts1 == ts2;
+            }
+            else if (existing is IndentChar ic1)
+            {
+                return newValue is IndentChar ic2 && ic1 == ic2;
+            }
+            else if (existing is Color c1)
+            {
+                return newValue is Color c2 && c1 == c2;
+            }
+            else if (existing is ThemeColors tc1)
+            {
+                return newValue is ThemeColors tc2 && tc1 == tc2;
+            }
+            else if (existing is Hashtable h1)
+            {
+                if (newValue is Hashtable h2)
+                {
+                    foreach (var key in h1.Keys)
+                    {
+                        var v1 = h1[key];
+                        var v2 = h2[key];
+                        if (!SettingValueMatches(v1, v2))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+            else if (existing is Array a1)
+            {
+                if (newValue is Array a2)
+                {
+                    if (a1.Length != a2.Length)
+                    {
+                        return false;
+                    }
+                    for (int i = 0; i < a1.Length; i++)
+                    {
+                        object v1 = a1.GetValue(i);
+                        object v2 = a2.GetValue(i);
+                        if (!SettingValueMatches(v1, v2))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public FormMain(string[] args)
@@ -1021,6 +1135,11 @@ namespace XmlNotepad
                 try
                 {
                     uri = new Uri(filename);
+                    if (uri.Scheme == "file" && !File.Exists(uri.LocalPath))
+                    {
+                        MessageBox.Show(this, SR.FileRenamedOrDeleted, SR.LoadErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
                 catch
                 {
@@ -1305,7 +1424,17 @@ namespace XmlNotepad
                     this.WindowState = FormWindowState.Normal;
                 }
                 SelectTreeView();
-                if (MessageBox.Show(this, SR.FileChagedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (!string.IsNullOrEmpty(this._model.NewName))
+                {
+                    if (MessageBox.Show(this, SR.FileRenamedDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        string location = this.Model.NewName;
+                        this._model.Clear();
+                        this.Open(location);
+
+                    }
+                }
+                else if (MessageBox.Show(this, SR.FileChangedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     string location = this._model.Location.LocalPath;
                     this._model.Clear();
@@ -1374,7 +1503,12 @@ namespace XmlNotepad
                     {
                         _settings.Load(path);
 
-                        _settings.AddDefaultColors("LightColors", ColorTheme.Light);
+                        var lightColors = _settings.AddDefaultColors("LightColors", ColorTheme.Light);
+                        if (lightColors.EditorBackground == Color.LightSteelBlue)
+                        {
+                            // migrate to new default that looks better.
+                            lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
+                        }
                         _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
 
                         string newLines = (string)this._settings["NewLineChars"];
@@ -1503,7 +1637,7 @@ namespace XmlNotepad
         #endregion
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
-        {
+        {   
             if (e.ModelChangeType == ModelChangeType.Reloaded)
             {
                 this._undoManager.Clear();

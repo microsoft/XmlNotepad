@@ -118,8 +118,8 @@ namespace XmlNotepad
             private readonly Settings _settings;
             private Font _font;
             private ColorTheme _theme;
-            private Hashtable _lightColors;
-            private Hashtable _darkColors;
+            private ThemeColors _lightColors;
+            private ThemeColors _darkColors;
             private Color _elementColor;
             private Color _commentColor;
             private Color _attributeColor;
@@ -161,8 +161,8 @@ namespace XmlNotepad
 
                 this._font = (Font)this._settings["Font"];
                 this._theme = (ColorTheme)this._settings["Theme"];
-                _lightColors = (Hashtable)this._settings["LightColors"];
-                _darkColors = (Hashtable)this._settings["DarkColors"];
+                _lightColors = (ThemeColors)this._settings["LightColors"];
+                _darkColors = (ThemeColors)this._settings["DarkColors"];
                 LoadColors();
                 _updateLocation = this._settings.GetString("UpdateLocation");
                 _enableUpdate = this._settings.GetBoolean("UpdateEnabled");
@@ -193,30 +193,30 @@ namespace XmlNotepad
 
             private void LoadColors()
             {
-                Hashtable colors = this._theme == ColorTheme.Light ? _lightColors : _darkColors;
-                _elementColor = (Color)colors["Element"];
-                _commentColor = (Color)colors["Comment"];
-                _attributeColor = (Color)colors["Attribute"];
-                _piColor = (Color)colors["PI"];
-                _textColor = (Color)colors["Text"];
-                _cdataColor = (Color)colors["CDATA"];
-                _backgroundColor = (Color)colors["Background"];
-                _containerBackgroundColor = (Color)colors["ContainerBackground"];
-                _editorBackgroundColor = (Color)colors["EditorBackground"];
+                ThemeColors colors = this._theme == ColorTheme.Light ? _lightColors : _darkColors;
+                _elementColor = colors.Element;
+                _commentColor = colors.Comment;
+                _attributeColor = colors.Attribute;
+                _piColor = colors.PI;
+                _textColor = colors.Text;
+                _cdataColor = colors.CDATA;
+                _backgroundColor = colors.Background;
+                _containerBackgroundColor = colors.ContainerBackground;
+                _editorBackgroundColor = colors.EditorBackground;
             }
 
             internal void SaveColors()
             {
-                Hashtable colors = this._theme == ColorTheme.Light ? this._lightColors : this._darkColors;
-                colors["Element"] = this._elementColor;
-                colors["Comment"] = this._commentColor;
-                colors["CDATA"] = this._cdataColor;
-                colors["Attribute"] = this._attributeColor;
-                colors["PI"] = this._piColor;
-                colors["Text"] = this._textColor;
-                colors["Background"] = this._backgroundColor;
-                colors["ContainerBackground"] = this._containerBackgroundColor;
-                colors["EditorBackground"] = this._editorBackgroundColor;
+                ThemeColors colors = this._theme == ColorTheme.Light ? this._lightColors : this._darkColors;
+                colors.Element = this._elementColor;
+                colors.Comment = this._commentColor;
+                colors.CDATA = this._cdataColor;
+                colors.Attribute = this._attributeColor;
+                colors.PI = this._piColor;
+                colors.Text = this._textColor;
+                colors.Background = this._backgroundColor;
+                colors.ContainerBackground = this._containerBackgroundColor;
+                colors.EditorBackground = this._editorBackgroundColor;
             }
 
             public void Apply()
@@ -269,8 +269,8 @@ namespace XmlNotepad
                 this._font = new Font("Courier New", 10, FontStyle.Regular);
 
                 this._theme = ColorTheme.Light;
-                this._lightColors = this._settings.GetDefaultColors(ColorTheme.Light);
-                this._darkColors = this._settings.GetDefaultColors(ColorTheme.Dark);
+                this._lightColors = ThemeColors.GetDefaultColors(ColorTheme.Light);
+                this._darkColors = ThemeColors.GetDefaultColors(ColorTheme.Dark);
                 this.LoadColors();
                 _updateLocation = Settings.DefaultUpdateLocation;
                 _enableUpdate = true;
