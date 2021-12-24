@@ -11,7 +11,7 @@
   </application>
   <version number="2.8.0.52">
     <bug>Improve handling of on changes made to the loaded XML file outside of XML notepad.</bug>
-    <feature>Add theming to the default stylesheet</feature>
+    <feature>Add theming to the default stylesheet.</feature>
   </version>
   <version number="2.8.0.50">
     <feature>Update icon on the XSLT output tab.</feature>
@@ -24,7 +24,7 @@
     <bug>Fix single line text editor so it does not overlap the line below it.</bug>
     <bug>Fix XSLT Output browse button so it brings up the Save As File Dialog.</bug>
     <bug>Fix XSLT Output field so it honors a custom file extension entered by the user.</bug>
-    <feature>Add recent files drop down to XSLT input filename box</feature>
+    <feature>Add recent files drop down to XSLT input filename box.</feature>
   </version>
   <version number="2.8.0.47">
     <bug>Fix updater so it shows error messages if update check fails rather than misleading "up to date".</bug>
@@ -212,11 +212,11 @@
   <version number="2.7.1">
     <feature>Add new option to allow you to save XML files without the UTF-8 byte order mark.</feature>
     <feature>Add SHA 256 digital signature for stronger security.</feature>
-    <bug>Fix regression in loading xml from http</bug>
-    <bug>Fix regression in copy &amp; paste noedes</bug>
+    <bug>Fix regression in loading xml from http.</bug>
+    <bug>Fix regression in copy &amp; paste noedes.</bug>
   </version>
   <version number="2.7">
-    <feature>Control over handling of long lines.  Added new options "Maximum Line Length" and "Autoformat Long Lines"</feature>
+    <feature>Control over handling of long lines.  Added new options "Maximum Line Length" and "Autoformat Long Lines".</feature>
   </version>
   <version number="2.6">
     <feature>Upgrade to .NET 4.0</feature>

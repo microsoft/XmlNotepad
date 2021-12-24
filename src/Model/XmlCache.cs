@@ -515,35 +515,46 @@ namespace XmlNotepad
 
         private void watcher_Changed(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType == WatcherChangeTypes.Changed &&
-                IsSamePath(this._fileName, e.FullPath))
+            try
             {
-                Debug.WriteLine("### File changed " + this._fileName);
-                StartReload();
+                if (e.ChangeType == WatcherChangeTypes.Changed &&
+                    IsSamePath(this._fileName, e.FullPath))
+                {
+                    Debug.WriteLine("### File changed " + this._fileName);
+                    StartReload();
+                }
             }
+            catch { }
         }
 
         private void watcher_Renamed(object sender, RenamedEventArgs e)
         {
             // Some editors rename the file to *.bak then save the new version and
             // in that case we do not want XmlNotepad to switch to the .bak file.
-            if (IsSamePath(this._fileName, e.OldFullPath))
+            try
             {
-                Debug.WriteLine("### File renamed to " + e.FullPath);
-                var p = pending;
-                if (p != null)
+                string ext = Path.GetExtension(e.FullPath);
+                if (IsSamePath(this._fileName, e.OldFullPath) && 
+                    // ignore renames that create a '.bak' file (like what UltraEdit does).
+                    string.Compare(ext, ".bak", StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    // we have a situation were file was modified AND renamed.  Tricky!
-                    p.Renamed = true;
+                    Debug.WriteLine("### File renamed to " + e.FullPath);
+                    var p = pending;
+                    if (p != null)
+                    {
+                        // we have a situation were file was modified AND renamed.  Tricky!
+                        p.Renamed = true;
+                    }
+
+                    // switch to UI thread
+                    if (renamePending == null)
+                    {
+                        renamePending = new RenameAction { OldName = e.OldFullPath, NewName = e.FullPath, Cache = this };
+                        _actions.StartDelayedAction("renamed", renamePending.HandleEvent, TimeSpan.FromMilliseconds(1));
+                    }
                 }
-                
-                // switch to UI thread
-                if (renamePending == null)
-                {
-                    renamePending = new RenameAction { OldName = e.OldFullPath, NewName = e.FullPath, Cache = this };
-                    _actions.StartDelayedAction("renamed", renamePending.HandleEvent, TimeSpan.FromMilliseconds(1));
-                }
-            }
+            } catch
+            {}
         }
 
         class RenameAction {
