@@ -29,6 +29,7 @@ namespace BuildTaskTests
                 DropDir = Path.Combine(location, @"src\drop"),
                 MasterVersionFile = Path.Combine(location, @"src\Version\Version.props"),
                 CSharpVersionFile = Path.Combine(location, @"src\Version\Version.cs"),
+                ApplicationProjectFile = Path.Combine(location, @"src\Application\Application.csproj"),
                 WixFile = Path.Combine(location, @"src\XmlNotepadSetup\Product.wxs"),
                 UpdatesFile = Path.Combine(location, @"src\Updates\Updates.xml"),
                 AppManifestFile = Path.Combine(location, @"src\XmlNotepadPackage\Package.appxmanifest"),

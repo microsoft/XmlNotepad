@@ -119,6 +119,10 @@ namespace XmlNotepadBuildTasks
                 XDocument doc = XDocument.Load(this.ApplicationProjectFile);
                 var ns = doc.Root.Name.Namespace;
 
+                var prefix = "Microsoft.Web.WebView2";
+                var webView2Version = GetReferenceVersion(prefix,
+                    Path.Combine(Path.GetDirectoryName(this.ApplicationProjectFile), "..", "XmlNotepad", "XmlNotepad.csproj"));
+
                 // ClickOnce is wrongly editing the project file to "add" these items, when in reality
                 // they need to be inherited from version.props.
                 List<XElement> toRemove = new List<XElement>();
@@ -131,6 +135,21 @@ namespace XmlNotepadBuildTasks
                     foreach (var f in e.Elements(ns + "ApplicationVersion"))
                     {
                         toRemove.Add(f);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(webView2Version))
+                {
+                    var expected = prefix + "." + webView2Version;
+                    foreach (var e in doc.Descendants(ns + "Content"))
+                    {
+                        string src = (string)e.Attribute("Include");
+                        if (src.Contains(prefix) && !src.Contains(expected))
+                        {
+                            // might need to need to fix the version
+                            e.SetAttributeValue("Include", FixeIncludeVersion(src, prefix, expected));
+                            changed = true;
+                        }
                     }
                 }
 
@@ -156,6 +175,42 @@ namespace XmlNotepadBuildTasks
             return true;
         }
 
+        private string FixeIncludeVersion(string src, string prefix, string expected)
+        {
+            string[] parts = src.Split('\\');
+            for(int i = 0, n = parts.Length; i<n; i++)
+            {
+                var s = parts[i];
+                if (s.StartsWith(prefix))
+                {
+                    parts[i] = expected;
+                }
+            }
+            return string.Join("\\", parts);
+        }
+
+        private string GetReferenceVersion(string prefix, string projectFile)
+        {
+            XDocument doc = XDocument.Load(projectFile);
+            var ns = doc.Root.Name.Namespace;
+            foreach(var e in doc.Descendants(ns + "Reference"))
+            {
+                string include = (string)e.Attribute("Include");
+                if (include.Contains(prefix))
+                {
+                    string[] parts = include.Split(',');
+                    if (parts.Length > 1)
+                    {
+                        var version = parts[1].Trim().Split('=');
+                        if (version.Length > 0)
+                        {
+                            return version[1].Trim();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
 
         private bool UpdatePackageManifest(Version v)
         {

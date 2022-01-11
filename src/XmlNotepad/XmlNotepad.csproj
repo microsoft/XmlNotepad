@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  <UsingTask TaskName="XmlNotepadBuildTasks.SyncVersions" AssemblyFile="$(SolutionDir)BuildTasks\XmlNotepadBuildTasks.dll" />
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
@@ -8,10 +9,8 @@
     <ProjectGuid>{E401BDD0-8862-4818-98BD-83E457607E16}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
-    <AssemblyKeyContainerName>
-    </AssemblyKeyContainerName>
+    <ApplicationIcon></ApplicationIcon>
+    <AssemblyKeyContainerName></AssemblyKeyContainerName>
     <AssemblyName>Microsoft.XmlNotepad</AssemblyName>
     <AssemblyOriginatorKeyFile>$(MYKEYFILE)</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -21,15 +20,12 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XmlNotepad</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartupObject>
-    </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
+    <StartupObject></StartupObject>
+    <FileUpgradeFlags></FileUpgradeFlags>
     <TargetZone>LocalIntranet</TargetZone>
     <GenerateManifests>false</GenerateManifests>
     <SignAssembly>true</SignAssembly>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <UpgradeBackupLocation></UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <OldToolsVersion>3.5</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
@@ -42,32 +38,26 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
+    <ConfigurationOverrideFile></ConfigurationOverrideFile>
     <DefineConstants>TRACE;DEBUG;WHIDBEY</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile></DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn></NoWarn>
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -80,16 +70,13 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
+    <ConfigurationOverrideFile></ConfigurationOverrideFile>
     <DefineConstants>TRACE;WHIDBEY</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile></DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn></NoWarn>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -149,8 +136,7 @@
     <Compile Include="XmlTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="XmlTreeViewFindTarget.cs">
-    </Compile>
+    <Compile Include="XmlTreeViewFindTarget.cs"></Compile>
     <Compile Include="XsltControl.cs" />
     <Compile Include="XsltControl.Designer.cs">
       <DependentUpon>XsltControl.cs</DependentUpon>
@@ -237,14 +223,14 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1020.30, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1020.30\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1072.54, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1072.54\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1020.30, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1020.30\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1072.54, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1072.54\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1020.30, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1020.30\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1072.54, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1072.54\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="SgmlReaderDll, Version=1.8.24.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.25\lib\net47\SgmlReaderDll.dll</HintPath>
@@ -305,12 +291,16 @@
       <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <Target Name="SyncVersionsTarget">
+    <SyncVersions MasterVersionFile="$(SolutionDir)Version\Version.props" CSharpVersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" ApplicationProjectFile="$(SolutionDir)Application\Application.csproj" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" />
+  </Target>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncVersionsTarget</CoreBuildDependsOn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent></PreBuildEvent>
+    <PostBuildEvent></PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -318,8 +308,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1072.54\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1072.54\build\Microsoft.Web.WebView2.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\Microsoft.Web.WebView2.targets')" />
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1072.54\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1072.54\build\Microsoft.Web.WebView2.targets')" />
 </Project>
