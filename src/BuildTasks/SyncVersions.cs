@@ -338,7 +338,7 @@ namespace XmlNotepadBuildTasks
         {
             if (!System.IO.Directory.Exists(this.DropDir))
             {
-                Log.LogError("Drop dir does not exist: " + this.DropDir);
+                // PublishDrop.cmd hasn't been run yet, so skip it.
                 return false;
             }
 
@@ -364,9 +364,9 @@ namespace XmlNotepadBuildTasks
 
         private bool UpdateDropDirectory(XDocument wixdoc, XElement parent, string dir)
         {
-            if (!System.IO.Directory.Exists(dir))
+            if (!System.IO.Directory.Exists(this.DropDir))
             {
-                Log.LogError("Drop dir does not exist: " + dir);
+                // PublishDrop.cmd hasn't been run yet, so skip it.
                 return false;
             }
 
