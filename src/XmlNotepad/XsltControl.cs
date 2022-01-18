@@ -570,7 +570,7 @@ namespace XmlNotepad
                             {
                                 transform.Transform(xmlReader, null, ms);
                                 ms.Seek(0, SeekOrigin.Begin);
-                                Utilities.WriteFileWithoutBOM(ms, outpath);
+                                EncodingHelpers.WriteFileWithoutBOM(ms, outpath);
                             }
                         }
                         else
@@ -801,9 +801,10 @@ namespace XmlNotepad
 
         string GetDefaultStyles(string html)
         {
-            var font = (Font)this._settings["Font"];
-            html = html.Replace("$FONT_FAMILY", font != null ? font.FontFamily.Name : "Consolas, Courier New");
-            html = html.Replace("$FONT_SIZE", font != null ? font.SizeInPoints + "pt" : "10pt");
+            var font = (string)this._settings["FontFamily"];
+            var fontSize = (double)this._settings["FontSize"];
+            html = html.Replace("$FONT_FAMILY", font != null ? font : "Consolas, Courier New");
+            html = html.Replace("$FONT_SIZE", font != null ? fontSize + "pt" : "10pt");
 
             var theme = (ColorTheme)_settings["Theme"];
             var colors = (ThemeColors)_settings[theme == ColorTheme.Light ? "LightColors" : "DarkColors"];

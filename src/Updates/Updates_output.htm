@@ -1,0 +1,904 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Microsoft XML Notepad</title>
+    <style>
+          body, th, td { font-family: Verdana; font-size:x-small;}
+        </style>
+  </head>
+  <body>
+    <center>
+      <table width="600" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center" bgcolor="teal" style="height: 29px"><span style="color:white;background:teal;font-size:18pt">Microsoft XML Notepad - Change History
+                </span></td>
+        </tr>
+        <tr>
+          <td><br><p></p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table border="1" cellpadding="2">
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.52</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Improve handling of on changes made to the loaded XML file outside of XML notepad.</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add theming to the default stylesheet.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.50</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Update icon on the XSLT output tab.</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Connect color theming to the default XSLT stylesheet.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.49</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add option to disable default XSLT stylesheet.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.48</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix single line text editor so it does not overlap the line below it.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix XSLT Output browse button so it brings up the Save As File Dialog.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix XSLT Output field so it honors a custom file extension entered by the user.</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add recent files drop down to XSLT input filename box.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.47</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix updater so it shows error messages if update check fails rather than misleading "up to date".</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.46</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix dynamic help bug introduced in the version 2.8.0.45.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.45</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      Add support for &lt;?xsl-output default="path"?&gt; as a way to provide a default output
+      filename to use the XSLT stylesheet.  You put this in the XML document along side the
+      &lt;?xml-stylesheet ...?&gt; instruction.  The path can include a folder and the file
+      extension will be overridden by the &lt;xsl:output method="..."&gt; information from the
+      stylesheet, so can specify "*" as the file extension, for example: &lt;?xsl-output default="hamlet.*"?&gt;
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.44</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      XSLT output files were being deleted too agressively.  They are only deleted now if they
+      have to be written to the %TEMP% folder.  Also show generated output file name in the xslt output
+      text box and only if the user changes this name will the previous generated file be deleted.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.43</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Make use of WebView2 a user specified option under new XSLT options section of Options dialog.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Add better error handling if WebView2 doesn't work.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Update the version on some dependent packages.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.42</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix bug in permissions for running HTML in the XSLT output tab.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.41</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix bug in XSLT output, github issue #115.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.40</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix handling of files in recent files list that no longer exist.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix handling of files that are renamed to .bak by another editor.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix bugs in Find/Replace clicking Replace repeatedly was broken.  Added unit tests to cover this case.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Remove Help/Index since it went to the same place as Help/Content.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.39</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix bug in XSL transform of documents fetched from http location.
+      Add unit test for this case.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.38</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix bug in rendering large documents using default stylesheet.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix layout bug of toolbar on high DPI screens.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.36</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix bug in support for non webview2 case.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Automatically register XML notepad with Open With dialog.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.35</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Added support for Chromium based WebView2 control for XSLT output.
+      You can download this from https://developer.microsoft.com/en-us/microsoft-edge/webview2/.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.33</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Ctrl+A short cut for SaveAs interferes with text editing, so removed Ctrl+A shortcut from SaveAs.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      One more fix to "openFileDialog1" default file name on schema dialog.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix tooltip in options dialog Default Text Editor option.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.32</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      Add user settable default text editor option for View Source.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix Schema dialog so it doesn't set filename to "openFileDialog1".
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix View/Source on http files (uses temp file).
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.31</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix memory usage bug to do with loading huge XML files.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Report XSLT transform times in the status bar.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.30</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      Enable [github issue #86](https://github.com/microsoft/XmlNotepad/issues/86) - allow an XmlNotepad.settings
+      file to be found in the same folder as XmlNotepad.exe and use this instead of the one in %LOCALAPPDATA%.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      See [github issue #86](https://github.com/microsoft/XmlNotepad/issues/86) - add a browse button to help
+      set XSLT output file name.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.29</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Fix [github issue #87](https://github.com/microsoft/XmlNotepad/issues/87) - bug in finding text in attribute values
+      and add unit tests to cover this.  Also fixed problem with stepping through multiple matches using F3 in one big paragraph.
+    </td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.28</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Thanks to Austin Wise for adding High DPI scaling which makes the fonts a lot less blurry on high DPI screens.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.27</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Minor fixes to XML stats output got github issues #76 and #77.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.26</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Provide a way to disable google analytics before installing XML Notepad.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.24</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Check XML diff files are different files.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.23</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add ability to import HTML files and convert them to XML using SgmlReader.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.19</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add optional google analytics so we can get an idea of usage.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.18</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix Dark Theme options editing and add new color for text editor background.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix performance bug to do with expanding too many nodes on save and on find.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.14</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Fix bug in current file address combobox.  Start implementing stylecop code cleanups.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.13</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Sync offline help so it matches the online help, fix some typos and add more info to options dialog help text.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.12</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add auto-completion in location combobox and increased history to 1000 filenames.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.11</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add support for "Dark" theme colors and a way to easily switch between light and dark theme.</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add transparent icons that look good on dark backgrounds</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.10</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix F1 help.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.9</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix locked file bug after doing xml comparison (github issue# 44).</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix BOM option so it is honored on XSLT output files also (github issue# 46).</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.7</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix problem with TLS 1.2 by upgrading to .NET Framework 4.7.2</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.8.0.0</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Merge fixes from shadolight and add options that control how XmlDiff behaves.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.21</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Merge change by Vincent Lepape which adds a new MaximumValueLength setting.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.18</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix some layout bugs that happen when system font size is increased beyond 100%.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.17</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add output file field to XSL Output tab which fixes problems with relative links in the XSLT output.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.16</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Thanks to Steve Romanow for fixing some old codeplex URL references.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.12</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add XML stats under View menu.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.8</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add line numbers on the XML diff output.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix navigation of differences</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1.6</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add ability to import *.csv files.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7.1</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add new option to allow you to save XML files without the UTF-8 byte order mark.</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add SHA 256 digital signature for stronger security.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix regression in loading xml from http.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix regression in copy &amp; paste noedes.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.7</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Control over handling of long lines.  Added new options "Maximum Line Length" and "Autoformat Long Lines".</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.6</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Upgrade to .NET 4.0</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add support for picking different languages for Dynamic Help from xsd:documentation.</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add ability to select default File Associations for the app</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Find dialog should not always be "top most" window on the desktop</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Make text in ErrorList window "word wrap" so you can read long error messages</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix NormalizeText bug in XmlDiff reported by GalacticCowboy</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix bug in how schemaLocation attribute is resolved so that validation results are more predictable</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Add inner exception detail to error reporting, sometimes this provides more information about the error.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix XML compare for files containing greek characters as reported by Birbilis.</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix synchronization of vertical position across tree view and text view.</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.5</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add Proxy Authentication support</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Add formatting options</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Switch to out-of-process unit testing using IAccessibility only</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Unhandled exception on invalid syntax for xml declaration</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Unable to reset splitter if accidently moved off screen</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>XSLT transform is not reloaded when it is changed on disk</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Using a stylesheet containing a DTD doesn't work</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Find by XPath should show all namespaces prefixes in scope</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.4</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed location of updates.xml page so auto-updater works properly</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed problems in incremental search (CTRL+I) giving up too soon</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed layout to remove margins around the TabControls and prettied up the XSLT output tab</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed Find (CTRL+F), Copy (CTRL+C) and View Source commands in XSLT output window</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed options dialog resize bug</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix null reference exception on Window/New Window when window is empty</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Turn off reload loading of previously opened file</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.3</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added "change to" menu for changing node types</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added support for XInclude</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added DynamicHelp tab and Tooltips based on xsd:annotations</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added [next|prev] links to XmlDiff output window for navigating changes</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      Added support for loading XML documents containing illegal characters, reporting
+      these errors in the error list
+    </td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added "Export Errors" option for saving contents of the error list to a file</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added "Goto Definition" option for navigating to XIncludes and XSD schemas</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      Added keyboard accelerators for inserting a child element (Ctrl+Insert) and
+      a child attribute (Alt+Insert)
+    </td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added simple auto-updater to help user know when a new version is available</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added navigation combo box for easy entry of http file locations</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Improved unit test coverage to 87%</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed bug in task list when different sort order is in effect</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed bug in scroll bar not recalculating properly</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed focus issues with intellisense window</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Clear undo stack when new file is loaded</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed a few null reference exceptions</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed bug in restoring window size when window is closed in minimized or maximized state</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed xsi:type attribute validation (properly this time!)</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed performance of changing namespace values on a large document</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      Made it so that Escape key closes intellisense drop down window without cancelling the edit
+      which allows you to edit a value that is not in the list - which is important for simpleType unions
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed insert of processing instruction named 'xml'</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed schema cache when targetNamespace is changed</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fix performance and layout of find dialog</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Track edits to xml-stylesheet processing instruction so XSLT output tab stays in sync</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.2</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed Compare Files...</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed file open and save as filters so the dialogs work properly when you select a different file type</td>
+              </tr>
+              <tr>
+                <td style="background:teal;color:white"></td>
+                <td style="background:teal;color:white" align="center">
+        Version 2.1</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added keyboard accelerators for find again (F3) and reverse find (SHIFT+F3)</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>
+      Added support for loading IXmlBuilder and IXmlEditor implementations
+      from different assemblies using new vs:assembly attribute
+    </td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Made source code localizable by moving all error messages and dialog strings to .resx files</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>Added a default XSL transform</td>
+              </tr>
+              <tr>
+                <td style="background:MediumTurquoise" valign="top">Feature</td>
+                <td>New icons, a play on the Vista "Notepad" icons</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed install on Windows Vista machines</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Performance of expand node when validating</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed bug where changed schemas and transforms were not being re-loaded</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed spurious warnings about file being changed on disk</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed handling of very long text nodes</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed round trip of DTD content in &lt;!DOCTYPE&gt; tags</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed validation of elements with xsi:type attributes</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Scroll bar not updating when node expanded/collapsed in some cases</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Tree view needs horizontal scrollbar</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>
+      When Microsoft XML Notepad is minimized and file changes on disk, the file reload prompt is
+      confusing -- Microsoft XML Notepad should be restored first
+    </td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>XSL output window should pick up new xsl-transform based on input document</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Fixed unhandled exception when closing a group of XML notepad windows</td>
+              </tr>
+              <tr>
+                <td style="background:LightPink" valign="top">Bug</td>
+                <td>Added registration of "Edit" action for .xml file extension</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

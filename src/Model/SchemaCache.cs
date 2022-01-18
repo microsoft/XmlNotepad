@@ -161,16 +161,14 @@ namespace XmlNotepad
     {
         //MCorning 10.19.06 Added event so New Menu can populate submenu with nsuri values
         public event EventHandler Changed;
-        private IServiceProvider site;
         // targetNamespace -> CacheEntry
         Dictionary<string, CacheEntry> namespaceMap = new Dictionary<string, CacheEntry>();
         // sourceUri -> CacheEntry
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
         PersistentFileNames pfn;
 
-        public SchemaCache(IServiceProvider site)
+        public SchemaCache()
         {
-            this.site = site;
             this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
         }
 
@@ -329,7 +327,7 @@ namespace XmlNotepad
         {
             get
             {
-                return new SchemaResolver(this, site);
+                return new SchemaResolver(this);
             }
         }
 
@@ -642,11 +640,9 @@ namespace XmlNotepad
     {
         SchemaCache cache;
         ValidationEventHandler handler;
-        IServiceProvider site;
 
-        public SchemaResolver(SchemaCache cache, IServiceProvider site)
+        public SchemaResolver(SchemaCache cache)
         {
-            this.site = site;
             this.cache = cache;
         }
 

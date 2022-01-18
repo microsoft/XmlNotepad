@@ -24,14 +24,17 @@ namespace XmlNotepad
             InitializeComponent();
         }
 
+        public Font SelectedFont { get; set; }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null && Utilities.DynamicHelpEnabled)
+            HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
+            if (hp != null && hs.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.OptionsHelp;
+                hp.HelpNamespace = hs.OptionsHelp;
             }
 
             // now let the user resize it.
@@ -41,9 +44,10 @@ namespace XmlNotepad
         protected override void OnClosing(CancelEventArgs e)
         {
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null && Utilities.DynamicHelpEnabled)
+            HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
+            if (hp != null && hs.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.DefaultHelp;
+                hp.HelpNamespace = hs.DefaultHelp;
             }
 
             base.OnClosing(e);
@@ -74,7 +78,7 @@ namespace XmlNotepad
                 if (value != null)
                 {
                     this._settings = value.GetService(typeof(Settings)) as Settings;
-                    this._userSettings = new UserSettings(this._settings);
+                    this._userSettings = new UserSettings(this._settings) { Font = this.SelectedFont };
 
                     string[] hiddenProperties = new string[0];
                     if (this._settings.GetString("AnalyticsClientId") == "disabled")
@@ -91,6 +95,7 @@ namespace XmlNotepad
         private void OnButtonOKClick(object sender, System.EventArgs e)
         {
             this._userSettings.Apply();
+            this.SelectedFont = this._userSettings.Font;
             this.Close();
         }
 
@@ -159,7 +164,6 @@ namespace XmlNotepad
             {
                 this._settings = s;
 
-                this._font = (Font)this._settings["Font"];
                 this._theme = (ColorTheme)this._settings["Theme"];
                 _lightColors = (ThemeColors)this._settings["LightColors"];
                 _darkColors = (ThemeColors)this._settings["DarkColors"];
@@ -221,7 +225,30 @@ namespace XmlNotepad
 
             public void Apply()
             {
-                this._settings["Font"] = this._font;
+                // and copy to cross-platform settings.
+                this._settings["FontFamily"] = this._font.FontFamily.Name;
+                this._settings["FontSize"] = (double)this._font.SizeInPoints;
+                switch (this._font.Style)
+                {
+                    case FontStyle.Regular:
+                        this._settings["FontStyle"] = "Normal";
+                        this._settings["FontWeight"] = "Normal";
+                        break;
+                    case FontStyle.Bold:
+                        this._settings["FontStyle"] = "Normal";
+                        this._settings["FontWeight"] = "Bold";
+                        break;
+                    case FontStyle.Italic:
+                        this._settings["FontStyle"] = "Italic";
+                        this._settings["FontWeight"] = "Normal";
+                        break;
+                    case FontStyle.Underline:
+                        break;
+                    case FontStyle.Strikeout:
+                        break;
+                    default:
+                        break;
+                }
 
                 this._settings["Theme"] = this._theme;
 
@@ -279,7 +306,7 @@ namespace XmlNotepad
                 _noByteOrderMark = false;
                 _indentLevel = 2;
                 _indentChar = IndentChar.Space;
-                _newLineChars = Utilities.Escape("\r\n");
+                _newLineChars = Settings.EscapeNewLines("\r\n");
                 _language = "";
                 this._maximumLineLength = 10000;
                 this._maximumValueLength = short.MaxValue;

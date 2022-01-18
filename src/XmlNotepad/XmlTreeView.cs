@@ -1185,7 +1185,7 @@ namespace XmlNotepad
 
             if (name == "Font")
             {
-                this.Font = (Font)this._settings["Font"];
+                // this.Font = (Font)this._settings["Font"];
                 update = true;
             }
 

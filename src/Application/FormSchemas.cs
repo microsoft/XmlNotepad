@@ -50,9 +50,10 @@ namespace XmlNotepad
         protected override void OnLoad(EventArgs e)
         {
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null && Utilities.DynamicHelpEnabled)
+            HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
+            if (hp != null && hs.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.SchemaHelp;
+                hp.HelpNamespace = hs.SchemaHelp;
             }
 
             UpdateMenuState();
@@ -140,9 +141,10 @@ namespace XmlNotepad
                 e.Cancel = true;
 
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null && Utilities.DynamicHelpEnabled)
+            HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
+            if (hp != null && hs.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.DefaultHelp;
+                hp.HelpNamespace = hs.DefaultHelp;
             }
         }
 

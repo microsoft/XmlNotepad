@@ -189,7 +189,7 @@ namespace XmlNotepad
         public void Save(string filename)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
-            Utilities.InitializeWriterSettings(settings, this.Site as IServiceProvider);
+            EncodingHelpers.InitializeWriterSettings(settings, this.Site as IServiceProvider);
             using (XmlWriter w = XmlWriter.Create(filename, settings))
             {
                 w.WriteStartElement("ErrorList");

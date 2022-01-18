@@ -49,7 +49,7 @@ namespace XmlNotepad
         private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
             string url = labelURL.Text;
-            Utilities.OpenUrl(this.Handle, url);
+            WebBrowser.OpenUrl(this.Handle, url);
         }
 
     }

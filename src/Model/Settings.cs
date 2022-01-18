@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -246,16 +247,17 @@ namespace XmlNotepad
         /// </summary>
         public event SettingsEventHandler Changed;
 
+        private ValueMatchHandler comparer;
+
         /// <summary>
         /// Note this is an IDisposable object, so remember to call Dispose() on it during
         /// application shutdown.
         /// </summary>
-        public Settings()
+        public Settings(ValueMatchHandler comparer)
         {
             _instance = this;
-        }
-
-        public ValueMatchHandler SettingValueEquality { get; set; }
+            this.comparer = comparer;
+        }        
 
         public static Settings Instance
         {
@@ -320,6 +322,15 @@ namespace XmlNotepad
             }
         }
 
+
+        public void Remove(string name)
+        {
+            if (this._map.Contains(name))
+            {
+                this._map.Remove(name);
+            }
+        }
+
         /// <summary>
         /// Get or set a named setting passing the typed object to be serialized.
         /// </summary>
@@ -330,7 +341,7 @@ namespace XmlNotepad
             get { return this._map[name]; }
             set
             {
-                if (!this.SettingValueEquality(this._map[name], value))
+                if (!this.SettingValueMatches(this._map[name], value))
                 {
                     this._map[name] = value;
                     OnChanged(name);
@@ -490,7 +501,14 @@ namespace XmlNotepad
                 {
                     w.Formatting = Formatting.Indented;
                     w.WriteStartElement("Settings");
-                    foreach (string key in _map.Keys)
+                    // create save stability.
+                    List<string> keys = new List<string>();
+                    foreach(string key in _map.Keys)
+                    {
+                        keys.Add(key);
+                    }
+                    keys.Sort();
+                    foreach (string key in keys)
                     {
                         object value = _map[key];
                         if (value != null)
@@ -684,6 +702,119 @@ namespace XmlNotepad
             ThemeColors defaults = ThemeColors.GetDefaultColors(theme);
             table.Merge(defaults);
             return table;
+        }
+
+
+        private bool SettingValueMatches(object existing, object newValue)
+        {
+            if (existing == null && newValue != null)
+            {
+                return false;
+            }
+            else if (existing != null && newValue == null)
+            {
+                return false;
+            }
+            else if (existing is IXmlSerializable)
+            {
+                // then object comparison is enough.
+                return existing != newValue;
+            }
+            else if (existing is int i1)
+            {
+                return newValue is int i2 && i1 == i2;
+            }
+            else if (existing is string s1)
+            {
+                return newValue is String s2 && s1 == s2;
+            }
+            else if (existing is bool b1)
+            {
+                return newValue is bool b2 && b1 == b2;
+            }
+            else if (existing is ColorTheme ct1)
+            {
+                return newValue is ColorTheme ct2 && ct1 == ct2;
+            }
+            else if (existing is Uri u1)
+            {
+                return newValue is Uri u2 && u1 == u2;
+            }
+            else if (existing is DateTime dt1)
+            {
+                return newValue is DateTime dt2 && dt1 == dt2;
+            }
+            else if (existing is TimeSpan ts1)
+            {
+                return newValue is TimeSpan ts2 && ts1 == ts2;
+            }
+            else if (existing is IndentChar ic1)
+            {
+                return newValue is IndentChar ic2 && ic1 == ic2;
+            }
+            else if (existing is Color c1)
+            {
+                return newValue is Color c2 && c1 == c2;
+            }
+            else if (existing is ThemeColors tc1)
+            {
+                return newValue is ThemeColors tc2 && tc1 == tc2;
+            }
+            else if (existing is Hashtable h1)
+            {
+                if (newValue is Hashtable h2)
+                {
+                    foreach (var key in h1.Keys)
+                    {
+                        var v1 = h1[key];
+                        var v2 = h2[key];
+                        if (!SettingValueMatches(v1, v2))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+            else if (existing is Array a1)
+            {
+                if (newValue is Array a2)
+                {
+                    if (a1.Length != a2.Length)
+                    {
+                        return false;
+                    }
+                    for (int i = 0; i < a1.Length; i++)
+                    {
+                        object v1 = a1.GetValue(i);
+                        object v2 = a2.GetValue(i);
+                        if (!SettingValueMatches(v1, v2))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+            else if (this.comparer != null)
+            {
+                return this.comparer(existing, newValue);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string EscapeNewLines(string nl)
+        {
+            return nl.Replace("\r", "\\r").Replace("\n", "\\n");
+        }
+        public static string UnescapeNewLines(string nl)
+        {
+            return nl.Replace("\\r", "\r").Replace("\\n", "\n");
         }
 
     }

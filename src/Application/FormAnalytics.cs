@@ -25,7 +25,7 @@ namespace XmlNotepad
         private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
             string url = "https://microsoft.github.io/XmlNotepad/#help/analytics/";
-            Utilities.OpenUrl(this.Handle, url);
+            WebBrowser.OpenUrl(this.Handle, url);
         }
     }
 }

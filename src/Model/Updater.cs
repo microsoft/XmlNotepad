@@ -42,10 +42,10 @@ namespace XmlNotepad
         {
             this._settings = s;
             this._delayedActions = handler;
-            s["LastUpdateCheck"] = _lastCheck;
-            s["UpdateFrequency"] = _updateFrequency;
-            s["UpdateLocation"] = "";
-            s["UpdateEnabled"] = _enabled;
+            OnSettingChanged(this, "LastUpdateCheck");
+            OnSettingChanged(this, "UpdateFrequency");
+            OnSettingChanged(this, "UpdateLocation");
+            OnSettingChanged(this, "UpdateEnabled");
             s.Changed += new SettingsEventHandler(OnSettingChanged);
             StartTimer();
         }

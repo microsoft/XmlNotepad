@@ -375,9 +375,10 @@ namespace XmlNotepad
         public virtual void OnSiteChanged()
         {
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null && Utilities.DynamicHelpEnabled)
+            HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
+            if (hp != null && hs.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.FindHelp;
+                hp.HelpNamespace = hs.FindHelp;
             }
 
             this.SuspendLayout();
@@ -469,9 +470,10 @@ namespace XmlNotepad
             this._settings["SearchMatchCase"] = this.checkBoxMatchCase.Checked;
 
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
-            if (hp != null && Utilities.DynamicHelpEnabled)
+            HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
+            if (hp != null && hs.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.DefaultHelp;
+                hp.HelpNamespace = hs.DefaultHelp;
             }
 
             base.OnClosing(e);

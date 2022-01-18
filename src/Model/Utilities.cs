@@ -8,10 +8,27 @@ using Microsoft.Win32;
 
 namespace XmlNotepad
 {
-    public sealed class Utilities
+    public class FileHelpers
     {
-        private Utilities() { }
 
+        public static string ValidPath(string path)
+        {
+            Uri uri = new Uri(path);
+            if (uri.Scheme == "file")
+            {
+                if (!File.Exists(uri.LocalPath))
+                {
+                    // help file not installed?
+                    return "";
+                }
+            }
+            return path;
+        }
+
+    }
+
+    public class EncodingHelpers
+    {
         public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp)
         {
             settings.CheckCharacters = false;
@@ -30,98 +47,10 @@ namespace XmlNotepad
                     int indentLevel = (int)s["IndentLevel"];
                     char ch = (indentChar == IndentChar.Space) ? ' ' : '\t';
                     settings.IndentChars = new string(ch, indentLevel);
-                    settings.NewLineChars = Utilities.Unescape((string)s["NewLineChars"]);
+                    settings.NewLineChars = Settings.UnescapeNewLines((string)s["NewLineChars"]);
                 }
             }
         }
-
-        public static string HelpBaseUri
-        {
-            get
-            {
-                return "https://microsoft.github.io/XmlNotepad/";
-            }
-        }
-
-        public static string ValidPath(string path)
-        {
-            Uri uri = new Uri(path);
-            if (uri.Scheme == "file")
-            {
-                if (!File.Exists(uri.LocalPath))
-                {
-                    // help file not installed?
-                    return "";
-                }
-            }
-            return path;
-        }
-
-        public static string DefaultHelp
-        {
-            get
-            {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "index.html";
-                }
-                else
-                {
-                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\index.html");
-                }
-            }
-        }
-
-        public static string OptionsHelp
-        {
-            get
-            {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "help/options";
-                }
-                else
-                {
-                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\options.htm");
-                }
-            }
-        }
-
-        public static string SchemaHelp
-        {
-            get
-            {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "help/schemas";
-                }
-                else
-                {
-                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\schemas.htm");
-                }
-            }
-        }
-
-
-        public static string FindHelp
-        {
-            get
-            {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "help/find";
-                }
-                else
-                {
-                    return ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\find.htm");
-                }
-            }
-        }
-
-        public static bool OnlineHelpAvailable { get; set; }
-
-        public static bool DynamicHelpEnabled { get; set; }
-
 
         public static void WriteFileWithoutBOM(MemoryStream ms, string filename)
         {
@@ -181,16 +110,10 @@ namespace XmlNotepad
             }
             return null;
         }
+    }
 
-        public static string Escape(string nl)
-        {
-            return nl.Replace("\r", "\\r").Replace("\n", "\\n");
-        }
-        public static string Unescape(string nl)
-        {
-            return nl.Replace("\\r", "\r").Replace("\\n", "\n");
-        }
-
+    public static class WebBrowser
+    { 
         public static void OpenUrl(IntPtr hwnd, string url)
         {
             const int SW_SHOWNORMAL = 1;

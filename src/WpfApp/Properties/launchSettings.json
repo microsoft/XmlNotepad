@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WpfApp": {
+      "commandName": "Project",
+      "workingDirectory": "d:\\git\\lovettchris\\XmlNotepad\\src\\WpfApp\\bin\\Debug"
+    }
+  }
+}

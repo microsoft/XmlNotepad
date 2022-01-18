@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(SolutionDir)/Version/Version.props" />
+  <Import Project="$(ProjectDir)..\Version\Version.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>XmlNotepad</RootNamespace>

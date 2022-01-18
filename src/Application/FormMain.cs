@@ -42,7 +42,9 @@ namespace XmlNotepad
         private bool _helpAvailableHint = true;
         private Analytics _analytics;
         private Updater _updater;
+        private SchemaCache _schemaCache;
         private readonly DelayedActions _delayedActions;
+        private readonly HelpService _helpService = new HelpService();
         private readonly System.CodeDom.Compiler.TempFileCollection _tempFiles = new System.CodeDom.Compiler.TempFileCollection();
 
         private XmlCache _model;
@@ -53,12 +55,11 @@ namespace XmlNotepad
         public FormMain()
         {
             this.DoubleBuffered = true;
-            this._settings = new Settings()
+            this._settings = new Settings(SettingValueMatches)
             {
                 StartupPath = Application.StartupPath,
                 ExecutablePath = Application.ExecutablePath,
-                Resolver = new XmlProxyResolver(this),
-                SettingValueEquality = SettingValueMatches
+                Resolver = new XmlProxyResolver(this)
             };
 
             this._delayedActions = _settings.DelayedActions = new DelayedActions((action) =>
@@ -161,8 +162,6 @@ namespace XmlNotepad
             this.ContextMenuStrip = this.contextMenu1;
             New();
 
-            this._settings["SchemaCache"] = this._model.SchemaCache;
-
             _ = AsyncSetup();
         }
 
@@ -209,7 +208,7 @@ namespace XmlNotepad
                     client.UseDefaultCredentials = true;
                     try
                     {
-                        string html = await client.DownloadStringTaskAsync(Utilities.HelpBaseUri);
+                        string html = await client.DownloadStringTaskAsync(this._helpService.HelpBaseUri);
                         if (html.Contains("XML Notepad"))
                         {
                             this.BeginInvoke(new Action(FoundOnlineHelp));
@@ -225,21 +224,24 @@ namespace XmlNotepad
             if (!Directory.Exists(Path.Combine(Application.StartupPath, "Help")))
             {
                 // Must use online help in this case since we have no offline help
-                Utilities.OnlineHelpAvailable = true;
+                this._helpService.OnlineHelpAvailable = true;
             }
         }
 
         private void FoundOnlineHelp()
         {
-            Utilities.OnlineHelpAvailable = true;
+            this._helpService.OnlineHelpAvailable = true;
             InitializeHelp(this.helpProvider1);
         }
 
         protected virtual void SetDefaultSettings()
         {
             // populate default settings and provide type info.
-            Font f = new Font("Courier New", 10, FontStyle.Regular);
-            this._settings["Font"] = f;
+            this._settings["Font"] = "deleted";
+            this._settings["FontFamily"] = "Courier New";
+            this._settings["FontSize"] = 10.0;
+            this._settings["FontStyle"] = "Normal";
+            this._settings["FontWeight"] = "Normal";
             this._settings["Theme"] = ColorTheme.Light;
             this._settings["LightColors"] = ThemeColors.GetDefaultColors(ColorTheme.Light);
             this._settings["DarkColors"] = ThemeColors.GetDefaultColors(ColorTheme.Dark);
@@ -267,7 +269,7 @@ namespace XmlNotepad
             this._settings["AutoFormatOnSave"] = true;
             this._settings["IndentLevel"] = 2;
             this._settings["IndentChar"] = IndentChar.Space;
-            this._settings["NewLineChars"] = Utilities.Escape("\r\n");
+            this._settings["NewLineChars"] = Settings.EscapeNewLines("\r\n");
             this._settings["Language"] = "";
             this._settings["NoByteOrderMark"] = false;
 
@@ -296,6 +298,8 @@ namespace XmlNotepad
             this.Settings["AllowAnalytics"] = false;
             this.Settings["AnalyticsClientId"] = "";
 
+            this.Settings["SchemaCache"] = this._schemaCache = new SchemaCache();
+
             // default text editor
             string sysdir = Environment.SystemDirectory;
             this.Settings["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
@@ -304,37 +308,10 @@ namespace XmlNotepad
 
         private bool SettingValueMatches(object existing, object newValue)
         {
-            if (existing == null && newValue != null)
-            {
-                return false;
-            }
-            else if (existing != null && newValue == null)
-            {
-                return false;
-            }
-            else if (existing is int i1)
-            {
-                return newValue is int i2 && i1 == i2;
-            }
-            else if (existing is string s1)
-            {
-                return newValue is String s2 && s1 == s2;
-            }
-            else if (existing is bool b1)
-            {
-                return newValue is bool b2 && b1 == b2;
-            }
-            else if (existing is Font f1)
+            // just implement additional WinForms types not already implemented in the Settings class.
+            if (existing is Font f1)
             {
                 return newValue is Font f2 && f1 == f2;
-            }
-            else if (existing is ColorTheme ct1)
-            {
-                return newValue is ColorTheme ct2 && ct1 == ct2;
-            }
-            else if (existing is Uri u1)
-            {
-                return newValue is Uri u2 && u1 == u2;
             }
             else if (existing is Rectangle w1)
             {
@@ -347,64 +324,6 @@ namespace XmlNotepad
             else if (existing is Size z1)
             {
                 return newValue is Size z2 && z1 == z2;
-            }
-            else if (existing is DateTime dt1)
-            {
-                return newValue is DateTime dt2 && dt1 == dt2;
-            }
-            else if (existing is TimeSpan ts1)
-            {
-                return newValue is TimeSpan ts2 && ts1 == ts2;
-            }
-            else if (existing is IndentChar ic1)
-            {
-                return newValue is IndentChar ic2 && ic1 == ic2;
-            }
-            else if (existing is Color c1)
-            {
-                return newValue is Color c2 && c1 == c2;
-            }
-            else if (existing is ThemeColors tc1)
-            {
-                return newValue is ThemeColors tc2 && tc1 == tc2;
-            }
-            else if (existing is Hashtable h1)
-            {
-                if (newValue is Hashtable h2)
-                {
-                    foreach (var key in h1.Keys)
-                    {
-                        var v1 = h1[key];
-                        var v2 = h2[key];
-                        if (!SettingValueMatches(v1, v2))
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                return false;
-            }
-            else if (existing is Array a1)
-            {
-                if (newValue is Array a2)
-                {
-                    if (a1.Length != a2.Length)
-                    {
-                        return false;
-                    }
-                    for (int i = 0; i < a1.Length; i++)
-                    {
-                        object v1 = a1.GetValue(i);
-                        object v2 = a2.GetValue(i);
-                        if (!SettingValueMatches(v1, v2))
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                return false;
             }
             else
             {
@@ -482,10 +401,10 @@ namespace XmlNotepad
             hp.SetHelpNavigator(this, HelpNavigator.TableOfContents);
             hp.Site = this;
             // in case subclass has already set HelpNamespace
-            if (string.IsNullOrEmpty(hp.HelpNamespace) || Utilities.DynamicHelpEnabled)
+            if (string.IsNullOrEmpty(hp.HelpNamespace) || this._helpService.DynamicHelpEnabled)
             {
-                hp.HelpNamespace = Utilities.DefaultHelp;
-                Utilities.DynamicHelpEnabled = true;
+                hp.HelpNamespace = this._helpService.DefaultHelp;
+                this._helpService.DynamicHelpEnabled = true;
             }
         }
 
@@ -567,10 +486,12 @@ namespace XmlNotepad
 
         protected override void OnLoad(EventArgs e)
         {
+            LoadConfig();
+
             this._updater = new Updater(this._settings, this._delayedActions);
             this._updater.Title = this.Caption;
             this._updater.UpdateAvailable += new EventHandler<UpdateStatus>(OnUpdateAvailable);
-            LoadConfig();
+
             this.xmlTreeView1.OnLoaded();
             EnsureWindowBounds();
             base.OnLoad(e);
@@ -650,15 +571,15 @@ namespace XmlNotepad
         {
             if (this.toolStripMenuItemUpdate.Tag is bool updateAvailable && updateAvailable)
             {
-                Utilities.OpenUrl(this.Handle, this._updater.InstallerLocation);
+                WebBrowser.OpenUrl(this.Handle, this._updater.InstallerLocation);
             }
             else if (this._updater.InstallerHistory != null)
             {
-                Utilities.OpenUrl(this.Handle, this._updater.InstallerHistory);
+                WebBrowser.OpenUrl(this.Handle, this._updater.InstallerHistory);
             }
             else if (this._updater.UpdateLocation != null)
             {
-                Utilities.OpenUrl(this.Handle, this._updater.UpdateLocation.ToString());
+                WebBrowser.OpenUrl(this.Handle, this._updater.UpdateLocation.ToString());
             }
         }
 
@@ -689,13 +610,13 @@ namespace XmlNotepad
         protected override void OnClosed(EventArgs e)
         {
             this.xmlTreeView1.Close();
-            base.OnClosed(e);
             CleanupTempFiles();
             if (this._updater != null)
             {
                 this._updater.Dispose();
             }
             this._delayedActions.Close();
+            base.OnClosed(e);
         }
 
         private void OnMenuStripSizeChanged(object sender, EventArgs e)
@@ -996,7 +917,7 @@ namespace XmlNotepad
 
         protected virtual IIntellisenseProvider CreateIntellisenseProvider(XmlCache model, ISite site)
         {
-            return new XmlIntellisenseProvider(this._model, site);
+            return new XmlIntellisenseProvider(this._model);
         }
 
         protected override object GetService(Type service)
@@ -1007,7 +928,11 @@ namespace XmlNotepad
             }
             else if (service == typeof(SchemaCache))
             {
-                return this._model.SchemaCache;
+                return this._schemaCache;
+            }
+            else if (service == typeof(HelpService))
+            {
+                return this._helpService;
             }
             else if (service == typeof(TreeView))
             {
@@ -1026,7 +951,7 @@ namespace XmlNotepad
             {
                 if (null == this._model)
                 {
-                    this._model = new XmlCache((IServiceProvider)this, this._delayedActions);
+                    this._model = new XmlCache((IServiceProvider)this, this._schemaCache, this._delayedActions);
                 }
                 return this._model;
             }
@@ -1501,7 +1426,53 @@ namespace XmlNotepad
 
                     if (File.Exists(path))
                     {
+                        Debug.WriteLine(path);
                         _settings.Load(path);
+
+                        // convert old format to the new one
+                        object oldFont = this._settings["Font"];
+                        if (oldFont is string s && s != "deleted")
+                        {
+                            // migrate old setting to the new setting
+                            TypeConverter tc = TypeDescriptor.GetConverter(typeof(Font));
+                            try
+                            {
+                                Font f = (Font)tc.ConvertFromString(s);
+                                this._settings["FontFamily"] = f.FontFamily.Name;
+                                this._settings["FontSize"] = (double)f.SizeInPoints;
+                                switch (f.Style)
+                                {
+                                    case FontStyle.Regular:
+                                        this._settings["FontStyle"] = "Normal";
+                                        this._settings["FontWeight"] = "Normal";
+                                        break;
+                                    case FontStyle.Bold:
+                                        this._settings["FontStyle"] = "Normal";
+                                        this._settings["FontWeight"] = "Bold";
+                                        break;
+                                    case FontStyle.Italic:
+                                        this._settings["FontStyle"] = "Italic";
+                                        this._settings["FontWeight"] = "Normal";
+                                        break;
+                                    case FontStyle.Underline:
+                                        break;
+                                    case FontStyle.Strikeout:
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                this.Font = this.xmlTreeView1.Font = f;
+                                this._settings.Remove("Font");
+                            }
+                            catch { }
+                        } 
+                        else
+                        {
+                            // convert serialized settings to a winforms Font object.
+                            this._settings.Remove("Font");
+                            this.Font = this.xmlTreeView1.Font = this.GetFont();
+                        }
 
                         var lightColors = _settings.AddDefaultColors("LightColors", ColorTheme.Light);
                         if (lightColors.EditorBackground == Color.LightSteelBlue)
@@ -1699,8 +1670,11 @@ namespace XmlNotepad
                         this.tabControlLists.Height = height;
                     }
                     break;
-                case "Font":
-                    this.Font = (Font)this._settings["Font"];
+                case "FontFamily":
+                case "FontSize":
+                case "FontStyle":
+                case "FontWeight":
+                    // this.Font = GetFont();
                     break;
                 case "RecentFiles":
                     {
@@ -1721,6 +1695,36 @@ namespace XmlNotepad
                         break;
                     }
             }
+        }
+
+        private Font GetFont()
+        {
+            var name = (string)this._settings["FontFamily"];
+            var size = Math.Max(5, (double)this._settings["FontSize"]);
+            var style = (string)this._settings["FontStyle"];
+            var weight = (string)this._settings["FontWeight"];
+            FontStyle fs = FontStyle.Regular;
+            switch (style)
+            {
+                case "Normal":
+                    fs = FontStyle.Regular;
+                    break;
+                case "Italic":
+                    fs = fs = FontStyle.Italic;
+                    break;
+                case "Bold":
+                    fs = fs = FontStyle.Bold;
+                    break;
+            }
+            switch (weight)
+            {
+                case "Bold":
+                    fs = FontStyle.Bold;
+                    break;
+                default:
+                    break;
+            }
+            return new Font(name, (float)size, fs);
         }
 
         public void SaveErrors(string filename)
@@ -2255,10 +2259,13 @@ namespace XmlNotepad
             FormOptions options = new FormOptions();
             options.Owner = this;
             options.Site = this;
+            options.SelectedFont = this.Font;
             this.showingOptions = true;
             if (options.ShowDialog(this) == DialogResult.OK)
             {
                 this._updater.OnUserChange(oldLocation);
+                // this one doesn't go through the _settings object.
+                this.Font = this.xmlTreeView1.Font = options.SelectedFont;
             }
             this.showingOptions = false;
             _analytics.RecordFormOptions();
@@ -2718,7 +2725,7 @@ namespace XmlNotepad
                 }
             }
 
-            Utilities.OpenUrl(this.Handle, tempFile);
+            WebBrowser.OpenUrl(this.Handle, tempFile);
         }
 
         string ApplicationPath

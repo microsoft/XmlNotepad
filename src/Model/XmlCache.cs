@@ -39,10 +39,10 @@ namespace XmlNotepad
         public event EventHandler FileChanged;
         public event EventHandler<ModelChangedEventArgs> ModelChanged;
 
-        public XmlCache(IServiceProvider site, DelayedActions handler)
+        public XmlCache(IServiceProvider site, SchemaCache schemaCache, DelayedActions handler)
         {
             this._loader = new DomLoader(site);
-            this._schemaCache = new SchemaCache(site);
+            this._schemaCache = schemaCache;
             this._site = site;
             this.Document = new XmlDocument();
             this._actions = handler;
@@ -206,7 +206,7 @@ namespace XmlNotepad
                 uri = resolved;
             }
 
-            this._fileName = fileName;
+            this._fileName = uri.IsFile ? uri.LocalPath : fileName;
             this._lastModified = this.LastModTime;
             this._dirty = false;
             StartFileWatch();
@@ -351,7 +351,7 @@ namespace XmlNotepad
             {
                 StopFileWatch();
                 XmlWriterSettings s = new XmlWriterSettings();
-                Utilities.InitializeWriterSettings(s, this._site);
+                EncodingHelpers.InitializeWriterSettings(s, this._site);
 
                 var encoding = GetEncoding();
                 s.Encoding = encoding;
@@ -378,7 +378,7 @@ namespace XmlNotepad
                     }
                     ms.Seek(0, SeekOrigin.Begin);
 
-                    Utilities.WriteFileWithoutBOM(ms, filename);
+                    EncodingHelpers.WriteFileWithoutBOM(ms, filename);
 
                 }
                 else
@@ -475,7 +475,8 @@ namespace XmlNotepad
         {
             get
             {
-                if (Location.IsFile) return File.GetLastWriteTime(this._fileName);
+                Uri uri = this.Location;
+                if (uri.IsFile) return File.GetLastWriteTime(uri.LocalPath);
                 return DateTime.Now;
             }
         }

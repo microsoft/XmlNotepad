@@ -16,14 +16,12 @@ namespace XmlNotepad
         private IXmlTreeNode _node;
         private XmlNode _xn;
         private Checker _checker;
-        private readonly ISite _site;
 
         const string vsIntellisense = "http://schemas.microsoft.com/Visual-Studio-Intellisense";
 
-        public XmlIntellisenseProvider(XmlCache model, ISite site)
+        public XmlIntellisenseProvider(XmlCache model)
         {
             this._model = model;
-            this._site = site;
         }
 
         public virtual Uri BaseUri

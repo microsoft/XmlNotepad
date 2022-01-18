@@ -4,14 +4,7 @@
         xmlns:local="clr-namespace:XmlNotepad"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
-        Style="{DynamicResource MyWindowStyle}"
         Title="XML Notepad - {0}" Height="800" Width="1280">
-    <Window.Resources>
-        <Style x:Key="MyWindowStyle"
-           TargetType="Window"
-           BasedOn="{StaticResource DefaultWindowStyle}">
-        </Style>
-    </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:Commands.Exit" Executed="OnExit"/>
     </Window.CommandBindings>
@@ -121,7 +114,7 @@
             <MenuItem Header="Window">
                 <MenuItem Header="Dark" Click="OnDarkTheme"/>
                 <MenuItem Header="Light" Click="OnLightTheme"/>
-                <MenuItem Header="New Window"/>
+                <MenuItem Header="New Window" Click="OnNewWindow"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Contents"/>
@@ -220,9 +213,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Label VerticalAlignment="Center" Margin="5,2" >Location:</Label>
-            <TextBox x:Name="TextBoxAddress" Grid.Column="1" HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center" 
+            <ComboBox x:Name="ComboBoxAddress" Grid.Column="1" HorizontalAlignment="Stretch"
+                     VerticalAlignment="Center" KeyDown="OnComboBoxAddress_KeyDown" 
                      ToolTip="Enter local file path or http address of file to load"
+                     IsEditable="True"
                      />
             <ui:CommandBar Grid.Column="2">
                 <ui:AppBarButton>

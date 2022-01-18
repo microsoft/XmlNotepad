@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.IO;
-using System.Diagnostics;
-using SR = XmlNotepad.StringResources;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
-namespace XmlNotepad
+namespace XmlNotepad.Utilities
 {
-    public class RecentFilesComboBox
+    class RecentFilesComboBox
     {
         private const int _maxRecentMenuFiles = 20;
         bool addingFile;
@@ -19,15 +17,13 @@ namespace XmlNotepad
             this._files = files;
             files.RecentFilesChanged += OnRecentFilesChanged;
             this._location = location;
-            this._location.SelectedIndexChanged += new EventHandler(OnSelectedIndexChanged);
-            this._location.KeyDown += new KeyEventHandler(OnLocationKeyDown);
-            this._location.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            this._location.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            this._location.SelectionChanged += OnSelectedIndexChanged;
+            this._location.KeyDown += OnLocationKeyDown;
         }
 
         public bool SelectFirstItemByDefault { get; set; }
 
-        void OnSelectedIndexChanged(object sender, EventArgs e)
+        private void OnSelectedIndexChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!this.addingFile)
             {
@@ -39,13 +35,13 @@ namespace XmlNotepad
             }
         }
 
-        void OnLocationKeyDown(object sender, KeyEventArgs e)
+        private void OnLocationKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.Key == Key.Enter)
             {
                 // user has entered something new?
                 e.Handled = true;
-                e.SuppressKeyPress = true;
+                //e.SuppressKeyPress = true;
                 if (!string.IsNullOrEmpty(this._location.Text))
                 {
                     Uri uri = null;
@@ -56,10 +52,10 @@ namespace XmlNotepad
                         uri = new Uri(filename, UriKind.RelativeOrAbsolute);
                         this._files.OnRecentFileSelected(uri);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        var msg = string.Format(SR.InvalidFileName, this._location.Text);
-                        MessageBox.Show(msg, SR.LoadErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        var msg = ex.Message;
+                        MessageBox.Show(msg, "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 else if (this._location.SelectedItem is ComboFileItem item && item != null)
@@ -67,9 +63,9 @@ namespace XmlNotepad
                     this._files.OnRecentFileSelected(item.Location);
                 }
             }
-            else if (e.KeyCode == Keys.Escape)
+            else if (e.Key == Key.Escape)
             {
-                this._location.DroppedDown = false;
+                this._location.IsDropDownOpen = false;
             }
         }
 
@@ -95,14 +91,6 @@ namespace XmlNotepad
                 {
                     this._location.SelectedIndex = 0;
                 }
-
-                // sync autocompletion list
-                this._location.AutoCompleteCustomSource.Clear();
-                for (int i = 0; i < this._location.Items.Count; i++)
-                {
-                    ComboFileItem item = (ComboFileItem)this._location.Items[i];
-                    this._location.AutoCompleteCustomSource.Add(item.ToString());
-                }
             }
             finally
             {
@@ -126,52 +114,6 @@ namespace XmlNotepad
                     return Location.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped).Replace('/', '\\');
                 }
                 return Location.IsFile ? Location.LocalPath : Location.AbsoluteUri;
-            }
-        }
-
-    }
-
-    public class RecentFilesMenu
-    {
-        private const int _maxRecentMenuFiles = 20;
-        private ToolStripMenuItem _parent;
-        private RecentFiles _files;
-
-        public RecentFilesMenu(RecentFiles files, ToolStripMenuItem parent)
-        {
-            this._parent = parent;
-            this._files = files;
-            files.RecentFilesChanged += OnRecentFilesChanged;
-        }
-
-        private void OnRecentFilesChanged(object sender, EventArgs e)
-        {
-            // Synchronize menu items.
-            this._parent.Enabled = true;
-
-            ToolStripItemCollection ic = this._parent.DropDownItems;
-            ic.Clear();
-
-            // Add most recent files first.
-            Uri[] recentFiles = this._files.GetRelativeUris();
-            for (int i = recentFiles.Length - 1, j = 0; i >= 0 && j < _maxRecentMenuFiles; i--, j++)
-            {
-                Uri uri = recentFiles[i];
-                ToolStripItem item = new ToolStripMenuItem();
-                item.Click += new EventHandler(OnRecentFile);
-                ic.Add(item);
-                item.Text = uri.IsFile ? uri.LocalPath : uri.AbsoluteUri;
-                item.Tag = uri;
-            }
-        }
-
-        void OnRecentFile(object sender, EventArgs e)
-        {
-            ToolStripItem ts = (ToolStripItem)sender;
-            Uri location = ts.Tag as Uri;
-            if (location != null)
-            {
-                this._files.OnRecentFileSelected(location);
             }
         }
 

@@ -45,14 +45,16 @@ namespace XmlNotepad
             da.StartDelayTimer(action, delay);
         }
 
-        public void CancelDelayedAction(string name)
+        public bool CancelDelayedAction(string name)
         {
             DelayedAction action;
             if (_pending.TryGetValue(name, out action))
             {
                 action.StopDelayTimer();
                 _pending.Remove(name);
+                return true;
             }
+            return false;
         }
 
         public void Close()
