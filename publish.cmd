@@ -47,7 +47,7 @@ call AzurePublishClickOnce.cmd %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWAR
 if ERRORLEVEL 1 goto :uploadfailed
 
 echo ============ Done publishing ClickOnce installer to XmlNotepad ==============
- 
+
 if "%WINGET%"=="0" goto :skipwinget
 
 if not exist %WINGET_SRC% goto :nowinget
@@ -60,6 +60,17 @@ git pull
 git fetch upstream master
 git merge upstream/master
 git push
+
+set LATEST=
+for /f "usebackq" %%i in (`dir /b`) do (
+  set LATEST=%%i
+)
+
+if "%LATEST%" == "" goto :prepare
+echo Replacing "%LATEST%" version...
+rd /s /q "%LATEST%"
+
+:prepare
 popd
 
 echo Preparing winget package
