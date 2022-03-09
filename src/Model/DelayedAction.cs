@@ -13,8 +13,8 @@ namespace XmlNotepad
     public class DelayedActions
     {
         private bool _closed;
-        private DispatchHandler _handler;
         private Dictionary<string, DelayedAction> _pending = new Dictionary<string, DelayedAction>();
+        private static DispatchHandler Handler = null;
 
         /// <summary>
         /// Construct a new DelayedActions providing the action handler that knows how to switch
@@ -24,7 +24,15 @@ namespace XmlNotepad
         /// <param name="handler"></param>
         public DelayedActions(DispatchHandler handler)
         {
-            this._handler = handler;
+            Handler = handler;
+        }
+
+        public DelayedActions()
+        {
+            if (Handler == null)
+            {
+                throw new InvalidOperationException("the DispatchHandler is not set");
+            }
         }
 
         public void StartDelayedAction(string name, Action action, TimeSpan delay)
@@ -38,7 +46,7 @@ namespace XmlNotepad
             DelayedAction da;
             if (!_pending.TryGetValue(name, out da))
             {
-                da = new DelayedAction(this._handler, name);
+                da = new DelayedAction(Handler, name);
                 _pending[name] = da;
             }
 

@@ -1634,12 +1634,28 @@ namespace XmlNotepad
             UpdateCaption();
         }
 
+        bool _settinsReloadLock;
+
         protected virtual void OnSettingsChanged(object sender, string name)
         {
+            if (_settinsReloadLock)
+            {
+                return; 
+            }
             switch (name)
             {
                 case "File":
-                    this._settings.Reload(); // just do it!!
+                    // load the new settiongs but don't move the window or anything if another instances of xmlnotepad.exe changed
+                    // the settings.xml file.
+                    _settinsReloadLock = true;
+                    try
+                    {
+                        this._settings.Reload(); // just do it!!
+                    } 
+                    finally
+                    {
+                        _settinsReloadLock = false;
+                    }
                     break;
                 case "WindowBounds":
                     if (this._loading)

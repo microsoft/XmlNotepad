@@ -234,7 +234,7 @@ namespace XmlNotepad
         private string _filename;
         private FileSystemWatcher _watcher;
         private Hashtable _map = new Hashtable();
-        private System.Threading.Timer _timer;
+        private DelayedActions _delayedActions = null;
         private PersistentFileNames _pfn;
 
         public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
@@ -289,7 +289,10 @@ namespace XmlNotepad
         /// <summary>
         /// Object used to raise the change events on the right thread.
         /// </summary>
-        public DelayedActions DelayedActions { get; set; }
+        public DelayedActions DelayedActions { 
+            get => _delayedActions; 
+            set => _delayedActions = value; 
+        }
 
         /// <summary>
         /// This method is usually called right before you update the settings and save
@@ -313,9 +316,9 @@ namespace XmlNotepad
         public void OnChanged(string name)
         {
             var handler = this.Changed;
-            if (DelayedActions != null && handler != null)
+            if (this._delayedActions != null && handler != null)
             {
-                this.DelayedActions.StartDelayedAction("On" + name + "Changed", () =>
+                this._delayedActions.StartDelayedAction("On" + name + "Changed", () =>
                 {
                     Changed(this, name);
                 }, TimeSpan.FromMilliseconds(0)); // timespan of zero makes these immediate.
@@ -632,20 +635,15 @@ namespace XmlNotepad
             // events and we don't want to have lots of dialogs popping up asking the
             // user to reload settings, so we insert a delay to let the events
             // settle down, then we tell the hosting app that the settings have changed.
-            if (e.ChangeType == WatcherChangeTypes.Changed && this._timer == null)
+            if (e.ChangeType == WatcherChangeTypes.Changed && this._delayedActions != null)
             {
-                this._timer = new System.Threading.Timer(new TimerCallback(OnDelay), this, 2000, Timeout.Infinite);
+                this._delayedActions.StartDelayedAction("OnDelay", OnDelay, TimeSpan.FromSeconds(2));
             }
         }
 
-        void OnDelay(object state)
+        void OnDelay()
         {
             OnChanged("File");
-            if (this._timer != null)
-            {
-                this._timer.Dispose();
-                this._timer = null;
-            }
         }
 
         ~Settings()
@@ -661,11 +659,10 @@ namespace XmlNotepad
         protected virtual void Dispose(bool disposing)
         {
             this.StopWatchingFileChanges();
-            if (this._timer != null)
+            if (this._delayedActions != null)
             {
-                this._timer.Dispose();
+                this._delayedActions.Close();
             }
-            this._timer = null;
             GC.SuppressFinalize(this);
         }
 

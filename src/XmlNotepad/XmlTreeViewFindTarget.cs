@@ -223,6 +223,7 @@ namespace XmlNotepad
                 {
                     this._start = _list.Count - 1;
                 }
+            
                 if (this._position >= _list.Count)
                 {
                     this._position = _list.Count - 1;
@@ -372,7 +373,7 @@ namespace XmlNotepad
                             }
                             else if (IsNodeAfter(selectedNode, node))
                             {
-                                return (pos, false);
+                                return (pos - 1, false);
                             }
                         }
                     }
