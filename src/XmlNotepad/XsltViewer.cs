@@ -259,7 +259,7 @@ namespace XmlNotepad
             }
         }
 
-        private void OnRecentFileSelected(object sender, RecentFileEventArgs args)
+        private void OnRecentFileSelected(object sender, MostRecentlyUsedEventArgs args)
         {
             // do something?
         }

@@ -16,7 +16,10 @@ namespace XmlNotepad
         private TabNavigator _tnav;
         private FindFlags _lastFlags = FindFlags.Normal;
         private string _lastExpression;
-        private const int MaxRecentlyUsed = 15;
+        private MostRecentlyUsed _recentFindStrings;
+        private RecentlyUsedComboBox _recentFindCombo;
+        private MostRecentlyUsed _recentReplaceStrings;
+        private RecentlyUsedComboBox _recentReplaceCombo;
 
         private SearchFilter _filter;
 
@@ -35,6 +38,26 @@ namespace XmlNotepad
             this.comboBoxFilter.SelectedItem = this._filter;
             this.comboBoxFilter.SelectedValueChanged += new EventHandler(comboBoxFilter_SelectedValueChanged);
             this._tnav = new TabNavigator(this);
+
+            _recentFindStrings = new MostRecentlyUsed();
+            _recentFindStrings.RecentItemSelected += OnRecentFindSelected;
+            _recentFindCombo = new RecentlyUsedComboBox(_recentFindStrings, this.comboBoxFind);
+            _recentFindCombo.SelectFirstItemByDefault = false;
+
+            _recentReplaceStrings = new MostRecentlyUsed();
+            _recentReplaceStrings.RecentItemSelected += OnRecentReplaceSelected;
+            _recentReplaceCombo = new RecentlyUsedComboBox(_recentReplaceStrings, this.comboBoxReplace);
+            _recentReplaceCombo.SelectFirstItemByDefault = false;
+        }
+
+        private void OnRecentReplaceSelected(object sender, MostRecentlyUsedEventArgs e)
+        {
+            this.comboBoxReplace.Text = e.Selection;
+        }
+
+        private void OnRecentFindSelected(object sender, MostRecentlyUsedEventArgs e)
+        {
+            this.comboBoxFind.Text = e.Selection;
         }
 
         protected override void OnDpiChanged(DpiChangedEventArgs e)
@@ -135,6 +158,10 @@ namespace XmlNotepad
             try
             {
                 string replacement = this.comboBoxReplace.Text;
+                if (!string.IsNullOrWhiteSpace(replacement))
+                {
+                    this._recentReplaceStrings.AddItem(replacement);
+                }
                 _target.ReplaceCurrent(replacement);
                 FindNext(false);
             }
@@ -185,14 +212,7 @@ namespace XmlNotepad
             if (this.radioButtonUp.Checked) flags |= FindFlags.Backwards;
 
             string expr = this.Expression;
-            if (!this.comboBoxFind.Items.Contains(expr))
-            {
-                this.comboBoxFind.Items.Add(expr);
-                if (this.comboBoxFind.Items.Count > MaxRecentlyUsed)
-                {
-                    this.comboBoxFind.Items.RemoveAt(0);
-                }
-            }
+            this._recentFindStrings.AddItem(expr);
 
             _lastFlags = flags;
             _lastExpression = expr;
@@ -390,6 +410,9 @@ namespace XmlNotepad
             SetCheckBoxValue(this.checkBoxRegex, "SearchRegex");
             SetCheckBoxValue(this.checkBoxMatchCase, "SearchMatchCase");
 
+            _recentFindStrings.SetValues(this._settings["RecentFindStrings"] as string[]);
+            _recentReplaceStrings.SetValues(this._settings["RecentReplaceStrings"] as string[]);
+
             Size s = this.ClientSize;
             object o = this._settings["FindMode"];
             if (o != null)
@@ -460,6 +483,12 @@ namespace XmlNotepad
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            SaveSettings();
+            base.OnClosing(e);
+        }
+
+        public void SaveSettings()
+        { 
             this._settings["SearchWindowLocation"] = this.Location;
             // save replace mode size, since we will shink the size next time findOnly is set.
             this._settings["SearchSize"] = this.ClientSize;
@@ -469,14 +498,15 @@ namespace XmlNotepad
             this._settings["SearchRegex"] = this.checkBoxRegex.Checked;
             this._settings["SearchMatchCase"] = this.checkBoxMatchCase.Checked;
 
+            this._settings["RecentFindStrings"] = _recentFindStrings.GetLatestValues();
+            this._settings["RecentReplaceStrings"] = _recentReplaceStrings.GetLatestValues();
+
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
             HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
             if (hp != null && hs.DynamicHelpEnabled)
             {
                 hp.HelpNamespace = hs.DefaultHelp;
             }
-
-            base.OnClosing(e);
         }
 
         public IFindTarget Target

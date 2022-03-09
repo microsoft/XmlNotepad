@@ -106,7 +106,7 @@ namespace XmlNotepad
             _model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
 
             _recentFiles = new RecentFiles();
-            _recentFiles.RecentFileSelected += new RecentFileHandler(OnRecentFileSelected);
+            _recentFiles.RecentFileSelected += OnRecentFileSelected;
             _recentFileMenu = new RecentFilesMenu(_recentFiles, recentFilesToolStripMenuItem);
             _recentFilesCombo = new RecentFilesComboBox(_recentFiles, this.comboBoxLocation);
             _recentFilesCombo.SelectFirstItemByDefault = true;
@@ -251,6 +251,8 @@ namespace XmlNotepad
             this._settings["TreeViewSize"] = 0;
             this._settings["RecentFiles"] = new Uri[0];
             this._settings["RecentXsltFiles"] = new Uri[0];
+            this._settings["RecentFindStrings"] = new string[0];
+            this._settings["RecentReplaceStrings"] = new string[0];
             this._settings["SearchWindowLocation"] = new Point(0, 0);
             this._settings["SearchSize"] = new Size(0, 0);
             this._settings["DynamicHelpVisible"] = false;
@@ -1563,6 +1565,10 @@ namespace XmlNotepad
 
         public virtual void SaveConfig()
         {
+            if (this._search != null)
+            {
+                this._search.SaveSettings();
+            }
             this._settings.StopWatchingFileChanges();
             Rectangle r = (this.WindowState == FormWindowState.Normal) ? this.Bounds : this.RestoreBounds;
             this._settings["WindowBounds"] = r;
@@ -1748,11 +1754,11 @@ namespace XmlNotepad
             this._taskList.Save(filename);
         }
 
-        void OnRecentFileSelected(object sender, RecentFileEventArgs e)
+        void OnRecentFileSelected(object sender, MostRecentlyUsedEventArgs e)
         {
             if (!this.SaveIfDirty(true))
                 return;
-            string fileName = e.FileName.OriginalString;
+            string fileName = e.Selection;
             Open(fileName, true);
         }
 

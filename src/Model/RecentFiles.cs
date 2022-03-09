@@ -5,27 +5,13 @@ using System.IO;
 using System.Text;
 
 namespace XmlNotepad
-{
-    public class RecentFileEventArgs : EventArgs
-    {
-        public Uri FileName;
-
-        public RecentFileEventArgs(Uri fname)
-        {
-            this.FileName = fname;
-        }
-    }
-
-
-    public delegate void RecentFileHandler(object sender, RecentFileEventArgs args);
-
-
+{ 
     public class RecentFiles
     {
         private const int _maxRecentFiles = 1000;
         private List<Uri> _recentFiles = new List<Uri>();
 
-        public event RecentFileHandler RecentFileSelected;
+        public event EventHandler<MostRecentlyUsedEventArgs> RecentFileSelected;
         public event EventHandler RecentFilesChanged;
 
         private Uri _baseUri;
@@ -144,7 +130,7 @@ namespace XmlNotepad
         {
             if (this.RecentFileSelected != null && selected != null)
             {
-                this.RecentFileSelected(this, new RecentFileEventArgs(selected));
+                this.RecentFileSelected(this, new MostRecentlyUsedEventArgs(selected.OriginalString));
             }
         }
 
