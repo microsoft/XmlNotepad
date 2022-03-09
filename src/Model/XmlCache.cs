@@ -442,7 +442,7 @@ namespace XmlNotepad
             }
         }
 
-        class ReloadAction
+        internal class ReloadAction
         {
             public XmlCache Cache;
             public string FileName;
@@ -452,7 +452,7 @@ namespace XmlNotepad
             {
                 if (!Renamed)
                 {
-                    Cache.CheckReload(FileName);
+                    Cache.CheckReload(this, FileName);
                 }
             }
         }
@@ -463,7 +463,7 @@ namespace XmlNotepad
         {
             // Apart from retrying, the DelayedActions has the nice side effect of also 
             // collapsing multiple file system events into one action callback.
-            _retries = 3;
+            _retries = 5;
             if (pending == null)
             {
                 pending = new ReloadAction() { FileName = this._fileName, Cache = this };
@@ -481,13 +481,14 @@ namespace XmlNotepad
             }
         }
 
-        public void CheckReload(string fileName)
+        internal void CheckReload(ReloadAction action, string fileName)
         {
             if (!File.Exists(fileName))
             {
                 // file was deleted...
                 return;
             }
+
             pending = null;
             try
             {
@@ -503,13 +504,19 @@ namespace XmlNotepad
 
                     FireFileChanged();
                 }
-            }
-            finally
+            } 
+            catch (Exception ex)
             {
                 _retries--;
                 if (_retries > 0)
                 {
-                    _actions.StartDelayedAction("reload", Reload, TimeSpan.FromSeconds(1));
+                    Debug.WriteLine("Retrying after FileStream error: " + ex.Message);
+                    // perhaps the file is still locked by the writer, so try again in a bit.
+                    _actions.StartDelayedAction("reload", () => action.HandleReload(), TimeSpan.FromSeconds(1));
+                }
+                else
+                {
+                    Debug.WriteLine("Giving up after FileStream error: " + ex.Message);
                 }
             }
         }

@@ -68,7 +68,7 @@ for /f "usebackq" %%i in (`dir /b`) do (
 
 if "%LATEST%" == "" goto :prepare
 echo Replacing "%LATEST%" version...
-rd /s /q "%LATEST%"
+git mv "%LATEST%" %VERSION%
 
 :prepare
 popd
@@ -87,7 +87,7 @@ if ERRORLEVEL 1 goto :installfailed
 
 git checkout -b "clovett/xmlnotepad_%VERSION%"
 git add *
-git commit -m "new XML Noteapd version %VERSION%"
+git commit -a -m "new XML Noteapd version %VERSION%"
 git push -u origin "clovett/xmlnotepad_%VERSION%"
 
 echo =============================================================================================================
