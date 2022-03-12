@@ -1,4 +1,5 @@
 @echo off
+SETLOCAL EnableDelayedExpansion
 cd %~dp0
 SET ROOT=%~dp0
 set DRIVE=%~dd0
@@ -10,6 +11,19 @@ for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version
 set WINGET=1
 
 echo ### Publishing version %VERSION%...
+set WINGET=1
+set GITRELEASE=1
+set UPLOAD=1
+
+:parse
+if "%1"=="/nowinget" set WINGET=0
+if "%1"=="/norelease" set GITRELEASE=0
+if "%1"=="/noupload" set UPLOAD=0
+if "%1"=="" goto :done
+shift
+goto :parse
+
+:done
 where sed > nul 2>&1
 if ERRORLEVEL 1 goto :nosed
 if not EXIST publish goto :nobits
@@ -39,38 +53,50 @@ set bundle=src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSIO
 if not EXIST %bundle% goto :noappx
 set zipfile=publish\XmlNotepadSetup.zip
 
+
+if "%GITRELEASE%" == "0" goto :upload
+
 echo Creating new release for version %VERSION%
 xsl -e -s src\Updates\LatestVersion.xslt src\Updates\Updates.xml > notes.txt
 gh release create %VERSION% "%bundle%" "%zipfile%" --notes-file notes.txt --title "Xml Notepad %VERSION%"
 del notes.txt
 
+:upload
+if "%UPLOAD%" == "0" goto :winget
+
 echo Uploading ClickOnce installer to XmlNotepad
 call AzurePublishClickOnce.cmd %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
 if ERRORLEVEL 1 goto :uploadfailed
 
+
 echo ============ Done publishing ClickOnce installer to XmlNotepad ==============
+:winget
 
 if "%WINGET%"=="0" goto :skipwinget
-
 if not exist %WINGET_SRC% goto :nowinget
 
-:winget
 echo Syncing winget master branch
 pushd %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad
 git checkout master
+if ERRORLEVEL 1 goto :eof
 git pull
+if ERRORLEVEL 1 goto :eof
 git fetch upstream master
+if ERRORLEVEL 1 goto :eof
 git merge upstream/master
+if ERRORLEVEL 1 goto :eof
 git push
+if ERRORLEVEL 1 goto :eof
 
-set LATEST=
+set OLDEST=
 for /f "usebackq" %%i in (`dir /b`) do (
-  set LATEST=%%i
+  if "!OLDEST!" == "" set OLDEST=%%i
 )
 
-if "%LATEST%" == "" goto :prepare
-echo Replacing "%LATEST%" version...
-git mv "%LATEST%" %VERSION%
+if "!OLDEST!" == "" goto :prepare
+echo ======================== Replacing "!OLDEST!" version...
+
+git mv "!OLDEST!" %VERSION%
 
 :prepare
 popd
@@ -96,6 +122,7 @@ echo ===========================================================================
 echo Please create Pull Request for the new "clovett/xmlnotepad_%VERSION%" branch.
 
 call gitweb
+:skipwinget
 goto :eof
 
 :nobits
