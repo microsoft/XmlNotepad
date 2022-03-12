@@ -35,12 +35,14 @@ if ERRORLEVEL 1 goto :eof
 if exist publish\XmlNotepadSetup.zip del publish\XmlNotepadSetup.zip
 pwsh -command "Compress-Archive -Path src\XmlNotepadSetup\bin\Release\* -DestinationPath publish\XmlNotepadSetup.zip"
 
-if not EXIST src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle goto :noappx
+set bundle=src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+if not EXIST %bundle% goto :noappx
+set zipfile=publish\XmlNotepadSetup.zip
 
-echo Binaries to publish:
-echo %ROOT%publish\XmlNotepadSetup.zip
-echo %ROOT%src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
-set /p response=Please publish github release using the above binaries and press ENTER to continue...
+echo Creating new release for version %VERSION%
+xsl -e -s src\Updates\LatestVersion.xslt src\Updates\Updates.xml > notes.txt
+gh release create %VERSION% "%bundle%" "%zipfile%" --notes-file notes.txt --title "Xml Notepad %VERSION%"
+del notes.txt
 
 echo Uploading ClickOnce installer to XmlNotepad
 call AzurePublishClickOnce.cmd %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"

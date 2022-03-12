@@ -76,7 +76,7 @@ namespace XmlNotepad
 
                 FireRecentItemsChanged();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

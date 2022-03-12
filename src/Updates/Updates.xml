@@ -9,6 +9,12 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+	<version number="2.8.0.53">
+		<bug>Fix bugs in find/replace when matching nodes are consecutive.</bug>
+    <bug>Fix github issue #175 - preservation of most recent file after closing another xmlnotepad instance</bug>
+    <bug>Fix github issue #173 - Reload and unload of modified files</bug>
+		<feature>Github issue #174 - Add saved MRU list for Find/Replace dialog search strings.</feature>
+	</version>
   <version number="2.8.0.52">
     <bug>Improve handling of on changes made to the loaded XML file outside of XML notepad.</bug>
     <feature>Add theming to the default stylesheet.</feature>
