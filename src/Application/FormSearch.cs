@@ -80,10 +80,6 @@ namespace XmlNotepad
         {
             if (old != null)
             {
-                foreach (string s in old.comboBoxFind.Items)
-                {
-                    this.comboBoxFind.Items.Add(s);
-                }
                 this.comboBoxFilter.SelectedItem = old.comboBoxFilter.SelectedItem;
             }
             this.Site = site;

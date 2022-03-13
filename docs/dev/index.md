@@ -50,6 +50,10 @@ After building the app:
 This is a GUI test, so do not move your mouse or type on your keyboard or let your
 screen lock until this test is completed.  Total test run time is about 12 minutes.
 
+The tests all pass on Windows 10, but currently some tests fail on Windows 11, there seems to be
+some breaking changes in the Windows Automation layer that XML notepad tests are using.  This is
+being investigated.
+
 ### BuildTasks
 
 The `BuildTasks` project contains special MSBuild task that is used to synchronize the `Version.props` information
