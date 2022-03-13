@@ -10,8 +10,9 @@ The data is collected using Google Analytics and shared only with members of the
 development team. The data is used to prioritize future work to improve the features that are most
 popular.
 
-As a teaser, here is a map of countries where XML Notepad was used in July 2021.  That's super cool to see a healthy community of users
-and this motivates the team to keep XML notepad in tip-top shape.
+As a teaser, here is a map of countries where XML Notepad was used in July 2021.  That's super cool
+to see a healthy community of users and this motivates the team to keep XML notepad in tip-top
+shape.
 
 ![map](../assets/images/map.png)
 
@@ -20,9 +21,9 @@ dialog:
 
 ![popup](../assets/images/analytics.png)
 
-If you click `No` then the choice will be written to the XML Notepad settings file and it will not
-be prompted again. Analytics can be enabled or disabled any time using the `Allow analytics` option
-in the [Options dialog](options.md).
+We hope you don't but if you really need to click `No` then the choice will be written to the XML
+Notepad settings file and it will not be prompted again. Analytics can be enabled or disabled any
+time using the `Allow analytics` option in the [Options dialog](options.md).
 
 If you want to disable analytics before installing XML Notepad (perhaps in an enterprise wide
 distribution) then you can set this environment system wide on the end user's machine:
