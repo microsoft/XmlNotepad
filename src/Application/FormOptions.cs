@@ -183,6 +183,8 @@ namespace XmlNotepad
                 _enableXsltScripts = this._settings.GetBoolean("EnableXsltScripts");
                 _webBrowser = (this._settings.GetString("BrowserVersion") == "WebBrowser") ? WebBrowserVersion.WinformsWebBrowser : WebBrowserVersion.WebView2;
 
+                this._font = this._settings.GetFont();
+
                 this._xmlDiffIgnoreChildOrder = this._settings.GetBoolean("XmlDiffIgnoreChildOrder");
                 this._xmlDiffIgnoreComments = this._settings.GetBoolean("XmlDiffIgnoreComments");
                 this._xmlDiffIgnorePI = this._settings.GetBoolean("XmlDiffIgnorePI");

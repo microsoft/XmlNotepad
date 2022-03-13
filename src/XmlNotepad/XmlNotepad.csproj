@@ -119,6 +119,7 @@
     <Compile Include="proxy.cs" />
     <Compile Include="RecentFilesMenu.cs" />
     <Compile Include="RecentlyUsedComboBox.cs" />
+    <Compile Include="SettingExtensions.cs" />
     <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

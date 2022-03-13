@@ -3,7 +3,7 @@
 
 The interface consists of the following components:
 
-![Screen](../../assets/images/screen.png)
+![Screen](../assets/images/screen.png)
 
 See also [Keyboard](keyboard.md) Interface.
 
@@ -29,7 +29,7 @@ The TreeView on the left shows the XML document hierarchy in a tree showing elem
 When you have an associated XSD schema, [intellisense](intellisense.md) popups will prompt with expected node names and enumerated node values.
 
 ### XSD Annotations
-When you have an associated XSD schema, the xsd:documentation associated with the current node is displayed in a tooltip popup and in the "Dynamic Help" tab.
+When you have an associated XSD schema, the `xsd:documentation` associated with the current node is displayed in a tooltip popup and in the [Dynamic help](dynamic.md) tab.
 
 ### Validation Errors
 The Error List at the bottom shows [validation](validation.md) errors and warnings.

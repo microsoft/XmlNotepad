@@ -3,7 +3,7 @@
 
 The options dialog is available from the "Options..." item under the [View Menu](menus.md).
 
-![Options](../../assets/images/options.jpg)
+![Options](../assets/images/options.jpg)
 
 ### Analytics
 Options that enable or disable the collection of analymous app usage information.  See [Analytics](analytics.md).

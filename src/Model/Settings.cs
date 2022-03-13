@@ -681,6 +681,18 @@ namespace XmlNotepad
             return settingValue is int value ? value : defaultValue;
         }
 
+        public double GetDouble(string settingName, double defaultValue = 0)
+        {
+            object settingValue = this[settingName];
+            if (settingValue is double value)
+                return value;
+            else if (settingValue is float v)
+                return (double)v;
+            else if (settingValue is int i)
+                return (double)i;
+            return defaultValue;
+        }
+
         public string GetString(string settingName, string defaultValue = "")
         {
             object settingValue = this[settingName];

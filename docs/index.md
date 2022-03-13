@@ -40,7 +40,7 @@ There have been over 3 million downloads since then - so thanks to everyone who 
 - Built-in XML Diff tool.
 - Support for XInclude.
 - Handy "XML statistics" tool to summarize info about your XML documents.
-- Dynamic help from XSD annotations.
+- [Dynamic help](help/dynamic.md) from XSD annotations.
 - Goto definition to navigate includes and XSD schema information.
 - Vibrant community with many [updates and bug fixes](help/updates.md).
 

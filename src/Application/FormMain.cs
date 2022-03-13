@@ -1440,30 +1440,7 @@ namespace XmlNotepad
                             try
                             {
                                 Font f = (Font)tc.ConvertFromString(s);
-                                this._settings["FontFamily"] = f.FontFamily.Name;
-                                this._settings["FontSize"] = (double)f.SizeInPoints;
-                                switch (f.Style)
-                                {
-                                    case FontStyle.Regular:
-                                        this._settings["FontStyle"] = "Normal";
-                                        this._settings["FontWeight"] = "Normal";
-                                        break;
-                                    case FontStyle.Bold:
-                                        this._settings["FontStyle"] = "Normal";
-                                        this._settings["FontWeight"] = "Bold";
-                                        break;
-                                    case FontStyle.Italic:
-                                        this._settings["FontStyle"] = "Italic";
-                                        this._settings["FontWeight"] = "Normal";
-                                        break;
-                                    case FontStyle.Underline:
-                                        break;
-                                    case FontStyle.Strikeout:
-                                        break;
-                                    default:
-                                        break;
-                                }
-
+                                this._settings.SetFont(f);
                                 this.Font = this.xmlTreeView1.Font = f;
                                 this._settings.Remove("Font");
                             }
@@ -1473,7 +1450,7 @@ namespace XmlNotepad
                         {
                             // convert serialized settings to a winforms Font object.
                             this._settings.Remove("Font");
-                            this.Font = this.xmlTreeView1.Font = this.GetFont();
+                            this.Font = this.xmlTreeView1.Font = this._settings.GetFont();
                         }
 
                         var lightColors = _settings.AddDefaultColors("LightColors", ColorTheme.Light);
@@ -1719,35 +1696,6 @@ namespace XmlNotepad
             }
         }
 
-        private Font GetFont()
-        {
-            var name = (string)this._settings["FontFamily"];
-            var size = Math.Max(5, (double)this._settings["FontSize"]);
-            var style = (string)this._settings["FontStyle"];
-            var weight = (string)this._settings["FontWeight"];
-            FontStyle fs = FontStyle.Regular;
-            switch (style)
-            {
-                case "Normal":
-                    fs = FontStyle.Regular;
-                    break;
-                case "Italic":
-                    fs = fs = FontStyle.Italic;
-                    break;
-                case "Bold":
-                    fs = fs = FontStyle.Bold;
-                    break;
-            }
-            switch (weight)
-            {
-                case "Bold":
-                    fs = FontStyle.Bold;
-                    break;
-                default:
-                    break;
-            }
-            return new Font(name, (float)size, fs);
-        }
 
         public void SaveErrors(string filename)
         {
@@ -2280,8 +2228,8 @@ namespace XmlNotepad
             string oldLocation = (string)_settings["UpdateLocation"];
             FormOptions options = new FormOptions();
             options.Owner = this;
-            options.Site = this;
             options.SelectedFont = this.Font;
+            options.Site = this;
             this.showingOptions = true;
             if (options.ShowDialog(this) == DialogResult.OK)
             {
@@ -2649,40 +2597,7 @@ namespace XmlNotepad
 
             // todo: add UI for setting XmlDiffOptions.
 
-            XmlDiffOptions options = XmlDiffOptions.None;
-
-            if ((bool)this._settings["XmlDiffIgnoreChildOrder"])
-            {
-                options |= XmlDiffOptions.IgnoreChildOrder;
-            }
-            if ((bool)this._settings["XmlDiffIgnoreComments"])
-            {
-                options |= XmlDiffOptions.IgnoreComments;
-            }
-            if ((bool)this._settings["XmlDiffIgnorePI"])
-            {
-                options |= XmlDiffOptions.IgnorePI;
-            }
-            if ((bool)this._settings["XmlDiffIgnoreWhitespace"])
-            {
-                options |= XmlDiffOptions.IgnoreWhitespace;
-            }
-            if ((bool)this._settings["XmlDiffIgnoreNamespaces"])
-            {
-                options |= XmlDiffOptions.IgnoreNamespaces;
-            }
-            if ((bool)this._settings["XmlDiffIgnorePrefixes"])
-            {
-                options |= XmlDiffOptions.IgnorePrefixes;
-            }
-            if ((bool)this._settings["XmlDiffIgnoreXmlDecl"])
-            {
-                options |= XmlDiffOptions.IgnoreXmlDecl;
-            }
-            if ((bool)this._settings["XmlDiffIgnoreDtd"])
-            {
-                options |= XmlDiffOptions.IgnoreDtd;
-            }
+            XmlDiffOptions options = this._settings.GetXmlDiffOptions();
 
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
