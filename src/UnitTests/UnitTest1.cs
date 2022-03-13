@@ -1324,6 +1324,7 @@ namespace UnitTests
         }
         public FindDialog OpenFindDialog()
         {
+            this.window.Activate();
             this.window.InvokeAsyncMenuItem("findToolStripMenuItem");
             Window fd = this.window.WaitForPopup();
             return new FindDialog(fd);
