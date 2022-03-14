@@ -32,7 +32,6 @@ namespace XmlNotepad
             this.buttonReplace.Click += new EventHandler(buttonReplace_Click);
             this.buttonReplaceAll.Click += new EventHandler(buttonReplaceAll_Click);
             this.comboBoxFind.KeyDown += new KeyEventHandler(comboBoxFind_KeyDown);
-            this.comboBoxFind.LostFocus += new EventHandler(comboBoxFind_LostFocus);
 
             this.comboBoxFilter.Items.AddRange(new object[] { SearchFilter.Everything, SearchFilter.Names, SearchFilter.Text, SearchFilter.Comments });
             this.comboBoxFilter.SelectedItem = this._filter;
@@ -40,24 +39,12 @@ namespace XmlNotepad
             this._tnav = new TabNavigator(this);
 
             _recentFindStrings = new MostRecentlyUsed();
-            _recentFindStrings.RecentItemSelected += OnRecentFindSelected;
             _recentFindCombo = new RecentlyUsedComboBox(_recentFindStrings, this.comboBoxFind);
             _recentFindCombo.SelectFirstItemByDefault = false;
 
             _recentReplaceStrings = new MostRecentlyUsed();
-            _recentReplaceStrings.RecentItemSelected += OnRecentReplaceSelected;
             _recentReplaceCombo = new RecentlyUsedComboBox(_recentReplaceStrings, this.comboBoxReplace);
             _recentReplaceCombo.SelectFirstItemByDefault = false;
-        }
-
-        private void OnRecentReplaceSelected(object sender, MostRecentlyUsedEventArgs e)
-        {
-            this.comboBoxReplace.Text = e.Selection;
-        }
-
-        private void OnRecentFindSelected(object sender, MostRecentlyUsedEventArgs e)
-        {
-            this.comboBoxFind.Text = e.Selection;
         }
 
         protected override void OnDpiChanged(DpiChangedEventArgs e)
@@ -65,12 +52,7 @@ namespace XmlNotepad
             base.OnDpiChanged(e);
             this.PerformLayout();
         }
-
-        void comboBoxFind_LostFocus(object sender, EventArgs e)
-        {
-            return;
-        }
-
+        
         void comboBoxFilter_SelectedValueChanged(object sender, EventArgs e)
         {
             this._filter = (SearchFilter)this.comboBoxFilter.SelectedItem;
@@ -125,9 +107,9 @@ namespace XmlNotepad
             this.comboBoxFind.Focus();
         }
 
-        void OnFindDone()
+        void OnFindDone(bool didReplace)
         {
-            MessageBox.Show(this.Window, SR.FindNextDonePrompt, SR.ReplaceCompleteCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this.Window, SR.FindNextDonePrompt, didReplace ? SR.ReplaceCompleteCaption : SR.FindErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.comboBoxFind.Focus();
         }
 
@@ -154,12 +136,8 @@ namespace XmlNotepad
             try
             {
                 string replacement = this.comboBoxReplace.Text;
-                if (!string.IsNullOrWhiteSpace(replacement))
-                {
-                    this._recentReplaceStrings.AddItem(replacement);
-                }
-                _target.ReplaceCurrent(replacement);
-                FindNext(false);
+                bool didReplace = _target.ReplaceCurrent(replacement);
+                FindNext(false, didReplace);
             }
             catch (Exception ex)
             {
@@ -197,7 +175,7 @@ namespace XmlNotepad
             }
         }
 
-        bool FindNext(bool quiet)
+        bool FindNext(bool quiet, bool didReplace = false)
         {
 
             FindFlags flags = FindFlags.Normal;
@@ -208,6 +186,10 @@ namespace XmlNotepad
             if (this.radioButtonUp.Checked) flags |= FindFlags.Backwards;
 
             string expr = this.Expression;
+            if (expr.Contains(" ") && this.checkBoxWholeWord.Checked)
+            {
+                throw new Exception(SR.FindWholeWordOnlyFindsWords);
+            }
             this._recentFindStrings.AddItem(expr);
 
             _lastFlags = flags;
@@ -220,13 +202,17 @@ namespace XmlNotepad
             }
             if (!quiet)
             {
+                if (didReplace && rc == FindResult.None)
+                {
+                    rc = FindResult.NoMore;
+                }
                 if (rc == FindResult.None)
                 {
                     OnNotFound();
                 }
                 else if (rc == FindResult.NoMore)
                 {
-                    OnFindDone();
+                    OnFindDone(didReplace);
                 }
             }
             return rc == FindResult.Found;
@@ -261,7 +247,7 @@ namespace XmlNotepad
                 }
                 else if (rc == FindResult.NoMore)
                 {
-                    OnFindDone();
+                    OnFindDone(false);
                 }
             }
             catch (Exception ex)

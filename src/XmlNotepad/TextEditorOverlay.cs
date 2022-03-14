@@ -243,9 +243,15 @@ namespace XmlNotepad
             }
         }
 
-        public int SelectionStart { get { return this._textEditor.SelectionStart; } }
+        public int SelectionStart  => this._textEditor.SelectionStart;
 
         public int SelectionLength { get { return this._textEditor.SelectionLength; } }
+
+        public string Text { 
+            get { 
+                return this._textEditor?.Text; 
+            } 
+        }
 
         public bool Replace(int index, int length, string replacement)
         {

@@ -1350,6 +1350,7 @@ namespace UnitTests
             w.SendKeystrokes("^Ipi");
 
             FindDialog fd = OpenFindDialog();
+            fd.ClearFindCheckBoxes();
             fd.UseXPath = true;
 
             AssertNormalizedEqual(fd.FindString, "/processing-instruction('pi')"); // test pi
@@ -1552,6 +1553,7 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Test illegal regular expressions.");
             findDialog = OpenFindDialog();
+            findDialog.UseRegex = false; // make sure %e turns it on!
             findDialog.Window.DismissPopUp("\\%e{ENTER}");
             popup = findDialog.Window.ExpectingPopup("Find Error");
             popup.DismissPopUp("{ENTER}");
@@ -1593,6 +1595,7 @@ Prefix 'user' is not defined. ");
 
             w.SendKeystrokes("{HOME}");
             var findDialog = OpenReplaceDialog();
+            findDialog.ClearFindCheckBoxes();
 
             Trace.WriteLine("Toggle dialog using ctrl+f & ctrl+h");
             findDialog.Window.SendKeystrokes("^f");
@@ -1637,13 +1640,16 @@ Prefix 'user' is not defined. ");
             findDialog.Window.SendKeystrokes("%r"); // make the second change
             popup = findDialog.Window.ExpectingPopup("Replace Complete");
             popup.DismissPopUp("{ENTER}");
+            findDialog.Window.DismissPopUp("{ESC}");
 
+            // hack: weird windows 11 bug causes a focus problem after editing a node
+            // the Escape key fixes it.
+            window.SendKeystrokes("{ESC}");
             CheckOuterXml(@"
     The XXXXX markup in this version is Copyright © 1999 Jon Bosak.
     This work may freely be distributed on condition that it not be
     modified or altered in any way.
     ");
-            findDialog.Window.DismissPopUp("{ESC}");
 
             Undo();
             Undo(); // should move us back to the previous paragraph
@@ -1671,6 +1677,7 @@ Prefix 'user' is not defined. ");
 
             w.SendKeystrokes("{HOME}");
             var findDialog = OpenReplaceDialog();
+            findDialog.ClearFindCheckBoxes();
 
             Trace.WriteLine("Test we can replace 2 things in backwards sequence");
             w.SendKeystrokes("{HOME}");
@@ -1682,6 +1689,10 @@ Prefix 'user' is not defined. ");
             var popup = findDialog.Window.ExpectingPopup("Replace Complete");
             popup.DismissPopUp("{ENTER}");
             findDialog.Window.DismissPopUp("{ESC}");
+
+            // hack: weird windows 11 bug causes a focus problem after editing a node
+            // the Escape key fixes it.
+            window.SendKeystrokes("{ESC}");
             CheckOuterXml(@"XXXXX version by Jon Bosak, 1996-1999.");
 
             Undo();
