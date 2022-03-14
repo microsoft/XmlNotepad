@@ -778,7 +778,7 @@ namespace XmlNotepad
             if (v != null)
             {
                 Version v2 = GetType().Assembly.GetName().Version;
-                return v2 > v;
+                return v > v2;
             }
             return false;
         }
