@@ -97,6 +97,7 @@ namespace UnitTests
             input.dx = x;
             input.dy = y;
             input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE_NOCOALESCE;
+            input.mouseData = 0;
             input.time = 0;
             return input;
         }
@@ -105,19 +106,27 @@ namespace UnitTests
         {
             MouseInput input = new MouseInput();
             input.type = (int)(InputType.INPUT_MOUSE);
-            input.dx = (x * 65536) / GetSystemMetrics(SM_CXSCREEN); ;
-            input.dy = (y * 65536) / GetSystemMetrics(SM_CYSCREEN); ;
+            input.dx = (x * 65536) / GetSystemMetrics(SM_CXSCREEN);
+            input.dy = (y * 65536) / GetSystemMetrics(SM_CYSCREEN);
             input.dwFlags = (int)(MouseFlags.MOUSEEVENTF_MOVE_NOCOALESCE | MouseFlags.MOUSEEVENTF_VIRTUALDESK);
+            input.mouseData = 0;
             input.time = 0;
             return input;
         }
 
-        public static void MouseMoveTo(int x, int y, MouseButtons buttons)
+        public static void MouseMoveTo(int x, int y, MouseButtons buttons, bool buttonUp = false)
         {
             MouseInput input = GetVirtualMouseInput(x, y);
             MouseFlags flags = (MouseFlags)input.dwFlags;
             flags |= MouseFlags.MOUSEEVENTF_MOVE | MouseFlags.MOUSEEVENTF_ABSOLUTE;
-            flags = AddMouseDownFlags(flags, buttons);
+            if (buttonUp)
+            {
+                flags = AddMouseUpFlags(flags, buttons);
+            }
+            else
+            {
+                flags = AddMouseDownFlags(flags, buttons);
+            }
             input.dwFlags = (int)flags;
             SendInput(input);
             Application.DoEvents();
@@ -132,8 +141,9 @@ namespace UnitTests
             MouseDown(start, buttons);
             Application.DoEvents();
             Thread.Sleep(DragDelayDrop);
-            MouseDragTo(start, end, step, buttons);
+            MouseDragTo(start, end, step, buttons, true);
             Thread.Sleep(DragDelayDrop);
+            MouseDragTo(end, end, step, buttons, true);
             MouseUp(end, buttons);
             Application.DoEvents();
             Thread.Sleep(DragDelayDrop);
@@ -145,7 +155,7 @@ namespace UnitTests
             MouseDragTo(start, end, step, MouseButtons.None);
         }
 
-        public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons)
+        public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons, bool finishWithButtonUp = false)
         {
             // Interpolate and move mouse smoothly over to given location.                
             double dx = end.X - start.X;
@@ -157,9 +167,11 @@ namespace UnitTests
                 int tx = start.X + (int)((dx * i) / length);
                 int ty = start.Y + (int)((dy * i) / length);
                 MouseMoveTo(tx, ty, buttons);
+                Thread.Sleep(1);
+                Application.DoEvents();
             }
 
-            MouseMoveTo(end.X, end.Y, buttons);
+            MouseMoveTo(end.X, end.Y, buttons, finishWithButtonUp);
         }
 
         public static void MouseWheel(AutomationWrapper w, int clicks)
