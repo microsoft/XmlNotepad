@@ -653,6 +653,7 @@ namespace UnitTests {
             UseWholeWord = false;
             UseRegex = false;
             UseXPath = false;
+            FindString = "";
         }
 
         private bool GetCheckedState(string name)

@@ -55,6 +55,7 @@ nav:
     - Options:  help/options.md
     - Intellisense:  help/intellisense.md
     - Schemas:  help/schemas.md
+    - Dynamic Help:  help/dynamic.md
     - Validation:  help/validation.md
     - Xslt:  help/xslt.md
     - Custom Editors:  help/customeditors.md

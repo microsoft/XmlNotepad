@@ -27,6 +27,7 @@ namespace XmlNotepad
         private StringComparison _comp;
         private XmlNodeMatch _match;
         private IEditableView _ev;
+        private bool _doingReplace;
         private int _position; // current position in the list.
         private int _start; // this is the start position in the list around which we can wrap the find.
         private bool _resetPosition; // model has changed 'list' needs updating, but we don't want to forget our position either.
@@ -51,7 +52,8 @@ namespace XmlNotepad
                 this._doc = doc;
                 this._nsmgr = new XmlNamespaceManager(doc.NameTable);
             }
-            this._view.Model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
+            this._view.Model.ModelChanged -= OnModelChanged;
+            this._view.Model.ModelChanged += OnModelChanged;
 
             string expr = "//node()";
             if (_filter == SearchFilter.Comments)
@@ -74,25 +76,25 @@ namespace XmlNotepad
 
             foreach (XmlNode node in this._doc.SelectNodes(expr, this._nsmgr))
             {
-                MatchNode(node);
+                MatchNode(node, _list);
                 XmlElement e = node as XmlElement;
                 if (!IsXPath && e != null && e.HasAttributes)
                 {
                     foreach (XmlAttribute a in e.Attributes)
                     {
-                        MatchNode(a);
+                        MatchNode(a, _list);
                     }
                 }
             }
         }
 
-        private void MatchNode(XmlNode node)
+        private void MatchNode(XmlNode node, List<XmlNodeMatch> matches)
         {
             if (!IsXPath)
             {
                 if (_filter == SearchFilter.Comments && node.NodeType == XmlNodeType.Comment)
                 {
-                    MatchStrings(_list, node, node.Value, false);
+                    MatchStrings(matches, node, node.Value, false);
                 }
                 else
                 {
@@ -103,11 +105,11 @@ namespace XmlNotepad
                         node.NodeType == XmlNodeType.XmlDeclaration);
                     if ((_filter == SearchFilter.Names && namedNode) || _filter == SearchFilter.Everything)
                     {
-                        MatchStrings(_list, node, node.Name, true);
+                        MatchStrings(matches, node, node.Name, true);
                     }
                     if (_filter == SearchFilter.Text || _filter == SearchFilter.Everything)
                     {
-                        MatchStrings(_list, node, node.Value, false);
+                        MatchStrings(matches, node, node.Value, false);
                     }
                 }
             }
@@ -115,14 +117,17 @@ namespace XmlNotepad
             {
                 bool name = (node is XmlElement || node is XmlAttribute);
                 int len = name ? node.Name.Length : node.Value.Length;
-                _list.Add(new XmlNodeMatch(node, 0, len, name));
+                matches.Add(new XmlNodeMatch(node, 0, len, name));
             }
         }
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
         {
-            // Then the list of matching nodes we found might now be invalid!
-            ResetPosition();
+            if (!this._doingReplace)
+            {
+                // Then the list of matching nodes we found might now be invalid!
+                ResetPosition();
+            }
         }
 
         private void ResetPosition()
@@ -130,56 +135,94 @@ namespace XmlNotepad
             this._resetPosition = true;
         }
 
-        object[] a = new object[1];
-        char[] ws = new char[] { ' ', '\t', '\n', '\r', '.', ',', ';', '!', '\'', '"', '+', '=', '-', '<', '>', '(', ')' };
+        struct Token
+        {
+            public int Index;
+            public string Value;
+        }
+
+        IEnumerable<Token> Tokenize(string value)
+        {
+            int start = 0;
+            bool inWord = false;
+            for (int i = 0, n = value.Length; i < n; i++)
+            {
+                char c = value[i];
+                switch (c)
+                {
+                    case ' ':
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '.':
+                    case ',':
+                    case ';':
+                    case '!':
+                    case '\'':
+                    case '"':
+                    case '+':
+                    case '=':
+                    case '-':
+                    case '<':
+                    case '>':
+                    case '(':
+                    case ')':
+                        if (inWord)
+                        {
+                            inWord = false;
+                            yield return new Token() { Value = value.Substring(start, i - start), Index = start };
+                        }
+                        break;
+                    default:
+                        if (!inWord)
+                        {
+                            inWord = true;
+                            start = i;
+                        }
+                        break;
+                }
+            }
+            if (inWord)
+            {
+                yield return new Token() { Value = value.Substring(start, value.Length - start), Index = start };
+            }
+        }
 
         void MatchStrings(List<XmlNodeMatch> list, XmlNode node, string value, bool name)
         {
             if (string.IsNullOrEmpty(value))
                 return;
 
-            // Normalize the newlines the same way the text editor does so that we
-            // don't get off-by-one errors after newlines.
-            if (value.IndexOf('\n') >= 0 && value.IndexOf("\r\n") < 0)
+            if (this.WholeWord)
             {
-                value = value.Replace("\n", "\r\n");
-            }
-
-            a[0] = value;
-            object[] strings = a;
-
-            if (value.IndexOfAny(ws) >= 0 && WholeWord)
-            {
-                strings = value.Split(ws, StringSplitOptions.RemoveEmptyEntries);
-            }
-            int len = this._expression.Length;
-            int index = 0;
-
-            foreach (string word in strings)
-            {
-                index = value.IndexOf(word, index);
-
-                if (this._regex != null)
+                foreach (var token in Tokenize(value))
                 {
-                    foreach (Match m in this._regex.Matches(word))
-                    {
-                        list.Add(new XmlNodeMatch(node, m.Index + index, m.Length, name));
-                    }
-                }
-                else if (this.WholeWord)
-                {
+                    var index = token.Index;
+                    var word = token.Value;
+
                     if (string.Compare(this._expression, word, _comp) == 0)
                     {
-                        list.Add(new XmlNodeMatch(node, index, len, name));
+                        list.Add(new XmlNodeMatch(node, index, word.Length, name));
+                    }
+                }
+            }
+            else
+            {
+                if (this._regex != null)
+                {
+                    foreach (Match m in this._regex.Matches(value))
+                    {
+                        list.Add(new XmlNodeMatch(node, m.Index, m.Length, name));
                     }
                 }
                 else
                 {
-                    int j = word.IndexOf(this._expression, 0, _comp);
+                    int len = this._expression.Length;
+                    int j = value.IndexOf(this._expression, 0, _comp);
                     while (j >= 0)
                     {
-                        list.Add(new XmlNodeMatch(node, j + index, len, name));
-                        j = word.IndexOf(this._expression, j + len, _comp);
+                        list.Add(new XmlNodeMatch(node, j, len, name));
+                        j = value.IndexOf(this._expression, j + len, _comp);
                     }
                 }
             }
@@ -201,7 +244,6 @@ namespace XmlNotepad
 
         public FindResult FindNext(string expression, FindFlags flags, SearchFilter filter)
         {
-
             CheckCurrentState(expression, flags, filter);
 
             this._match = null;
@@ -260,6 +302,7 @@ namespace XmlNotepad
                 if (first)
                 {
                     this._start = s = pos;
+                    first = false; 
                 }
                 else if (pos == this._start)
                 {
@@ -270,6 +313,10 @@ namespace XmlNotepad
                 this._position = pos;
 
                 XmlNodeMatch m = _list[pos] as XmlNodeMatch;
+                if (m.Replaced)
+                {
+                    continue;
+                }
                 XmlNode node = m.Node;
                 this._match = m;
 
@@ -384,6 +431,21 @@ namespace XmlNotepad
             return (this.Backwards ? _list.Count : -1, false);
         }
 
+        private void FixOffsets(XmlNodeMatch match, string replaceWith)
+        {
+            int delta = replaceWith.Length - match.Length;
+            List<XmlNodeMatch> matches = new List<XmlNodeMatch>();
+            MatchNode(match.Node, matches);
+            int pos = 0;
+            foreach(var m in _list)
+            {
+                if (!m.Replaced && m.Node == match.Node && pos < matches.Count)
+                {
+                    m.Index = matches[pos++].Index;
+                }
+            }
+        }
+
         // returns true if the match node comes after the selected node in document order.
         bool IsNodeAfter(XmlNode selected, XmlNode match)
         {
@@ -472,8 +534,17 @@ namespace XmlNotepad
         {
             if (this._ev != null && this._ev.IsEditing && this._match != null)
             {
-                this._ev.ReplaceText(this._match.Index, this._match.Length, replaceWith);
-                ResetPosition();
+                try
+                {
+                    this._doingReplace = true;
+                    this._ev.ReplaceText(this._match.Index, this._match.Length, replaceWith);
+                    this._match.Replaced = true; // cannot match this node any more when we cycle around.
+                    this.FixOffsets(this._match, replaceWith);
+                } 
+                finally
+                {
+                    this._doingReplace = false;
+                }
                 return true;
             }
             return false;
@@ -570,6 +641,7 @@ namespace XmlNotepad
             int length;
             XmlNode node;
             bool name;
+            bool replaced;
 
             public XmlNodeMatch(XmlNode node, int index, int length, bool isName)
             {
@@ -579,10 +651,11 @@ namespace XmlNotepad
                 this.name = isName;
             }
 
-            public XmlNode Node { get { return this.node; } }
-            public int Index { get { return this.index; } }
-            public int Length { get { return this.length; } }
-            public bool IsName { get { return this.name; } }
+            public XmlNode Node => this.node;
+            public int Index { get => this.index; set => this.index = value; }
+            public int Length => this.length;
+            public bool IsName => this.name;
+            public bool Replaced { get => replaced; set => replaced = value; }
         }
 
     }

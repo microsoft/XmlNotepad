@@ -693,6 +693,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have selected the &apos;Match whole word&apos; check box but your find string contains spaces.  This doesn&apos;t make sense as the &apos;Match whole word&apos; option can only find individual matching words..
+        /// </summary>
+        public static string FindWholeWordOnlyFindsWords {
+            get {
+                return ResourceManager.GetString("FindWholeWordOnlyFindsWords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  Find.
         /// </summary>
         public static string FindWindowFindTitle {

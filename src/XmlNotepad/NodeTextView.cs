@@ -25,6 +25,7 @@ namespace XmlNotepad
         private Point _scrollPosition;
         private TextEditorOverlay _editor;
         private TreeNodeCollection _nodes;
+        private string _originalText;
 
         public event EventHandler<TreeViewEventArgs> AfterSelect;
 
@@ -425,6 +426,7 @@ namespace XmlNotepad
                 {
                     // see if control has possible values that cannot be known in xsd
                     IIntellisenseProvider provider = this.IntellisenseProvider;
+                    this._originalText = value != null ? value : this._selectedNode.Text;
                     string text = value != null ? value : GetNodeText(this._selectedNode);
                     if (provider != null)
                     {
@@ -449,11 +451,58 @@ namespace XmlNotepad
             get { return this._editor.IsEditing; }
         }
 
+        int TranslateToTextEditorOffset(int offset)
+        {
+            // the NormalizeNewLines messes with offsets computed from the XmlNode Value
+            // which may not have these windows style newlines.  This method corrects for that.   
+            string xmlValue = this._originalText;
+            if (!string.IsNullOrEmpty(xmlValue))
+            {
+                int xlen = xmlValue.Length;
+                string textBoxValue = this._editor.Text;
+                int len = textBoxValue.Length;
+                for (int i = 0, j = 0; i < len && j < xlen && j < offset; i++, j++)
+                {
+                    char a = xmlValue[j];
+                    char b = textBoxValue[i];
+                    if (a == '\n' && b == '\r')
+                    {
+                        offset++;
+                        i++;
+                    }
+                }
+            }
+            return offset;
+        }
+
+        int TranslateToXmlOffset(int offset)
+        {
+            // This method does the inverse of TranslateToTextEditorOffset.
+            string xmlValue = this._originalText;
+            if (!string.IsNullOrEmpty(xmlValue))
+            {
+                int xlen = xmlValue.Length;
+                string textBoxValue = this._editor.Text;
+                int len = textBoxValue.Length;
+                for (int i = 0, j = 0; i < len && j < xlen; i++, j++)
+                {
+                    char a = xmlValue[j];
+                    char b = textBoxValue[i];
+                    if (a == '\n' && b == '\r')
+                    {
+                        offset--;
+                        i++;
+                    }
+                }
+            }
+            return offset;
+        }
+
         public void SelectText(int index, int length)
         {
             if (this._editor.IsEditing)
             {
-                this._editor.Select(index, length);
+                this._editor.Select(TranslateToTextEditorOffset(index), length);
             }
         }
 
@@ -461,7 +510,7 @@ namespace XmlNotepad
         {
             if (this._editor.IsEditing)
             {
-                bool rc = this._editor.Replace(index, length, replacement);
+                bool rc = this._editor.Replace(TranslateToTextEditorOffset(index), length, replacement);
                 this._editor.EndEdit(false);
                 return rc;
             }
@@ -486,7 +535,7 @@ namespace XmlNotepad
             return this._editor.EndEdit(cancel);
         }
 
-        public int SelectionStart { get { return this._editor.SelectionStart; } }
+        public int SelectionStart { get { return TranslateToXmlOffset(this._editor.SelectionStart); } }
 
         public int SelectionLength { get { return this._editor.SelectionLength; } }
 
@@ -878,7 +927,7 @@ namespace XmlNotepad
             TreeNode start = node;
             while (node != null)
             {
-                string s = GetNodeText(node);
+                string s = node.Text.Trim();
                 if (s != null && s.StartsWith(toFind, StringComparison.CurrentCultureIgnoreCase))
                 {
                     this.SelectedNode = node;

@@ -1,9 +1,10 @@
+using System;
 using System.Drawing;
 using System.Xml;
 
 namespace XmlNotepad
 {
-
+    [Flags]
     public enum FindFlags {
         Normal = 0,
         Regex = 1,
