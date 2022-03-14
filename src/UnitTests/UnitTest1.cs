@@ -1630,7 +1630,7 @@ Prefix 'user' is not defined. ");
             w.SendKeystrokes("{HOME}");
             findDialog = OpenReplaceDialog();
             findDialog.Window.SendKeystrokes("will not find%r");
-            var popup = findDialog.Window.ExpectingPopup("Find Error");
+            var popup = findDialog.Window.ExpectingPopup("Replace Error");
             popup.DismissPopUp("{ENTER}");
 
             Trace.WriteLine("Test we can replace 2 things in sequence");
@@ -2154,7 +2154,7 @@ Prefix 'user' is not defined. ");
             bounds = resizer.Bounds;
             mid = bounds.Center();
             // Drag the resizer right a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X + 20, mid.Y), 1, MouseButtons.Left);
+            Mouse.MouseDragDrop(mid, new Point(mid.X + 50, mid.Y), 1, MouseButtons.Left);
             newbounds = resizer.Bounds;
             Assert.IsTrue(newbounds.Center().X > mid.X);
         }

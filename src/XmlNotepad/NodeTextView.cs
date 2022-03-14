@@ -927,7 +927,7 @@ namespace XmlNotepad
             TreeNode start = node;
             while (node != null)
             {
-                string s = node.Text.Trim();
+                string s = node.Text == null ? string.Empty : node.Text.Trim();
                 if (s != null && s.StartsWith(toFind, StringComparison.CurrentCultureIgnoreCase))
                 {
                     this.SelectedNode = node;
