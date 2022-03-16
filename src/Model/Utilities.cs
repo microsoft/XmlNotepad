@@ -47,7 +47,7 @@ namespace XmlNotepad
                     int indentLevel = (int)s["IndentLevel"];
                     char ch = (indentChar == IndentChar.Space) ? ' ' : '\t';
                     settings.IndentChars = new string(ch, indentLevel);
-                    settings.NewLineChars = Settings.UnescapeNewLines((string)s["NewLineChars"]);
+                    settings.NewLineChars = Settings.UnescapeNewLines(s.GetString("NewLineChars", "\r\n"));
                 }
             }
         }

@@ -1461,8 +1461,6 @@ namespace XmlNotepad
                         }
                         _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
 
-                        string newLines = (string)this._settings["NewLineChars"];
-
                         Uri location = (Uri)this._settings["FileName"];
                         // Load up the last file we were editing before - if it is local and still exists.
                         if (location != null && location.OriginalString != "/" && location.IsFile && File.Exists(location.LocalPath))
@@ -1693,6 +1691,9 @@ namespace XmlNotepad
                         }
                         break;
                     }
+                case "UpdateEnabled":
+                    this.checkUpdatesToolStripMenuItem.Visible = this._settings.GetBoolean("UpdateEnabled", true);
+                    break;
             }
         }
 
