@@ -266,6 +266,7 @@ namespace XmlNotepad
             this._settings["UpdateFrequency"] = TimeSpan.FromDays(20);
             this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
             this._settings["UpdateEnabled"] = true;
+            this._settings["DisableUpdateUI"] = false;
 
             this._settings["DisableDefaultXslt"] = false;
             this._settings["AutoFormatOnSave"] = true;
@@ -1691,8 +1692,8 @@ namespace XmlNotepad
                         }
                         break;
                     }
-                case "UpdateEnabled":
-                    this.checkUpdatesToolStripMenuItem.Visible = this._settings.GetBoolean("UpdateEnabled", true);
+                case "DisableUpdateUI":
+                    this.checkUpdatesToolStripMenuItem.Visible = !this._settings.GetBoolean("DisableUpdateUI", false);
                     break;
             }
         }
