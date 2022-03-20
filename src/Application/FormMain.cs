@@ -1447,14 +1447,12 @@ namespace XmlNotepad
                 }
                 _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
                         
-                        string updates = (string)this._settings["UpdateLocation"];
-                        if (string.IsNullOrEmpty(updates) ||
-                            updates.Contains("download.microsoft.com") ||
-                            updates.Contains("lovettsoftware.com"))
-                        {
-                            this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
-                        }
-                    }
+                string updates = (string)this._settings["UpdateLocation"];
+                if (string.IsNullOrEmpty(updates) ||
+                    updates.Contains("download.microsoft.com") ||
+                    updates.Contains("lovettsoftware.com"))
+                {
+                    this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
                 }
             }
             finally
