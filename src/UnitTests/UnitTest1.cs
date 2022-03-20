@@ -1586,6 +1586,48 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
+        public void TestReplaceMany()
+        {
+            ResetFindOptions();
+
+            Trace.WriteLine("TestReplace==========================================================");
+            string testFile = _testDir + "UnitTests\\test10.xml";
+            var w = LaunchNotepad(testFile);
+
+            w.SendKeystrokes("{HOME}");
+            w.SendKeystrokes("^c");
+            var original = GetClipboardText();
+            var findDialog = OpenReplaceDialog();
+
+            // replace all instances of "item" with something longer "xxxxxxx";
+            findDialog.Window.SendKeystrokes("item{TAB}xxxxxxx%a");
+            findDialog.Window.DismissPopUp("{ESC}");
+
+            w.SendKeystrokes("{ESC}{HOME}");
+            CheckOuterXml(original.Replace("item", "xxxxxxx"));
+
+            Trace.WriteLine("Check compound undo.");
+            Undo();
+            w.SendKeystrokes("{HOME}");
+            CheckOuterXml(original);
+
+            findDialog = OpenReplaceDialog();
+
+            // replace all instances of "item" with something shorter "YY";
+            findDialog.Window.SendKeystrokes("item{TAB}YY%a");
+            findDialog.Window.DismissPopUp("{ESC}");
+
+            w.SendKeystrokes("{ESC}{HOME}");
+            CheckOuterXml(original.Replace("item", "YY"));
+
+            Trace.WriteLine("Check compound undo.");
+            Undo();
+            w.SendKeystrokes("{HOME}");
+            CheckOuterXml(original);
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
         public void TestReplace()
         {
             ResetFindOptions();
@@ -1596,7 +1638,6 @@ Prefix 'user' is not defined. ");
 
             w.SendKeystrokes("{HOME}");
             var findDialog = OpenReplaceDialog();
-            findDialog.ClearFindCheckBoxes();
 
             Trace.WriteLine("Toggle dialog using ctrl+f & ctrl+h");
             findDialog.Window.SendKeystrokes("^f");
@@ -3064,6 +3105,20 @@ Prefix 'user' is not defined. ");
             //Trace.WriteLine("\tHelpTopic=" + node.GetHelpTopic(out filename));
         }
 
+        public string GetClipboardText()
+        {
+            int retries = 5;
+            while (retries-- > 0)
+            {
+                if (Clipboard.ContainsText())
+                {
+                    return Clipboard.GetText();                    
+                }
+                Sleep(250);
+            }
+
+            throw new ApplicationException("clipboard does not contain any text!");
+        }
         public override void CheckClipboard(string expected)
         {
             int retries = 5;
