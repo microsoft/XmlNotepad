@@ -2205,7 +2205,7 @@ Prefix 'user' is not defined. ");
             // Drag the resizer right a few pixels.
             Mouse.MouseDragDrop(mid, new Point(mid.X + 50, mid.Y), 1, MouseButtons.Left);
             newbounds = resizer.Bounds;
-            Assert.IsTrue(newbounds.Center().X > mid.X);
+            Assert.IsTrue(newbounds.Center().X >= mid.X);
         }
 
         /// <summary>
