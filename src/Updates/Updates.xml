@@ -11,6 +11,10 @@
   </application>
   <version number="2.8.0.55">
     <feature>Add "Settings Location" option to the Options dialog.</feature>
+    <feature>
+      Add 'DisableUpdateUI' setting that if True hides the 'Check for updates...' menu item
+      and the update related Options in the Options Dialog.
+    </feature>
     <bug>Github issue 178, 'update available' check was broken.</bug>
     <bug>Fix standalone installer so install location is shown in the appwiz.cpl control panel.</bug>
     <bug>Fix lots of bugs in the find/replace logic to do with multiple matching words in a single node value</bug>
@@ -20,12 +24,12 @@
     <bug>Refactor some settings extensions methods</bug>
     <feature>Add documentation on Dynamic Help tab.</feature>
   </version>
-	<version number="2.8.0.53">
-		<bug>Fix bugs in find/replace when matching nodes are consecutive.</bug>
+  <version number="2.8.0.53">
+    <bug>Fix bugs in find/replace when matching nodes are consecutive.</bug>
     <bug>Fix github issue #175 - preservation of most recent file after closing another xmlnotepad instance</bug>
     <bug>Fix github issue #173 - Reload and unload of modified files</bug>
-		<feature>Github issue #174 - Add saved MRU list for Find/Replace dialog search strings.</feature>
-	</version>
+    <feature>Github issue #174 - Add saved MRU list for Find/Replace dialog search strings.</feature>
+  </version>
   <version number="2.8.0.52">
     <bug>Improve handling of on changes made to the loaded XML file outside of XML notepad.</bug>
     <feature>Add theming to the default stylesheet.</feature>

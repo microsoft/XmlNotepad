@@ -80,13 +80,19 @@ namespace XmlNotepad
                     this._settings = value.GetService(typeof(Settings)) as Settings;
                     this._userSettings = new UserSettings(this._settings) { Font = this.SelectedFont };
 
-                    string[] hiddenProperties = new string[0];
+                    List<string> hiddenProperties = new List<string>();
                     if (this._settings.GetString("AnalyticsClientId") == "disabled")
                     {
-                        hiddenProperties = new string[] { "AllowAnalytics" };
+                        hiddenProperties.Add("AllowAnalytics");
+                    }
+                    if (this._settings.GetBoolean("DisableUpdateUI"))
+                    {
+                        hiddenProperties.Add("UpdateLocation");
+                        hiddenProperties.Add("EnableUpdate");
+                        hiddenProperties.Add("UpdateFrequency");
                     }
 
-                    MemberFilter filter = new MemberFilter(this._userSettings, hiddenProperties);
+                    MemberFilter filter = new MemberFilter(this._userSettings, hiddenProperties.ToArray());
                     this.propertyGrid1.SelectedObject = filter;
                 }
             }

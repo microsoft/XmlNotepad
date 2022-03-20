@@ -272,6 +272,7 @@ namespace XmlNotepad
             this._settings["UpdateFrequency"] = TimeSpan.FromDays(20);
             this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
             this._settings["UpdateEnabled"] = true;
+            this._settings["DisableUpdateUI"] = false;
 
             this._settings["DisableDefaultXslt"] = false;
             this._settings["AutoFormatOnSave"] = true;
@@ -1445,14 +1446,15 @@ namespace XmlNotepad
                     lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
                 }
                 _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
-
-                string newLines = (string)this._settings["NewLineChars"];
-                string updates = (string)this._settings["UpdateLocation"];
-                if (string.IsNullOrEmpty(updates) ||
-                    updates.Contains("download.microsoft.com") ||
-                    updates.Contains("lovettsoftware.com"))
-                {
-                    this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
+                        
+                        string updates = (string)this._settings["UpdateLocation"];
+                        if (string.IsNullOrEmpty(updates) ||
+                            updates.Contains("download.microsoft.com") ||
+                            updates.Contains("lovettsoftware.com"))
+                        {
+                            this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
+                        }
+                    }
                 }
             }
             finally
@@ -1675,6 +1677,9 @@ namespace XmlNotepad
                         }
                         break;
                     }
+                case "DisableUpdateUI":
+                    this.checkUpdatesToolStripMenuItem.Visible = !this._settings.GetBoolean("DisableUpdateUI", false);
+                    break;
             }
         }
 
