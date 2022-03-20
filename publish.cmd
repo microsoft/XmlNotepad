@@ -115,7 +115,7 @@ if ERRORLEVEL 1 goto :installfailed
 
 git checkout -b "clovett/xmlnotepad_%VERSION%"
 git add *
-git commit -a -m "new XML Noteapd version %VERSION%"
+git commit -a -m "XML Notepad version %VERSION%"
 git push -u origin "clovett/xmlnotepad_%VERSION%"
 
 echo =============================================================================================================

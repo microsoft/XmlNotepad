@@ -62,10 +62,10 @@ namespace UnitTests
 
         public static void MouseDown(Point pt, MouseButtons buttons)
         {
-            MouseMoveTo(pt.X, pt.Y, MouseButtons.None);
+            MouseMoveTo(pt.X, pt.Y);
             MouseInput input = GetAbsoluteMouseInput(pt.X, pt.Y);
             MouseFlags flags = AddMouseDownFlags((MouseFlags)input.dwFlags, buttons);
-            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_ABSOLUTE); // );// | MouseFlags.MOUSEEVENTF_MOVE 
+            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_ABSOLUTE); 
             SendInput(input);
         }
 
@@ -73,7 +73,7 @@ namespace UnitTests
         {
             MouseInput input = GetAbsoluteMouseInput(pt.X, pt.Y);
             MouseFlags flags = AddMouseUpFlags((MouseFlags)input.dwFlags, buttons);
-            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_ABSOLUTE); // );// | MouseFlags.MOUSEEVENTF_MOVE 
+            input.dwFlags = (int)(flags | MouseFlags.MOUSEEVENTF_ABSOLUTE); 
             SendInput(input);
         }
 
@@ -96,7 +96,7 @@ namespace UnitTests
             input.type = (int)(InputType.INPUT_MOUSE);
             input.dx = x;
             input.dy = y;
-            input.dwFlags = (int)MouseFlags.MOUSEEVENTF_MOVE_NOCOALESCE;
+            input.dwFlags = (int)(MouseFlags.MOUSEEVENTF_MOVE_NOCOALESCE | MouseFlags.MOUSEEVENTF_ABSOLUTE);
             input.mouseData = 0;
             input.time = 0;
             return input;
@@ -114,19 +114,10 @@ namespace UnitTests
             return input;
         }
 
-        public static void MouseMoveTo(int x, int y, MouseButtons buttons, bool buttonUp = false)
+        public static void MouseMoveTo(int x, int y)
         {
-            MouseInput input = GetVirtualMouseInput(x, y);
+            MouseInput input = GetAbsoluteMouseInput(x, y);
             MouseFlags flags = (MouseFlags)input.dwFlags;
-            flags |= MouseFlags.MOUSEEVENTF_MOVE | MouseFlags.MOUSEEVENTF_ABSOLUTE;
-            if (buttonUp)
-            {
-                flags = AddMouseUpFlags(flags, buttons);
-            }
-            else
-            {
-                flags = AddMouseDownFlags(flags, buttons);
-            }
             input.dwFlags = (int)flags;
             SendInput(input);
             Application.DoEvents();
@@ -141,9 +132,8 @@ namespace UnitTests
             MouseDown(start, buttons);
             Application.DoEvents();
             Thread.Sleep(DragDelayDrop);
-            MouseDragTo(start, end, step, buttons, true);
+            MouseDragTo(start, end, step);
             Thread.Sleep(DragDelayDrop);
-            MouseDragTo(end, end, step, buttons, true);
             MouseUp(end, buttons);
             Application.DoEvents();
             Thread.Sleep(DragDelayDrop);
@@ -152,10 +142,10 @@ namespace UnitTests
 
         public static void MouseMoveTo(Point start, Point end, int step)
         {
-            MouseDragTo(start, end, step, MouseButtons.None);
+            MouseDragTo(start, end, step);
         }
 
-        public static void MouseDragTo(Point start, Point end, int step, MouseButtons buttons, bool finishWithButtonUp = false)
+        public static void MouseDragTo(Point start, Point end, int step)
         {
             // Interpolate and move mouse smoothly over to given location.                
             double dx = end.X - start.X;
@@ -166,12 +156,12 @@ namespace UnitTests
             {
                 int tx = start.X + (int)((dx * i) / length);
                 int ty = start.Y + (int)((dy * i) / length);
-                MouseMoveTo(tx, ty, buttons);
+                MouseMoveTo(tx, ty);
                 Thread.Sleep(1);
                 Application.DoEvents();
             }
 
-            MouseMoveTo(end.X, end.Y, buttons, finishWithButtonUp);
+            MouseMoveTo(end.X, end.Y);
         }
 
         public static void MouseWheel(AutomationWrapper w, int clicks)

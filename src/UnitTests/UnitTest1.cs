@@ -849,66 +849,11 @@ namespace UnitTests
             }
         }
 
-        private class ResetSettings : IDisposable
-        {
-            private readonly string _backupSettings;
-            private readonly string _originalSettings;
-
-            public ResetSettings()
-            {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                _originalSettings = System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
-                _backupSettings = Path.GetTempPath() + "XmlNotepad.settings";
-                File.Copy(_originalSettings, _backupSettings, true);
-            }
-
-            public XmlDocument LoadSettings()
-            {
-                XmlDocument doc = new XmlDocument();
-                if (File.Exists(_originalSettings))
-                {
-                    doc.Load(_originalSettings);
-                }
-                return doc;
-            }
-
-            public void Dispose()
-            {
-                // restore the original settings.
-                bool ok = false;
-                for (int i = 5; i > 0; i--)
-                {
-                    try
-                    {
-                        File.Copy(_backupSettings, _originalSettings, true);
-                        ok = true;
-                        break;
-                    }
-                    catch (Exception)
-                    {
-                        i--;
-                    }
-                }
-
-                if (!ok)
-                {
-                    throw new ApplicationException("Why is this file '" + _originalSettings + "' still locked ?");
-                }
-
-                if (File.Exists(_backupSettings))
-                    File.Delete(_backupSettings);
-            }
-        }
-
-
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestOptionsDialog()
         {
             Trace.WriteLine("TestOptionsDialog==========================================================");
-
-            // Save original settings.
-            using var rs = new ResetSettings();
 
             var w = LaunchNotepad();
 
@@ -980,7 +925,7 @@ namespace UnitTests
             Sleep(2000); // give it time to write out the new settings.
 
             // verify persisted colors.
-            XmlDocument doc = rs.LoadSettings();
+            XmlDocument doc = LoadSettings();
             for (int i = 0, n = names.Length; i < n; i++)
             {
                 string ename = names[i];
@@ -1001,6 +946,17 @@ namespace UnitTests
             {
                 throw new ApplicationException("Unexpected colors found in XmlNotepad.settings file.");
             }
+        }
+
+        XmlDocument LoadSettings() 
+        {
+            XmlDocument doc = new XmlDocument();
+            string path = System.IO.Path.Combine(Path.GetTempPath(), "Microsoft", "Xml Notepad", "XmlNotepad.settings");
+            if (File.Exists(path))
+            {
+                doc.Load(path);
+            }
+            return doc;
         }
 
         [TestMethod]
@@ -1509,7 +1465,7 @@ Prefix 'user' is not defined. ");
             Point end = new Point(start.X + treeCenter.X - findCenter.X,
                                   start.Y + treeCenter.Y - findCenter.Y);
             Mouse.MouseClick(start, MouseButtons.Left);
-            Mouse.MouseDragTo(start, end, 5, MouseButtons.Left);
+            Mouse.MouseDragTo(start, end, 5);
             Mouse.MouseUp(end, MouseButtons.Left);
 
             // Refocus the combo box...
@@ -2153,12 +2109,12 @@ Prefix 'user' is not defined. ");
             Point treeTop = TopCenter(tree.Bounds, 2);
 
             Trace.WriteLine("--- Drag to top of tree view ---");
-            Mouse.MouseDragTo(endPt, treeTop, 5, MouseButtons.Left);
+            Mouse.MouseDragTo(endPt, treeTop, 5);
             Sleep(1000); // autoscroll time.
             // Drag out of tree view.
             Point titleBar = TopCenter(formBounds, 20);
             Trace.WriteLine("--- Drag to titlebar ---");
-            Mouse.MouseDragTo(treeTop, titleBar, 10, MouseButtons.Left);
+            Mouse.MouseDragTo(treeTop, titleBar, 10);
             Sleep(1000); // should now have 'no drop icon'.
             Mouse.MouseUp(titleBar, MouseButtons.Left);
 
@@ -2177,11 +2133,8 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestResizePanes()
         {
-            Trace.WriteLine("TestDragDrop==========================================================");
+            Trace.WriteLine("TestResizePanes==========================================================");
             var w = this.LaunchNotepad();
-
-            // Save original settings.
-            using var rs = new ResetSettings();
 
             Sleep(1000);
             Trace.WriteLine("Test task list resizers");
@@ -2195,7 +2148,7 @@ Prefix 'user' is not defined. ");
             var newbounds = resizer.Bounds;
             // bugbug: no idea why this sucker isn't moving.  Seems to be a bug with SendInput.
             // the product works fine, just an test automation bug.
-            Assert.IsTrue(newbounds.Center().Y <= mid.Y);
+            Assert.IsTrue(newbounds.Center().Y < mid.Y);
 
             Trace.WriteLine("Test tree view resizer");
             resizer = w.FindDescendant("XmlTreeResizer");
@@ -2205,7 +2158,7 @@ Prefix 'user' is not defined. ");
             // Drag the resizer right a few pixels.
             Mouse.MouseDragDrop(mid, new Point(mid.X + 50, mid.Y), 1, MouseButtons.Left);
             newbounds = resizer.Bounds;
-            Assert.IsTrue(newbounds.Center().X >= mid.X);
+            Assert.IsTrue(newbounds.Center().X > mid.X);
         }
 
         /// <summary>
