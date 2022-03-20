@@ -135,6 +135,7 @@ namespace XmlNotepad
             private Color _containerBackgroundColor;
             private Color _editorBackgroundColor;
             private string _updateLocation;
+            private SettingsLocation _settingsLocation;
             private bool _enableUpdate;
             private bool _noByteOrderMark;
             private bool _disableDefaultXslt;
@@ -177,6 +178,7 @@ namespace XmlNotepad
                 _indentChar = (IndentChar)this._settings["IndentChar"];
                 _newLineChars = this._settings.GetString("NewLineChars");
                 _language = this._settings.GetString("Language");
+                _settingsLocation = (SettingsLocation)this._settings.GetInteger("SettingsLocation", (int)SettingsLocation.Roaming);
                 _maximumLineLength = this._settings.GetInteger("MaximumLineLength");
                 _autoFormatLongLines = this._settings.GetBoolean("AutoFormatLongLines");
                 _ignoreDTD = this._settings.GetBoolean("IgnoreDTD");
@@ -267,6 +269,7 @@ namespace XmlNotepad
                 this._settings["IndentChar"] = _indentChar;
                 this._settings["NewLineChars"] = _newLineChars;
                 this._settings["NoByteOrderMark"] = _noByteOrderMark;
+                this._settings["SettingsLocation"] = (int)_settingsLocation;
 
                 this._settings["Language"] = ("" + this._language).Trim();
                 this._settings["MaximumLineLength"] = this._maximumLineLength;
@@ -542,6 +545,22 @@ namespace XmlNotepad
                     this._updateLocation = value;
                 }
             }
+
+            [SRCategory("SettingsCategory")]
+            [LocDisplayName("SettingsLocation")]
+            [SRDescription("SettingsLocationDescription")]
+            public SettingsLocation SettingsLocation
+            {
+                get
+                {
+                    return this._settingsLocation;
+                }
+                set
+                {
+                    this._settingsLocation = value;
+                }
+            }
+
 
             [SRCategory("FormatCategory")]
             [LocDisplayName("AutoFormatOnSave")]

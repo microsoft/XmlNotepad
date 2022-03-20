@@ -209,6 +209,13 @@ namespace XmlNotepad
         #endregion IXmlSerializable
     }
 
+    public enum SettingsLocation
+    {
+        Portable,
+        Local,
+        Roaming        
+    }
+
     /// <summary>
     /// Settings is a container for persistent settings that you want to store in a file
     /// like XmlNotepad.settings.  Each setting has a name and some typed value.  The
@@ -432,6 +439,7 @@ namespace XmlNotepad
                 {
                     this._filename = value;
 
+                    Directory.CreateDirectory(Path.GetDirectoryName(this._filename));
                     StopWatchingFileChanges();
 
                     this._watcher = new FileSystemWatcher(Path.GetDirectoryName(_filename),

@@ -1364,6 +1364,33 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string SettingsCategory {
+            get {
+                return ResourceManager.GetString("SettingsCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings location.
+        /// </summary>
+        public static string SettingsLocation {
+            get {
+                return ResourceManager.GetString("SettingsLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location of the XmlNotepad.settings file.
+        /// </summary>
+        public static string SettingsLocationDescription {
+            get {
+                return ResourceManager.GetString("SettingsLocationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click here to open the installer web page..
         /// </summary>
         public static string ShowInstallPage {

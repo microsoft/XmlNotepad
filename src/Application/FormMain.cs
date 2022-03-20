@@ -23,7 +23,7 @@ namespace XmlNotepad
     {
         private readonly UndoManager _undoManager;
         private Settings _settings;
-        private readonly string[] _args;
+        private SettingsLoader _loader;
         private readonly DataFormats.Format _urlFormat;
         private readonly RecentFiles _recentFiles;
         private readonly RecentFiles _recentXsltFiles;
@@ -48,12 +48,14 @@ namespace XmlNotepad
         private readonly System.CodeDom.Compiler.TempFileCollection _tempFiles = new System.CodeDom.Compiler.TempFileCollection();
 
         private XmlCache _model;
+        private bool _testing; // we are running a test.
 
         readonly private string _undoLabel; 
         readonly private string _redoLabel;
 
-        public FormMain()
+        public FormMain(bool testing)
         {
+            this._testing = testing;
             this.DoubleBuffered = true;
             this._settings = new Settings(SettingValueMatches)
             {
@@ -61,6 +63,7 @@ namespace XmlNotepad
                 ExecutablePath = Application.ExecutablePath,
                 Resolver = new XmlProxyResolver(this)
             };
+            this._loader = new SettingsLoader();
 
             this._delayedActions = _settings.DelayedActions = new DelayedActions((action) =>
             {
@@ -162,7 +165,10 @@ namespace XmlNotepad
             this.ContextMenuStrip = this.contextMenu1;
             New();
 
-            _ = AsyncSetup();
+            if (!testing)
+            {
+                _ = AsyncSetup();
+            }
         }
 
         private void DispatchAction(Action action)
@@ -331,12 +337,6 @@ namespace XmlNotepad
             {
                 return false;
             }
-        }
-
-        public FormMain(string[] args)
-            : this()
-        {
-            this._args = args;
         }
 
         public Settings Settings => _settings;
@@ -1384,100 +1384,75 @@ namespace XmlNotepad
             this.redoToolStripMenuItem.Text = this._redoLabel + " " + (cmd == null ? "" : cmd.Name);
         }
 
-        public virtual string ConfigFile
+
+        public virtual string TemporaryConfigFile
         {
             get
             {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string path = Path.GetTempPath();
                 Debug.Assert(!string.IsNullOrEmpty(path));
                 return System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
             }
         }
 
-        public virtual string LocalConfigFile
-        {
-            get
-            {
-                string path = Path.GetDirectoryName(this.GetType().Assembly.Location);
-                Debug.Assert(!string.IsNullOrEmpty(path));
-                return System.IO.Path.Combine(path, "XmlNotepad.settings");
-            }
-        }
-
         public virtual void LoadConfig()
         {
-            string path;
             try
             {
                 this._loading = true;
-                if (this._args != null && this._args.Length > 0)
+
+                if (this._testing)
                 {
-                    // When user passes arguments we skip the config file
-                    // This is for unit testing where we need consistent config!
-                    path = this._args[0];
-                    this._settings.FileName = this.ConfigFile;
+                    // always start with no settings.
+                    if (File.Exists(this.TemporaryConfigFile))
+                    {
+                        File.Delete(this.TemporaryConfigFile);
+                    }
+                    _settings.Load(this.TemporaryConfigFile);
                 }
-                else
+                else 
                 {
                     // allow user to have a local settings file (xcopy deployable).
-                    path = this.LocalConfigFile;
-                    if (!File.Exists(path))
+                    _loader.LoadSettings(_settings);
+                }
+
+                // convert old format to the new one
+                object oldFont = this._settings["Font"];
+                if (oldFont is string s && s != "deleted")
+                {
+                    // migrate old setting to the new setting
+                    TypeConverter tc = TypeDescriptor.GetConverter(typeof(Font));
+                    try
                     {
-                        path = this.ConfigFile;
+                        Font f = (Font)tc.ConvertFromString(s);
+                        this._settings.SetFont(f);
+                        this.Font = this.xmlTreeView1.Font = f;
+                        this._settings.Remove("Font");
                     }
+                    catch { }
+                } 
+                else
+                {
+                    // convert serialized settings to a winforms Font object.
+                    this._settings.Remove("Font");
+                    this.Font = this.xmlTreeView1.Font = this._settings.GetFont();
+                }
 
-                    if (File.Exists(path))
-                    {
-                        Debug.WriteLine(path);
-                        _settings.Load(path);
+                var lightColors = _settings.AddDefaultColors("LightColors", ColorTheme.Light);
+                if (lightColors.EditorBackground == Color.LightSteelBlue)
+                {
+                    // migrate to new default that looks better.
+                    lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
+                }
+                _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
 
-                        // convert old format to the new one
-                        object oldFont = this._settings["Font"];
-                        if (oldFont is string s && s != "deleted")
-                        {
-                            // migrate old setting to the new setting
-                            TypeConverter tc = TypeDescriptor.GetConverter(typeof(Font));
-                            try
-                            {
-                                Font f = (Font)tc.ConvertFromString(s);
-                                this._settings.SetFont(f);
-                                this.Font = this.xmlTreeView1.Font = f;
-                                this._settings.Remove("Font");
-                            }
-                            catch { }
-                        } 
-                        else
-                        {
-                            // convert serialized settings to a winforms Font object.
-                            this._settings.Remove("Font");
-                            this.Font = this.xmlTreeView1.Font = this._settings.GetFont();
-                        }
-
-                        var lightColors = _settings.AddDefaultColors("LightColors", ColorTheme.Light);
-                        if (lightColors.EditorBackground == Color.LightSteelBlue)
-                        {
-                            // migrate to new default that looks better.
-                            lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
-                        }
-                        _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
-
-                        string newLines = (string)this._settings["NewLineChars"];
-
-                        Uri location = (Uri)this._settings["FileName"];
-                        // Load up the last file we were editing before - if it is local and still exists.
-                        if (location != null && location.OriginalString != "/" && location.IsFile && File.Exists(location.LocalPath))
-                        {
-                            path = location.LocalPath;
-                        }
-
-                        string updates = (string)this._settings["UpdateLocation"];
-                        if (string.IsNullOrEmpty(updates) ||
-                            updates.Contains("download.microsoft.com") ||
-                            updates.Contains("lovettsoftware.com"))
-                        {
-                            this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
-                        }
-                    }
+                string newLines = (string)this._settings["NewLineChars"];
+                string updates = (string)this._settings["UpdateLocation"];
+                if (string.IsNullOrEmpty(updates) ||
+                    updates.Contains("download.microsoft.com") ||
+                    updates.Contains("lovettsoftware.com"))
+                {
+                    this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
                 }
             }
             finally
@@ -1554,10 +1529,6 @@ namespace XmlNotepad
             this._settings["RecentFiles"] = this._recentFiles.ToArray();
             this._settings["RecentXsltFiles"] = this._recentXsltFiles.ToArray();
             var path = this._settings.FileName;
-            if (string.IsNullOrEmpty(path))
-            {
-                path = this.ConfigFile;
-            }
             this._settings.Save(path);
         }
 
@@ -1638,6 +1609,17 @@ namespace XmlNotepad
                     finally
                     {
                         _settinsReloadLock = false;
+                    }
+                    break;
+                case "SettingsLocation":
+                    if (!this._loading)
+                    {
+                        try
+                        {
+                            _loader.MoveSettings(this._settings);
+                        } catch (Exception ex) { 
+                            MessageBox.Show("Error moving settings: " + ex.Message + "\r\nSettings were not moved.", "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                        }
                     }
                     break;
                 case "WindowBounds":

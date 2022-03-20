@@ -62,6 +62,7 @@ nav:
     - Clipboard:  help/clipboard.md
     - Updates:  help/updates.md
     - Analytics:  help/analytics.md
+    - Settings:  help/settings.md
   - Development:
     - Overview: dev/index.md
     - Design:  dev/design.md

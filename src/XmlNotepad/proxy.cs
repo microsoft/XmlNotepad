@@ -366,7 +366,7 @@ namespace XmlNotepad
             string descriptionFormat = SR.CredentialDialog_DescriptionTextFormat;
 
             // Create the CREDUI_INFO structure. 
-            NativeMethods.CREDUI_INFO info = new NativeMethods.CREDUI_INFO();
+            ProxyNativeMethods.CREDUI_INFO info = new ProxyNativeMethods.CREDUI_INFO();
             info.pszCaptionText = string.Format(CultureInfo.CurrentUICulture, titleFormat, target);
             info.pszMessageText = string.Format(CultureInfo.CurrentUICulture, descriptionFormat, target);
             info.hwndParentCERParent = hwdOwner;
@@ -386,32 +386,32 @@ namespace XmlNotepad
             // share credentials.
             // We dont specify the CREDUI_FLAGS_EXPECT_CONFIRMATION as the VS proxy service consumers
             // dont call back into the service to confirm that the call succeeded.
-            NativeMethods.CREDUI_FLAGS flags = NativeMethods.CREDUI_FLAGS.SERVER_CREDENTIAL |
-                                                NativeMethods.CREDUI_FLAGS.SHOW_SAVE_CHECK_BOX |
-                                                NativeMethods.CREDUI_FLAGS.COMPLETE_USERNAME |
-                                                NativeMethods.CREDUI_FLAGS.EXCLUDE_CERTIFICATES;
+            ProxyNativeMethods.CREDUI_FLAGS flags = ProxyNativeMethods.CREDUI_FLAGS.SERVER_CREDENTIAL |
+                                                ProxyNativeMethods.CREDUI_FLAGS.SHOW_SAVE_CHECK_BOX |
+                                                ProxyNativeMethods.CREDUI_FLAGS.COMPLETE_USERNAME |
+                                                ProxyNativeMethods.CREDUI_FLAGS.EXCLUDE_CERTIFICATES;
 
-            StringBuilder user = new StringBuilder(Convert.ToInt32(NativeMethods.CREDUI_MAX_USERNAME_LENGTH));
-            StringBuilder pwd = new StringBuilder(Convert.ToInt32(NativeMethods.CREDUI_MAX_PASSWORD_LENGTH));
+            StringBuilder user = new StringBuilder(Convert.ToInt32(ProxyNativeMethods.CREDUI_MAX_USERNAME_LENGTH));
+            StringBuilder pwd = new StringBuilder(Convert.ToInt32(ProxyNativeMethods.CREDUI_MAX_PASSWORD_LENGTH));
             int saveCredentials = 0;
             // Ensures that CredUPPromptForCredentials results in a prompt.
-            int netError = NativeMethods.ERROR_LOGON_FAILURE;
+            int netError = ProxyNativeMethods.ERROR_LOGON_FAILURE;
 
             // Call the OS API to prompt for credentials.
-            NativeMethods.CredUIReturnCodes result = NativeMethods.CredUIPromptForCredentials(
+            ProxyNativeMethods.CredUIReturnCodes result = ProxyNativeMethods.CredUIPromptForCredentials(
                 info,
                 target,
                 IntPtr.Zero,
                 netError,
                 user,
-                NativeMethods.CREDUI_MAX_USERNAME_LENGTH,
+                ProxyNativeMethods.CREDUI_MAX_USERNAME_LENGTH,
                 pwd,
-                NativeMethods.CREDUI_MAX_PASSWORD_LENGTH,
+                ProxyNativeMethods.CREDUI_MAX_PASSWORD_LENGTH,
                 ref saveCredentials,
                 flags);
 
 
-            if (result == NativeMethods.CredUIReturnCodes.NO_ERROR)
+            if (result == ProxyNativeMethods.CredUIReturnCodes.NO_ERROR)
             {
                 userName = user.ToString();
                 password = pwd.ToString();
@@ -433,12 +433,12 @@ namespace XmlNotepad
                             // We are not able to retrieve the credentials. Try storing them as GENERIC credetails.
 
                             // Create the NativeCredential object.
-                            NativeMethods.NativeCredential customCredential = new NativeMethods.NativeCredential();
+                            ProxyNativeMethods.NativeCredential customCredential = new ProxyNativeMethods.NativeCredential();
                             customCredential.userName = userName;
-                            customCredential.type = NativeMethods.CRED_TYPE_GENERIC;
+                            customCredential.type = ProxyNativeMethods.CRED_TYPE_GENERIC;
                             customCredential.targetName = CreateCustomTarget(target);
                             // Store credentials across sessions.
-                            customCredential.persist = (uint)NativeMethods.CRED_PERSIST.LOCAL_MACHINE;
+                            customCredential.persist = (uint)ProxyNativeMethods.CRED_PERSIST.LOCAL_MACHINE;
                             if (!string.IsNullOrEmpty(password))
                             {
                                 customCredential.credentialBlobSize = (uint)Marshal.SystemDefaultCharSize * ((uint)password.Length);
@@ -447,7 +447,7 @@ namespace XmlNotepad
 
                             try
                             {
-                                NativeMethods.CredWrite(ref customCredential, 0);
+                                ProxyNativeMethods.CredWrite(ref customCredential, 0);
                             }
                             finally
                             {
@@ -468,7 +468,7 @@ namespace XmlNotepad
 
                 retValue = DialogResult.OK;
             }
-            else if (result == NativeMethods.CredUIReturnCodes.ERROR_CANCELLED)
+            else if (result == ProxyNativeMethods.CredUIReturnCodes.ERROR_CANCELLED)
             {
                 retValue = DialogResult.Cancel;
             }
@@ -531,16 +531,16 @@ namespace XmlNotepad
 
             bool successfullyParsed;
 
-            StringBuilder strUser = new StringBuilder(Convert.ToInt32(NativeMethods.CREDUI_MAX_USERNAME_LENGTH));
-            StringBuilder strDomain = new StringBuilder(Convert.ToInt32(NativeMethods.CREDUI_MAX_DOMAIN_TARGET_LENGTH));
+            StringBuilder strUser = new StringBuilder(Convert.ToInt32(ProxyNativeMethods.CREDUI_MAX_USERNAME_LENGTH));
+            StringBuilder strDomain = new StringBuilder(Convert.ToInt32(ProxyNativeMethods.CREDUI_MAX_DOMAIN_TARGET_LENGTH));
             // Call the OS API to do the parsing.
-            NativeMethods.CredUIReturnCodes result = NativeMethods.CredUIParseUserName(username,
+            ProxyNativeMethods.CredUIReturnCodes result = ProxyNativeMethods.CredUIParseUserName(username,
                                                     strUser,
-                                                    NativeMethods.CREDUI_MAX_USERNAME_LENGTH,
+                                                    ProxyNativeMethods.CREDUI_MAX_USERNAME_LENGTH,
                                                     strDomain,
-                                                    NativeMethods.CREDUI_MAX_DOMAIN_TARGET_LENGTH);
+                                                    ProxyNativeMethods.CREDUI_MAX_DOMAIN_TARGET_LENGTH);
 
-            successfullyParsed = (result == NativeMethods.CredUIReturnCodes.NO_ERROR);
+            successfullyParsed = (result == ProxyNativeMethods.CredUIReturnCodes.NO_ERROR);
 
             if (successfullyParsed)
             {
@@ -587,9 +587,9 @@ namespace XmlNotepad
                 bool readCredentials = true;
 
                 // Query the OS credential store.
-                if (!NativeMethods.CredRead(
+                if (!ProxyNativeMethods.CredRead(
                         target,
-                        NativeMethods.CRED_TYPE_GENERIC,
+                        ProxyNativeMethods.CRED_TYPE_GENERIC,
                         0,
                         out credPtr))
                 {
@@ -599,13 +599,13 @@ namespace XmlNotepad
                     // credentials. CredUPromptForCredentials will store credentials
                     // as DOMAIN_PASSWORD credential type if it is not able to resolve
                     // the target using CredGetTargetInfo() function.
-                    if (Marshal.GetLastWin32Error() == NativeMethods.ERROR_NOT_FOUND)
+                    if (Marshal.GetLastWin32Error() == ProxyNativeMethods.ERROR_NOT_FOUND)
                     {
                         queriedDomainPassword = true;
                         // try queryiing for CRED_TYPE_DOMAIN_PASSWORD
-                        if (NativeMethods.CredRead(
+                        if (ProxyNativeMethods.CredRead(
                             target,
-                            NativeMethods.CRED_TYPE_DOMAIN_PASSWORD,
+                            ProxyNativeMethods.CRED_TYPE_DOMAIN_PASSWORD,
                             0,
                             out credPtr))
                         {
@@ -617,7 +617,7 @@ namespace XmlNotepad
                 if (readCredentials)
                 {
                     // Get the native credentials if CredRead succeeds.
-                    NativeMethods.NativeCredential nativeCredential = (NativeMethods.NativeCredential)Marshal.PtrToStructure(credPtr, typeof(NativeMethods.NativeCredential));
+                    ProxyNativeMethods.NativeCredential nativeCredential = (ProxyNativeMethods.NativeCredential)Marshal.PtrToStructure(credPtr, typeof(ProxyNativeMethods.NativeCredential));
                     password = (nativeCredential.credentialBlob != IntPtr.Zero) ?
                                             Marshal.PtrToStringUni(nativeCredential.credentialBlob, (int)(nativeCredential.credentialBlobSize / Marshal.SystemDefaultCharSize))
                                             : string.Empty;
@@ -631,13 +631,13 @@ namespace XmlNotepad
                     if (string.IsNullOrEmpty(password) && queriedDomainPassword)
                     {
                         // Read custom credentials.
-                        if (NativeMethods.CredRead(
+                        if (ProxyNativeMethods.CredRead(
                                 CreateCustomTarget(target),
-                                NativeMethods.CRED_TYPE_GENERIC,
+                                ProxyNativeMethods.CRED_TYPE_GENERIC,
                                 0,
                                 out customCredPtr))
                         {
-                            NativeMethods.NativeCredential customNativeCredential = (NativeMethods.NativeCredential)Marshal.PtrToStructure(customCredPtr, typeof(NativeMethods.NativeCredential));
+                            ProxyNativeMethods.NativeCredential customNativeCredential = (ProxyNativeMethods.NativeCredential)Marshal.PtrToStructure(customCredPtr, typeof(ProxyNativeMethods.NativeCredential));
                             if (string.Equals(username, customNativeCredential.userName, StringComparison.OrdinalIgnoreCase))
                             {
                                 password = (customNativeCredential.credentialBlob != IntPtr.Zero) ?
@@ -657,12 +657,12 @@ namespace XmlNotepad
             {
                 if (credPtr != IntPtr.Zero)
                 {
-                    NativeMethods.CredFree(credPtr);
+                    ProxyNativeMethods.CredFree(credPtr);
                 }
 
                 if (customCredPtr != IntPtr.Zero)
                 {
-                    NativeMethods.CredFree(customCredPtr);
+                    ProxyNativeMethods.CredFree(customCredPtr);
                 }
             }
 
@@ -698,7 +698,7 @@ namespace XmlNotepad
 
     #region NativeMethods
 
-    static class NativeMethods
+    static class ProxyNativeMethods
     {
         private const string advapi32Dll = "advapi32.dll";
         private const string credUIDll = "credui.dll";

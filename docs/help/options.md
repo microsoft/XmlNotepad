@@ -2,14 +2,20 @@
 ## Options
 
 The options dialog is available from the "Options..." item under the [View Menu](menus.md).
+See [Settings](settings.md) for information
+on where these settings are stored.
 
 ![Options](../assets/images/options.jpg)
 
 ### Analytics
-Options that enable or disable the collection of analymous app usage information.  See [Analytics](analytics.md).
+Options that enable or disable the collection of anonymous app usage information.  See [Analytics](analytics.md).
 
 ### Color Theme, Colors and Fonts
 The options dialog allows you to select a color theme, light or dark, or configure the specific colors used in each type of node as well as the font used and the background color. A drop down arrow on each color lets you pick from different color palettes. You can also customize the font that is used in the XML Notepad tree view.
+
+### Editor
+The editor to use if the XML file is invalid
+and cannot be opened by XML Notepad.
 
 ### Formatting
 You can also configure the formatting options that are used when you save an XML file, or turn off formatting altogether.
@@ -19,6 +25,10 @@ Specify which language annotations to pick from associated XSD schemas.
 
 ### Long Lines
 How to deal with editing of long lines.
+
+### Settings Location
+Where to store these settings.
+See [Settings](settings.md) for more information.
 
 ### Updates
 

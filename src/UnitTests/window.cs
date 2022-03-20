@@ -378,7 +378,7 @@ namespace UnitTests
             if (_parent != null)
                 _parent.WaitForIdle(timeout);
             else if (_process != null && !_process.HasExited)
-                _process.WaitForInputIdle();
+                _process.WaitForInputIdle(timeout);
         }
 
         public bool Closed

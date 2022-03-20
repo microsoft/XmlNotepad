@@ -9,6 +9,12 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.55">
+    <feature>Add "Settings Location" option to the Options dialog.</feature>
+    <bug>Github issue 178, 'update available' check was broken.</bug>
+    <bug>Fix standalone installer so install location is shown in the appwiz.cpl control panel.</bug>
+    <bug>Fix lots of bugs in the find/replace logic to do with multiple matching words in a single node value</bug>
+  </version>
   <version number="2.8.0.54">
     <bug>Fix regression with null reference exception in the Font field of the Options dialog.</bug>
     <bug>Refactor some settings extensions methods</bug>

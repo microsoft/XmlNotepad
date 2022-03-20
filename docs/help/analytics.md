@@ -33,12 +33,7 @@ set XML_NOTEPAD_DISABLE_ANALYTICS=1
 ```
 
 You can also disable the Analytics UI option from appearing in the [Options dialog](options.md)
-by setting the `AnalyticsClientId` to disabled in the default XmlNotepad.settings file located here:
-
-```
-%LOCALAPPDATA%\Microsoft\Xml Notepad\XmlNotepad.settings
-```
-as follows:
+by setting the `AnalyticsClientId` to disabled in the default [XmlNotepad.settings](settings.md) file as follows:
 ```xml
 <Settings>
   <AnalyticsClientId>disabled</AnalyticsClientId>

@@ -71,7 +71,7 @@ namespace UnitTests
 
         Window LaunchNotepad(string filename)
         {
-            this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", "\"" + filename + "\"", "FormMain");
+            this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", "-test \"" + filename + "\"", "FormMain");
             return window;
         }
 

@@ -21,10 +21,8 @@ namespace XmlNotepad
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            FormMain form = new FormMain();
-            form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
-            form.Show();
-            Application.DoEvents();
+            bool testing = false;
+            string filename = null;
             foreach (string arg in args)
             {
                 if (!string.IsNullOrEmpty(arg))
@@ -34,16 +32,25 @@ namespace XmlNotepad
                     {
                         switch (arg.Substring(1).ToLowerInvariant())
                         {
-                            case "offset":
-                                form.Location = new System.Drawing.Point(form.Location.X + 20, form.Location.Y + 20);
+                            case "test":
+                                testing = true;
                                 break;
                         }
                     }
-                    else
+                    else if (filename == null)
                     {
-                        form.Open(arg);
+                        filename = arg;
                     }
                 }
+            }
+
+            FormMain form = new FormMain(testing);
+            form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
+            form.Show();
+            Application.DoEvents();
+            if (!string.IsNullOrEmpty(filename))
+            {
+                form.Open(filename);
             }
             Application.Run(form);
         }

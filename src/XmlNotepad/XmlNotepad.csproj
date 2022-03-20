@@ -120,6 +120,7 @@
     <Compile Include="RecentFilesMenu.cs" />
     <Compile Include="RecentlyUsedComboBox.cs" />
     <Compile Include="SettingExtensions.cs" />
+    <Compile Include="SettingsLoader.cs" />
     <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -177,8 +178,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StringResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="TaskList.resx">
       <DependentUpon>TaskList.cs</DependentUpon>
