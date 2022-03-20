@@ -803,7 +803,8 @@ namespace XmlNotepad
                     var label = UpdateTooltips(update);
                     string line = label.Split('\r')[0];
                     ShowStatus(line);
-                    AnimateUpdateButton(UpdateRequired(update.Latest));
+                    ShowUpdateButton();
+                    this._delayedActions.StartDelayedAction("AnimateUpdateButton", () => AnimateUpdateButton(null), TimeSpan.FromMilliseconds(0));
                 }
             }
             catch
@@ -812,60 +813,23 @@ namespace XmlNotepad
             this.statusStrip1.BackColor = saved;
         }
 
-        private void AnimateUpdateButton(bool updateAvailable)
+        private void AnimateUpdateButton(string target)
         {
-            string caption = updateAvailable ? SR.UpdateAvailableCaption : SR.UpToDate;
-            //
-            // animationCanvas1
-            //
-            var animationCanvas1 = new XmlNotepad.AnimationCanvas();
-            animationCanvas1.Dock = System.Windows.Forms.DockStyle.Fill;
-            animationCanvas1.Location = new System.Drawing.Point(0, 0);
-            animationCanvas1.Margin = new System.Windows.Forms.Padding(0);
-            animationCanvas1.Name = "animationCanvas1";
-            animationCanvas1.Size = this.Size;
-            animationCanvas1.TabIndex = 0;
-            this.Controls.Add(animationCanvas1);
-
-            // give the AnimationCanvas the background image of the current state of this application so
-            // that the animation looks like it is floating over this form.  Using transparent Controls
-            // doesn't work nicely with double buffered controls, and does an inefficient amount of repainting
-            // and DrawToBitmap simply doesn't work at all for WebBrowser controls.
-            Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
-            animationCanvas1.InitializeBackgroundFromScreen(screenRectangle.X, screenRectangle.Y + menuStrip1.Height + toolStrip1.Height);
-
-            int buttonWidth = 100;
-            using (var g = this.CreateGraphics())
+            if (target == null)
             {
-                var size = g.MeasureString(caption, toolStripMenuItemUpdate.Font, this.Width);
-                buttonWidth = (int)size.Width + (4 * 2);
+                target = this.toolStripMenuItemUpdate.Text;
+                this.toolStripMenuItemUpdate.Text = "";
             }
-
-            RectangleShape shape = new RectangleShape()
+            else if (target == this.toolStripMenuItemUpdate.Text)
             {
-                Fill = new System.Drawing.SolidBrush(this.toolStripMenuItemUpdate.BackColor),
-                Label = caption,
-                Font = this.Font,
-                Foreground = new System.Drawing.SolidBrush(this.ForeColor)
-            };
-
-            var animation = new BoundsAnimation()
+                return; // we are finished.
+            }
+            else
             {
-                Duration = TimeSpan.FromSeconds(1),
-                End = new Rectangle(this.Width - 100, 0, 100, 30),
-                Start = new Rectangle(0, this.Height - 30, this.Width, 30),
-                TargetProperty = "Bounds",
-                Function = new AnimationEaseInFunction()
-            };
-            animation.Completed += (s, e) =>
-            {
-                this.Controls.Remove(animationCanvas1);
-                ShowUpdateButton();
-            };
-
-            shape.BeginAnimation(animation);
-            animationCanvas1.Shapes.Add(shape);
-            animationCanvas1.BringToFront();
+                // reveal single char at a time to catch the eye.
+                this.toolStripMenuItemUpdate.Text = target.Substring(0, this.toolStripMenuItemUpdate.Text.Length + 1);
+            }
+            this._delayedActions.StartDelayedAction("AnimateUpdateButton", () => AnimateUpdateButton(target), TimeSpan.FromMilliseconds(20));
         }
 
         protected virtual void TabControlViews_Selected(object sender, NoBorderTabControlEventArgs e)
@@ -1410,6 +1374,7 @@ namespace XmlNotepad
                         File.Delete(this.TemporaryConfigFile);
                     }
                     _settings.Load(this.TemporaryConfigFile);
+                    _settings["SettingsLocation"] = (int)SettingsLocation.Roaming;
                 }
                 else 
                 {
