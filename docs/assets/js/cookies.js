@@ -8,19 +8,25 @@ function enableTelemetry() {
     if (!telemetryInitialized) {
         telemetryInitialized = true;
 
-        // enable google analytics.
-        window['ga-disable-UA-89203408-1'] = false;
+        // setup dataLayer
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
+
+        // enable google analytics.
+        window['ga-disable-UA-89203408-1'] = false;
         gtag('config', 'UA-89203408-1');
+
+        // enable new google G4 analytics.
+        window['ga-disable-G-130J0SE94H'] = false;
+        gtag('config', 'G-130J0SE94H');
     }
 }
 
 function disableTelemetry() {
     if (telemetryInitialized) {
         telemetryInitialized = false;
-        window['ga-disable-UA-89203408-1'] = true;
+        window['ga-disable-G-130J0SE94H'] = true;
     }
 }
 
