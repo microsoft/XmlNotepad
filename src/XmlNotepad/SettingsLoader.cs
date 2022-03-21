@@ -38,33 +38,56 @@ namespace XmlNotepad
             }
         }
 
-        public void LoadSettings(Settings settings)
+        public virtual string TemporaryConfigFile
         {
-            // allow user to have a local settings file (xcopy deployable).
-            SettingsLocation location = SettingsLocation.Portable;
-            var path = PortableConfigFile;
-            if (!File.Exists(path))
+            get
             {
-                path = LocalConfigFile;
-                location = SettingsLocation.Local;
+                string path = Path.GetTempPath();
+                Debug.Assert(!string.IsNullOrEmpty(path));
+                return System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
             }
-            if (!File.Exists(path))
-            {
-                path = RoamingConfigFile;
-                location = SettingsLocation.Roaming;
-            }
+        }
 
-            if (File.Exists(path))
+        public void LoadSettings(Settings settings, bool testing)
+        {
+            if (testing)
             {
-                Debug.WriteLine(path);
-                settings.Load(path);
-                settings["SettingsLocation"] = (int)location;
-                _settingsLocation = location;
+                // always start with no settings.
+                if (File.Exists(this.TemporaryConfigFile))
+                {
+                    File.Delete(this.TemporaryConfigFile);
+                }
+                settings.Load(this.TemporaryConfigFile);
+                settings["SettingsLocation"] = (int)SettingsLocation.Roaming;
             }
-
-            if (string.IsNullOrEmpty(settings.FileName))
+            else
             {
-                settings.FileName = path;
+                // allow user to have a local settings file (xcopy deployable).
+                SettingsLocation location = SettingsLocation.Portable;
+                var path = PortableConfigFile;
+                if (!File.Exists(path))
+                {
+                    path = LocalConfigFile;
+                    location = SettingsLocation.Local;
+                }
+                if (!File.Exists(path))
+                {
+                    path = RoamingConfigFile;
+                    location = SettingsLocation.Roaming;
+                }
+
+                if (File.Exists(path))
+                {
+                    Debug.WriteLine(path);
+                    settings.Load(path);
+                    settings["SettingsLocation"] = (int)location;
+                    _settingsLocation = location;
+                }
+
+                if (string.IsNullOrEmpty(settings.FileName))
+                {
+                    settings.FileName = path;
+                }
             }
         }
 

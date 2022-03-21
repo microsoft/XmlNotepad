@@ -57,8 +57,9 @@ namespace XmlNotepad
         {
             this._testing = testing;
             this.DoubleBuffered = true;
-            this._settings = new Settings(SettingValueMatches)
+            this._settings = new Settings()
             {
+                Comparer = SettingValueMatches,
                 StartupPath = Application.StartupPath,
                 ExecutablePath = Application.ExecutablePath,
                 Resolver = new XmlProxyResolver(this)
@@ -1349,39 +1350,15 @@ namespace XmlNotepad
             this.redoToolStripMenuItem.Text = this._redoLabel + " " + (cmd == null ? "" : cmd.Name);
         }
 
-
-        public virtual string TemporaryConfigFile
-        {
-            get
-            {
-                string path = Path.GetTempPath();
-                Debug.Assert(!string.IsNullOrEmpty(path));
-                return System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.settings");
-            }
-        }
-
         public virtual void LoadConfig()
         {
             try
             {
                 this._loading = true;
-
-                if (this._testing)
-                {
-                    // always start with no settings.
-                    if (File.Exists(this.TemporaryConfigFile))
-                    {
-                        File.Delete(this.TemporaryConfigFile);
-                    }
-                    _settings.Load(this.TemporaryConfigFile);
-                    _settings["SettingsLocation"] = (int)SettingsLocation.Roaming;
-                }
-                else 
-                {
-                    // allow user to have a local settings file (xcopy deployable).
-                    _loader.LoadSettings(_settings);
-                }
-
+                
+                // allow user to have a local settings file (xcopy deployable).
+                _loader.LoadSettings(_settings, this._testing);
+            
                 // convert old format to the new one
                 object oldFont = this._settings["Font"];
                 if (oldFont is string s && s != "deleted")

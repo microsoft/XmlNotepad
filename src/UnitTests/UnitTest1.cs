@@ -69,9 +69,14 @@ namespace UnitTests
             return window;
         }
 
-        Window LaunchNotepad(string filename)
+        Window LaunchNotepad(string filename, bool testSettings = true)
         {
-            this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", "-test \"" + filename + "\"", "FormMain");
+            string args = "\"" + filename + "\"";
+            if (testSettings)
+            {
+                args = "-test " + args;
+            }
+            this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", args, "FormMain");
             return window;
         }
 
@@ -2761,6 +2766,27 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
+        public void TestXmlSettings()
+        {
+            Trace.WriteLine("TestXmlSettings==========================================================");
+            string testFile = _testDir + "UnitTests\\test10.xml";
+
+            // make sure we have a settings file.
+            var w = this.LaunchNotepad(testFile, false);
+            w.Close(); // this will save default settings.
+
+            // now we should be able to open the settings.
+            w = this.LaunchNotepad(testFile, false);
+            w.InvokeAsyncMenuItem("openSettingsToolStripMenuItem");
+
+            // <DisableDefaultXslt>False</DisableDefaultXslt>
+            w.SendKeystrokes("^IDis");
+            w.InvokeMenuItem("toolStripButtonCopy");
+            CheckClipboard(new Regex(".*DisableDefaultXslt.*"));
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
         public void TestChangeTo()
         {
             Trace.WriteLine("TestChangeTo==========================================================");
@@ -3072,6 +3098,7 @@ Prefix 'user' is not defined. ");
 
             throw new ApplicationException("clipboard does not contain any text!");
         }
+
         public override void CheckClipboard(string expected)
         {
             int retries = 5;

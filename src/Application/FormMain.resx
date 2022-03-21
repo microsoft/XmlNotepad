@@ -642,6 +642,9 @@
   <data name="reloadToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Discard any edits you've made and reload the file as it exists on disk.</value>
   </data>
+  <data name="openSettingsToolStripMenuItem.AccessibleName" xml:space="preserve">
+    <value>openSettingsToolStripMenuItem</value>
+  </data>
   <data name="openSettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>180, 22</value>
   </data>
@@ -3146,6 +3149,12 @@
   <data name="&gt;&gt;reloadToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;openSettingsToolStripMenuItem.Name" xml:space="preserve">
+    <value>openSettingsToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;openSettingsToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
     <value>toolStripMenuItem1</value>
   </data>
@@ -3781,12 +3790,6 @@
   </data>
   <data name="&gt;&gt;toolStripStatusLabel1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;openSettingsToolStripMenuItem.Name" xml:space="preserve">
-    <value>openSettingsToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;openSettingsToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>FormMain</value>

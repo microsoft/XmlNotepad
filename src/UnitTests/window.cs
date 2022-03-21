@@ -314,7 +314,9 @@ namespace UnitTests
                         AutomationElement e = menuItem as AutomationElement;
                         if (e != null)
                         {
-                            _menuItems[e.Current.Name] = new AutomationWrapper(e);
+                            string itemName = e.Current.Name;
+                            Debug.WriteLine(itemName);
+                            _menuItems[itemName] = new AutomationWrapper(e);
                         }
                     }
                     // and the toolbar buttons
@@ -466,6 +468,7 @@ namespace UnitTests
             this.WaitForIdle(1000);
             Sleep(1000);
             item.Invoke();
+            this.WaitForIdle(1000);
         }
 
         //Point Center(Rectangle bounds)

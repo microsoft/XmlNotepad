@@ -260,11 +260,16 @@ namespace XmlNotepad
         /// Note this is an IDisposable object, so remember to call Dispose() on it during
         /// application shutdown.
         /// </summary>
-        public Settings(ValueMatchHandler comparer)
+        public Settings()
         {
             _instance = this;
-            this.comparer = comparer;
         }        
+
+        public ValueMatchHandler Comparer
+        {
+            get => comparer;
+            set => comparer = value;
+        }
 
         public static Settings Instance
         {
