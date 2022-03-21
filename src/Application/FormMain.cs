@@ -1557,23 +1557,22 @@ namespace XmlNotepad
 
         protected virtual void OnSettingsChanged(object sender, string name)
         {
-            if (_settinsReloadLock)
-            {
-                return; 
-            }
             switch (name)
             {
                 case "File":
                     // load the new settiongs but don't move the window or anything if another instances of xmlnotepad.exe changed
                     // the settings.xml file.
-                    _settinsReloadLock = true;
-                    try
+                    if (!this._loading)
                     {
-                        this._settings.Reload(); // just do it!!
-                    } 
-                    finally
-                    {
-                        _settinsReloadLock = false;
+                        try
+                        {
+                            _settinsReloadLock = true;
+                            this.LoadConfig();
+                        }
+                        finally
+                        {
+                            _settinsReloadLock = false;
+                        }
                     }
                     break;
                 case "SettingsLocation":
@@ -1588,7 +1587,7 @@ namespace XmlNotepad
                     }
                     break;
                 case "WindowBounds":
-                    if (this._loading)
+                    if (this._loading && !_settinsReloadLock)
                     {
                         Rectangle r = (Rectangle)this._settings["WindowBounds"];
                         if (!r.IsEmpty)
@@ -2918,6 +2917,13 @@ namespace XmlNotepad
             return true;
         }
 
+        private void openSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(this._settings.FileName))
+            {
+                Open(this._settings.FileName);
+            }
+        }
     }
 
 }

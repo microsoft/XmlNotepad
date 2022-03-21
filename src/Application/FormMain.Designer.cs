@@ -354,10 +354,10 @@ namespace XmlNotepad
             this.helpProvider1 = new System.Windows.Forms.HelpProvider();
             this.comboBoxLocation = new System.Windows.Forms.ComboBox();
             this.tabControlViews = new XmlNotepad.NoBorderTabControl();
-            this.tabPageHtmlView = new XmlNotepad.NoBorderTabPage();
-            this.xsltViewer = new XmlNotepad.XsltViewer();
             this.tabPageTreeView = new XmlNotepad.NoBorderTabPage();
             this.xmlTreeView1 = new XmlNotepad.XmlTreeView();
+            this.tabPageHtmlView = new XmlNotepad.NoBorderTabPage();
+            this.xsltViewer = new XmlNotepad.XsltViewer();
             this.resizer = new XmlNotepad.PaneResizer();
             this.tabPageTaskList = new XmlNotepad.NoBorderTabPage();
             this.tabPageDynamicHelp = new XmlNotepad.NoBorderTabPage();
@@ -365,12 +365,13 @@ namespace XmlNotepad
             this._dynamicHelpViewer = new XmlNotepad.XsltControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.openSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenu1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tabControlViews.SuspendLayout();
-            this.tabPageHtmlView.SuspendLayout();
             this.tabPageTreeView.SuspendLayout();
+            this.tabPageHtmlView.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -707,6 +708,7 @@ namespace XmlNotepad
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
             this.reloadToolStripMenuItem,
+            this.openSettingsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
@@ -1468,23 +1470,10 @@ namespace XmlNotepad
             this.tabControlViews.Controls.Add(this.tabPageTreeView);
             this.tabControlViews.Controls.Add(this.tabPageHtmlView);
             this.tabControlViews.Name = "tabControlViews";
-            this.tabControlViews.SelectedIndex = 1;
+            this.tabControlViews.SelectedIndex = 0;
             this.tabControlViews.SelectedTab = this.tabPageTreeView;
             this.helpProvider1.SetShowHelp(this.tabControlViews, ((bool)(resources.GetObject("tabControlViews.ShowHelp"))));
             this.tabControlViews.Selected += new XmlNotepad.NoBorderTabControlEventHandler(this.TabControlViews_Selected);
-            // 
-            // tabPageHtmlView
-            // 
-            resources.ApplyResources(this.tabPageHtmlView, "tabPageHtmlView");
-            this.tabPageHtmlView.Controls.Add(this.xsltViewer);
-            this.tabPageHtmlView.Name = "tabPageHtmlView";
-            this.helpProvider1.SetShowHelp(this.tabPageHtmlView, ((bool)(resources.GetObject("tabPageHtmlView.ShowHelp"))));
-            // 
-            // xsltViewer
-            // 
-            resources.ApplyResources(this.xsltViewer, "xsltViewer");
-            this.xsltViewer.Name = "xsltViewer";
-            this.helpProvider1.SetShowHelp(this.xsltViewer, ((bool)(resources.GetObject("xsltViewer.ShowHelp"))));
             // 
             // tabPageTreeView
             // 
@@ -1502,6 +1491,19 @@ namespace XmlNotepad
             this.xmlTreeView1.ScrollPosition = new System.Drawing.Point(0, 0);
             this.xmlTreeView1.SelectedNode = null;
             this.helpProvider1.SetShowHelp(this.xmlTreeView1, ((bool)(resources.GetObject("xmlTreeView1.ShowHelp"))));
+            // 
+            // tabPageHtmlView
+            // 
+            resources.ApplyResources(this.tabPageHtmlView, "tabPageHtmlView");
+            this.tabPageHtmlView.Controls.Add(this.xsltViewer);
+            this.tabPageHtmlView.Name = "tabPageHtmlView";
+            this.helpProvider1.SetShowHelp(this.tabPageHtmlView, ((bool)(resources.GetObject("tabPageHtmlView.ShowHelp"))));
+            // 
+            // xsltViewer
+            // 
+            resources.ApplyResources(this.xsltViewer, "xsltViewer");
+            this.xsltViewer.Name = "xsltViewer";
+            this.helpProvider1.SetShowHelp(this.xsltViewer, ((bool)(resources.GetObject("xsltViewer.ShowHelp"))));
             // 
             // resizer
             // 
@@ -1540,6 +1542,7 @@ namespace XmlNotepad
             this._dynamicHelpViewer.DefaultStylesheetResource = "XmlNotepad.DefaultSS.xslt";
             this._dynamicHelpViewer.DisableOutputFile = false;
             this._dynamicHelpViewer.EnableScripts = false;
+            this._dynamicHelpViewer.HasXsltOutput = false;
             this._dynamicHelpViewer.IgnoreDTD = false;
             this._dynamicHelpViewer.Name = "_dynamicHelpViewer";
             this.helpProvider1.SetShowHelp(this._dynamicHelpViewer, ((bool)(resources.GetObject("_dynamicHelpViewer.ShowHelp"))));
@@ -1555,6 +1558,12 @@ namespace XmlNotepad
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
+            // 
+            // openSettingsToolStripMenuItem
+            // 
+            this.openSettingsToolStripMenuItem.Name = "openSettingsToolStripMenuItem";
+            resources.ApplyResources(this.openSettingsToolStripMenuItem, "openSettingsToolStripMenuItem");
+            this.openSettingsToolStripMenuItem.Click += new System.EventHandler(this.openSettingsToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1575,8 +1584,8 @@ namespace XmlNotepad
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.tabControlViews.ResumeLayout(false);
-            this.tabPageHtmlView.ResumeLayout(false);
             this.tabPageTreeView.ResumeLayout(false);
+            this.tabPageHtmlView.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -1586,5 +1595,6 @@ namespace XmlNotepad
 
         #endregion
 
+        private ToolStripMenuItem openSettingsToolStripMenuItem;
     }
 }

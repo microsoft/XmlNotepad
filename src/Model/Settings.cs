@@ -642,16 +642,29 @@ namespace XmlNotepad
             // The trick here is that the file system seems to generate lots of
             // events and we don't want to have lots of dialogs popping up asking the
             // user to reload settings, so we insert a delay to let the events
-            // settle down, then we tell the hosting app that the settings have changed.
+            // settle down, then we tell the hosting app that the settings have changed
+            // and StartDelayedAction does the "consolodation" raising only one OnDelay.
             if (e.ChangeType == WatcherChangeTypes.Changed && this._delayedActions != null)
             {
-                this._delayedActions.StartDelayedAction("OnDelay", OnDelay, TimeSpan.FromSeconds(2));
+                this._delayedActions.StartDelayedAction("OnDelay", () => OnDelay(10), TimeSpan.FromMilliseconds(250));
             }
         }
 
-        void OnDelay()
+        void OnDelay(int retries)
         {
-            OnChanged("File");
+            try
+            {
+                // make sure file is not still locked by the writer.
+                string text = File.ReadAllText(this._filename);
+                OnChanged("File");
+            } 
+            catch (Exception ex)
+            {
+                if (retries > 0)
+                {
+                    this._delayedActions.StartDelayedAction("OnDelay", () => OnDelay(retries - 1), TimeSpan.FromMilliseconds(100));
+                }
+            }
         }
 
         ~Settings()
