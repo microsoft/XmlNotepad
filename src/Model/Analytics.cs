@@ -10,7 +10,7 @@ namespace XmlNotepad
     public class Analytics
     {
         private const string HostName = "microsoft.github.io";
-        private const string TrackingId = "UA-89203408-1";
+        private const string TrackingId = "G-130J0SE94H";
         private string _clientId;
         private bool _formOptions; // did they use the options dialog during this session?
         private bool _formSchemas;
