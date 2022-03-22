@@ -40,7 +40,7 @@ namespace XmlNotepad
         private int _batch;
         private bool _includesExpanded;
         private bool _helpAvailableHint = true;
-        private Analytics _analytics;
+        private AppAnalytics _analytics;
         private Updater _updater;
         private SchemaCache _schemaCache;
         private readonly DelayedActions _delayedActions;
@@ -1453,7 +1453,7 @@ namespace XmlNotepad
                 }
             }
 
-            _analytics = new Analytics((string)this.Settings["AnalyticsClientId"], (bool)this.Settings["AllowAnalytics"] && this.AllowAnalytics);
+            _analytics = new AppAnalytics((string)this.Settings["AnalyticsClientId"], (bool)this.Settings["AllowAnalytics"] && this.AllowAnalytics);
             _analytics.RecordAppLaunched();
         }
 

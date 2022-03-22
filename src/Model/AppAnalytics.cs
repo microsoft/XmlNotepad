@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace XmlNotepad
 {
-    public class Analytics
+    public class AppAnalytics
     {
         private const string HostName = "microsoft.github.io";
         private const string TrackingId = "G-130J0SE94H";
+        private const string ApiKey = "DGyp7J4BQw-h8s-vlH_BDw";
         private string _clientId;
         private bool _formOptions; // did they use the options dialog during this session?
         private bool _formSchemas;
@@ -19,7 +20,7 @@ namespace XmlNotepad
         private bool _xsltView;
         private bool _enabled;
 
-        public Analytics(string clientId, bool enabled)
+        public AppAnalytics(string clientId, bool enabled)
         {
             this._clientId = clientId;
             this._enabled = enabled;
@@ -27,14 +28,18 @@ namespace XmlNotepad
 
         private async void SendMeasurement(string path, string title)
         {
-            await HttpProtocol.PostMeasurements(new PageMeasurement()
+            var a = new Analytics()
             {
-                TrackingId = TrackingId,
-                ClientId = this._clientId,
-                HostName = HostName,
-                Path = path,
+                ApiSecret = ApiKey,
+                MeasurementId = TrackingId,
+                ClientId = _clientId
+            };
+            a.Events.Add(new PageMeasurement()
+            {
+                Path = "https://" + HostName + path,
                 Title = title
             });
+            await HttpProtocol.PostMeasurements(a);
         }
 
         public void RecordAppLaunched()
