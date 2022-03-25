@@ -1,7 +1,6 @@
 ## Settings
 
-XML Notepad stores your user settings in a file located in
-this folder, by default:
+XML Notepad stores your user settings in a file located in this folder, by default:
 
 ```cmd
 %APPDATA%\Microsoft\Xml Notepad\XmlNotepad.settings
@@ -35,3 +34,10 @@ will search in this priority order:
 3. Roaming
 
 and it will use the first one that it finds.
+
+## Settings Template
+
+o make it easier to pre-configure XML notepad across a bunch of machines, you can provide a
+customized `XmlNotepad.template.settings` template file next to `XmlNotepad.exe` and the first time
+a user launches XmlNotepad on a machine it will use this template for the initial default settings
+for that user, which is then copied to the `Roaming` location.

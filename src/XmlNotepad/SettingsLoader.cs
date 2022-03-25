@@ -18,6 +18,16 @@ namespace XmlNotepad
             }
         }
 
+        public string PortableTemplateFile
+        {
+            get
+            {
+                string path = Path.GetDirectoryName(this.GetType().Assembly.Location);
+                Debug.Assert(!string.IsNullOrEmpty(path));
+                return System.IO.Path.Combine(path, "XmlNotepad.template.settings");
+            }
+        }
+
         public string PortableConfigFile
         {
             get
@@ -82,6 +92,12 @@ namespace XmlNotepad
                     settings.Load(path);
                     settings["SettingsLocation"] = (int)location;
                     _settingsLocation = location;
+                }
+                else if (File.Exists(PortableTemplateFile))
+                {
+                    // brand new user, so load the template
+                    settings.Load(PortableTemplateFile);
+                    settings.FileName = path; // but store it in RoamingConfigFile.
                 }
 
                 if (string.IsNullOrEmpty(settings.FileName))
