@@ -21,11 +21,11 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
-    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp></NuGetPackageImportStamp>
-    <PublishUrl>d:\git\lovettchris\XmlNotepad\src\Application\..\..\publish\</PublishUrl>
+    <PublishUrl>%24%28SOLUTIONDIR%29\Application\..\..\publish\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
+    <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Background</UpdateMode>
     <UpdateInterval>1</UpdateInterval>
@@ -33,12 +33,10 @@
     <UpdatePeriodically>true</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/</InstallUrl>
     <UpdateUrl>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/</UpdateUrl>
     <SupportUrl>https://github.com/Microsoft/XmlNotepad</SupportUrl>
     <ProductName>XML Notepad</ProductName>
     <PublisherName>Chris Lovett</PublisherName>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>readme.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
     <UseApplicationTrust>false</UseApplicationTrust>

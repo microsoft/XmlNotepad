@@ -13,7 +13,7 @@ REM  XmlNotepadSetup.msi
 REM
 REM and post to ftp://www.lovettsoftware.com/LovettSoftware/Downloads/XmlNotepad/
 REM
-set signtool=%~dp0..\..\tools\signtool.exe
+set signtool=signtool.exe
 set dll=%~dp0bin\Release\XmlNotepadSetup.msi
 echo %signtool% sign /v /debug /i "COMODO RSA Code Signing CA"  /t http://timestamp.sectigo.com /fd sha256 %dll%
 %signtool% sign /v /debug /i "COMODO RSA Code Signing CA"  /t http://timestamp.sectigo.com /fd sha256 %dll%
