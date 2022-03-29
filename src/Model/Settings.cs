@@ -663,7 +663,7 @@ namespace XmlNotepad
                 string text = File.ReadAllText(this._filename);
                 OnChanged("File");
             } 
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (retries > 0)
                 {

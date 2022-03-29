@@ -23,7 +23,7 @@
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp></NuGetPackageImportStamp>
-    <PublishUrl>%24%28SOLUTIONDIR%29\Application\..\..\publish\</PublishUrl>
+    <PublishUrl>..\..\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -284,66 +284,66 @@
   <ItemGroup>
     <PublishFile Include="Samples\basket.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\basket.xsd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xsd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Hamlet.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rss.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rsspretty.xsl">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\willy.xsl">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <Group></Group>
+      <TargetPath></TargetPath>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>
@@ -367,7 +367,7 @@
     <PostBuildEvent>"$(SolutionDir)PublishDrop.cmd" "$(TargetDir)" &gt; "$(SolutionDir)Publish.log"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)\FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
+    <PreBuildEvent>copy "$(SolutionDir)FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="SyncVersionsTarget">
     <SyncVersions MasterVersionFile="$(SolutionDir)Version\Version.props" CSharpVersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" ApplicationProjectFile="$(ProjectPath)" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml" />
