@@ -8,8 +8,6 @@ for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version
     set VERSION=%%i
 )
 
-set WINGET=1
-
 echo ### Publishing version %VERSION%...
 set WINGET=1
 set GITRELEASE=1
@@ -30,9 +28,6 @@ if not EXIST publish goto :nobits
 if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
 if EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip del src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip
 if "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%" == "" goto :nokey
-
-where wingetcreate > nul 2>&1
-if ERRORLEVEL 1 winget install wingetcreate
 
 copy /y src\Updates\Updates.xml publish\
 if ERRORLEVEL 1 goto :eof
@@ -65,12 +60,15 @@ del notes.txt
 if "%UPLOAD%" == "0" goto :winget
 
 echo Uploading ClickOnce installer to XmlNotepad
-call AzurePublishClickOnce.cmd %~dp0publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
+call AzurePublishClickOnce.cmd publish downloads/XmlNotepad "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%"
 if ERRORLEVEL 1 goto :uploadfailed
 
 
 echo ============ Done publishing ClickOnce installer to XmlNotepad ==============
 :winget
+
+where wingetcreate > nul 2>&1
+if ERRORLEVEL 1 winget install wingetcreate
 
 if "%WINGET%"=="0" goto :skipwinget
 if not exist %WINGET_SRC% goto :nowinget

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.56" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
+  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.8.0.57" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallFinalize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
     <MediaTemplate />
@@ -53,6 +53,15 @@
       </Component>
       <Component Id="SgmlReaderDll.dll" Guid="70c0cd62-a6e5-4da4-9336-3fcef1bfb0d1">
         <File Id="SgmlReaderDll.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="D7A433F2-C782-4BF0-AD2C-1BA25B82F15D">
+        <File Id="Newtonsoft.Json.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="System.Security.AccessControl.dll" Guid="D1AD74AB-E816-410E-866B-1E8C02717C11">
+        <File Id="System.Security.AccessControl.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="System.Security.Principal.Windows.dll" Guid="65319865-B926-422C-93A3-C1938A0DEAC7">
+        <File Id="System.Security.Principal.Windows.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="Microsoft.Web.WebView2.Core.dll" Guid="e2a18224-f75d-4a1b-ba41-10b2700f5db6">
         <File Id="Microsoft.Web.WebView2.Core.dll" KeyPath="yes" Checksum="yes" />
@@ -273,6 +282,9 @@
       <ComponentRef Id="FontBuilder.dll" />
       <ComponentRef Id="SimpleGoogleAnalytics.dll" />
       <ComponentRef Id="SgmlReaderDll.dll" />
+      <ComponentRef Id="Newtonsoft.Json.dll" />
+      <ComponentRef Id="System.Security.AccessControl.dll" />
+      <ComponentRef Id="System.Security.Principal.Windows.dll" />
       <ComponentRef Id="Microsoft.Web.WebView2.Core.dll" />
       <ComponentRef Id="Microsoft.Web.WebView2.WinForms.dll" />
       <ComponentRef Id="design.htm" />

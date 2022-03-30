@@ -140,7 +140,10 @@ namespace XmlNotepad
                     {
                         File.Delete(newLocation);
                     }
-                    File.Move(existingLocation, newLocation);
+                    if (File.Exists(existingLocation))
+                    {
+                        File.Move(existingLocation, newLocation);
+                    }                    
                     settings.FileName = newLocation;
                     this._settingsLocation = location;
                 }
