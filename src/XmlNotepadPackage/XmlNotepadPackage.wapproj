@@ -56,7 +56,7 @@
     <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateThumbprint>AFFF93C9E6AD77B2519D1778A820B789F9F1E31D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>50D58171E20BB6188B199ACA7C20A26DA0DFBF35</PackageCertificateThumbprint>
     <EntryPointProjectUniqueName>..\Application\Application.csproj</EntryPointProjectUniqueName>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampServerUrl>http://timestamp.sectigo.com</AppxPackageSigningTimestampServerUrl>

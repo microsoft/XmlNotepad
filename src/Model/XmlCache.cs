@@ -5,11 +5,8 @@ using System.Xml.Schema;
 using System.Xml.XPath;
 using System.Diagnostics;
 using System.IO;
-using System.ComponentModel;
+using System.Linq;
 using System.Text;
-using System.Net;
-using System.Net.Cache;
-using System.Timers;
 
 namespace XmlNotepad
 {
@@ -442,34 +439,71 @@ namespace XmlNotepad
             }
         }
 
-        internal class ReloadAction
+        internal class FileChangedActions
         {
+            public WatcherChangeTypes ChangeType;
             public XmlCache Cache;
-            public string FileName;
-            public bool Renamed;
+            public string OrignalName;
+            public string OldName;
+            public string NewName;
+            public List<FileChangedActions> Children;
+
+            public void Add(FileChangedActions child)
+            {
+                if (Children == null)
+                {
+                    Children = new List<FileChangedActions>();
+                }
+                Children.Add(child);
+            }
+
+            public void HandleEvent()
+            {
+                Cache.OnRenamed(OldName, NewName);
+            }
 
             public void HandleReload()
             {
-                if (!Renamed)
+                // Some applications (like ultraedit) save a file by first renaming it to *.bak then saving the 
+                // new file with the original name.  Some even save the new file with the name
+                // *.new then rename that to the original name! (like RDCMan). So through all this craziness
+                // we have to track whether the file was really renamed, or was someone just making
+                // backups.  If the last action "NewName" is our original name then it is a "reload"
+                // otherwise it is a rename.
+                var finalAction = this;
+                if (Children != null)
                 {
-                    Cache.CheckReload(this, FileName);
+                    finalAction = Children.Last();
+                }
+
+                if (IsSamePath(finalAction.NewName, finalAction.OrignalName))
+                {
+                    if (File.Exists(finalAction.NewName))
+                    {
+                        Cache.CheckReload(this, finalAction.NewName);
+                    }
+                    else
+                    {
+                        // ??? one of the actions was a delete perhaps, then we've lost track of the
+                        // original file...
+                    }
+                }
+                else
+                {
+                    if (File.Exists(finalAction.NewName))
+                    {
+                        Cache.OnRenamed(finalAction.OldName, finalAction.NewName);
+                    }
+                    else
+                    {
+                        // ??? one of the actions was a delete perhaps, then we've lost track of the
+                        // original file...
+                    }
                 }
             }
         }
 
-        ReloadAction pending;
-
-        void StartReload()
-        {
-            // Apart from retrying, the DelayedActions has the nice side effect of also 
-            // collapsing multiple file system events into one action callback.
-            _retries = 5;
-            if (pending == null)
-            {
-                pending = new ReloadAction() { FileName = this._fileName, Cache = this };
-                _actions.StartDelayedAction("reload", () => pending.HandleReload(), TimeSpan.FromSeconds(1));
-            }
-        }
+        FileChangedActions pending;
 
         DateTime LastModTime
         {
@@ -481,7 +515,7 @@ namespace XmlNotepad
             }
         }
 
-        internal void CheckReload(ReloadAction action, string fileName)
+        internal void CheckReload(FileChangedActions action, string fileName)
         {
             if (!File.Exists(fileName))
             {
@@ -529,7 +563,19 @@ namespace XmlNotepad
                     IsSamePath(this._fileName, e.FullPath))
                 {
                     Debug.WriteLine("### File changed " + this._fileName);
-                    StartReload();
+                    // Apart from retrying, the DelayedActions has the nice side effect of also 
+                    // collapsing multiple file system events into one action callback.                    
+                    var change = new FileChangedActions() { OrignalName = this._fileName, NewName = e.FullPath, Cache = this, ChangeType = e.ChangeType };
+                    if (pending == null)
+                    {
+                        _retries = 5;
+                        pending = change;
+                        _actions.StartDelayedAction("reload", () => pending.HandleReload(), TimeSpan.FromSeconds(1));
+                    }
+                    else
+                    {
+                        pending.Add(change);
+                    }
                 }
             }
             catch { }
@@ -542,46 +588,30 @@ namespace XmlNotepad
             try
             {
                 string ext = Path.GetExtension(e.FullPath);
-                if (IsSamePath(this._fileName, e.OldFullPath) && 
-                    // ignore renames that create a '.bak' file (like what UltraEdit does).
-                    string.Compare(ext, ".bak", StringComparison.OrdinalIgnoreCase) != 0)
+                if (IsSamePath(this._fileName, e.OldFullPath) ||
+                    IsSamePath(this._fileName, e.FullPath))
                 {
-                    Debug.WriteLine("### File renamed to " + e.FullPath);
-                    var p = pending;
-                    if (p != null)
+                    var change = new FileChangedActions() { OrignalName = this._fileName, OldName = e.OldFullPath, NewName = e.FullPath, Cache = this, ChangeType = e.ChangeType };
+                    if (pending == null)
                     {
-                        // we have a situation were file was modified AND renamed.  Tricky!
-                        p.Renamed = true;
+                        _retries = 5;
+                        pending = change;
+                        _actions.StartDelayedAction("reload", () => pending.HandleReload(), TimeSpan.FromSeconds(1));
                     }
-
-                    // switch to UI thread
-                    if (renamePending == null)
+                    else
                     {
-                        renamePending = new RenameAction { OldName = e.OldFullPath, NewName = e.FullPath, Cache = this };
-                        _actions.StartDelayedAction("renamed", renamePending.HandleEvent, TimeSpan.FromMilliseconds(1));
+                        pending.Add(change);
                     }
                 }
             } catch
             {}
         }
 
-        class RenameAction {
-            public string OldName;
-            public string NewName;
-            public XmlCache Cache;
-            public void HandleEvent()
-            {
-                Cache.OnRenamed(OldName, NewName);
-            }
-        }
-
-        RenameAction renamePending;
-
         private void OnRenamed(string oldName, string newName)
         {
-            this.renamePending = null;
+            this.pending = null;
             this._dirty = true;
-            if (System.IO.Path.GetFullPath(this._fileName) == oldName)
+            if (IsSamePath(System.IO.Path.GetFullPath(this._fileName), oldName))
             {
                 this._renamed = newName;
                 FireFileChanged();
