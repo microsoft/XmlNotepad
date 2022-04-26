@@ -2901,6 +2901,11 @@ namespace XmlNotepad
                 Open(this._settings.FileName);
             }
         }
+
+        private void gCCollectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GC.Collect();
+        }
     }
 
 }

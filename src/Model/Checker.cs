@@ -16,7 +16,7 @@ namespace XmlNotepad
 
     public enum IntellisensePosition { OnNode, AfterNode, FirstChild }
 
-    public class Checker
+    public class Checker : IDisposable
     {
         private XmlCache _cache;
         private XmlSchemaValidator _validator;
@@ -76,9 +76,9 @@ namespace XmlNotepad
             {
                 _baseUri = new Uri(new Uri(xcache.FileName), new Uri(".", UriKind.Relative));
             }
-            ValidationEventHandler handler = new ValidationEventHandler(OnValidationEvent);
+
             SchemaResolver resolver = xcache.SchemaResolver as SchemaResolver;
-            resolver.Handler = handler;
+            resolver.Handler = OnValidationEvent;
             XmlDocument doc = xcache.Document;
             this._info = new XmlSchemaInfo();
             this._nsResolver = new MyXmlNamespaceResolver(doc.NameTable);
@@ -92,8 +92,9 @@ namespace XmlNotepad
 
             if (LoadSchemas(doc, set, resolver))
             {
-                set.ValidationEventHandler += handler;
+                set.ValidationEventHandler += OnValidationEvent;
                 set.Compile();
+                set.ValidationEventHandler -= OnValidationEvent;
             }
 
             this._validator = new XmlSchemaValidator(doc.NameTable, set, _nsResolver,
@@ -101,7 +102,7 @@ namespace XmlNotepad
                 XmlSchemaValidationFlags.ProcessIdentityConstraints |
                 XmlSchemaValidationFlags.ProcessInlineSchema);
 
-            this._validator.ValidationEventHandler += handler;
+            this._validator.ValidationEventHandler += OnValidationEvent;
             this._validator.XmlResolver = resolver;
             this._validator.Initialize();
 
@@ -492,6 +493,14 @@ namespace XmlNotepad
             Uri uri = new Uri(s);
             Uri rel = this._baseUri.MakeRelativeUri(uri);
             return rel.GetComponents(UriComponents.SerializationInfoString, UriFormat.SafeUnescaped);
+        }
+
+        public void Dispose()
+        {
+            if (_validator != null)
+            {
+                this._validator.ValidationEventHandler -= OnValidationEvent;
+            }
         }
 
         internal class MyXmlNamespaceResolver : System.Xml.IXmlNamespaceResolver

@@ -143,6 +143,7 @@ namespace XmlNotepad
             this._editor.Site = site;
 
             XmlCache model = (XmlCache)site.GetService(typeof(XmlCache));
+            model.ModelChanged -= new EventHandler<ModelChangedEventArgs>(OnModelChanged);
             model.ModelChanged += new EventHandler<ModelChangedEventArgs>(OnModelChanged);
         }
 

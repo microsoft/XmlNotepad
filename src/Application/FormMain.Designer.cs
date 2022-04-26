@@ -366,6 +366,7 @@ namespace XmlNotepad
             this._dynamicHelpViewer = new XmlNotepad.XsltControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.gCCollectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenu1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -811,7 +812,8 @@ namespace XmlNotepad
             this.toolStripMenuItem7,
             this.findToolStripMenuItem,
             this.replaceToolStripMenuItem,
-            this.incrementalSearchToolStripMenuItem});
+            this.incrementalSearchToolStripMenuItem,
+            this.gCCollectToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             resources.ApplyResources(this.editToolStripMenuItem, "editToolStripMenuItem");
             // 
@@ -1565,6 +1567,12 @@ namespace XmlNotepad
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
             // 
+            // gCCollectToolStripMenuItem
+            // 
+            this.gCCollectToolStripMenuItem.Name = "gCCollectToolStripMenuItem";
+            resources.ApplyResources(this.gCCollectToolStripMenuItem, "gCCollectToolStripMenuItem");
+            this.gCCollectToolStripMenuItem.Click += new System.EventHandler(this.gCCollectToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
@@ -1596,5 +1604,6 @@ namespace XmlNotepad
         #endregion
 
         private ToolStripMenuItem openSettingsToolStripMenuItem;
+        private ToolStripMenuItem gCCollectToolStripMenuItem;
     }
 }

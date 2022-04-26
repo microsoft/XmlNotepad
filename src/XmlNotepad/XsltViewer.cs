@@ -166,7 +166,6 @@ namespace XmlNotepad
 
         void OnModelChanged(ModelChangedEventArgs e)
         {
-            var doc = _model.Document;
             try
             {
                 if (!string.IsNullOrEmpty(_model.FileName))

@@ -96,7 +96,10 @@ namespace XmlNotepad
 
         public void ValidateModel(ErrorHandler handler)
         {
-            this._checker = new Checker(handler);
+            using (this._checker)
+            {
+                this._checker = new Checker(handler);
+            }
             _checker.Validate(this);
         }
 
@@ -277,6 +280,7 @@ namespace XmlNotepad
         public void Clear()
         {
             this._renamed = null;
+            _loader = new DomLoader(this._site);
             this.Document = new XmlDocument();
             StopFileWatch();
             this._fileName = null;
