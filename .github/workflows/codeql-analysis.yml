@@ -32,7 +32,7 @@ jobs:
       run: nuget restore ./src/XmlNotepad.sln
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         queries: security-and-quality
         languages: csharp
@@ -41,4 +41,4 @@ jobs:
       run: msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal /p:UseSharedCompilation=False
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
