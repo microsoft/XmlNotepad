@@ -5,7 +5,7 @@ Just download the zip file, copy it to the machine you want to install it on, un
 3. [Windows MSIX installer](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad.Net/index.html) if you need a trusted Windows installer.
 4. You can also use [WinGet](https://winget.run/pkg/Microsoft/XMLNotepad) as follows: `winget install XmlNotepad`
 
-[![image](images/help.png)](https://youtu.be/dtuSI4ZDZxg)
+[![image](docs/assets/images/help.png)](https://youtu.be/dtuSI4ZDZxg)
 
 [XML Notepad](http://microsoft.github.io/XmlNotepad) provides the following useful features:
 - XML Schema aware Intellisense
