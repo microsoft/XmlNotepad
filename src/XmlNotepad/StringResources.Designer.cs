@@ -335,9 +335,9 @@ namespace XmlNotepad {
         /// <summary>
         ///   Looks up a localized string similar to Create New File.
         /// </summary>
-        public static string CreateNodeFileCaption {
+        public static string CreateNewFileCaption {
             get {
-                return ResourceManager.GetString("CreateNodeFileCaption", resourceCulture);
+                return ResourceManager.GetString("CreateNewFileCaption", resourceCulture);
             }
         }
         
@@ -1282,7 +1282,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Changes.
+        ///   Looks up a localized string similar to XML Notepad Save Changes.
         /// </summary>
         public static string SaveChangesCaption {
             get {
@@ -1309,7 +1309,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Error.
+        ///   Looks up a localized string similar to XML Notepad Save Error.
         /// </summary>
         public static string SaveErrorCaption {
             get {

@@ -2619,7 +2619,7 @@ namespace XmlNotepad
                     if (!File.Exists(path))
                     {
                         DialogResult dr = MessageBox.Show(
-                            String.Format(SR.CreateFile, path), SR.CreateNodeFileCaption,
+                            String.Format(SR.CreateFile, path), SR.CreateNewFileCaption,
                             MessageBoxButtons.OKCancel);
                         if (dr.Equals(DialogResult.OK))
                         {

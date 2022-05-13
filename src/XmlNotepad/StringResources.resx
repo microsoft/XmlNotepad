@@ -312,7 +312,7 @@ Would you like to reformat the text into multiple lines?</value>
     <comment>Save as dialog filter</comment>
   </data>
   <data name="SaveChangesCaption" xml:space="preserve">
-    <value>Save Changes</value>
+    <value>XML Notepad Save Changes</value>
     <comment>Message box caption</comment>
   </data>
   <data name="SaveChangesPrompt" xml:space="preserve">
@@ -320,7 +320,7 @@ Would you like to reformat the text into multiple lines?</value>
     <comment>Message box prompt</comment>
   </data>
   <data name="SaveErrorCaption" xml:space="preserve">
-    <value>Save Error</value>
+    <value>XML Notepad Save Error</value>
     <comment>Message box caption</comment>
   </data>
   <data name="SchemaError" xml:space="preserve">
@@ -449,7 +449,7 @@ Do you want to enable execution of this script code?</value>
     <value>File '{0}' does not exist. Do you need to create the file?</value>
     <comment>MessageBox prompt</comment>
   </data>
-  <data name="CreateNodeFileCaption" xml:space="preserve">
+  <data name="CreateNewFileCaption" xml:space="preserve">
     <value>Create New File</value>
     <comment>MessageBox caption</comment>
   </data>
