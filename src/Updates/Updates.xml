@@ -9,14 +9,19 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.60">
+    <feature>TreeView indent level is now configurable in the Options dialog under Formatting section.</feature>
+    <bug>Fix bug 203: Find backwards was broken.</bug>
+    <bug>Fix bug 201: Save Changes dialog now mentions it is coming from XML Notepad.</bug>
+  </version>
   <version number="2.8.0.59">
-    <feature>Try and fix some memory leaks and add new GC.Collect menu item on the Edit menu.</feature>
+    <bug>Try and fix some memory leaks and add new GC.Collect menu item on the Edit menu.</bug>
   </version>
   <version number="2.8.0.58">
-    <feature>Fix bug 173: Error in reload when file saved using rdcman.</feature>
+    <bug>Fix bug 173: Error in reload when file saved using rdcman.</bug>
   </version>
   <version number="2.8.0.57">
-    <feature>Fix bug 182: Error when changing from roaming to local (1st time use).</feature>
+    <bug>Fix bug 182: Error when changing from roaming to local (1st time use).</bug>
   </version>
   <version number="2.8.0.56">	  
     <feature>Add support for a XmlNotepad.template.settings file that can provide default settings in an enterprise wide deployment of XmlNotepad.</feature>
