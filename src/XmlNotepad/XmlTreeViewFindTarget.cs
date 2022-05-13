@@ -390,7 +390,7 @@ namespace XmlNotepad
                                 {
                                     return (pos, true); // selected node is the node name.
                                 }
-                                else if (!m.IsName && m.Index >= start)
+                                else if (!m.IsName && m.Index <= start)
                                 {
                                     return (pos, true); // selected node is one of the matching nodes.
                                 }
