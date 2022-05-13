@@ -22,7 +22,7 @@ namespace XmlNotepad
         private ArrayList _selection = new ArrayList();
         private TreeNodeCollection _nodes;
         private Color _lineColor = SystemColors.ControlDark;
-        private int _treeIndent = 30;
+        private int _treeIndent = 12;
         private TypeToFindHandler _ttf;
         private readonly TextEditorOverlay _editor;
         internal TreeViewDropFeedback _dff;
@@ -319,11 +319,13 @@ namespace XmlNotepad
                 if (node != null)
                 {
                     Size imgSize = GetImageSize();
+                    int lineIndent = (imgSize.Width / 2);
+                    int indent = TreeIndent + lineIndent + BoxWidth;
                     if (e.Clicks > 1)
                     {
                         node.Toggle();
                     }
-                    else if (wasFocussed && node.LabelAndImageBounds(imgSize, TreeIndent).Contains(x, y))
+                    else if (wasFocussed && node.LabelAndImageBounds(imgSize, indent).Contains(x, y))
                     {
                         this.hitNode = node;
                         if (node.LabelBounds.Contains(x, y))
@@ -335,7 +337,7 @@ namespace XmlNotepad
                     }
                     else
                     {
-                        Rectangle r = GetBoxBounds(this.Margin.Left + (imgSize.Width / 2), node.LabelBounds.Top, this.ItemHeight, node.Depth, TreeIndent);
+                        Rectangle r = GetBoxBounds(this.Margin.Left + lineIndent, node.LabelBounds.Top, this.ItemHeight, node.Depth, indent);
                         int slop = (this.ItemHeight - r.Height) / 2;
                         r.Inflate(slop, slop); // make it a bit easier to hit.
                         if (r.Contains(x, y))
@@ -1052,6 +1054,7 @@ namespace XmlNotepad
             int h = this.ItemHeight;
             //int w = this.Width;
             int x = this.Margin.Left;
+            int lineIndent = (imgSize.Width / 2);
 
             foreach (TreeNode node in nodes)
             {
@@ -1068,7 +1071,7 @@ namespace XmlNotepad
                         int index = node.ImageIndex;
                         Image img = index < 0 ? null : this._imageList.Images[index];
                         bool isSelected = this.IsSelected(node);
-                        node.Draw(g, f, linePen, state, h, indent, x, y, ref imgSize, img, isSelected);
+                        node.Draw(g, f, linePen, state, h, indent + lineIndent + BoxWidth, x, y, ref imgSize, img, isSelected);
                     }
                     int y2 = y;
                     y += h;
@@ -1081,14 +1084,14 @@ namespace XmlNotepad
                             // Draw boxes on the way out.
                             if (visible)
                             {
-                                DrawPlusMinus(g, x + (imgSize.Width / 2), y2, h, depth, indent, false);
+                                DrawPlusMinus(g, x + lineIndent, y2, h, depth, indent + lineIndent + BoxWidth, false);
                             }
                         }
                         else
                         {
                             if (visible)
                             {
-                                DrawPlusMinus(g, x + (imgSize.Width / 2), y2, h, depth, indent, true);
+                                DrawPlusMinus(g, x + lineIndent, y2, h, depth, indent + lineIndent + BoxWidth, true);
                             }
                         }
                     }
@@ -1139,12 +1142,14 @@ namespace XmlNotepad
             this.virtualHeight = 0;
             if (this._nodes != null)
             {
+                Size imgSize = GetImageSize();
+                int lineIndent = (imgSize.Width / 2);
                 Graphics g = this.CreateGraphics();
                 using (g)
                 {
                     int w = this.virtualWidth;
                     this.virtualWidth = 0;
-                    this.virtualHeight = LayoutNodes(g, TreeIndent, 1, 0, this.Nodes);
+                    this.virtualHeight = LayoutNodes(g, TreeIndent + lineIndent + BoxWidth, 1, 0, this.Nodes);
                     if (w != this.virtualWidth)
                     {
                         this.Parent.PerformLayout();
@@ -1494,7 +1499,13 @@ namespace XmlNotepad
         public Rectangle LabelBounds
         {
             get { return this._labelBounds; }
-            set { this._labelBounds = value; }
+            set { 
+                this._labelBounds = value;
+                if (this.Label == "PLAY" && value.X == 33)
+                {
+                    Debug.WriteLine(string.Format("{0},{1}", this._labelBounds.X, this._labelBounds.Y));
+                }
+            }
         }
 
         public void ExpandAll()

@@ -651,7 +651,7 @@ Do you want to enable execution of this script code?</value>
     <comment>Property Grid property name</comment>
   </data>
   <data name="IndentLevelDescription" xml:space="preserve">
-    <value>Number of indent characters to use for one indent level</value>
+    <value>Number of indent characters to use when formatting saved XML documents.</value>
     <comment>Property Grid description</comment>
   </data>
   <data name="NewLineChars" xml:space="preserve">
@@ -660,6 +660,14 @@ Do you want to enable execution of this script code?</value>
   </data>
   <data name="NewLineCharsDescription" xml:space="preserve">
     <value>The character sequence to use for new lines.  "\r" means 0xD and "\n" means 0xA.  So "\r\n" gives you Windows style newlines.</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="TreeIndent" xml:space="preserve">
+    <value>TreeView indent pixels</value>
+    <comment>Property Grid property name</comment>
+  </data>
+  <data name="TreeIndentDescription" xml:space="preserve">
+    <value>Number of pixels to indent XML in the TreeView.</value>
     <comment>Property Grid description</comment>
   </data>
   <data name="PiColor" xml:space="preserve">

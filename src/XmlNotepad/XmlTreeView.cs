@@ -144,6 +144,8 @@ namespace XmlNotepad
             if (this._settings != null)
             {
                 this._settings.Changed += new SettingsEventHandler(OnSettingsChanged);
+                int indent = this.Settings.GetInteger("TreeIndent");
+                this._myTreeView.TreeIndent = indent;
             }
             if (this._model != null) BindTree();
         }
@@ -1169,9 +1171,9 @@ namespace XmlNotepad
             // change the node colors.
             if (name == "LightColors" || name == "DarkColors" || name == "Theme" || name == "Colors")
             {
-                var theme = (ColorTheme)this._settings["Theme"];
+                var theme = (ColorTheme)this.Settings["Theme"];
                 var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
-                var colors = (ThemeColors)this._settings[colorSetName];
+                var colors = (ThemeColors)this.Settings[colorSetName];
                 Color backColor = colors.Background;
                 this.BackColor = backColor;
                 this._myTreeView.BackColor = backColor;
@@ -1186,6 +1188,12 @@ namespace XmlNotepad
             if (name == "Font")
             {
                 // this.Font = (Font)this._settings["Font"];
+                update = true;
+            }
+            if (name == "TreeIndent")
+            {
+                int indent = this.Settings.GetInteger("TreeIndent");
+                this._myTreeView.TreeIndent = indent;
                 update = true;
             }
 
@@ -1568,7 +1576,7 @@ namespace XmlNotepad
             this._myTreeView.SelectedNode = null;
             this._myTreeView.Size = new System.Drawing.Size(216, 224);
             this._myTreeView.TabIndex = 1;
-            this._myTreeView.TreeIndent = 30;
+            this._myTreeView.TreeIndent = 12;
             this._myTreeView.VirtualHeight = 0;
             this._myTreeView.VirtualWidth = 0;
             // 

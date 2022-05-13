@@ -247,6 +247,7 @@ namespace XmlNotepad
             this._settings["Font"] = "deleted";
             this._settings["FontFamily"] = "Courier New";
             this._settings["FontSize"] = 10.0;
+            this._settings["TreeIndent"] = 12;
             this._settings["FontStyle"] = "Normal";
             this._settings["FontWeight"] = "Normal";
             this._settings["Theme"] = ColorTheme.Light;

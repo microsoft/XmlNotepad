@@ -801,7 +801,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of indent characters to use for one indent level.
+        ///   Looks up a localized string similar to Number of indent characters to use when formatting saved XML documents..
         /// </summary>
         public static string IndentLevelDescription {
             get {
@@ -1523,6 +1523,24 @@ namespace XmlNotepad {
         public static string TransformErrorCaption {
             get {
                 return ResourceManager.GetString("TransformErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TreeView indent pixels.
+        /// </summary>
+        public static string TreeIndent {
+            get {
+                return ResourceManager.GetString("TreeIndent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of pixels to indent XML in the TreeView..
+        /// </summary>
+        public static string TreeIndentDescription {
+            get {
+                return ResourceManager.GetString("TreeIndentDescription", resourceCulture);
             }
         }
         

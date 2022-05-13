@@ -128,6 +128,7 @@ namespace XmlNotepad
         {
             private readonly Settings _settings;
             private Font _font;
+            private int _treeIndent;
             private ColorTheme _theme;
             private ThemeColors _lightColors;
             private ThemeColors _darkColors;
@@ -179,6 +180,7 @@ namespace XmlNotepad
                 _enableUpdate = this._settings.GetBoolean("UpdateEnabled");
                 _disableDefaultXslt = this._settings.GetBoolean("DisableDefaultXslt");
                 _autoFormatOnSave = this._settings.GetBoolean("AutoFormatOnSave");
+                _treeIndent = this._settings.GetInteger("TreeIndent");
                 _noByteOrderMark = this._settings.GetBoolean("NoByteOrderMark");
                 _indentLevel = this._settings.GetInteger("IndentLevel");
                 _indentChar = (IndentChar)this._settings["IndentChar"];
@@ -271,6 +273,7 @@ namespace XmlNotepad
 
                 this._settings["DisableDefaultXslt"] = _disableDefaultXslt;
                 this._settings["AutoFormatOnSave"] = _autoFormatOnSave;
+                this._settings["TreeIndent"] = this._treeIndent;
                 this._settings["IndentLevel"] = _indentLevel;
                 this._settings["IndentChar"] = _indentChar;
                 this._settings["NewLineChars"] = _newLineChars;
@@ -584,6 +587,21 @@ namespace XmlNotepad
             }
 
             [SRCategory("FormatCategory")]
+            [LocDisplayName("TreeIndent")]
+            [SRDescription("TreeIndentDescription")]
+            public int TreeIndent
+            {
+                get
+                {
+                    return this._treeIndent;
+                }
+                set
+                {
+                    this._treeIndent = value;
+                }
+            }
+
+            [SRCategory("FormatCategory")]
             [LocDisplayName("IndentLevel")]
             [SRDescription("IndentLevelDescription")]
             public int IndentLevel
@@ -597,6 +615,7 @@ namespace XmlNotepad
                     this._indentLevel = value;
                 }
             }
+
             [SRCategory("FormatCategory")]
             [LocDisplayName("IndentChar")]
             [SRDescription("IndentCharDescription")]

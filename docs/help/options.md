@@ -18,7 +18,8 @@ The editor to use if the XML file is invalid
 and cannot be opened by XML Notepad.
 
 ### Formatting
-You can also configure the formatting options that are used when you save an XML file, or turn off formatting altogether.
+You can also configure the formatting options that are used when you save an XML file, or turn off formatting altogether.  You can also configure the
+TreeView indentation level in pixels.
 
 ### Language
 Specify which language annotations to pick from associated XSD schemas.
