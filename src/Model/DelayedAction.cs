@@ -80,7 +80,7 @@ namespace XmlNotepad
         {
             System.Threading.Timer delayTimer;
             Action delayedAction;
-            int startTime;
+            uint startTime;
             DispatchHandler handler;
             string name;
 
@@ -98,7 +98,7 @@ namespace XmlNotepad
             /// <param name="delay">The timeout before calling the action</param>
             public void StartDelayTimer(Action action, TimeSpan delay)
             {
-                startTime = Environment.TickCount;
+                startTime = PerformanceInfo.TickCount;
 
                 // stop any previous timer and start over.
                 StopDelayTimer();
@@ -131,8 +131,8 @@ namespace XmlNotepad
 
             internal void OnDelayTimerTick(object state)
             {
-                int endTime = Environment.TickCount;
-                int diff = startTime - endTime;
+                uint endTime = PerformanceInfo.TickCount;
+                uint diff = startTime - endTime;
 
                 Action a = this.delayedAction;
 

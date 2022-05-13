@@ -10,7 +10,6 @@ namespace XmlNotepad
 {
     public class FileHelpers
     {
-
         public static string ValidPath(string path)
         {
             Uri uri = new Uri(path);
@@ -24,7 +23,6 @@ namespace XmlNotepad
             }
             return path;
         }
-
     }
 
     public class EncodingHelpers
@@ -138,6 +136,14 @@ namespace XmlNotepad
         public long BrowserMilliseconds;
 
         public string BrowserName { get; set; }
+
+        public static uint TickCount
+        {
+            get
+            {
+                return (uint)Environment.TickCount;
+            }
+        }
     }
 
 }

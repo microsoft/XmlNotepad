@@ -2588,7 +2588,7 @@ namespace XmlNotepad
 
     public class TypeToFindHandler : IDisposable
     {
-        private int _start;
+        private uint _start;
         private readonly Control _control;
         private string _typedSoFar;
         private readonly int _resetDelay;
@@ -2692,7 +2692,7 @@ namespace XmlNotepad
             {
                 char ch = e.KeyChar;
                 if (ch < 0x20) return; // don't process control characters
-                int tick = Environment.TickCount;
+                uint tick = PerformanceInfo.TickCount;
                 if (tick < _start || tick < this._resetDelay || _start < tick - this._resetDelay)
                 {
                     _typedSoFar = ch.ToString();

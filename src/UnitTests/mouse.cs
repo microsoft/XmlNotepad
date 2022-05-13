@@ -186,7 +186,7 @@ namespace UnitTests
                 Cursor.Position = new Point(input.dx, input.dy);
             }
             Debug.WriteLine("SendInput x={0}, y={1}, flags={2:x}", input.dx, input.dy, input.dwFlags);
-            input.time = Environment.TickCount;
+            input.time = Environment.TickCount & Int32.MaxValue;
             int cb = Marshal.SizeOf(input);
             Debug.Assert(cb == 28); // must match what C++ returns for the INPUT union.
             IntPtr ptr = Marshal.AllocCoTaskMem(cb);
