@@ -956,12 +956,17 @@ namespace UnitTests
         XmlDocument LoadSettings() 
         {
             XmlDocument doc = new XmlDocument();
-            string path = System.IO.Path.Combine(Path.GetTempPath(), "Microsoft", "Xml Notepad", "XmlNotepad.settings");
+            string path = GetSettingsPath();
             if (File.Exists(path))
             {
                 doc.Load(path);
             }
             return doc;
+        }
+
+        string GetSettingsPath()
+        {
+            return System.IO.Path.Combine(Path.GetTempPath(), "Microsoft", "Xml Notepad", "XmlNotepad.settings");
         }
 
         [TestMethod]
@@ -1739,7 +1744,7 @@ Prefix 'user' is not defined. ");
 
         void ResetFormatLongLines()
         {
-            string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
+            string path = GetSettingsPath();
             if (!File.Exists(path))
             {
                 return;
@@ -1753,16 +1758,11 @@ Prefix 'user' is not defined. ");
 
         void SetTreeViewWidth(int width)
         {
-            XmlDocument doc = new XmlDocument();
-            string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path))
+            XmlDocument doc = LoadSettings();
+            if (doc.DocumentElement == null)
             {
                 XmlElement e = doc.CreateElement("Settings");
                 doc.AppendChild(e);
-            }
-            else
-            {
-                doc.Load(path);
             }
 
             XmlNode node = doc.SelectSingleNode("//TreeViewSize");
@@ -1777,7 +1777,7 @@ Prefix 'user' is not defined. ");
                 XmlNode child = node.FirstChild;
                 child.Value = width.ToString();
             }
-            doc.Save(path);
+            doc.Save(GetSettingsPath());
         }
 
         void ClearSchemaCache()
