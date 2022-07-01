@@ -1,13 +1,13 @@
 ## XmlNotepad Development
 
-You can build and test XML Notepad using [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/). It uses
+You can build and test XML Notepad using [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/). It uses
 .NET frameworks, so be sure to install the ".NET desktop development" feature when using the Visual Studio Installer.
-XML Notepad targets .NET Framework version 4.7.2 which is the default target for VS 2019.
+XML Notepad targets .NET Framework version 4.7.2 which is the default target for VS 2022.
 
 ### Coding Guidelines
 
 XmlNotepad follows the standard [C# Coding Guidelines](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) with
-the default C# formatting settings that ship with VS 2019.
+the default C# formatting settings that ship with VS 2022.
 
 The following additional conventions are also followed:
 
@@ -31,7 +31,7 @@ git clone https://github.com/microsoft/XmlNotepad.git
 ```
 Then:
 
-- Load `src/XmlNotepad.sln` into VS 2019.
+- Load `src/XmlNotepad.sln` into Visual Studio.
 - Select Debug or Release and target "Any CPU".
 - Run Build Solution.
 
@@ -95,8 +95,8 @@ a single click and also provide auto-updating whenever a new version is publishe
 After building the `Release` configuration of `XmlNotepad.sln` load the `XmlNotepadSetup.sln`.  This
 solution uses the [WIX Toolset](https://wixtoolset.org/) to build a standalone windows .msi
 installer. To build that setup you will need to install the WIX toolset then the [Wix Toolset Visual
-Studio 2019
-Extension](https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2019Extension).
+Studio 2022
+Extension](https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2022Extension).
 
 Then right click the `XmlNotepadSetup` project and select "build".  This will produce an .msi installer in the
 XmlNotepadSetup\bin\release folder.  There is also a `sign.cmd` script invoked by this build that will try and sign the
