@@ -294,6 +294,7 @@ namespace XmlNotepad
             this._settings["BrowserVersion"] = "";
             this._settings["EnableXsltScripts"] = true;
             this._settings["WebView2Exception"] = "";
+            this._settings["WebView2PromptInstall"] = true;
 
             // XmlDiff options
             this._settings["XmlDiffIgnoreChildOrder"] = false;
@@ -838,11 +839,37 @@ namespace XmlNotepad
         {
             if (e.TabPage == this.tabPageHtmlView)
             {
+                this.CheckWebViewVersion();
                 this.DisplayXsltResults();
             }
             else
             {
                 this.xsltViewer.OnClosed(); // good time to cleanup temp files.
+            }
+        }
+
+        private void CheckWebViewVersion()
+        {
+            if (this._settings.GetBoolean("WebView2PromptInstall") &&
+                !string.IsNullOrEmpty(this._settings.GetString("WebView2Exception")))
+            {
+                // prompt user once and only once so as not to be too annoying.
+                this._settings["WebView2PromptInstall"] = false;
+                var rc = MessageBox.Show(this.Owner, SR.WebView2InstallPrompt, SR.WebView2InstallTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (rc == DialogResult.Yes)
+                {
+                    WebView2PromptInstall();
+                }
+            }
+        }
+
+        private void WebView2PromptInstall()
+        { 
+            // prompt and download the setup program so user can easily run it.
+            var rc = MessageBox.Show(this.Owner, SR.WebView2InstallReady, SR.WebView2InstallTitle, MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+            if (rc == DialogResult.OK)
+            {
+                WebBrowser.OpenUrl(this.Handle, "https://go.microsoft.com/fwlink/p/?LinkId=2124703");
             }
         }
 
@@ -1430,7 +1457,11 @@ namespace XmlNotepad
         {
             if (this.showingOptions && e is WebView2Exception)
             {
-                MessageBox.Show(this, string.Format(SR.WebView2Error, e.Message), "WebView2 Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var rc = MessageBox.Show(this, string.Format(SR.WebView2Error, e.Message), SR.WebView2ErrorTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (rc == DialogResult.OK)
+                {
+                    this.WebView2PromptInstall();
+                }
             }
         }
 
@@ -1622,7 +1653,6 @@ namespace XmlNotepad
                     break;
             }
         }
-
 
         public void SaveErrors(string filename)
         {

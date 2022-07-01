@@ -100,6 +100,7 @@ namespace XmlNotepad
                     WebBrowserFallback();
                 }
 
+                this._settings["WebView2Exception"] = "";
                 Reload();
             }
             catch (Exception ex)
@@ -159,6 +160,7 @@ namespace XmlNotepad
             {
                 this.webBrowser2.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
                 this.webBrowser2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+                this.webBrowser2.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
                 this.webBrowser2.Visible = true;
                 this.webBrowser1.Visible = false;
                 this._webView2Supported = true;
@@ -168,6 +170,12 @@ namespace XmlNotepad
                 WebBrowserFallback();
             }
             _webInitialized = true;
+        }
+
+        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            WebBrowser.OpenUrl(this.Handle, e.Uri);
+            e.Handled = true;
         }
 
         private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)

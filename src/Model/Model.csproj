@@ -7,13 +7,6 @@
     <AssemblyName>XmlNotepad.Model</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MyKeyFile)</AssemblyOriginatorKeyFile>
-    <Company>Microsoft Corporation</Company>
-    <Copyright>Copyright © 2021 Microsoft Corporation</Copyright>
-    <Version>$(ApplicationVersion)</Version>
-    <Authors>Chris Lovett</Authors>
-    <Product>XmlNotepad</Product>
-    <RepositoryUrl>https://github.com/microsoft/xmlnotepad</RepositoryUrl>
-    <PackageProjectUrl>https://microsoft.github.io/XmlNotepad/</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

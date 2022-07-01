@@ -1653,13 +1653,49 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error initializing WebView2 component. Please install WebView2 from https://developer.microsoft.com/en-us/microsoft-edge/webview2/ and check if you need to do a full reboot.
+        ///   Looks up a localized string similar to Error initializing WebView2 component. Do you want to try and re-install the WebView2 component?
         ///
-        ///{0}.
+        ///Error: {0}.
         /// </summary>
         public static string WebView2Error {
             get {
                 return ResourceManager.GetString("WebView2Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WebView2 Initialization Error.
+        /// </summary>
+        public static string WebView2ErrorTitle {
+            get {
+                return ResourceManager.GetString("WebView2ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XSLT output is using an older web browser, if you want faster and more up to date HTML rendering support do you want to install WebView2 ?.
+        /// </summary>
+        public static string WebView2InstallPrompt {
+            get {
+                return ResourceManager.GetString("WebView2InstallPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We will download the WebView2 setup program named &quot;MicrosoftEdgeWebview2Setup&quot;, and you will find it in your downloads folder.  When the download is finished please run it then restart XML Notepad..
+        /// </summary>
+        public static string WebView2InstallReady {
+            get {
+                return ResourceManager.GetString("WebView2InstallReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WebView Upgrade.
+        /// </summary>
+        public static string WebView2InstallTitle {
+            get {
+                return ResourceManager.GetString("WebView2InstallTitle", resourceCulture);
             }
         }
         
