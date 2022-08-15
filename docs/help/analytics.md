@@ -10,18 +10,31 @@ The data is collected using Google Analytics and shared only with members of the
 development team. The data is used to prioritize future work to improve the features that are most
 popular.
 
-As a teaser, here is a map of countries where XML Notepad was used in July 2021.  That's super cool
+As a teaser, here is a map of countries where XML Notepad was used in July 2022.  That's super cool
 to see a healthy community of users and this motivates the team to keep XML notepad in tip-top
 shape.
 
 ![map](../assets/images/map.png)
 
-The first time you install XML Notepad on your computer you will be prompted with the following
-dialog:
+Here's some raw data from August 2022 to August 2021:
+
+Action        | Counts      | Description
+------        | ------      | ------
+/App/Launch   | 1,082,553   | Times app was launched
+/App/XsltView | 140,703     | Times XSLT view was used
+/App/FormSearch | 83,020    | Times the Search dialog was used
+/App/FormOptions | 4,448    | Times the Options dialog was used
+/XmlNotepad/  | 208,520     | Visits to the web home page
+/XmlNotepad/install/ | 78,812  | Visits to the install page
+
+The first time you install XML Notepad on your computer you will be prompted with the following dialog:
 
 ![popup](../assets/images/analytics.png)
 
-We hope you don't but if you really need to click `No` then the choice will be written to the XML
+
+Thanks to those who have allowed analytics to be collected, it really helps
+to understand usage patterns and prioritize what to improve.
+But, if you really need to click `No` then the choice will be written to the XML
 Notepad settings file and it will not be prompted again. Analytics can be enabled or disabled any
 time using the `Allow analytics` option in the [Options dialog](options.md).
 
