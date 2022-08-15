@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace XmlNotepadBuildTasks
 {
@@ -31,6 +32,9 @@ namespace XmlNotepadBuildTasks
 
         [Required]
         public string UpdatesFile { get; set; }
+
+        [Output]
+        public string WebView2Version { get; set; }
 
         public override bool Execute()
         {
@@ -58,6 +62,7 @@ namespace XmlNotepadBuildTasks
             }
 
             Log.LogMessage(MessageImportance.High, "SyncVersions to " + v.ToString());
+            this.WebView2Version = FindWebView2Version();
 
             bool result = UpdateCSharpVersion(v);
             result &= UpdateWixDoc(v);
@@ -65,6 +70,26 @@ namespace XmlNotepadBuildTasks
             result &= UpdateApplicationProjectFile(v);
             result &= CheckUpdatesFile(v);
             return result;
+        }
+
+        private string FindWebView2Version()
+        {
+            var dir = Path.GetDirectoryName(this.ApplicationProjectFile);
+            var xmlnotepadProject = Path.Combine(dir, "..", "XmlNotepad", "XmlNotepad.csproj");
+            var doc = XDocument.Load(xmlnotepadProject);
+            var ns = doc.Root.Name.Namespace;
+            var prefix = "Microsoft.Web.WebView2.Core";
+            foreach (var e in doc.Descendants(ns + "Reference"))
+            {
+                string include = (string)e.Attribute("Include");
+                if (include.StartsWith(prefix))
+                {
+                    var name = new AssemblyName(include);
+                    return name.Version.ToString();
+                }
+            }
+            Log.LogError("Could not find Microsoft.Web.WebView2.Core version in XmlNotepad.csproj");
+            return string.Empty;
         }
 
         private bool UpdateCSharpVersion(Version v)

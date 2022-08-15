@@ -236,14 +236,14 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1210.30, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1210.30\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1293.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1293.44\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1210.30, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1210.30\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1293.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1293.44\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1210.30, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1210.30\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1293.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1293.44\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="SgmlReaderDll, Version=1.8.24.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.25\lib\net47\SgmlReaderDll.dll</HintPath>
@@ -323,8 +323,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1210.30\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1210.30\build\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1293.44\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1293.44\build\Microsoft.Web.WebView2.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1210.30\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1210.30\build\Microsoft.Web.WebView2.targets')" />
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1293.44\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1293.44\build\Microsoft.Web.WebView2.targets')" />
 </Project>

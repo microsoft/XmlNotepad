@@ -55,6 +55,9 @@ namespace BuildTaskTests
 
             wix.BuildEngine = mock.Object;
             wix.Execute();
+
+            Assert.IsTrue(!string.IsNullOrEmpty(wix.WebView2Version));
+            
         }
     }
 }
