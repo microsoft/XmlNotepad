@@ -24,8 +24,9 @@ namespace XmlNotepad
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            this._settings = new Settings(SettingValueMatches)
+            this._settings = new Settings()
             {
+                Comparer = SettingValueMatches,
                 StartupPath = Directory.GetCurrentDirectory(),
                 ExecutablePath = System.AppDomain.CurrentDomain.BaseDirectory,
                 //   Resolver = new XmlProxyResolver(this)

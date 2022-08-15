@@ -17,7 +17,7 @@ namespace XmlNotepad
     {
         UndoManager undoManager = new UndoManager(1000);
         Settings settings;
-        Analytics analytics;
+        AppAnalytics analytics;
         Updater updater;
         DelayedActions delayedActions;
         XmlCache model;
@@ -247,11 +247,11 @@ namespace XmlNotepad
             var model = (XmlCache)GetService(typeof(XmlCache));
             model.Load(path);
         }
-        private void OnRecentFileSelected(object sender, RecentFileEventArgs args)
+        private void OnRecentFileSelected(object sender, MostRecentlyUsedEventArgs args)
         {
-            if (args.FileName != null)
+            if (args.Selection != null)
             {
-                this.LoadFile(args.FileName.ToString());
+                this.LoadFile(args.Selection);
             }
         }
 
