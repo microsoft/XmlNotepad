@@ -170,6 +170,7 @@ namespace Microsoft.Xml
         {
             this._newLine = newLineChar;
 
+            this._watch.Start();
             int count = 0;
 
             foreach (string file in files)
@@ -181,6 +182,7 @@ namespace Microsoft.Xml
                     if (!summary)
                     {
                         this.WriteReport(file, output);
+                        this._watch.Reset();
                     }
                 }
                 catch (Exception e)
@@ -194,7 +196,7 @@ namespace Microsoft.Xml
 
             if (summary && count > 0)
             {
-                this.WriteReport("XmlStats", output);
+                this.WriteReport(files, output);
             }
         }
 
@@ -349,27 +351,52 @@ namespace Microsoft.Xml
             }
         }
 
+        private string FormatMilliseconds()
+        {
+            float time = this._watch.ElapsedMilliseconds;
+            if (time > 1000)
+            {
+                return String.Format("{0,1:F} secs", time / 1000f);
+            }
+            else
+            {
+                return String.Format("{0,1:F} msecs", time);
+            }
+        }
+
+        private void WriteReport(string[] files, TextWriter output)
+        {
+            this._watch.Stop();
+
+            foreach (var f in files) {
+                output.Write("*** " + f);                     // filename or "Summary"
+                output.Write(this._newLine);
+            }
+            output.Write(this._newLine);
+            output.Write("Processed in {0}", FormatMilliseconds());
+            output.Write(this._newLine);
+            output.Write(this._newLine);
+
+            ReportStats(output);
+        }
+
+
         /// <summary>
         /// Get the summary report written to the given output.
         /// </summary>
         public void WriteReport(string path, TextWriter output)
         {
-            output.Write("*** " + path);                     // filename or "Summary"
-
             this._watch.Stop();
-            float time = this._watch.ElapsedMilliseconds;
-            if (time > 1000)
-            {
-                output.Write("   ({0,1:F} secs)", time / 1000f);
-            }
-            else
-            {
-                output.Write("   ({0,1:F} msecs)", time);
-            }
-
+            output.Write(String.Format("*** {0}   ({1})", path, FormatMilliseconds()));
             output.Write(this._newLine);
             output.Write(this._newLine);
 
+            ReportStats(output);
+
+        }
+
+        private void ReportStats(TextWriter output)
+        { 
             // count how many unique attributes
             long attrsCount = 0;
             foreach (NodeStats ns in this._elements.Values)
