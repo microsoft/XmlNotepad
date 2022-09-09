@@ -45,6 +45,7 @@ namespace Microsoft.Xml
             Console.WriteLine("  -v          Generates individual reports for all specified files (default is summary only).");
             Console.WriteLine("  -nologo     Removes logo from the report");
             Console.WriteLine("  -w[a|s|n]   XML whitespace handling: -wa=All (default), -ws=Significant, -wn=None");
+            Console.WriteLine("  -s xpath    Select and report on only the contents of specifically selected nodes using xpath selector.");
         }
 
         [STAThread]
@@ -54,6 +55,7 @@ namespace Microsoft.Xml
             bool logo = true;
             XmlStats xs = new XmlStats();
             List<string> files = new List<string>();
+            List<string> selectors = new List<string>();
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -78,6 +80,18 @@ namespace Microsoft.Xml
                             else
                             {
                                 files = ReadFileNames(args[++i]);
+                            }
+                            break;
+                        case "s":
+                            if (i + 1 == args.Length)
+                            {
+                                Console.WriteLine("missing xpath expression name after '-s' argument");
+                                PrintUsage();
+                                return 1;
+                            }
+                            else
+                            {
+                                selectors.Add(args[++i]);
                             }
                             break;
                         case "v":
@@ -182,7 +196,6 @@ namespace Microsoft.Xml
                     if (!summary)
                     {
                         this.WriteReport(file, output);
-                        this._watch.Reset();
                     }
                 }
                 catch (Exception e)
@@ -392,7 +405,7 @@ namespace Microsoft.Xml
             output.Write(this._newLine);
 
             ReportStats(output);
-
+            Reset();
         }
 
         private void ReportStats(TextWriter output)
