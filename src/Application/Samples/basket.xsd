@@ -2,7 +2,7 @@
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense">
   <xs:annotation>
     <xs:documentation>
-      This is a sample schema that demonstrates the various types of intellisense supported by <b>XML Notepad 2007</b>.
+      This is a sample schema that demonstrates the various types of intellisense supported by <b>XML Notepad</b>.
     </xs:documentation>
   </xs:annotation>
   <xs:element name="Basket">
@@ -53,6 +53,14 @@
   <xs:simpleType name="fruits">
     <xs:annotation>
       <xs:documentation>Fruit is good for you.  Have some today!</xs:documentation>
+      <xs:documentation>Apricots are loaded with Vitamin C</xs:documentation>
+      <xs:documentation>Bananas are full of Vitamin B-6</xs:documentation>
+      <xs:documentation>Grapes have both and potassium</xs:documentation>
+      <xs:documentation>Nectrines are really loaded with Vitamin C</xs:documentation>
+      <xs:documentation>Peaches are just yummy!</xs:documentation>
+      <xs:documentation>Pears are super juicy</xs:documentation>
+      <xs:documentation>Pineapple is also lots of Vitamin C</xs:documentation>
+      <xs:documentation>Plums are low in fat</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:enumeration value="apricot" />

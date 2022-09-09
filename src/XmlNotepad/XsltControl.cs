@@ -38,7 +38,6 @@ namespace XmlNotepad
         private bool _webInitialized;
         private bool _webView2Supported;
         private string _tempFile;
-        private string _previousOutputFile;
         private bool _usingDefaultXslt;
         private bool _hasXsltOutput; // whether DOM has <?xsl-output instruction.
 
@@ -204,22 +203,6 @@ namespace XmlNotepad
                 this._info.BrowserMilliseconds = this._urlWatch.ElapsedMilliseconds;
                 this._info.BrowserName = this.webBrowser1.Visible ? "WebBrowser" : "WebView2";
                 LoadCompleted(this, this._info);
-            }
-        }
-
-        internal void DeletePreviousOutput()
-        {
-            if (!string.IsNullOrEmpty(this._previousOutputFile) && this._tempFile != this._previousOutputFile)
-            {
-                if (File.Exists(this._previousOutputFile))
-                {
-                    try
-                    {
-                        File.Delete(this._previousOutputFile);
-                        this._previousOutputFile = null;
-                    }
-                    catch { }
-                }
             }
         }
 
@@ -619,7 +602,6 @@ namespace XmlNotepad
                 WriteError(x);
             }
 
-            this._previousOutputFile = outpath;
             return outpath;
         }
 

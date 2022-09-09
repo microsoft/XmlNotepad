@@ -244,7 +244,6 @@ namespace XmlNotepad
 
         private void TransformButton_Click(object sender, EventArgs e)
         {
-            this.xsltControl.DeletePreviousOutput();
             this.DisplayXsltResults();
         }
 

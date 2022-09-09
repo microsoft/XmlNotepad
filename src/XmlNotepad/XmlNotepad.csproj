@@ -145,6 +145,7 @@
       <DependentUpon>TaskList.cs</DependentUpon>
     </Compile>
     <Compile Include="TextEditorOverlay.cs" />
+    <Compile Include="TypeToFindHandler.cs" />
     <Compile Include="XmlTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>

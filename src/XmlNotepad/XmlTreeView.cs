@@ -2193,25 +2193,32 @@ namespace XmlNotepad
             XmlElement root = xmlDoc.CreateElement("documentation");
             xmlDoc.AppendChild(root);
             XmlSchemaInfo si = this.XmlTreeView.Model.GetTypeInfo(this.Node);
+            bool found = false;
             if (si != null)
             {
-
                 List<XmlSchemaAnnotated> toSearch = GetTypeInfoSearch(si);
 
                 foreach (XmlSchemaAnnotated a in toSearch)
                 {
                     if (a != null)
                     {
-                        XmlSchemaDocumentation d = SchemaCache.GetDocumentation(a, (string)_settings["Language"]);
-                        if (null != d && d.Markup != null && d.Markup.Length > 0)
+                        foreach (XmlSchemaDocumentation d in SchemaCache.GetDocumentation(a, (string)_settings["Language"]))
                         {
-                            foreach (XmlNode n in d.Markup)
+                            if (null != d && d.Markup != null && d.Markup.Length > 0)
                             {
-                                XmlNode node = xmlDoc.ImportNode(n, true);
-                                root.AppendChild(node);
+                                foreach (XmlNode n in d.Markup)
+                                {
+                                    XmlNode node = xmlDoc.ImportNode(n, true);
+                                    root.AppendChild(node);
+                                    found = true;
+                                }
                             }
-                            return xmlDoc;
+                            root.AppendChild(xmlDoc.CreateElement("br"));
                         }
+                    }
+                    if (found)
+                    {
+                        return xmlDoc;
                     }
                 }
             }

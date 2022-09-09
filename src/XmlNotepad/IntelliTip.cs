@@ -235,21 +235,58 @@ namespace XmlNotepad
             {
                 Font f = _owner.Font;
                 int wrap = 0;
-                foreach (string word in tip.Split(' ', '\t', '\r', '\n'))
+                int start = 0;
+                int n = tip.Length;
+                for (int i = 0; i < n; i++)
                 {
-                    if (string.IsNullOrEmpty(word)) continue;
-                    SizeF size = g.MeasureString(word + " ", f);
-                    wrap += (int)size.Width;
-                    sb.Append(word);
-                    if (wrap > width)
+                    char c = tip[i];
+                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
                     {
-                        sb.Append('\n');
-                        wrap = 0;
+                        // hit a whitespace, so time to insert the word if we have one.
+                        if (i - start > 0)
+                        {
+                            var word = tip.Substring(start, i - start);
+                            SizeF size = g.MeasureString(word + " ", f);
+                            wrap += (int)size.Width;
+                            bool wrapped = false;
+                            if (wrap > width)
+                            {
+                                sb.AppendLine();
+                                wrapped = true;
+                                wrap = 0;
+                            }
+                            sb.Append(word);
+                            if (!wrapped && (c == '\r' || c == '\n'))
+                            {
+                                sb.AppendLine();
+                                wrap = 0;
+                            }
+                            else
+                            {
+                                sb.Append(' ');
+                            }
+                            if (c == '\r' && i + 1 < n && tip[i + 1] == '\n')
+                            {
+                                i++; // skip \r\n pair.
+                            }
+                        }
+                        start = i + 1;
                     }
                     else
                     {
-                        sb.Append(' ');
+                        // scanning over a word.
                     }
+                }
+                if (n - start > 0)
+                {
+                    var word = tip.Substring(start, n - start);
+                    SizeF size = g.MeasureString(word + " ", f);
+                    wrap += (int)size.Width;
+                    if (wrap > width)
+                    {
+                        sb.AppendLine();
+                    }
+                    sb.Append(word);
                 }
             }
             return sb.ToString();

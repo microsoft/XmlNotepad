@@ -17,7 +17,7 @@ Just download the zip file, copy it to the machine you want to install it on, un
 - XML diff to compare 2 similar XML documents
 - Vibrant community with many [updates and bug fixes](http://microsoft.github.io/XmlNotepad/help/updates/).
 
-See [XML Notepad Design ](http://microsoft.github.io/XmlNotepad/help/design/) for information about how this application is built.
+See [XML Notepad Design](http://microsoft.github.io/XmlNotepad/dev/design/) for information about how this application is built.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 

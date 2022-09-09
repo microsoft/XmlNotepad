@@ -511,23 +511,24 @@ namespace XmlNotepad
 
         public enum AnnotationNode { Default, Suggestion, Tooltip }
 
-        public static XmlSchemaDocumentation GetDocumentation(XmlSchemaAnnotated a, string language)
+        public static IEnumerable<XmlSchemaDocumentation> GetDocumentation(XmlSchemaAnnotated a, string language)
         {
             XmlSchemaAnnotation ann = a.Annotation;
-            if (ann == null) return null;
-            foreach (XmlSchemaObject o in ann.Items)
+            if (ann != null)
             {
-                // search for xs:documentation nodes
-                XmlSchemaDocumentation doc = o as XmlSchemaDocumentation;
-                if (doc != null)
+                foreach (XmlSchemaObject o in ann.Items)
                 {
-                    if (string.IsNullOrEmpty(language) || doc.Language == language)
+                    // search for xs:documentation nodes
+                    XmlSchemaDocumentation doc = o as XmlSchemaDocumentation;
+                    if (doc != null)
                     {
-                        return doc;
+                        if (string.IsNullOrEmpty(language) || doc.Language == language)
+                        {
+                            yield return doc;
+                        }
                     }
                 }
             }
-            return null;
         }
 
         public static string GetAnnotation(XmlSchemaAnnotated a, AnnotationNode node, string language)
@@ -567,7 +568,12 @@ namespace XmlNotepad
                                 }
                                 else
                                 {
-                                    sb.Append(n.InnerText);
+                                    string text = n.InnerText;
+                                    if (sb.Length > 0 && !EndsWithNewLine(sb) && !StartsWithNewLine(text))
+                                    {
+                                        sb.AppendLine();
+                                    }
+                                    sb.Append(text);
                                 }
                             }
                         }
@@ -575,6 +581,21 @@ namespace XmlNotepad
                 }
             }
             return sb.ToString();
+        }
+
+        static bool EndsWithNewLine(StringBuilder sb)
+        {
+            int len = sb.Length;
+            if (len > 0 && sb[len - 1] == '\n') return true;
+            return false;
+        }
+
+        static bool StartsWithNewLine(String sb)
+        {
+            int len = sb.Length;
+            if (len > 0 && sb[0] == '\n') return true;
+            if (len > 1 && sb[0] == '\r'  && sb[1] == '\n') return true;
+            return false;
         }
 
         #region IXmlSerializable Members

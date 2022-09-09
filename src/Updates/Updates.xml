@@ -9,6 +9,10 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.62">
+    <bug>Fix formatting of XSD annotations that contain multiple xsd:documentation nodes (github issue #216).</bug>
+    <bug>Stop auto-removing previous output of XSLT transform (github issue #199).</bug>
+  </version>
   <version number="2.8.0.61">
     <feature>Provide convient download help for installing WebView2 component.</feature>
   </version>
