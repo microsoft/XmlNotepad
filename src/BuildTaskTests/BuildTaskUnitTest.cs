@@ -57,7 +57,6 @@ namespace BuildTaskTests
             wix.Execute();
 
             Assert.IsTrue(!string.IsNullOrEmpty(wix.WebView2Version));
-            
         }
     }
 }

@@ -377,19 +377,20 @@
   </Target>
   <PropertyGroup>
     <CoreBuildDependsOn>$(CoreBuildDependsOn);SyncVersionsTarget</CoreBuildDependsOn>
+    <WebView2Runtimes>$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.$(WebView2Version)\runtimes</WebView2Runtimes>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.1293.44\runtimes\win-x86\native\WebView2Loader.dll">
+    <Content Include="$(WebView2Runtimes)\win-x86\native\WebView2Loader.dll">
       <Link>runtimes\win-x86\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.1293.44\runtimes\win-x64\native\WebView2Loader.dll">
+    <Content Include="$(WebView2Runtimes)\win-x64\native\WebView2Loader.dll">
       <Link>runtimes\win-x64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\packages\Microsoft.Web.WebView2.1.0.1293.44\runtimes\win-arm64\native\WebView2Loader.dll">
+    <Content Include="$(WebView2Runtimes)\win-arm64\native\WebView2Loader.dll">
       <Link>runtimes\win-arm64\native\%(Filename)%(Extension)</Link>
       <PublishState>Included</PublishState>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

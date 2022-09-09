@@ -62,9 +62,9 @@ namespace XmlNotepadBuildTasks
             }
 
             Log.LogMessage(MessageImportance.High, "SyncVersions to " + v.ToString());
-            this.WebView2Version = FindWebView2Version();
 
-            bool result = UpdateCSharpVersion(v);
+            bool result = UpdateWebView2Version(doc);
+            result &= UpdateCSharpVersion(v);
             result &= UpdateWixDoc(v);
             result &= UpdatePackageManifest(v);
             result &= UpdateApplicationProjectFile(v);
@@ -72,24 +72,48 @@ namespace XmlNotepadBuildTasks
             return result;
         }
 
-        private string FindWebView2Version()
-        {
+        private bool UpdateWebView2Version(XDocument props)
+        {            
             var dir = Path.GetDirectoryName(this.ApplicationProjectFile);
             var xmlnotepadProject = Path.Combine(dir, "..", "XmlNotepad", "XmlNotepad.csproj");
             var doc = XDocument.Load(xmlnotepadProject);
             var ns = doc.Root.Name.Namespace;
             var prefix = "Microsoft.Web.WebView2.Core";
+            string version = null;
             foreach (var e in doc.Descendants(ns + "Reference"))
             {
                 string include = (string)e.Attribute("Include");
                 if (include.StartsWith(prefix))
                 {
                     var name = new AssemblyName(include);
-                    return name.Version.ToString();
+                    version = name.Version.ToString();
+                    break;
                 }
             }
+            if (!string.IsNullOrEmpty(version))
+            {
+                WebView2Version = version;
+                ns = props.Root.Name.Namespace;
+                var wve = props.Root.Descendants(ns + "WebView2Version").FirstOrDefault();
+                if (wve !=null)
+                {
+                    var v = wve.Value;
+                    if (v != version)
+                    {
+                        wve.Value = version;
+                        props.Save(this.MasterVersionFile);
+                        Log.LogMessage("Updating WebView2Version to " + version);
+                    }
+                    return true;
+                } 
+                else
+                {
+                    Log.LogError("Missing <WebView2Version> property in " + this.MasterVersionFile);
+                }
+            }
+
             Log.LogError("Could not find Microsoft.Web.WebView2.Core version in XmlNotepad.csproj");
-            return string.Empty;
+            return false;
         }
 
         private bool UpdateCSharpVersion(Version v)
