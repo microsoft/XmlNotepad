@@ -1318,7 +1318,16 @@ namespace XmlNotepad
 
         public virtual void UpdateCaption()
         {
-            string caption = this.Caption + " - " + _model.FileName;
+            string fname = "";
+            if (!string.IsNullOrEmpty(_model.FileName))
+            {
+                try
+                {
+                    fname = System.IO.Path.GetFileName(_model.FileName);
+                } catch { }
+            }
+
+            string caption = string.IsNullOrEmpty(fname) ? this.Caption : fname;
             if (this._model.Dirty)
             {
                 caption += "*";
