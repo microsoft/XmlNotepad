@@ -131,4 +131,12 @@
     <value>Illegal surrogate character pair 0x{0}, 0x{1} at position {2} in this text node.</value>
     <comment>Validation error</comment>
   </data>
+  <data name="CredentialDialog.TitleFormat" xml:space="preserve">
+    <value>Connect to {0}</value>
+    <comment>The format for the VS Credendtial dialog title.</comment>
+  </data>
+  <data name="CredentialDialog.DescriptionTextFormat" xml:space="preserve">
+    <value>Connecting to {0}</value>
+    <comment>The format for the VS Credendtial dialog description.</comment>
+  </data>
 </root>

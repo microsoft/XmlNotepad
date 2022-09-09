@@ -113,7 +113,6 @@
     <Compile Include="IntelliTip.cs" />
     <Compile Include="localizableattributes.cs" />
     <Compile Include="NoBorderTabControl.cs" />
-    <Compile Include="proxy.cs" />
     <Compile Include="RecentFilesMenu.cs" />
     <Compile Include="RecentlyUsedComboBox.cs" />
     <Compile Include="SettingExtensions.cs" />

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Text;
 using System.Net;
 using System.Net.Cache;
@@ -8,7 +7,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Xml;
-using SR = XmlNotepad.StringResources;
 
 
 namespace XmlNotepad
@@ -54,6 +52,7 @@ namespace XmlNotepad
             }
             else
             {
+                Debug.WriteLine($"Loading {absoluteUri}");
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
         }
@@ -83,6 +82,12 @@ namespace XmlNotepad
         Abort = 4
     };
 
+    public enum CredentialPromptResult
+    {
+        OK,
+        Cancel,
+        Error
+    }
 
     public class WebProxyService
     {
@@ -188,7 +193,7 @@ namespace XmlNotepad
                     case WebProxyState.PromptForCredentials:
                         if (okToPrompt)
                         {
-                            if (DialogResult.OK == PromptForCredentials(proxyUrl))
+                            if (PromptForCredentials(proxyUrl) == CredentialPromptResult.OK)
                             {
                                 proxy.Credentials = _cachedCredentials;
                                 newProxyState = WebProxyState.PromptForCredentials;
@@ -252,16 +257,16 @@ namespace XmlNotepad
         /// </summary>
         /// <param name="proxyUrl">The server that requires credentials.</param>
         /// <returns>Returns the dialog result of the prompt dialog.</returns>
-        private DialogResult PromptForCredentials(string proxyUrl)
+        private CredentialPromptResult PromptForCredentials(string proxyUrl)
         {
-            DialogResult dialogResult = DialogResult.Cancel;
+            CredentialPromptResult dialogResult = CredentialPromptResult.Cancel;
             bool prompt = true;
             while (prompt)
             {
                 prompt = false;
 
                 dialogResult = Credentials.PromptForCredentials(proxyUrl, out NetworkCredential cred);
-                if (DialogResult.OK == dialogResult)
+                if (CredentialPromptResult.OK == dialogResult)
                 {
                     if (cred != null)
                     {
@@ -293,19 +298,19 @@ namespace XmlNotepad
         /// </param>
         /// <param name="credential">The user supplied credentials.</param>
         /// <returns>
-        /// DialogResult.OK = if Successfully prompted user for credentials.
-        /// DialogResult.Cancel = if user cancelled the prompt dialog.
+        /// CredentialPromptResult.OK = if Successfully prompted user for credentials.
+        /// CredentialPromptResult.Cancel = if user cancelled the prompt dialog.
         /// </returns>
-        public static DialogResult PromptForCredentials(string target, out NetworkCredential credential)
+        public static CredentialPromptResult PromptForCredentials(string target, out NetworkCredential credential)
         {
-            DialogResult dr;
+            CredentialPromptResult dr;
             credential = null;
 
             IntPtr hwndOwner = IntPtr.Zero;
             // Show the OS credential dialog.
             dr = ShowOSCredentialDialog(target, hwndOwner, out string username, out string password);
             // Create the NetworkCredential object.
-            if (dr == DialogResult.OK)
+            if (dr == CredentialPromptResult.OK)
             {
                 credential = CreateCredentials(username, password, target);
             }
@@ -353,17 +358,17 @@ namespace XmlNotepad
         /// <param name="userName">The username supplied by the user.</param>
         /// <param name="password">The password supplied by the user.</param>
         /// <returns>
-        /// DialogResult.OK = if Successfully prompted user for credentials.
-        /// DialogResult.Cancel = if user cancelled the prompt dialog.
+        /// CredentialPromptResult.OK = if Successfully prompted user for credentials.
+        /// CredentialPromptResult.Cancel = if user cancelled the prompt dialog.
         /// </returns>
-        private static DialogResult ShowOSCredentialDialog(string target, IntPtr hwdOwner, out string userName, out string password)
+        private static CredentialPromptResult ShowOSCredentialDialog(string target, IntPtr hwdOwner, out string userName, out string password)
         {
-            DialogResult retValue;
+            CredentialPromptResult retValue;
             userName = string.Empty;
             password = string.Empty;
 
-            string titleFormat = SR.CredentialDialog_TitleFormat;
-            string descriptionFormat = SR.CredentialDialog_DescriptionTextFormat;
+            string titleFormat = Strings.CredentialDialog_TitleFormat;
+            string descriptionFormat = Strings.CredentialDialog_DescriptionTextFormat;
 
             // Create the CREDUI_INFO structure. 
             ProxyNativeMethods.CREDUI_INFO info = new ProxyNativeMethods.CREDUI_INFO();
@@ -466,16 +471,16 @@ namespace XmlNotepad
                     // username and password to use in the current session.
                 }
 
-                retValue = DialogResult.OK;
+                retValue = CredentialPromptResult.OK;
             }
             else if (result == ProxyNativeMethods.CredUIReturnCodes.ERROR_CANCELLED)
             {
-                retValue = DialogResult.Cancel;
+                retValue = CredentialPromptResult.Cancel;
             }
             else
             {
                 Debug.Fail("CredUIPromptForCredentials failed with result = " + result.ToString());
-                retValue = DialogResult.Cancel;
+                retValue = CredentialPromptResult.Cancel;
             }
 
             info.Dispose();

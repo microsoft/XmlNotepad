@@ -17,10 +17,12 @@ namespace XmlNotepad
         private XmlReader _reader;
         private IServiceProvider _site;
         private const string xsiUri = "http://www.w3.org/2001/XMLSchema-instance";
+        private SchemaCache _sc;
 
-        public DomLoader(IServiceProvider site)
+        public DomLoader(IServiceProvider site, SchemaCache cache)
         {
             this._site = site;
+            this._sc = cache;
         }
 
         void AddToTable(XmlNode node)
@@ -304,7 +306,7 @@ namespace XmlNotepad
                     LoadSchemaLocations(a.Value);
                     break;
                 case "noNamespaceSchemaLocation":
-                    LoadSchema(a.Value);
+                    LoadSchema(null, a.Value);
                     break;
             }
         }
@@ -316,19 +318,21 @@ namespace XmlNotepad
             {
                 if (i + 1 < n)
                 {
+                    string ns = words[i];
                     i++;
                     string url = words[i];
-                    LoadSchema(url);
+                    LoadSchema(ns, url);
                 }
             }
         }
 
-        void LoadSchema(string fname)
+        void LoadSchema(string targetNamespace, string fname)
         {
             try
             {
                 Uri resolved = new Uri(new Uri(_reader.BaseURI), fname);
-                this._doc.Schemas.Add(null, resolved.AbsoluteUri);
+                var schema = this._sc.LoadSchema(targetNamespace, resolved);
+                this._doc.Schemas.Add(schema);
             }
             catch (Exception ex)
             {

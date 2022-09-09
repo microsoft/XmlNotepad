@@ -310,7 +310,7 @@ namespace XmlNotepad
             this.Settings["AllowAnalytics"] = false;
             this.Settings["AnalyticsClientId"] = "";
 
-            this.Settings["SchemaCache"] = this._schemaCache = new SchemaCache();
+            this.Settings["SchemaCache"] = this._schemaCache = new SchemaCache(this);
 
             // default text editor
             string sysdir = Environment.SystemDirectory;

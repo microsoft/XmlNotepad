@@ -6,7 +6,7 @@ using System.Xml.Schema;
 using System.IO;
 using System.Globalization;
 using System.Xml.Serialization;
-
+using System.Diagnostics;
 
 namespace XmlNotepad
 {
@@ -161,15 +161,20 @@ namespace XmlNotepad
     {
         //MCorning 10.19.06 Added event so New Menu can populate submenu with nsuri values
         public event EventHandler Changed;
+
         // targetNamespace -> CacheEntry
         Dictionary<string, CacheEntry> namespaceMap = new Dictionary<string, CacheEntry>();
         // sourceUri -> CacheEntry
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
         PersistentFileNames pfn;
+        IServiceProvider site;
+        private XmlResolver resolver; 
 
-        public SchemaCache()
+        public SchemaCache(IServiceProvider site)
         {
+            this.site = site;
             this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
+            this.resolver = new SchemaResolver(this.site, this);
         }
 
         void FireOnChanged()
@@ -252,11 +257,61 @@ namespace XmlNotepad
         public CacheEntry Add(XmlSchema s)
         {
             CacheEntry e = Add(s.TargetNamespace, new Uri(s.SourceUri), false);
-            if (e.Schema != null)
+            if (e.Schema == null)
             {
                 e.Schema = s;
             }
+
+            // There is a bug in the .NET core version of XmlSchema where some imports have
+            // the .Schema property nulled out (like for http://www.w3.org/2000/09/xmldsig#)
+            // So we fix that here and force loading of those schemas.
+            AddImports(s);
             return e;
+        }
+
+        private void AddImports(XmlSchema parent)
+        {
+            foreach (var o in parent.Includes)
+            {
+                if (o is XmlSchemaInclude i)
+                {
+                    XmlSchema s = i.Schema;
+                    if (s == null)
+                    {
+                        s = LoadSchema(new Uri(new Uri(i.SourceUri), i.SchemaLocation));
+                    }
+                    if (s != null && !ContainsSchema(i.Schema))
+                    {
+                        Add(s);
+                    }
+                }
+                else if (o is XmlSchemaImport j)
+                {
+                    XmlSchema s = j.Schema;
+                    if (s == null)
+                    {
+                        s = LoadSchema(new Uri(new Uri(j.SourceUri), j.SchemaLocation));
+                    }
+                    if (s != null && !ContainsSchema(s))
+                    {
+                        Add(s);
+                    }
+                }
+            }
+
+        }
+
+        private XmlSchema LoadSchema(Uri uri)
+        {
+            try
+            {
+                return (XmlSchema)this.Resolver.GetEntity(uri, "", typeof(XmlSchema));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error loading schema: " + ex.Message);
+            }
+            return null;
         }
 
         public void Remove(CacheEntry ce)
@@ -308,6 +363,19 @@ namespace XmlNotepad
             return null;
         }
 
+        public bool ContainsSchema(XmlSchema s)
+        {
+            if (!string.IsNullOrEmpty(s.SourceUri)) {
+                var ce = FindSchemaByUri(s.SourceUri);
+                return ce != null && ce.Schema == s;
+            }
+            else
+            {
+                var ce = FindSchemasByNamespace(s.TargetNamespace);
+                return ce != null && ce.Schema == s;
+            }
+        }
+
         public CacheEntry FindSchemaByUri(string sourceUri)
         {
             if (string.IsNullOrEmpty(sourceUri)) return null;
@@ -323,13 +391,12 @@ namespace XmlNotepad
             return null;
         }
 
-        public XmlResolver Resolver
+        internal XmlSchema LoadSchema(string targetNamespace, Uri resolved)
         {
-            get
-            {
-                return new SchemaResolver(this);
-            }
+            return this.resolver.GetEntity(resolved, "", typeof(XmlSchema)) as XmlSchema;
         }
+
+        public XmlResolver Resolver => this.resolver;
 
         public XmlSchemaType GetTypeInfo(XmlQualifiedName qname)
         {
@@ -657,12 +724,12 @@ namespace XmlNotepad
         #endregion
     }
 
-    public class SchemaResolver : XmlUrlResolver
+    public class SchemaResolver : XmlProxyResolver
     {
         SchemaCache cache;
         ValidationEventHandler handler;
 
-        public SchemaResolver(SchemaCache cache)
+        public SchemaResolver(IServiceProvider site, SchemaCache cache) : base(site)
         {
             this.cache = cache;
         }
@@ -685,6 +752,7 @@ namespace XmlNotepad
                 XmlReaderSettings settings = new XmlReaderSettings();
                 settings.ValidationEventHandler += handler;
                 settings.XmlResolver = this;
+                settings.DtdProcessing = DtdProcessing.Ignore;
                 XmlReader r = XmlReader.Create(absoluteUri.AbsoluteUri, settings);
                 if (r != null)
                 {

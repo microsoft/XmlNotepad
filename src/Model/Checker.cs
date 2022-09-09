@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Schema;
@@ -97,20 +98,31 @@ namespace XmlNotepad
                 set.ValidationEventHandler -= OnValidationEvent;
             }
 
-            this._validator = new XmlSchemaValidator(doc.NameTable, set, _nsResolver,
-                XmlSchemaValidationFlags.AllowXmlAttributes |
-                XmlSchemaValidationFlags.ProcessIdentityConstraints |
-                XmlSchemaValidationFlags.ProcessInlineSchema);
+            try
+            {
+                this._validator = new XmlSchemaValidator(doc.NameTable, set, _nsResolver,
+                    XmlSchemaValidationFlags.AllowXmlAttributes |
+                    XmlSchemaValidationFlags.ProcessIdentityConstraints |
+                    XmlSchemaValidationFlags.ProcessInlineSchema);
+            } 
+            catch (Exception ex)
+            {
+                ReportError(Severity.Error, ex.Message, doc);
+                this._validator = null;
+            }
 
-            this._validator.ValidationEventHandler += OnValidationEvent;
-            this._validator.XmlResolver = resolver;
-            this._validator.Initialize();
+            if (this._validator != null)
+            {
+                this._validator.ValidationEventHandler += OnValidationEvent;
+                this._validator.XmlResolver = resolver;
+                this._validator.Initialize();
 
-            this._nsResolver.Context = doc;
-            ValidateContent(doc);
-            this._nsResolver.Context = doc;
+                this._nsResolver.Context = doc;
+                ValidateContent(doc);
+                this._nsResolver.Context = doc;
 
-            this._validator.EndValidation();
+                this._validator.EndValidation();
+            }
         }
 
         public void Validate(XmlCache xcache)
@@ -147,9 +159,45 @@ namespace XmlNotepad
             {
                 result |= LoadSchemasForNamespace(set, resolver, sc, "", root);
             }
+
+            // Make sure all the required includes or imports are there. 
+            // This is making up for a possible bug in XmlSchemaSet where it
+            // refuses to load an XmlSchema containing a DTD.  Our XmlSchemaResolver
+            // doesn't have that problem.
+            var visited = new HashSet<XmlSchema>();
+            foreach (XmlSchema s in doc.Schemas.Schemas())
+            {
+                CopyImports(s, set, visited);
+            }
+
             return result;
         }
 
+        private void CopyImports(XmlSchema s, XmlSchemaSet set, HashSet<XmlSchema> visited)
+        {
+            visited.Add(s);
+            set.Add(s);
+            foreach (var o in s.Includes)
+            {
+                if (o is XmlSchemaInclude i && i.Schema != null && !visited.Contains(i.Schema))
+                {
+                    CopyImports(i.Schema, set, visited);
+                }
+                else if (o is XmlSchemaImport j)
+                {
+                    XmlSchema js = j.Schema;
+                    if (js == null)
+                    {
+                        js = this._cache.SchemaCache.FindSchemasByNamespace(j.Namespace)?.Schema;
+                    }
+                    if (js != null && !visited.Contains(js))
+                    {
+                        CopyImports(js, set, visited);
+                    }
+                }
+            }
+        }
+             
         private bool LoadSchemasForNamespace(XmlSchemaSet set, SchemaResolver resolver, SchemaCache sc, string nsuri, XmlNode ctx)
         {
             bool result = false;
@@ -226,7 +274,17 @@ namespace XmlNotepad
                 {
                     resolved = new Uri(filename, UriKind.RelativeOrAbsolute);
                 }
-                XmlSchema s = resolver.GetEntity(resolved, "", typeof(XmlSchema)) as XmlSchema;
+                XmlSchema s = null;
+                SchemaCache sc = this._cache.SchemaCache;
+                var ce = sc.FindSchemaByUri(resolved.AbsoluteUri);
+                if (ce != null && ce.Schema != null)
+                {
+                    s = ce.Schema;
+                }
+                else
+                {
+                    s = resolver.GetEntity(resolved, "", typeof(XmlSchema)) as XmlSchema;
+                }
                 if ((s.TargetNamespace + "") != (nsuri + ""))
                 {
                     ReportError(Severity.Warning, Strings.TNSMismatch, ctx);

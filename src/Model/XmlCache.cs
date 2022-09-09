@@ -38,7 +38,7 @@ namespace XmlNotepad
 
         public XmlCache(IServiceProvider site, SchemaCache schemaCache, DelayedActions handler)
         {
-            this._loader = new DomLoader(site);
+            this._loader = new DomLoader(site, schemaCache);
             this._schemaCache = schemaCache;
             this._site = site;
             this.Document = new XmlDocument();
@@ -195,7 +195,7 @@ namespace XmlNotepad
         public void Load(XmlReader reader, string fileName)
         {
             this.Clear();
-            _loader = new DomLoader(this._site);
+            _loader = new DomLoader(this._site, this._schemaCache);
             StopFileWatch();
 
             Uri uri = new Uri(fileName, UriKind.RelativeOrAbsolute);
@@ -280,7 +280,7 @@ namespace XmlNotepad
         public void Clear()
         {
             this._renamed = null;
-            _loader = new DomLoader(this._site);
+            _loader = new DomLoader(this._site, this._schemaCache);
             this.Document = new XmlDocument();
             StopFileWatch();
             this._fileName = null;
