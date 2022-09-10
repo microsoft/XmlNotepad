@@ -32,6 +32,7 @@ namespace Microsoft.Xml
         private string _newLine = "\n";
         private WhitespaceHandling _whiteSpace = WhitespaceHandling.All;
         private Stopwatch _watch = new Stopwatch();
+        HashSet<string> _filters = new HashSet<string>();
 
         private static void PrintUsage()
         {
@@ -45,7 +46,8 @@ namespace Microsoft.Xml
             Console.WriteLine("  -v          Generates individual reports for all specified files (default is summary only).");
             Console.WriteLine("  -nologo     Removes logo from the report");
             Console.WriteLine("  -w[a|s|n]   XML whitespace handling: -wa=All (default), -ws=Significant, -wn=None");
-            Console.WriteLine("  -s xpath    Select and report on only the contents of specifically selected nodes using xpath selector.");
+            Console.WriteLine("  -s names    Report only on the contents of elements with the given comma separated names.");
+            Console.WriteLine("              This will include everything inside the selected elements.");
         }
 
         [STAThread]
@@ -55,7 +57,6 @@ namespace Microsoft.Xml
             bool logo = true;
             XmlStats xs = new XmlStats();
             List<string> files = new List<string>();
-            List<string> selectors = new List<string>();
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -85,13 +86,16 @@ namespace Microsoft.Xml
                         case "s":
                             if (i + 1 == args.Length)
                             {
-                                Console.WriteLine("missing xpath expression name after '-s' argument");
+                                Console.WriteLine("missing name after '-s' argument");
                                 PrintUsage();
                                 return 1;
                             }
                             else
                             {
-                                selectors.Add(args[++i]);
+                                foreach (var name in args[++i].Split(','))
+                                {
+                                    xs._filters.Add(name.Trim());
+                                }
                             }
                             break;
                         case "v":
@@ -263,6 +267,8 @@ namespace Microsoft.Xml
 
             Stack elementStack = new Stack();
             NodeStats currentElement = null;
+            bool hasFilters = this._filters.Count > 0;
+            int selected = hasFilters ? 0 : 1;
 
             while (r.Read())
             {
@@ -271,9 +277,12 @@ namespace Microsoft.Xml
                     case XmlNodeType.CDATA:
                     case XmlNodeType.Text:
                         {
-                            long len = r.Value.Length;
-                            currentElement.Chars += len;
-                            this._elemChars += len;
+                            if (selected > 0)
+                            {
+                                long len = r.Value.Length;
+                                currentElement.Chars += len;
+                                this._elemChars += len;
+                            }
                             break;
                         }
                     case XmlNodeType.Element:
@@ -283,34 +292,48 @@ namespace Microsoft.Xml
                         {
                             this._emptyCount++;
                         }
-
+                        int dec = 0;
+                        if (hasFilters && this._filters.Contains(r.LocalName))
+                        {
+                            selected++;
+                            if (r.IsEmptyElement) dec = 1;
+                        }
                         NodeStats es = CountNode(this._elements, r.Name);
+                        es.Selected = selected;
                         elementStack.Push(es);
                         currentElement = es;
 
                         while (r.MoveToNextAttribute())
                         {
-                            if (es.Attrs == null)
+                            if (selected > 0)
                             {
-                                es.Attrs = new Dictionary<string, NodeStats>();
-                            }
+                                if (es.Attrs == null)
+                                {
+                                    es.Attrs = new Dictionary<string, NodeStats>();
+                                }
 
-                            var attrs = es.Attrs;
+                                var attrs = es.Attrs;
 
-                            this._attrCount++;
+                                this._attrCount++;
 
-                            // create a name that makes attributes unique to their parent elements
-                            NodeStats ns = CountNode(attrs, r.Name);
-                            string s = r.Value;
-                            if (s != null)
-                            {
-                                long len = r.Value.Length;
-                                ns.Chars += len;
-                                this._attrChars += len;
+                                // create a name that makes attributes unique to their parent elements
+                                NodeStats ns = CountNode(attrs, r.Name);
+                                string s = r.Value;
+                                if (s != null)
+                                {
+                                    long len = r.Value.Length;
+                                    ns.Chars += len;
+                                    this._attrChars += len;
+                                }
                             }
                         }
+                        selected -= dec;
                         break;
                     case XmlNodeType.EndElement:
+                        if (hasFilters && this._filters.Contains(r.LocalName))
+                        {
+                            selected--;
+                        }
                         currentElement = (NodeStats)elementStack.Pop();
                         break;
                     case XmlNodeType.Entity:
@@ -322,18 +345,30 @@ namespace Microsoft.Xml
                         // or perhaps we should report a list of them!
                         break;
                     case XmlNodeType.ProcessingInstruction:
-                        this._piCount++;
-                        this._piChars += r.Value.Length;
+                        if (selected > 0)
+                        {
+                            this._piCount++;
+                            this._piChars += r.Value.Length;
+                        }
                         break;
                     case XmlNodeType.Comment:
-                        this._commentCount++;
-                        this._commentChars += r.Value.Length;
+                        if (selected > 0)
+                        {
+                            this._commentCount++;
+                            this._commentChars += r.Value.Length;
+                        }
                         break;
                     case XmlNodeType.SignificantWhitespace:
-                        this._whiteSChars += r.Value.Length;
+                        if (selected > 0)
+                        {
+                            this._whiteSChars += r.Value.Length;
+                        }
                         break;
                     case XmlNodeType.Whitespace:
-                        this._whiteChars += r.Value.Length;
+                        if (selected > 0)
+                        {
+                            this._whiteChars += r.Value.Length;
+                        }
                         break;
                     case XmlNodeType.None:
                         break;
@@ -410,6 +445,15 @@ namespace Microsoft.Xml
 
         private void ReportStats(TextWriter output)
         { 
+            // strip out unselected nodes.
+            foreach (var key in new List<string>(this._elements.Keys))
+            {
+                var es = this._elements[key];
+                if (es.Selected <= 0)
+                {
+                    this._elements.Remove(key);
+                }
+            }
             // count how many unique attributes
             long attrsCount = 0;
             foreach (NodeStats ns in this._elements.Values)
@@ -552,6 +596,8 @@ namespace Microsoft.Xml
             this.Count = 1;
             this.Chars = 0;
         }
+
+        public int Selected { get; internal set; }
     }
 
     internal class NodeStatsComparer : IComparer
