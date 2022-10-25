@@ -245,8 +245,8 @@
     <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1343.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1343.22\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="SgmlReaderDll, Version=1.8.24.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.25\lib\net47\SgmlReaderDll.dll</HintPath>
+    <Reference Include="SgmlReaderDll, Version=1.8.26.0, Culture=neutral, PublicKeyToken=d2e0d325f5b08396, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.26\lib\net47\SgmlReaderDll.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

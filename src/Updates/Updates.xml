@@ -9,6 +9,9 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.64">
+    <feature>Update to SgmlReader version 1.8.26</feature>
+  </version>
   <version number="2.8.0.63">
     <bug>Fix loading XmlSchemas containing a DTD (github issue #221).</bug>
     <bug>Shorten title bar text (github issue #219).</bug>
