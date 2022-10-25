@@ -2,7 +2,6 @@
 SETLOCAL EnableDelayedExpansion
 cd %~dp0
 SET ROOT=%~dp0
-set DRIVE=%~dd0
 set WINGET_SRC=%ROOT%..\winget-pkgs
 for /f "usebackq" %%i in (`xsl -e -s src\Version\version.xsl src\Version\version.props`) do (
     set VERSION=%%i
@@ -95,6 +94,7 @@ if "!OLDEST!" == "" goto :prepare
 echo ======================== Replacing "!OLDEST!" version...
 
 git mv "!OLDEST!" %VERSION%
+if ERRORLEVEL 1 goto :gitError "git mv !OLDEST! %VERSION%"
 
 :prepare
 popd
@@ -108,13 +108,18 @@ if ERRORLEVEL 1 goto :eof
 
 pushd %TARGET%
 winget validate .
+if ERRORLEVEL 1 goto :installfailed
 winget install -m .
 if ERRORLEVEL 1 goto :installfailed
 
 git checkout -b "clovett/xmlnotepad_%VERSION%"
+if ERRORLEVEL 1 call :gitError "git checkout -b clovett/xmlnotepad_%VERSION%"
 git add *
+if ERRORLEVEL 1 call :gitError "git add *"
 git commit -a -m "XML Notepad version %VERSION%"
+if ERRORLEVEL 1 call :gitError "git commit -a -m 'XML Notepad version %VERSION%'"
 git push -u origin "clovett/xmlnotepad_%VERSION%"
+if ERRORLEVEL 1 call :gitError "git push -u origin clovett/xmlnotepad_%VERSION%
 
 echo =============================================================================================================
 echo Please create Pull Request for the new "clovett/xmlnotepad_%VERSION%" branch.
@@ -157,4 +162,8 @@ exit /b 1
 
 :uploadfailed
 echo Upload to Azure failed.
+exit /b 1
+
+:gitError
+echo ### error : %1
 exit /b 1
