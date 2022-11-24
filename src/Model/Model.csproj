@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="SimpleGoogleAnalytics" Version="1.1.3" />
+    <PackageReference Include="SimpleGoogleAnalytics" Version="1.1.5" />
   </ItemGroup>
 
   <ItemGroup>
