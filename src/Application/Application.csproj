@@ -368,7 +368,7 @@
     <PostBuildEvent>"$(SolutionDir)PublishDrop.cmd" "$(TargetDir)" &gt; "$(SolutionDir)Publish.log"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
+    <PreBuildEvent>copy /y "$(SolutionDir)FontBuilder\bin\$(Configuration)\FontBuilder.dll" "$(TargetDir)FontBuilder.dll"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="SyncVersionsTarget">
     <SyncVersions MasterVersionFile="$(SolutionDir)Version\Version.props" CSharpVersionFile="$(SolutionDir)Version\Version.cs" WixFile="$(SolutionDir)XmlNotepadSetup\Product.wxs" ApplicationProjectFile="$(ProjectPath)" AppManifestFile="$(SolutionDir)XmlNotepadPackage\Package.appxmanifest" DropDir="$(SolutionDir)drop" UpdatesFile="$(SolutionDir)Updates\Updates.xml">
