@@ -21,7 +21,7 @@ namespace UnitTests
     [TestClass]
     public class UnitTest1 : TestBase
     {
-        const int TestMethodTimeout = 900000; // 5 minutes
+        const int TestMethodTimeout = 300000; // 5 minutes
         private readonly string _testDir;
 
         public UnitTest1()
