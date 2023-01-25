@@ -84,7 +84,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(534, 37);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(534, 40);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // label1
@@ -95,7 +95,7 @@
             this.label1.Location = new System.Drawing.Point(10, 10);
             this.label1.Margin = new System.Windows.Forms.Padding(10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(266, 17);
+            this.label1.Size = new System.Drawing.Size(336, 20);
             this.label1.TabIndex = 2;
             this.label1.Text = "Please specify the delimeter that is separating columns:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -105,31 +105,31 @@
             this.comboBoxDelimiters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxDelimiters.FormattingEnabled = true;
-            this.comboBoxDelimiters.Location = new System.Drawing.Point(294, 8);
+            this.comboBoxDelimiters.Location = new System.Drawing.Point(364, 8);
             this.comboBoxDelimiters.Margin = new System.Windows.Forms.Padding(8);
             this.comboBoxDelimiters.MaxDropDownItems = 20;
             this.comboBoxDelimiters.Name = "comboBoxDelimiters";
-            this.comboBoxDelimiters.Size = new System.Drawing.Size(232, 21);
+            this.comboBoxDelimiters.Size = new System.Drawing.Size(162, 24);
             this.comboBoxDelimiters.TabIndex = 3;
             this.comboBoxDelimiters.SelectedIndexChanged += new System.EventHandler(this.comboBoxDelimiters_SelectedIndexChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 47);
+            this.label2.Location = new System.Drawing.Point(10, 50);
             this.label2.Margin = new System.Windows.Forms.Padding(10);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(187, 13);
+            this.label2.Size = new System.Drawing.Size(230, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "This is the first row using that delimiter:";
             // 
             // checkBoxHeadings
             // 
             this.checkBoxHeadings.AutoSize = true;
-            this.checkBoxHeadings.Location = new System.Drawing.Point(10, 113);
+            this.checkBoxHeadings.Location = new System.Drawing.Point(10, 122);
             this.checkBoxHeadings.Margin = new System.Windows.Forms.Padding(10);
             this.checkBoxHeadings.Name = "checkBoxHeadings";
-            this.checkBoxHeadings.Size = new System.Drawing.Size(203, 17);
+            this.checkBoxHeadings.Size = new System.Drawing.Size(246, 20);
             this.checkBoxHeadings.TabIndex = 4;
             this.checkBoxHeadings.Text = "The first row are the column headings";
             this.checkBoxHeadings.UseVisualStyleBackColor = true;
@@ -184,7 +184,7 @@
             this.labelStatus.Location = new System.Drawing.Point(10, 10);
             this.labelStatus.Margin = new System.Windows.Forms.Padding(10);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(89, 13);
+            this.labelStatus.Size = new System.Drawing.Size(111, 16);
             this.labelStatus.TabIndex = 2;
             this.labelStatus.Text = "status message...";
             // 
@@ -194,10 +194,10 @@
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.labelTest);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 70);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 76);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(534, 33);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(534, 36);
             this.flowLayoutPanel1.TabIndex = 6;
             // 
             // labelTest
@@ -209,7 +209,7 @@
             this.labelTest.Margin = new System.Windows.Forms.Padding(5);
             this.labelTest.Name = "labelTest";
             this.labelTest.Padding = new System.Windows.Forms.Padding(5);
-            this.labelTest.Size = new System.Drawing.Size(78, 23);
+            this.labelTest.Size = new System.Drawing.Size(94, 26);
             this.labelTest.TabIndex = 0;
             this.labelTest.Text = "This is item 1";
             this.labelTest.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -220,6 +220,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(534, 261);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.Name = "FormCsvImport";
             this.Text = "CSV Import";
             this.tableLayoutPanel1.ResumeLayout(false);

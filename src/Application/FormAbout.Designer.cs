@@ -45,55 +45,55 @@ namespace XmlNotepad {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // pictureBox1
-            //
+            // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             resources.ApplyResources(this.pictureBox1, "pictureBox1");
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.TabStop = false;
-            //
+            // 
             // linkLabel1
-            //
+            // 
             resources.ApplyResources(this.linkLabel1, "linkLabel1");
             this.linkLabel1.BackColor = System.Drawing.Color.Transparent;
             this.linkLabel1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.TabStop = true;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            //
+            // 
             // buttonOK
-            //
+            // 
             resources.ApplyResources(this.buttonOK, "buttonOK");
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.Name = "buttonOK";
-            //
+            // 
             // label2
-            //
+            // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Name = "label2";
-            //
+            // 
             // labelVersion
-            //
+            // 
             resources.ApplyResources(this.labelVersion, "labelVersion");
             this.labelVersion.BackColor = System.Drawing.Color.Transparent;
             this.labelVersion.Name = "labelVersion";
-            //
+            // 
             // label1
-            //
+            // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Name = "label1";
-            //
+            // 
             // labelURL
-            //
+            // 
             resources.ApplyResources(this.labelURL, "labelURL");
             this.labelURL.BackColor = System.Drawing.Color.Transparent;
             this.labelURL.Name = "labelURL";
-            //
+            // 
             // tableLayoutPanel1
-            //
+            // 
             resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
@@ -102,9 +102,9 @@ namespace XmlNotepad {
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.linkLabel1, 0, 5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            //
+            // 
             // FormAbout
-            //
+            // 
             this.AcceptButton = this.buttonOK;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;

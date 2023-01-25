@@ -1075,6 +1075,15 @@
   <data name="gotoDefinitionToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Goto Definition...</value>
   </data>
+  <data name="goToLineToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+G</value>
+  </data>
+  <data name="goToLineToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 22</value>
+  </data>
+  <data name="goToLineToolStripMenuItem.Text" xml:space="preserve">
+    <value>Go To Line...</value>
+  </data>
   <data name="expandXIncludesToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>expandXIncludesToolStripMenuItem</value>
   </data>
@@ -2074,7 +2083,7 @@
     <value>xmlTreeView1</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Type" xml:space="preserve">
-    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.XmlTreeView, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="&gt;&gt;xmlTreeView1.Parent" xml:space="preserve">
     <value>tabPageTreeView</value>
@@ -2101,7 +2110,7 @@
     <value>tabPageTreeView</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="&gt;&gt;tabPageTreeView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2137,7 +2146,7 @@
     <value>xsltViewer</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.XsltViewer, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="&gt;&gt;xsltViewer.Parent" xml:space="preserve">
     <value>tabPageHtmlView</value>
@@ -2164,7 +2173,7 @@
     <value>tabPageHtmlView</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="&gt;&gt;tabPageHtmlView.Parent" xml:space="preserve">
     <value>tabControlViews</value>
@@ -2191,7 +2200,7 @@
     <value>tabControlViews</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.NoBorderTabControl, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="&gt;&gt;tabControlViews.Parent" xml:space="preserve">
     <value>$this</value>
@@ -2218,7 +2227,7 @@
     <value>resizer</value>
   </data>
   <data name="&gt;&gt;resizer.Type" xml:space="preserve">
-    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.PaneResizer, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="&gt;&gt;resizer.Parent" xml:space="preserve">
     <value>$this</value>
@@ -2242,7 +2251,7 @@
     <value>tabPageTaskList</value>
   </data>
   <data name="&gt;&gt;tabPageTaskList.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="tabPageDynamicHelp.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2260,7 +2269,7 @@
     <value>tabPageDynamicHelp</value>
   </data>
   <data name="&gt;&gt;tabPageDynamicHelp.Type" xml:space="preserve">
-    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.NoBorderTabPage, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="_taskList.AccessibleName" xml:space="preserve">
     <value>taskList</value>
@@ -2287,7 +2296,7 @@
     <value>_taskList</value>
   </data>
   <data name="&gt;&gt;_taskList.Type" xml:space="preserve">
-    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.TaskList, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <data name="_dynamicHelpViewer.AccessibleName" xml:space="preserve">
     <value>dynamicHelpViewer</value>
@@ -2308,7 +2317,7 @@
     <value>_dynamicHelpViewer</value>
   </data>
   <data name="&gt;&gt;_dynamicHelpViewer.Type" xml:space="preserve">
-    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.58, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
+    <value>XmlNotepad.XsltControl, Microsoft.XmlNotepad, Version=2.8.0.66, Culture=neutral, PublicKeyToken=d2e0d325f5b08396</value>
   </data>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>688, 17</value>
@@ -2351,6 +2360,9 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>736, 524</value>
+  </data>
+  <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 9.75pt</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -3335,6 +3347,12 @@
   <data name="&gt;&gt;gotoDefinitionToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;goToLineToolStripMenuItem.Name" xml:space="preserve">
+    <value>goToLineToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;goToLineToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;expandXIncludesToolStripMenuItem.Name" xml:space="preserve">
     <value>expandXIncludesToolStripMenuItem</value>
   </data>
@@ -3399,6 +3417,12 @@
     <value>incrementalSearchToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;incrementalSearchToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gCCollectToolStripMenuItem.Name" xml:space="preserve">
+    <value>gCCollectToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;gCCollectToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;viewToolStripMenuItem.Name" xml:space="preserve">
@@ -3796,12 +3820,6 @@
   </data>
   <data name="&gt;&gt;toolStripStatusLabel1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gCCollectToolStripMenuItem.Name" xml:space="preserve">
-    <value>gCCollectToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;gCCollectToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>FormMain</value>

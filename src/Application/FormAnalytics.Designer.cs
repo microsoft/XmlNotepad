@@ -47,37 +47,37 @@ namespace XmlNotepad {
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // pictureBox1
-            //
+            // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             resources.ApplyResources(this.pictureBox1, "pictureBox1");
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.TabStop = false;
-            //
+            // 
             // labelURL
-            //
+            // 
             resources.ApplyResources(this.labelURL, "labelURL");
             this.labelURL.BackColor = System.Drawing.Color.Transparent;
             this.labelURL.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.labelURL.Name = "labelURL";
             this.labelURL.TabStop = true;
             this.labelURL.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            //
+            // 
             // buttonOK
-            //
+            // 
             resources.ApplyResources(this.buttonOK, "buttonOK");
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.No;
             this.buttonOK.Name = "buttonOK";
-            //
+            // 
             // label2
-            //
+            // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Name = "label2";
-            //
+            // 
             // tableLayoutPanel1
-            //
+            // 
             resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
@@ -85,27 +85,27 @@ namespace XmlNotepad {
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 1);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            //
+            // 
             // tableLayoutPanel2
-            //
+            // 
             resources.ApplyResources(this.tableLayoutPanel2, "tableLayoutPanel2");
             this.tableLayoutPanel2.Controls.Add(this.buttonOK, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.buttonYes, 0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            //
+            // 
             // buttonYes
-            //
+            // 
             resources.ApplyResources(this.buttonYes, "buttonYes");
             this.buttonYes.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.buttonYes.Name = "buttonYes";
-            //
+            // 
             // richTextBox1
-            //
+            // 
             resources.ApplyResources(this.richTextBox1, "richTextBox1");
             this.richTextBox1.Name = "richTextBox1";
-            //
+            // 
             // FormAnalytics
-            //
+            // 
             this.AcceptButton = this.buttonOK;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;

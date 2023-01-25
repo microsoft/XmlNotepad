@@ -4,7 +4,6 @@ using Microsoft.Xml;
 using Microsoft.XmlDiffPatch;
 using Sgml;
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -50,7 +49,7 @@ namespace XmlNotepad
         private XmlCache _model;
         private bool _testing; // we are running a test.
 
-        readonly private string _undoLabel; 
+        readonly private string _undoLabel;
         readonly private string _redoLabel;
 
         public FormMain(bool testing)
@@ -128,7 +127,7 @@ namespace XmlNotepad
 
             // Event wiring
             this.xmlTreeView1.SetSite(this);
-            this.xmlTreeView1.SelectionChanged += new EventHandler(treeView1_SelectionChanged);
+            this.xmlTreeView1.SelectionChanged += new EventHandler<NodeSelectedEventArgs>(treeView1_SelectionChanged);
             this.xmlTreeView1.ClipboardChanged += new EventHandler(treeView1_ClipboardChanged);
             this.xmlTreeView1.NodeChanged += new EventHandler<NodeChangeEventArgs>(treeView1_NodeChanged);
             this.xmlTreeView1.KeyDown += new KeyEventHandler(treeView1_KeyDown);
@@ -526,8 +525,8 @@ namespace XmlNotepad
             }
         }
 
-        void ShowUpdateButton() 
-        { 
+        void ShowUpdateButton()
+        {
             this.toolStripMenuItemUpdate.Visible = true;
             this._delayedActions.StartDelayedAction(HideUpdateButtonAction, () =>
             {
@@ -552,7 +551,7 @@ namespace XmlNotepad
             else
             {
                 bool updateAvailable = UpdateRequired(status.Latest);
-                
+
                 this.toolStripMenuItemUpdate.Tag = updateAvailable;
                 if (updateAvailable)
                 {
@@ -569,7 +568,7 @@ namespace XmlNotepad
                     this.menuStrip1.ShowItemToolTips = true;
                 }
             }
-            
+
             return label;
         }
 
@@ -864,7 +863,7 @@ namespace XmlNotepad
         }
 
         private void WebView2PromptInstall()
-        { 
+        {
             // prompt and download the setup program so user can easily run it.
             var rc = MessageBox.Show(this.Owner, SR.WebView2InstallReady, SR.WebView2InstallTitle, MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
             if (rc == DialogResult.OK)
@@ -1324,7 +1323,8 @@ namespace XmlNotepad
                 try
                 {
                     fname = System.IO.Path.GetFileName(_model.FileName);
-                } catch { }
+                }
+                catch { }
             }
 
             string caption = string.IsNullOrEmpty(fname) ? this.Caption : fname;
@@ -1392,10 +1392,10 @@ namespace XmlNotepad
             try
             {
                 this._loading = true;
-                
+
                 // allow user to have a local settings file (xcopy deployable).
                 _loader.LoadSettings(_settings, this._testing);
-            
+
                 // convert old format to the new one
                 object oldFont = this._settings["Font"];
                 if (oldFont is string s && s != "deleted")
@@ -1410,7 +1410,7 @@ namespace XmlNotepad
                         this._settings.Remove("Font");
                     }
                     catch { }
-                } 
+                }
                 else
                 {
                     // convert serialized settings to a winforms Font object.
@@ -1425,7 +1425,7 @@ namespace XmlNotepad
                     lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
                 }
                 _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
-                        
+
                 string updates = (string)this._settings["UpdateLocation"];
                 if (string.IsNullOrEmpty(updates) ||
                     updates.Contains("download.microsoft.com") ||
@@ -1453,8 +1453,8 @@ namespace XmlNotepad
             this.xsltViewer.GetXsltControl().WebBrowserException += OnWebBrowserException;
         }
 
-        private void InitializeHelpViewer() 
-        { 
+        private void InitializeHelpViewer()
+        {
             this._dynamicHelpViewer.SetSite(this);
             if (this._settings.GetBoolean("DynamicHelpVisible", false))
             {
@@ -1545,7 +1545,7 @@ namespace XmlNotepad
         #endregion
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
-        {   
+        {
             if (e.ModelChangeType == ModelChangeType.Reloaded)
             {
                 this._undoManager.Clear();
@@ -1599,8 +1599,10 @@ namespace XmlNotepad
                         try
                         {
                             _loader.MoveSettings(this._settings);
-                        } catch (Exception ex) { 
-                            MessageBox.Show("Error moving settings: " + ex.Message + "\r\nSettings were not moved.", "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error moving settings: " + ex.Message + "\r\nSettings were not moved.", "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     break;
@@ -1676,10 +1678,26 @@ namespace XmlNotepad
             Open(fileName, true);
         }
 
-        private void treeView1_SelectionChanged(object sender, EventArgs e)
+        private void treeView1_SelectionChanged(object sender, NodeSelectedEventArgs e)
         {
             UpdateMenuState();
             DisplayHelp();
+            if (e != null)
+            {
+                DisplayLineInfo(e.Node);
+            }
+        }
+
+        private void DisplayLineInfo(XmlTreeNode node)
+        {
+            if (node != null && node.Node != null && _model != null)
+            {
+                LineInfo info = _model.GetLineInfo(node.Node);
+                if (info != null)
+                {
+                    ShowStatus(string.Format("Line {0}, Column {1}", info.LineNumber, info.LinePosition));
+                }
+            }
         }
 
         private void DisplayHelp()
@@ -2945,6 +2963,38 @@ namespace XmlNotepad
         private void gCCollectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GC.Collect();
+        }
+
+        private void goToLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this._model != null)
+            {
+                var form = new FormGotoLine();
+                form.MaxLineNumber = this._model.GetLastLine();
+                if (this.xmlTreeView1.SelectedNode != null)
+                {
+                    var xmlNode = this.xmlTreeView1.SelectedNode.Node;
+                    var info = this._model.GetLineInfo(xmlNode);
+                    if (info != null)
+                    {
+                        form.LineNumber = info.LineNumber;
+                    }
+                }
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Now find this line number in the line info cache.
+                    var node = this._model.FindNodeAt(form.LineNumber, form.Column);
+                    if (node != null)
+                    {
+                        XmlTreeNode tn = this.xmlTreeView1.FindNode(node);
+                        if (tn != null)
+                        {
+                            this.xmlTreeView1.SelectedNode = tn;
+                            this.SelectTreeView();
+                        }
+                    }
+                }
+            }
         }
     }
 

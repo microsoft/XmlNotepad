@@ -105,13 +105,11 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="XmlDiffPatch, Version=1.0.3.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.3\lib\net47\XmlDiffPatch.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="XmlDiffPatch, Version=1.0.4.0, Culture=neutral, PublicKeyToken=d2e0d325f5b08396, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.4\lib\net47\XmlDiffPatch.dll</HintPath>
     </Reference>
-    <Reference Include="XmlDiffPatch.View, Version=1.0.3.0, Culture=neutral, PublicKeyToken=ab3ea86545595e2b, processorArchitecture=MSIL">
-      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.3\lib\net47\XmlDiffPatch.View.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="XmlDiffPatch.View, Version=1.0.4.0, Culture=neutral, PublicKeyToken=d2e0d325f5b08396, processorArchitecture=MSIL">
+      <HintPath>..\packages\LovettSoftware.XmlDiff.1.0.4\lib\net47\XmlDiffPatch.View.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +127,12 @@
     </Compile>
     <Compile Include="FormCsvImport.Designer.cs">
       <DependentUpon>FormCsvImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGotoLine.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGotoLine.Designer.cs">
+      <DependentUpon>FormGotoLine.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -162,6 +166,9 @@
     </Compile>
     <Compile Include="Program.cs"></Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormGotoLine.resx">
+      <DependentUpon>FormGotoLine.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\XmlReportStyles.css" />
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
