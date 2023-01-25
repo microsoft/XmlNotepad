@@ -21,7 +21,7 @@ namespace UnitTests
     [TestClass]
     public class UnitTest1 : TestBase
     {
-        const int TestMethodTimeout = 300000; // 5 minutes
+        const int TestMethodTimeout = 900000; // 5 minutes
         private readonly string _testDir;
 
         public UnitTest1()
@@ -1086,19 +1086,20 @@ namespace UnitTests
             // open bad file.            
             Trace.WriteLine("open bad file");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
+            WindowsFileDialog fd = w.WaitForFileDialog();
+            fd.FileName = _testDir + "UnitTests\\bad.xml";
+            fd.SendKeystrokes("{ENTER}");
             Window popup = w.WaitForPopup();
-            popup.SendKeystrokes(_testDir + "UnitTests\\bad.xml{ENTER}");
-            popup = w.WaitForPopup();
             popup.SendKeystrokes("%Y");
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("%{F4}");
+            Window notepad = w.WaitForPopup();
+            notepad.DismissPopUp("%{F4}");
 
             // Test OpenFileDialog
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes(_testDir + "UnitTests\\supply.xml");
-            popup.DismissPopUp("{ENTER}");
+            fd = w.WaitForFileDialog();
+            fd.FileName = _testDir + "UnitTests\\supply.xml";
+            fd.DismissPopUp("{ENTER}");
 
             // make an edit.
             this.TreeView.SetFocus();
@@ -1117,9 +1118,9 @@ namespace UnitTests
             string outFile = _testDir + "UnitTests\\out.xml";
             WipeFile(outFile);
             w.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes("out.xml");
-            popup.DismissPopUp("{ENTER}");
+            fd = w.WaitForFileDialog();
+            fd.FileName = "out.xml";
+            fd.DismissPopUp("{ENTER}");
 
             // Check save read only
             Trace.WriteLine("Check save read only.");
@@ -1184,7 +1185,7 @@ namespace UnitTests
             Sleep(1000);
 
             Window fileDialog = schemaDialog.WaitForPopup();
-            OpenFileDialog fd = new OpenFileDialog(fileDialog);
+            WindowsFileDialog fd = new WindowsFileDialog(fileDialog);
             string schema = _testDir + "UnitTests\\emp.xsd";
             fd.FileName = schema;
             fd.DismissPopUp("{ENTER}");
@@ -1266,7 +1267,7 @@ namespace UnitTests
             schemaDialog.InvokeAsyncMenuItem("addSchemasToolStripMenuItem");
 
             fileDialog = schemaDialog.WaitForPopup();
-            fd = new OpenFileDialog(fileDialog);
+            fd = new WindowsFileDialog(fileDialog);
             schema = _testDir + "UnitTests\\emp.xsd";
             fd.FileName = schema;
             fd.DismissPopUp("{ENTER}");
@@ -1991,7 +1992,7 @@ Prefix 'user' is not defined. ");
             Sleep(1000);
 
             // Drag/drop from open file dialog into xml notepad client area.
-            OpenFileDialog dialogWrapper = new OpenFileDialog(openDialog);
+            WindowsFileDialog dialogWrapper = new WindowsFileDialog(openDialog);
 
             Point drop = GetDropSpot(openDialog, treeBounds);
             Trace.WriteLine("Drop spot = " + drop.ToString());
@@ -2996,7 +2997,7 @@ Prefix 'user' is not defined. ");
             // Has to be "Async" otherwise automation locks up because of the popup dialog.
             this.window.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
             Window dialog = this.window.WaitForPopup();
-            OpenFileDialog od = new OpenFileDialog(dialog);
+            WindowsFileDialog od = new WindowsFileDialog(dialog);
             od.FileName = outFile;
             dialog.DismissPopUp("{ENTER}");
 

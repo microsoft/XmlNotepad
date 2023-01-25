@@ -62,12 +62,32 @@ namespace UnitTests {
         }
 
         public string Name {
-            get { return e.Current.Name; }           
+            get
+            {
+                try
+                {
+                    return e.Current.Name;
+                }
+                catch
+                {
+                    return "";
+                }
+            }
         }
 
         public string ClassName
         {
-            get { return e.Current.ClassName; }
+            get
+            {
+                try
+                {
+                    return e.Current.ClassName;
+                }
+                catch
+                {
+                    return "";
+                }
+            }
         }
 
 
@@ -98,6 +118,7 @@ namespace UnitTests {
         public string Role { get { return e.Current.ControlType.LocalizedControlType; } }
 
         public string Status { get { return e.Current.ItemStatus; } }
+
 
         public Rectangle Bounds
         {
@@ -504,11 +525,11 @@ namespace UnitTests {
         }
     }
 
-    public class OpenFileDialog
+    public class WindowsFileDialog
     {
         Window dialog;
 
-        public OpenFileDialog(Window window)
+        public WindowsFileDialog(Window window)
         {
             this.dialog = window;
         }
@@ -552,6 +573,21 @@ namespace UnitTests {
         internal void DismissPopUp(string keyStrokes)
         {
             this.dialog.DismissPopUp(keyStrokes);
+        }
+
+        internal void SendKeystrokes(string keyStrokes)
+        {
+            this.dialog.SendKeystrokes(keyStrokes);
+        }
+
+        internal void WaitForInteractive()
+        {
+            this.dialog.WaitForInteractive();
+        }
+
+        internal void Cancel()
+        {
+            this.DismissPopUp("%{F4}");
         }
 
         public string FileName

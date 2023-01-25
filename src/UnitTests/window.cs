@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Automation;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UnitTests
 {
@@ -133,6 +134,12 @@ namespace UnitTests
             return new AutomationWrapper(e);
         }
 
+        public WindowsFileDialog WaitForFileDialog()
+        {
+            var window = WaitForPopup();
+            return new WindowsFileDialog(window);
+        }
+
         public Window WaitForPopup()
         {
             return WaitForPopup(IntPtr.Zero);
@@ -183,7 +190,7 @@ namespace UnitTests
             }
             if (found != null)
             {
-                Sleep(100); // give it time to get ready to receive keystrokes.
+                found.WaitForInteractive();
                 Trace.WriteLine("WaitForPopup found: '" + found.GetWindowText() + "', at:" + found.GetWindowBounds().ToString());
                 return found;
             }
@@ -381,6 +388,31 @@ namespace UnitTests
                 _parent.WaitForIdle(timeout);
             else if (_process != null && !_process.HasExited)
                 _process.WaitForInputIdle(timeout);
+        }
+
+        public void WaitForInteractive(int retries = 5, int delay = 50)
+        {
+            WaitForIdle(200);
+            WindowPattern wp = (WindowPattern)_acc.AutomationElement.GetCurrentPattern(WindowPattern.Pattern);
+            WindowInteractionState state = WindowInteractionState.NotResponding;
+            for (; retries > 0; retries--)
+            {
+                state = wp.Current.WindowInteractionState;
+                if (state == WindowInteractionState.ReadyForUserInteraction)
+                {
+                    return;
+                }
+                try
+                {
+                    Thread.Sleep(delay);
+                    this._acc.SetFocus();
+                } 
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Cannot set focus: " + ex.Message);
+                }
+            }
+            throw new Exception("Timeout waiting for window to be ready for user interaction, it is stuck in state: " + state);
         }
 
         public bool Closed
