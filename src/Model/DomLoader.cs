@@ -61,9 +61,9 @@ namespace XmlNotepad
                 return null;
             }
             GetOrCreateNodeLineTable();
-            if (node != null && this._lineTable.ContainsKey(node))
+            if (node != null && this._lineTable.TryGetValue(node, out LineInfo info))
             {
-                return this._lineTable[node];
+                return info;
             }
             return null;
         }

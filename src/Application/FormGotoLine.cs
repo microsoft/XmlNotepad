@@ -4,13 +4,13 @@ namespace XmlNotepad
 {
     public partial class FormGotoLine : Form
     {
-        int maxLine = 0;
-        string promptPattern;
+        private int _maxLine = 0;
+        private readonly string _promptPattern;
 
         public FormGotoLine()
         {
             InitializeComponent();
-            promptPattern = labelLinePrompt.Text;
+            this._promptPattern = labelLinePrompt.Text;
             textBoxLine.PreviewKeyDown += TextBox1_PreviewKeyDown;
             textBoxColumn.PreviewKeyDown += TextBox1_PreviewKeyDown;
         }
@@ -68,18 +68,18 @@ namespace XmlNotepad
         {
             get
             {
-                return this.maxLine;
+                return this._maxLine;
             }
             set
             {
-                this.maxLine = value;
-                this.labelLinePrompt.Text = string.Format(promptPattern, value);
+                this._maxLine = value;
+                this.labelLinePrompt.Text = string.Format(this._promptPattern, value);
             }
         }
 
         private void textBox1_TextChanged(object sender, System.EventArgs e)
         {
-            button1.Enabled = (this.LineNumber != -1);
+            this.button1.Enabled = (this.LineNumber != -1);
         }
     }
 }
