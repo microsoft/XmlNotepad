@@ -1551,7 +1551,7 @@ namespace XmlNotepad
             // resizer
             // 
             this.resizer.AccessibleName = "XmlTreeResizer";
-            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Flat;
             this.resizer.Location = new System.Drawing.Point(200, 0);
             this.resizer.Name = "resizer";
             this.resizer.Pane1 = this._myTreeView;

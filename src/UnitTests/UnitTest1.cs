@@ -2266,9 +2266,7 @@ Prefix 'user' is not defined. ");
             // Drag the resizer right a few pixels.
             this.MouseDragDrop(mid, new Point(mid.X + 50, mid.Y), 10);
             newbounds = resizer.Bounds;
-            // BUGBUG: perhaps it's a product bug because I'm seeing all the right drag/drop feedback
-            // but then the resizer is not moved when all is said and done.
-            // Assert.IsTrue(newbounds.Center().X > mid.X);
+            Assert.IsTrue(newbounds.Center().X > mid.X);
         }
 
         [TestMethod]
@@ -3373,8 +3371,8 @@ Prefix 'user' is not defined. ");
                 double dy = (ey - y) * i / steps;
                 double tx = x + dx;
                 double ty = y + dy;
+                Debug.WriteLine("Sending {0}, {1}", tx, ty);
                 sim.Mouse.MoveMouseTo((int)tx, (int)ty).Sleep(30);
-                Debug.WriteLine("{0}, {1}", tx, ty);
             }
 
             sim.Mouse.Sleep(50).LeftButtonUp().Sleep(50);

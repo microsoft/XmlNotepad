@@ -1530,7 +1530,7 @@ namespace XmlNotepad
             // resizer
             // 
             resources.ApplyResources(this.resizer, "resizer");
-            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Flat;
             this.resizer.Name = "resizer";
             this.resizer.Pane1 = null;
             this.resizer.Pane2 = null;
