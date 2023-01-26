@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
-using System.Drawing;
-using System.Reflection;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Automation;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Forms;
 
 namespace UnitTests
 {
@@ -134,10 +131,10 @@ namespace UnitTests
             return new AutomationWrapper(e);
         }
 
-        public WindowsFileDialog WaitForFileDialog()
+        public FileDialogWrapper WaitForFileDialog()
         {
             var window = WaitForPopup();
-            return new WindowsFileDialog(window);
+            return new FileDialogWrapper(window);
         }
 
         public Window WaitForPopup()
@@ -406,7 +403,7 @@ namespace UnitTests
                 {
                     Thread.Sleep(delay);
                     this._acc.SetFocus();
-                } 
+                }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Cannot set focus: " + ex.Message);

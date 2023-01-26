@@ -1,10 +1,9 @@
 using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace UnitTests
 {
@@ -138,23 +137,6 @@ namespace UnitTests
             input.dwFlags = (int)flags;
             SendInput(input);
             Application.DoEvents();
-        }
-
-        const int DragDelayDrop = 200;
-
-        public static void MouseDragDrop(Point start, Point end, int step, MouseButtons buttons)
-        {
-            int s = Timeout;
-            Timeout = 10;
-            MouseDown(start, buttons);
-            Application.DoEvents();
-            Thread.Sleep(DragDelayDrop);
-            MouseDragTo(start, end, step, buttons);
-            Thread.Sleep(DragDelayDrop);
-            MouseUp(end, buttons);
-            Application.DoEvents();
-            Thread.Sleep(DragDelayDrop);
-            Timeout = s;
         }
 
         public static void MouseMoveTo(Point start, Point end, int step)

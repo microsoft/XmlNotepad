@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.IO;
 using System.Diagnostics;
-using System.Windows.Automation;
+using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Automation;
+using System.Windows.Forms;
 
-namespace UnitTests {
+namespace UnitTests
+{
 
-    public class FileComparer : IComparer<string> {
-        public int Compare(string a, string b) {
-           if (a == null && b == null) return 0;
+    public class FileComparer : IComparer<string>
+    {
+        public int Compare(string a, string b)
+        {
+            if (a == null && b == null) return 0;
             if (a == null) return -1;
             if (b == null) return 1;
             // The operating system may or may not have visible "file extensions" so we do an extensionless compare
@@ -22,8 +23,10 @@ namespace UnitTests {
         }
     }
 
-    public class StringComparer : IComparer<string> {
-        public int Compare(string a, string b) {
+    public class StringComparer : IComparer<string>
+    {
+        public int Compare(string a, string b)
+        {
             return String.Compare(a, b, StringComparison.CurrentCultureIgnoreCase);
         }
     }
@@ -37,7 +40,7 @@ namespace UnitTests {
             this.e = e;
         }
 
-        internal AutomationElement AutomationElement { get { return e; } } 
+        internal AutomationElement AutomationElement { get { return e; } }
 
         public static AutomationWrapper AccessibleObjectForWindow(IntPtr hwnd)
         {
@@ -56,12 +59,13 @@ namespace UnitTests {
             AutomationElement e = AutomationElement.FromPoint(new System.Windows.Point(center.X, center.Y));
             if (e == null)
             {
-                throw new Exception("Automation element not found at this location: " +  center.ToString());
+                throw new Exception("Automation element not found at this location: " + center.ToString());
             }
             return new AutomationWrapper(e);
         }
 
-        public string Name {
+        public string Name
+        {
             get
             {
                 try
@@ -99,7 +103,7 @@ namespace UnitTests {
                 try
                 {
                     parent = TreeWalker.RawViewWalker.GetParent(e);
-                } 
+                }
                 catch
                 {
                 }
@@ -123,7 +127,7 @@ namespace UnitTests {
         public Rectangle Bounds
         {
             get { return e.Current.BoundingRectangle.ToRectangle(); }
-        }        
+        }
 
         public int GetChildCount()
         {
@@ -292,13 +296,13 @@ namespace UnitTests {
             var node = AutomationWrapper.AccessibleObjectAt(new Point(x, y));
             return node;
         }
-    
-        #endregion 
+
+        #endregion
 
         #region Selection 
 
         public void Select()
-        { 
+        {
             SelectionItemPattern vp = e.GetCurrentPattern(SelectionItemPattern.Pattern) as SelectionItemPattern;
             if (vp != null)
             {
@@ -333,7 +337,8 @@ namespace UnitTests {
         internal AutomationWrapper GetSelectedChild()
         {
             SelectionPattern sp = e.GetCurrentPattern(SelectionPattern.Pattern) as SelectionPattern;
-            if (sp != null){
+            if (sp != null)
+            {
                 foreach (AutomationElement selected in sp.Current.GetSelection())
                 {
                     return new AutomationWrapper(selected);
@@ -354,7 +359,7 @@ namespace UnitTests {
         }
 
         public void SetFocus()
-        {            
+        {
             e.SetFocus();
         }
 
@@ -525,11 +530,11 @@ namespace UnitTests {
         }
     }
 
-    public class WindowsFileDialog
+    public class FileDialogWrapper
     {
         Window dialog;
 
-        public WindowsFileDialog(Window window)
+        public FileDialogWrapper(Window window)
         {
             this.dialog = window;
         }
@@ -537,12 +542,12 @@ namespace UnitTests {
         public Window Window => this.dialog;
 
         public AutomationWrapper GetFileItem(string fileName)
-        {        
+        {
             AutomationWrapper items = dialog.AccessibleObject.FindDescendant("Items View");
             if (items != null)
             {
                 AutomationElement item = items.AutomationElement.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, fileName, PropertyConditionFlags.IgnoreCase));
-            
+
                 while (item == null)
                 {
                     if (ScrollList(items, ScrollAmount.LargeIncrement) >= 100)
@@ -556,7 +561,7 @@ namespace UnitTests {
                     return new AutomationWrapper(item);
                 }
             }
-            
+
 
             throw new Exception("File '" + fileName + "'not found");
         }
@@ -623,7 +628,7 @@ namespace UnitTests {
             get
             {
                 return GetCheckedState("checkBoxMatchCase");
-                
+
             }
             set
             {

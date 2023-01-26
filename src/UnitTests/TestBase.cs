@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Text;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Threading;
-using System.Xml;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace UnitTests
 {
@@ -82,7 +78,7 @@ namespace UnitTests
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = "\"" + exeFileName + "\"";
             info.Arguments = args;
-            info.EnvironmentVariables["XML_NOTEPAD_DISABLE_HIGH_DPI"] = "1";
+            // info.EnvironmentVariables["XML_NOTEPAD_DISABLE_HIGH_DPI"] = "1";
             info.EnvironmentVariables["XML_NOTEPAD_DISABLE_ANALYTICS"] = "1";
             info.UseShellExecute = false;
 
