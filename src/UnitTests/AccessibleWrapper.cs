@@ -534,6 +534,8 @@ namespace UnitTests {
             this.dialog = window;
         }
 
+        public Window Window => this.dialog;
+
         public AutomationWrapper GetFileItem(string fileName)
         {        
             AutomationWrapper items = dialog.AccessibleObject.FindDescendant("Items View");

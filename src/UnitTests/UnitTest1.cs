@@ -1476,7 +1476,7 @@ Prefix 'user' is not defined. ");
             Point end = new Point(start.X + treeCenter.X - findCenter.X,
                                   start.Y + treeCenter.Y - findCenter.Y);
             Mouse.MouseClick(start, MouseButtons.Left);
-            Mouse.MouseDragTo(start, end, 5);
+            Mouse.MouseDragTo(start, end, 5, MouseButtons.Left);
             Mouse.MouseUp(end, MouseButtons.Left);
 
             // Refocus the combo box...
@@ -1986,19 +1986,17 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
-            Window openDialog = w.WaitForPopup();
+            var openDialog = w.WaitForFileDialog();
             Trace.WriteLine("Opening '" + _testDir + "UnitTests'");
-            openDialog.SendKeystrokes(_testDir + "UnitTests{ENTER}");
+            openDialog.FileName = _testDir + "UnitTests";
+            openDialog.SendKeystrokes("{ENTER}");
             Sleep(1000);
 
             // Drag/drop from open file dialog into xml notepad client area.
-            WindowsFileDialog dialogWrapper = new WindowsFileDialog(openDialog);
-
-            Point drop = GetDropSpot(openDialog, treeBounds);
+            Point drop = GetDropSpot(openDialog.Window, treeBounds);
             Trace.WriteLine("Drop spot = " + drop.ToString());
 
-            AutomationWrapper item = dialogWrapper.GetFileItem("test1.xml");
-
+            var item = openDialog.GetFileItem("test1.xml");
             if (item == null)
             {
                 // try finding the item using the keyboard.
@@ -2011,7 +2009,7 @@ Prefix 'user' is not defined. ");
 
             Mouse.MouseDragDrop(iloc, drop, 5, MouseButtons.Left);
             Sleep(1000);
-            dialogWrapper.DismissPopUp("{ESC}");
+            openDialog.DismissPopUp("{ESC}");
 
             // need bigger window to test drag/drop
             w.SetWindowSize(800, 600);
@@ -2115,12 +2113,12 @@ Prefix 'user' is not defined. ");
             Point treeTop = TopCenter(tree.Bounds, 2);
 
             Trace.WriteLine("--- Drag to top of tree view ---");
-            Mouse.MouseDragTo(endPt, treeTop, 5);
+            Mouse.MouseDragTo(endPt, treeTop, 5, MouseButtons.Left);
             Sleep(1000); // autoscroll time.
             // Drag out of tree view.
             Point titleBar = TopCenter(formBounds, 20);
             Trace.WriteLine("--- Drag to titlebar ---");
-            Mouse.MouseDragTo(treeTop, titleBar, 10);
+            Mouse.MouseDragTo(treeTop, titleBar, 10, MouseButtons.Left);
             Sleep(1000); // should now have 'no drop icon'.
             Mouse.MouseUp(titleBar, MouseButtons.Left);
 
@@ -2177,17 +2175,19 @@ Prefix 'user' is not defined. ");
         {
             AutomationWrapper acc = w.AccessibleObject;
             Rectangle source = acc.Bounds;
-            source.Inflate(20, 20); // add extra margin
-            if (source.Contains(target))
+            Rectangle inflated = source;
+            inflated.Inflate(20, 20); // add extra margin
+            if (inflated.Contains(target))
             {
                 // Source window is completely occluding the target window, so we need to move it!
-                Point from = new Point(source.Left + (source.Width / 2), source.Top + 5);
+                Point from = new Point(source.Left + (source.Width / 2), source.Top + 10);
                 int amount = target.Left - source.Left + 300;
                 Point end = new Point(from.X + amount, from.Y);
                 // Move window to the right.
                 Mouse.MouseDown(from, MouseButtons.Left);
                 Mouse.MouseDragDrop(from, end, 5, MouseButtons.Left);
 
+                // get new moved bounds.
                 source = acc.Bounds;
             }
             if (source.Left > target.Left)
