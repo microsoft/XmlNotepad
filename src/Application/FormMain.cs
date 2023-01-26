@@ -2996,6 +2996,62 @@ namespace XmlNotepad
                 }
             }
         }
+
+        #region Debug Mouse Position for Testing
+        TextBox xPos;
+        TextBox yPos;
+        TextBox status;
+
+        internal void ShowMousePosition()
+        {
+            this.Controls.Clear();
+            TableLayoutPanel panel = new TableLayoutPanel();
+            panel.BackColor = Color.Turquoise;
+            panel.MouseMove += Panel_MouseMove;
+            panel.Dock = DockStyle.Fill;
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
+            panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            panel.ColumnStyles.Add(new ColumnStyle() { Width = 100, SizeType = SizeType.Percent });
+            panel.ColumnStyles.Add(new ColumnStyle() { Width = 100, SizeType = SizeType.Absolute });
+            panel.ColumnStyles.Add(new ColumnStyle() { Width = 100, SizeType = SizeType.Absolute });
+
+            xPos = new TextBox();
+            xPos.Width = 100;
+            xPos.AccessibleName = "XPosition";
+            xPos.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            xPos.Margin = new Padding(10);
+            panel.Controls.Add(xPos);
+
+            yPos = new TextBox();
+            yPos.Width = 100;
+            yPos.AccessibleName = "YPosition";
+            yPos.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            yPos.Margin = new Padding(10);
+            panel.Controls.Add(yPos);
+
+            status = new TextBox();
+            status.Width = 100;
+            status.AccessibleName = "Status";
+            status.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+            status.Margin = new Padding(10);
+            panel.Controls.Add(status);
+
+            panel.SetRow(xPos, 0);
+            panel.SetRow(yPos, 0);
+            panel.SetRow(status, 1);
+            panel.SetColumn(xPos, 1);
+            panel.SetColumn(yPos, 2);
+            panel.SetColumn(status, 0);
+
+            this.Controls.Add(panel);
+        }
+
+        private void Panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            xPos.Text = e.X.ToString();
+            yPos.Text = e.Y.ToString();
+        }
+        #endregion
     }
 
 }

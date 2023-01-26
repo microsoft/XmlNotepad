@@ -7,6 +7,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Automation;
 using System.Windows.Forms;
 using System.Xml;
 using WindowsInput;
@@ -61,20 +63,27 @@ namespace UnitTests
             }
         }
 
-        Window LaunchNotepad()
+        Window LaunchNotepad(bool debugMouse = false)
         {
-            this.window = LaunchNotepad(null);
-            this.window.InvokeMenuItem("newToolStripMenuItem");
+            this.window = LaunchNotepad(null, debugMouse: debugMouse);
+            if (!debugMouse)
+            {
+                this.window.InvokeMenuItem("newToolStripMenuItem");
+            }
             Sleep(1000);
             return window;
         }
 
-        Window LaunchNotepad(string filename, bool testSettings = true)
+        Window LaunchNotepad(string filename, bool testSettings = true, bool debugMouse = false)
         {
             string args = "\"" + filename + "\"";
             if (testSettings)
             {
                 args = "-test " + args;
+            }
+            if (debugMouse)
+            {
+                args = "-debugMouse " + args;
             }
             this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", args, "FormMain");
             return window;
@@ -120,6 +129,94 @@ namespace UnitTests
                 }
                 return cset;
             }
+        }
+
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestCalibrateMouse()
+        {
+            var screen = Screen.PrimaryScreen.WorkingArea;
+            Rectangle bounds = Rectangle.Empty;
+
+            var window = LaunchNotepad(debugMouse: true);
+            window.WaitForInteractive();
+            window.SetWindowPosition(screen.Left, screen.Top);
+            window.SetWindowSize(screen.Width, screen.Height);
+            window.WaitForInteractive();
+            Sleep(1000);
+
+            var xPosLabel = window.FindDescendant("XPosition");
+            var yPosLabel = window.FindDescendant("YPosition");
+            var statusBox = window.FindDescendant("Status");
+            ValuePattern xPattern = null;
+            ValuePattern yPattern = null;
+            ValuePattern sPattern = null;
+            if (xPosLabel.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
+            {
+                xPattern = (ValuePattern)o;
+            }
+            else
+            {
+                Assert.Fail("xPosition TextBox has no ValuePattern?");
+            }
+            if (yPosLabel.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object yo))
+            {
+                yPattern = (ValuePattern)yo;
+            }
+            else
+            {
+                Assert.Fail("yPosition TextBox has no ValuePattern?");
+            }
+            if (statusBox.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object so))
+            {
+                sPattern = (ValuePattern)so;
+            }
+            else
+            {
+                Assert.Fail("yPosition TextBox has no ValuePattern?");
+            }
+            var sim = new InputSimulator();
+
+            bounds = window.GetClientBounds();
+            var center = xPosLabel.Bounds.Center();
+            var b2 = statusBox.Bounds;
+            sim.Mouse.MoveMouseTo(center.X, center.Y);
+            sim.Mouse.MoveMouseTo(bounds.Left, bounds.Bottom);
+            sim.Mouse.MoveMouseTo(b2.Left, b2.Bottom);
+
+            Rectangle inner = bounds;
+            inner.Inflate(-20, -20);
+            int steps = 60;
+            int previousX = 0;
+            int previousY = 0;
+            for (int i = 0; i < steps; i++)
+            {
+                int x = (int)(inner.Left + ((double)i * inner.Width) / steps);
+                int y = (int)(inner.Top + ((double)i * inner.Height) / steps);
+                sim.Mouse.MoveMouseTo(x, y);
+                while (string.IsNullOrEmpty(xPattern.Current.Value) || string.IsNullOrEmpty(yPattern.Current.Value))
+                {
+                    sim.Mouse.MoveMouseTo(x, y);
+                    Thread.Sleep(30);
+                }
+                int ax = previousX;
+                int ay = previousY;
+                // wait for fields to update
+                while (ax == previousX || ay == previousY)
+                {
+                    Thread.Sleep(30);
+                    // winforms mouse move is relative to content not including window frame
+                    ax = int.Parse(xPattern.Current.Value) + bounds.Left;
+                    ay = int.Parse(yPattern.Current.Value) + bounds.Top;
+                }
+                previousX = ax;
+                previousY = ay;
+
+                Debug.WriteLine("{0}, {1}  => {2}, {3}  => {4}, {5}", x, y, ax, ay, x - ax, y - ay);
+            }
+            // close the form
+            window.Close();
         }
 
         [TestMethod]
@@ -2150,7 +2247,7 @@ Prefix 'user' is not defined. ");
             AutomationWrapper resizer = w.FindDescendant("TaskResizer");
             Trace.WriteLine(resizer.Parent.Name);
             var bounds = resizer.Bounds;
-            Point mid = w.AccessibleObject.PhysicalToLogicalPoint(bounds.Center());
+            Point mid = bounds.Center();
             var sim = new InputSimulator();
             sim.Mouse.MoveMouseTo(mid.X, mid.Y);
 

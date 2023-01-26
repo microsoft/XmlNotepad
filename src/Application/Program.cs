@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace XmlNotepad
@@ -22,6 +21,7 @@ namespace XmlNotepad
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             bool testing = false;
+            bool showMousePosition = false;
             string filename = null;
             foreach (string arg in args)
             {
@@ -30,10 +30,13 @@ namespace XmlNotepad
                     char c = arg[0];
                     if (c == '-' || c == '/')
                     {
-                        switch (arg.Substring(1).ToLowerInvariant())
+                        switch (arg.TrimStart('-').ToLowerInvariant())
                         {
                             case "test":
                                 testing = true;
+                                break;
+                            case "debugmouse":
+                                showMousePosition = true;
                                 break;
                         }
                     }
@@ -45,6 +48,7 @@ namespace XmlNotepad
             }
 
             FormMain form = new FormMain(testing);
+            if (showMousePosition) form.ShowMousePosition();
             form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
             form.Show();
             Application.DoEvents();

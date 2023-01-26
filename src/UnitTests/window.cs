@@ -131,6 +131,17 @@ namespace UnitTests
             return new AutomationWrapper(e);
         }
 
+        public AutomationWrapper GetTitleBar()
+        {
+            AutomationElement e = this._acc.AutomationElement.FindFirst(TreeScope.Descendants,
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "TitleBar"));
+            if (e == null)
+            {
+                throw new Exception("Window has no 'TitleBar'");
+            }
+            return new AutomationWrapper(e);
+        }
+
         public FileDialogWrapper WaitForFileDialog()
         {
             var window = WaitForPopup();
@@ -554,6 +565,18 @@ namespace UnitTests
             return Rectangle.Empty;
         }
 
+        public Rectangle GetClientBounds()
+        {
+            WINDOWINFO wi = new WINDOWINFO();
+            wi.cbSize = Marshal.SizeOf(wi);
+            if (GetWindowInfo(this._handle, ref wi))
+            {
+                RECT r = wi.rcClient;
+                return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
+            }
+            return Rectangle.Empty;
+        }
+
         public Rectangle GetWindowBounds()
         {
             GetWindowRect(this._handle, out RECT r);
@@ -745,6 +768,5 @@ namespace UnitTests
             }
             throw new Exception(string.Format("Popup '{0}' not found", name));
         }
-
     }
 }

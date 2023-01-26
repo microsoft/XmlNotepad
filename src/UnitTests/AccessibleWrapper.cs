@@ -158,8 +158,6 @@ namespace UnitTests
             throw new Exception("Element '" + e.Current.Name + "' does not support InvokePattern");
         }
 
-
-
         public string Value
         {
             get

@@ -320,15 +320,15 @@ namespace WindowsInput
             var vx = (int)((double)absoluteX * 65535.0 / (double)bounds.Width);
             var vy = (int)((double)absoluteY * 65535.0 / (double)bounds.Height);
 
-            // BUGBUG: there seems to be some sort of DPI bug with the Y positions.
-            // Y pos   Offby   Ratio
-            // 919      -29    -0.031556039
-            // 688      -21    -0.030523256
-            // 440      -13    -0.029545455
-            // Note: it's not even a perfect linear scale!
-            if (vy > 900) vy -= (int)(vy * 0.031);
-            else if (vy > 600) vy -= (int)(vy * 0.030);
-            else vy -= (int)(vy * 0.029);
+            //// BUGBUG: there seems to be some sort of DPI bug with the Y positions.
+            //// Y pos   Offby   Ratio
+            //// 919      -29    -0.031556039
+            //// 688      -21    -0.030523256
+            //// 440      -13    -0.029545455
+            //// Note: it's not even a perfect linear scale!
+            //if (vy > 900) vy -= (int)(vy * 0.031);
+            //else if (vy > 600) vy -= (int)(vy * 0.030);
+            //else vy -= (int)(vy * 0.029);
 
             movement.Data.Mouse.Flags = flags;
             movement.Data.Mouse.X = vx;
