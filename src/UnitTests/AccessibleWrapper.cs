@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
+using WindowsInput;
 
 namespace UnitTests
 {
@@ -75,6 +76,21 @@ namespace UnitTests
                 catch
                 {
                     return "";
+                }
+            }
+        }
+
+        public ControlType ControlType
+        {
+            get
+            {
+                try
+                {
+                    return e.Current.ControlType;
+                }
+                catch
+                {
+                    return ControlType.Custom;
                 }
             }
         }
@@ -257,6 +273,40 @@ namespace UnitTests
                 }
                 throw new Exception("There is no previous sibling");
             }
+        }
+
+
+        public ScrollAutomationWrapper FindScroller()
+        {
+            var parent = this;
+
+            while (true)
+            {
+                foreach (var child in parent.GetChildren())
+                {
+                    var name = child.AutomationElement.Current.ClassName;
+                    if (name.StartsWith("WindowsForms10.SCROLLBAR."))
+                    {
+                        // we have a legacy scrollbar.
+                        return new ScrollAutomationWrapper(child, null);
+                    }
+                }
+
+                AutomationElement scrollbar = parent.AutomationElement.FindFirst(TreeScope.Descendants,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ScrollBar));
+                if (scrollbar != null)
+                {
+                    return new ScrollAutomationWrapper(null, new AutomationWrapper(scrollbar));
+                }
+
+                var next = TreeWalker.RawViewWalker.GetParent(parent.AutomationElement);
+                if (next == null)
+                {
+                    throw new Exception("Scroller not found");
+                }
+                parent = new AutomationWrapper(next);
+            }
+
         }
 
         public AutomationWrapper FindDescendant(string name)
@@ -732,6 +782,92 @@ namespace UnitTests
             AutomationWrapper findCombo = this.w.FindDescendant("comboBoxFind");
             Mouse.MouseClick(findCombo.Bounds.Center(), MouseButtons.Left);
         }
+    }
+
+    public class ScrollAutomationWrapper
+    {
+        AutomationWrapper legacyScrollbar;
+        AutomationWrapper properScroller;
+
+        public ScrollAutomationWrapper(AutomationWrapper legacyScrollbar, AutomationWrapper properScroller)
+        {
+            this.legacyScrollbar = legacyScrollbar;
+            this.properScroller = properScroller;
+        }
+
+        public InputSimulator Simulator { get; internal set; }
+
+        public void PageDown()
+        {
+            if (this.legacyScrollbar != null)
+            {
+                // Unfortunately UIAutomationClient is missing support for ILegacyAutomation interfaces, so the scrollbar
+                // is returns as one opaque "pane".
+                var bounds = legacyScrollbar.Bounds;
+                // hit the down arrow is the best we can do.
+                Simulator.Mouse.MoveMouseTo(bounds.Left + 10, bounds.Bottom - 10).LeftButtonClick();
+            }
+            else
+            {
+                ScrollPattern sp = (ScrollPattern)properScroller.AutomationElement.GetCurrentPattern(ScrollPattern.Pattern);
+                sp.ScrollVertical(ScrollAmount.LargeDecrement);
+            }
+        }
+
+        public void PageUp()
+        {
+            if (this.legacyScrollbar != null)
+            {
+                // Unfortunately UIAutomationClient is missing support for ILegacyAutomation interfaces, so the scrollbar
+                // is returns as one opaque "pane".
+                var bounds = legacyScrollbar.Bounds;
+                // hit the up arrow is the best we can do.
+                Simulator.Mouse.MoveMouseTo(bounds.Left + 10, bounds.Top + 10).LeftButtonClick();
+            }
+            else
+            {
+                ScrollPattern sp = (ScrollPattern)properScroller.AutomationElement.GetCurrentPattern(ScrollPattern.Pattern);
+                sp.ScrollVertical(ScrollAmount.LargeIncrement);
+            }
+        }
+
+        public void ScrollIntoView(AutomationWrapper element, AutomationWrapper container)
+        {
+            do
+            {
+                var r = element.Bounds;
+                var tb = container.Bounds;
+                if (r.Y < tb.Y)
+                {
+                    Debug.WriteLine("Paging up because {0} < {1}", r.Y, tb.Y);
+                    this.PageUp();
+                    Thread.Sleep(500);
+                    var s = element.Bounds;
+                    if (s == r)
+                    {
+                        // item didn't move, so the page keys are not working, try up arrow.
+                        Debug.WriteLine("???");
+                    }
+                }
+                else if (r.Bottom > tb.Bottom)
+                {
+                    Debug.WriteLine("Paging down because {0} > {1}", r.Y, tb.Y);
+                    this.PageDown();
+                    Thread.Sleep(500);
+                    var s = element.Bounds;
+                    if (s == r)
+                    {
+                        // item didn't move, so the page keys are not working, try down arrow.
+                        Debug.WriteLine("???");
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            } while (true);
+        }
+
     }
 
     class MainWindowWrapper

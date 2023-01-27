@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -713,16 +714,14 @@ namespace UnitTests
             Sleep(100);
             CheckNodeName("woops");
 
-            // TODO: NavigateErrorWithMouse is doing something crazy on 150% DPI
+            Trace.WriteLine("Move to Basket element"); 
+            w.SendKeystrokes("{LEFT}"); 
 
-            //Trace.WriteLine("Move to Basket element"); 
-            //w.SendKeystrokes("{LEFT}"); 
+            Trace.WriteLine("Navigate error with mouse double click");
+            NavigateErrorWithMouse();
 
-            //Trace.WriteLine("Navigate error with mouse double click");
-            //NavigateErrorWithMouse();
-
-            //Trace.WriteLine("We are now back on the 'woops' element.");
-            //CheckNodeName("woops");            
+            Trace.WriteLine("We are now back on the 'woops' element.");
+            CheckNodeName("woops");            
 
             Trace.WriteLine("undo redo of elementBeforeToolStripMenuItem.");
             UndoRedo();
@@ -746,7 +745,7 @@ namespace UnitTests
             row = row.NextSibling;
             Point pt = row.Bounds.Center();
             // Double click it
-            Mouse.MouseDoubleClick(pt, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonDoubleClick();
         }
 
         private void NavigateNextError()
@@ -973,6 +972,10 @@ namespace UnitTests
         [Timeout(TestMethodTimeout)]
         public void TestOptionsDialog()
         {
+            if (!calibrated)
+            {
+                TestCalibrateMouse();
+            }
             Trace.WriteLine("TestOptionsDialog==========================================================");
 
             var w = LaunchNotepad();
@@ -986,18 +989,18 @@ namespace UnitTests
 
             AutomationWrapper table = acc.FindChild("Properties Window");
 
+            ScrollAutomationWrapper scrollbar = table.FindScroller();
+            scrollbar.Simulator = this.sim;
+
             Trace.WriteLine("Font");
             AutomationWrapper font = table.FindChild("Font"); // this is the group heading
-            if (!font.IsVisible || font.Bounds.Top > table.Bounds.Bottom)
-            {
-                table.SetFocus();
-                options.SendKeystrokes("{PGDN}");
-            }
+            scrollbar.ScrollIntoView(font, table);           
 
             Rectangle r = font.Bounds;
             // bring up the font dialog.
             var pt = new Point(r.Right - 10, r.Top + r.Height / 2);
-            Mouse.MouseClick(pt, MouseButtons.Left);
+            options.Activate();
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             Sleep(500);
             Rectangle r2 = font.Bounds;
             if (r2 != r)
@@ -1006,12 +1009,11 @@ namespace UnitTests
                 // so it scrolls up a bit when it is selected.
                 r = r2;
                 pt = new Point(r.Right - 10, r.Top + r.Height / 2);
-                Mouse.MouseClick(pt, MouseButtons.Left);
+                sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             }
             Sleep(500);
-            Mouse.MouseClick(pt, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             Window popup = options.WaitForPopup();
-
             popup.DismissPopUp("{ENTER}");
 
             string[] names = new string[] { "Element", "Attribute", "Text",
@@ -1028,8 +1030,10 @@ namespace UnitTests
                 Trace.WriteLine("Click " + name);
 
                 AutomationWrapper child = table.FindChild(name);
+                scrollbar.ScrollIntoView(child, table);
+
                 r = child.Bounds;
-                Mouse.MouseClick(new Point(r.Left + 10, r.Top + 6), MouseButtons.Left);
+                sim.Mouse.MoveMouseTo(r.Left + 20, r.Top + 6).LeftButtonClick();
                 Sleep(100);
                 popup.SendKeystrokes("{TAB}" + values[i] + "{ENTER}");
 
