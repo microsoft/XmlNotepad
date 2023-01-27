@@ -753,7 +753,7 @@ namespace XmlNotepad
             else if (existing is IXmlSerializable)
             {
                 // then object comparison is enough.
-                return existing != newValue;
+                return existing == newValue;
             }
             else if (existing is int i1)
             {

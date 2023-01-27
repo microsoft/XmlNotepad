@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -28,6 +29,7 @@ namespace UnitTests
         private readonly string _testDir;
         private bool calibrated;
         private List<MouseCalibration> calibration;
+        private Settings testSettings;
 
         public UnitTest1()
         {
@@ -52,8 +54,7 @@ namespace UnitTests
         //public static void MyClassCleanup() {            
         //}
 
-        [TestInitialize()]
-        public void MyTestInitialize()
+        Settings LoadTestSettings()
         {
             Settings testSettings = new Settings()
             {
@@ -65,7 +66,13 @@ namespace UnitTests
             SettingsLoader ls = new SettingsLoader();
             testSettings.SetDefaults();
             ls.LoadSettings(testSettings, true);
+            return testSettings;
+        }
 
+        [TestInitialize()]
+        public void MyTestInitialize()
+        {
+            this.testSettings = LoadTestSettings();
             // Find the test settings we care about.
             var screen = Screen.PrimaryScreen.WorkingArea;
             Size s = (Size)testSettings["PrimaryScreenSize"];
@@ -93,7 +100,7 @@ namespace UnitTests
                 TestCalibrateMouse();
             }
 
-            // Save the updated calibration settings.
+            // Always restore the updated calibration settings.
             points = new Point[this.calibration.Count * 2];
             int pos = 0;
             foreach (var c in this.calibration)
@@ -103,6 +110,8 @@ namespace UnitTests
             }
             testSettings["PrimaryScreenSize"] = screen.Size;
             testSettings["MouseCalibration"] = points;
+
+            // Save the reset settings so next LaunchNotepad picks them up
             testSettings.Save(testSettings.FileName);
         }
 
@@ -1097,20 +1106,24 @@ namespace UnitTests
             Sleep(2000); // give it time to write out the new settings.
 
             // verify persisted colors.
-            XmlDocument doc = LoadSettings();
+            this.testSettings = LoadTestSettings();
+            ThemeColors colors = (ThemeColors)this.testSettings["LightColors"];
+
+            Color[] found = new Color[]
+            {
+                colors.Element, colors.Attribute, colors.Text, colors.Background, colors.Comment, colors.PI, colors.CDATA
+            };
+            TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
+
             for (int i = 0, n = names.Length; i < n; i++)
             {
                 string ename = names[i];
-                XmlNode node = doc.SelectSingleNode("Settings/Colors/" + ename);
-                if (node != null)
+                var expected = values[i];
+                var actual = tc.ConvertToString(found[i]);
+                if (expected != actual)
                 {
-                    string expected = values[i];
-                    string actual = node.InnerText;
-                    if (expected != actual)
-                    {
-                        Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
-                        passed = false;
-                    }
+                    Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
+                    passed = false;
                 }
             }
 
@@ -1120,30 +1133,10 @@ namespace UnitTests
             }
         }
 
-        XmlDocument LoadSettings()
-        {
-            XmlDocument doc = new XmlDocument();
-            string path = GetSettingsPath();
-            if (File.Exists(path))
-            {
-                doc.Load(path);
-            }
-            return doc;
-        }
-
-        string GetSettingsPath()
-        {
-            return System.IO.Path.Combine(Path.GetTempPath(), "Microsoft", "Xml Notepad", "XmlNotepad.settings");
-        }
-
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestDialogs()
         {
-
-            // ensure we get this warning dialog.
-            ResetFormatLongLines();
-
             // ensure we get a horizontal scroll bar on the supply.xml file.
             SetTreeViewWidth(290);
 
@@ -1623,8 +1616,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestFind()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestFind==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
@@ -1710,8 +1701,7 @@ Prefix 'user' is not defined. ");
             Sleep(500);
             w.SendKeystrokes("^c");
             CheckClipboard("<!--last comment-->");
-
-            ResetFindOptions();
+            ;
             // find should not modify the document, so we should be able to exit without saveas dialog.
         }
 
@@ -1719,8 +1709,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestReplaceMany()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestReplace==========================================================");
             string testFile = _testDir + "UnitTests\\test10.xml";
             var w = LaunchNotepad(testFile);
@@ -1761,8 +1749,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestReplace()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestReplace==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
@@ -1836,7 +1822,6 @@ Prefix 'user' is not defined. ");
 
             w.Dispose();
             Sleep(2000);
-            ResetFindOptions();
 
         }
 
@@ -1844,8 +1829,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestReplaceBackwards()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestReplaceBackwards==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
@@ -1884,99 +1867,12 @@ Prefix 'user' is not defined. ");
 
             w.Dispose();
             Sleep(2000);
-            ResetFindOptions();
-        }
-
-        void ResetFindOptions()
-        {
-            string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-
-            RemoveNode(doc, "//SearchWholeWord");
-            RemoveNode(doc, "//SearchRegex");
-            RemoveNode(doc, "//SearchMatchCase");
-            RemoveNode(doc, "//SearchXPath");
-            RemoveNode(doc, "//FindMode");
-            RemoveNode(doc, "//RecentFindStrings");
-            RemoveNode(doc, "//RecentReplaceStrings");
-            doc.Save(path);
-        }
-
-        void ResetFormatLongLines()
-        {
-            string path = GetSettingsPath();
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-
-            RemoveNode(doc, "//AutoFormatLongLines");
-            doc.Save(path);
         }
 
         void SetTreeViewWidth(int width)
         {
-            XmlDocument doc = LoadSettings();
-            if (doc.DocumentElement == null)
-            {
-                XmlElement e = doc.CreateElement("Settings");
-                doc.AppendChild(e);
-            }
-
-            XmlNode node = doc.SelectSingleNode("//TreeViewSize");
-            if (node == null)
-            {
-                node = doc.CreateElement("TreeViewSize");
-                node.AppendChild(doc.CreateTextNode(width.ToString()));
-                doc.DocumentElement.AppendChild(node);
-            }
-            else
-            {
-                XmlNode child = node.FirstChild;
-                child.Value = width.ToString();
-            }
-            doc.Save(GetSettingsPath());
-        }
-
-        void ClearSchemaCache()
-        {
-            string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-
-            RemoveNodes(doc, "//Schema");
-            doc.Save(path);
-        }
-
-        void RemoveNode(XmlDocument doc, string xpath)
-        {
-            XmlNode node = doc.SelectSingleNode(xpath);
-            if (node != null) node.ParentNode.RemoveChild(node);
-        }
-
-        void RemoveNodes(XmlDocument doc, string xpath)
-        {
-            List<XmlNode> toRemove = new List<XmlNode>();
-            foreach (XmlNode node in doc.SelectNodes(xpath))
-            {
-                toRemove.Add(node);
-            }
-            foreach (XmlNode node in toRemove)
-            {
-                node.ParentNode.RemoveChild(node);
-            }
-
+            this.testSettings["TreeViewSize"] = width;
+            this.testSettings.Save(this.testSettings.FileName);
         }
 
         [TestMethod]
@@ -2862,9 +2758,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestUnicode()
         {
-
-            ClearSchemaCache();
-
             Trace.WriteLine("TestUnicode==========================================================");
             string testFile = _testDir + "UnitTests\\unicode.xml";
             var w = this.LaunchNotepad(testFile);
