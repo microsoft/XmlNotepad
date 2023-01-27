@@ -295,6 +295,10 @@ namespace UnitTests
             }
             if (text.ToLowerInvariant() != name.ToLowerInvariant())
             {
+                if (popup != null)
+                {
+                    popup.Close();
+                }
                 throw new ApplicationException(string.Format("Expecting popup '{0}'", name));
             }
             return popup;

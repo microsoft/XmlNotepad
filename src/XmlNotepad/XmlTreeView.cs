@@ -1799,7 +1799,15 @@ namespace XmlNotepad
         {
             get
             {
-                return this.Node == null ? _editLabel : this.Node.Name;
+                if (this.Node == null) return _editLabel;
+
+                var name = this.Node.Name;
+                if (name == "#cdata-section")
+                {
+                    // make it less verbose.
+                    name = "#cdata";
+                }
+                return name;
             }
             set
             {

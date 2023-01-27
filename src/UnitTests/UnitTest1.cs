@@ -2425,7 +2425,7 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Test goto definition on schemaLocation");
             w.SendKeystrokes("^Ixsi{F12}");
-            Window popup = w.ExpectingPopup("XML Notepad - " + xsdFile);
+            Window popup = w.ExpectingPopup("emp.xsd");
             popup.DismissPopUp("%{F4}");
 
             Trace.WriteLine("Test namespace intellisense, make sure emp.xsd namespace is in the list.");
