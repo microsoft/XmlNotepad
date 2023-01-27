@@ -2067,7 +2067,7 @@ Prefix 'user' is not defined. ");
             Rectangle ibounds = item.Bounds;
             Point iloc = new Point(ibounds.Left + 10, ibounds.Top + 10);
             Trace.WriteLine("Dragging from " + iloc.ToString());
-
+            w.Activate();
             sim.Mouse.LeftButtonDragDrop(iloc.X, iloc.Y, drop.X, drop.Y, 5, 1);
             Sleep(500);
             openDialog.DismissPopUp("{ESC}");
@@ -2159,7 +2159,7 @@ Prefix 'user' is not defined. ");
             pt = bounds.Center();
             Point endPt = new Point(pt.X, pt.Y - (int)(3 * itemHeight));
             // Drag the node up three slots.
-            sim.Mouse.LeftButtonDragDrop(pt.Y, pt.X, endPt.X, endPt.Y, 5, 1);
+            sim.Mouse.LeftButtonDragDrop(pt.X, pt.Y, endPt.X, endPt.Y, 5, 10);
 
             Sleep(200);
 
@@ -2171,25 +2171,20 @@ Prefix 'user' is not defined. ");
 
             // Autoscroll
             Point treeTop = TopCenter(tree.Bounds, 2);
-
             Trace.WriteLine("--- Drag to top of tree view ---");
-            sim.Mouse.LeftButtonDragDrop(endPt.X, endPt.Y, treeTop.X, treeTop.Y, 5, 1);
+            sim.Mouse.LeftButtonDragDrop(endPt.X, endPt.Y, treeTop.X, treeTop.Y + itemHeight, 5, 10);
             Sleep(1000); // autoscroll time.
+
             // Drag out of tree view.
             Point titleBar = TopCenter(formBounds, 20);
             Trace.WriteLine("--- Drag to titlebar ---");
-            sim.Mouse.LeftButtonDragDrop(treeTop.X, treeTop.Y, titleBar.X, titleBar.Y, 5, 1);
+            w.Activate();
+            bounds = node.Bounds;
+            pt = bounds.Center();
+            sim.Mouse.LeftButtonDragDrop(pt.X, pt.Y, titleBar.X, titleBar.Y, 5, 10);
             Sleep(1000); // should now have 'no drop icon'.
 
-            // code coverage on expand/collapse.
-            w.SendKeystrokes("^ICountry");
-            node.Invoke();
-            Sleep(500);
-            w.SendKeystrokes("{RIGHT}");
-            Sleep(500);
-            w.SendKeystrokes("{LEFT}");
-
-            this.SaveAndCompare("out.xml", "test4.xml");
+            this.SaveAndCompare("out.xml", "test11.xml");
         }
 
         [TestMethod]
@@ -2508,6 +2503,13 @@ Prefix 'user' is not defined. ");
             CheckClipboard("<x xmlns=\"http://Employees\">y</x>");
             Undo();
             Undo();
+
+            // code coverage on expand/collapse.
+            w.SendKeystrokes("^ICountry");
+            Sleep(500);
+            w.SendKeystrokes("{RIGHT}");
+            Sleep(500);
+            w.SendKeystrokes("{LEFT}");
 
             Sleep(1000);
             this.SaveAndCompare("out.xml", "emp.xml");
@@ -2990,7 +2992,6 @@ Prefix 'user' is not defined. ");
         //==================================================================================
         private void SaveAndCompare(string outname, string compareWith)
         {
-
             string outFile = Save(outname);
 
             string expectedFile = _testDir + "UnitTests\\" + compareWith;
