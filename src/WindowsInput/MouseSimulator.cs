@@ -365,7 +365,7 @@ namespace WindowsInput
         public IMouseSimulator LeftButtonDragDrop(int sx, int sy, int ex, int ey, int delta, int delay)
         {
             this.MoveMouseTo(sx, sy);
-            this.LeftButtonDown();
+            this.LeftButtonDown().Sleep(100); // need more time to ensure this sticks before drag/drop
 
             // Interpolate and move mouse smoothly over to given location.                
             double dx = ex - sx;
@@ -379,13 +379,12 @@ namespace WindowsInput
             {
                 length = 1;
             }
-            
+
             for (int i = 0; i < length; i += delta)
             {
                 int tx = (int)(sx + ((dx * i) / length));
                 int ty = (int)(sy + ((dy * i) / length));
                 this.MoveMouseTo(tx, ty);
-                Thread.Sleep(delay);
             }
 
             // nail the landing.
