@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
+using WindowsInput;
 
 namespace UnitTests
 {
@@ -22,15 +23,19 @@ namespace UnitTests
 
         private const int MenuDelay = 100;
 
-        public Window(Window parent, IntPtr handle)
+        public InputSimulator sim;
+
+        public Window(Window parent, IntPtr handle, InputSimulator sim)
         {
             this._parent = parent;
             this._handle = handle;
+            this.sim = sim;
             this._acc = AutomationWrapper.AccessibleObjectForWindow(handle);
         }
 
-        public Window(Process p, string className, string rootElementName)
+        public Window(Process p, InputSimulator sim, string className, string rootElementName)
         {
+            this.sim = sim;
             this._process = p;
             IntPtr h = p.Handle;
             while (h == IntPtr.Zero || !p.Responding)
@@ -166,14 +171,14 @@ namespace UnitTests
                     IntPtr popup = GetLastActivePopup(h);
                     if (popup != h && popup != excludingThisWindow && popup != IntPtr.Zero)
                     {
-                        found = new Window(this, popup);
+                        found = new Window(this, popup, sim);
                     }
                     else
                     {
                         IntPtr hwnd = GetForegroundWindow();
                         if (hwnd != h && hwnd != excludingThisWindow)
                         {
-                            found = new Window(this, hwnd);
+                            found = new Window(this, hwnd, sim);
                         }
                     }
                     if (found != null)

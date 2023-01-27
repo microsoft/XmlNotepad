@@ -663,10 +663,12 @@ namespace UnitTests
     public class FindDialog
     {
         Window w;
+        InputSimulator sim;
 
         public FindDialog(Window w)
         {
             this.w = w;
+            this.sim = w.sim;
         }
 
         public Window Window { get { return this.w; } }
@@ -773,14 +775,16 @@ namespace UnitTests
             // seems to be a bug in the AutomationElement mapping, checkbox is not supporting the TogglePattern!
             AutomationWrapper s = w.FindDescendant(name);
             Rectangle r = s.Bounds;
-            Mouse.MouseClick(r.Center(), MouseButtons.Left);
+            var c = r.Center();
+            sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Thread.Sleep(200);
         }
 
         internal void FocusFindString()
         {
             AutomationWrapper findCombo = this.w.FindDescendant("comboBoxFind");
-            Mouse.MouseClick(findCombo.Bounds.Center(), MouseButtons.Left);
+            var c = findCombo.Bounds.Center();
+            sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
         }
     }
 
@@ -876,10 +880,12 @@ namespace UnitTests
         AutomationWrapper xslOutputTab;
         AutomationWrapper xmlTreeViewTab;
         AutomationWrapper xsltViewer;
+        InputSimulator sim;
 
         public MainWindowWrapper(Window w)
         {
             this.window = w;
+            this.sim = w.sim;
         }
 
         public void LoadXmlAddress(string url, string expectedXmlPrefix)
@@ -887,7 +893,8 @@ namespace UnitTests
             Trace.WriteLine("Click in the combo box location field");
             AutomationWrapper comboBoxLocation = this.window.FindDescendant("comboBoxLocation");
             Rectangle bounds = comboBoxLocation.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
 
             Trace.WriteLine("Loading: " + url);
             this.window.SendKeystrokes("{END}+{HOME}" + url + "{ENTER}");
@@ -925,7 +932,8 @@ namespace UnitTests
         {
             AutomationWrapper s = GetXsltViewer().FindDescendant("SourceFileName");
             Rectangle bounds = s.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(500);
             this.window.SendKeystrokes("{END}+{HOME}" + filename + "{ENTER}");
         }
@@ -934,7 +942,8 @@ namespace UnitTests
         {
             AutomationWrapper s = GetXsltViewer().FindDescendant("OutputFileName");
             Rectangle bounds = s.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(500);
             this.window.SendKeystrokes("{END}+{HOME}" + filename);
         }
@@ -955,7 +964,8 @@ namespace UnitTests
         {
             Rectangle bounds = GetXsltViewer().Bounds;
             // click in HTML view
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
 
             // select all the text
             Sleep(1000);
@@ -980,7 +990,8 @@ namespace UnitTests
             }
             var bounds = xslOutputTab.Bounds;
             Trace.WriteLine("Select XSL output tab");
-            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
+            var c = new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5);
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(1000);
         }
 
@@ -993,7 +1004,8 @@ namespace UnitTests
             }
             var bounds = xmlTreeViewTab.Bounds;
             Trace.WriteLine("Select XML tree view tab");
-            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
+            var c = new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5);
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(100);
         }
     }

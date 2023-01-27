@@ -58,16 +58,23 @@ namespace XmlNotepad
             }
         }
 
+        public virtual string TestConfigFile
+        {
+            get
+            {
+                string path = Path.GetTempPath();
+                Debug.Assert(!string.IsNullOrEmpty(path));
+                return System.IO.Path.Combine(path, "Microsoft", "Xml Notepad", "XmlNotepad.test.settings");
+            }
+        }
+
         public void LoadSettings(Settings settings, bool testing)
         {
+            settings.SetDefaults();
             if (testing)
             {
-                // always start with no settings.
-                if (File.Exists(this.TemporaryConfigFile))
-                {
-                    File.Delete(this.TemporaryConfigFile);
-                }
-                settings.Load(this.TemporaryConfigFile);
+                // always start with no settings.                
+                settings.Load(this.TestConfigFile);
                 settings["SettingsLocation"] = (int)SettingsLocation.Roaming;
             }
             else
@@ -143,14 +150,14 @@ namespace XmlNotepad
                     if (File.Exists(existingLocation))
                     {
                         File.Move(existingLocation, newLocation);
-                    }                    
+                    }
                     settings.FileName = newLocation;
                     this._settingsLocation = location;
                 }
                 finally
                 {
                     // revert the change
-                    settings["SettingsLocation"] = (int)this._settingsLocation;                    
+                    settings["SettingsLocation"] = (int)this._settingsLocation;
                 }
             }
         }

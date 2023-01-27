@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+// using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Forms;
 using System.Xml;
@@ -26,8 +26,8 @@ namespace UnitTests
     {
         const int TestMethodTimeout = 300000; // 5 minutes
         private readonly string _testDir;
-        private InputSimulator sim = new InputSimulator();
         private bool calibrated;
+        private List<MouseCalibration> calibration;
 
         public UnitTest1()
         {
@@ -55,6 +55,55 @@ namespace UnitTests
         [TestInitialize()]
         public void MyTestInitialize()
         {
+            Settings testSettings = new Settings()
+            {
+                Comparer = FormMain.SettingValueMatches,
+                StartupPath = Application.StartupPath,
+                ExecutablePath = Application.ExecutablePath
+            };
+
+            SettingsLoader ls = new SettingsLoader();
+            testSettings.SetDefaults();
+            ls.LoadSettings(testSettings, true);
+
+            // Find the test settings we care about.
+            var screen = Screen.PrimaryScreen.WorkingArea;
+            Size s = (Size)testSettings["PrimaryScreenSize"];
+            var points = (Point[])testSettings["MouseCalibration"];
+            if (points.Length > 10 && s == screen.Size)
+            {
+                var calibration = new List<MouseCalibration>();
+                for (int i = 0; i + 1 < points.Length; i += 2)
+                {
+                    Point expected = points[i];
+                    Point actual = points[i + 1];
+                    calibration.Add(new MouseCalibration() { Expected = expected, Actual = actual });
+                }
+                this.calibration = calibration;
+                sim.Mouse.Calibrate(calibration);
+                this.calibrated = true;
+            }
+
+            // reset the test settings before each test.
+            testSettings.SetDefaults();
+
+            // Now calibrate the mouse once
+            if (!this.calibrated)
+            {
+                TestCalibrateMouse();
+            }
+
+            // Save the updated calibration settings.
+            points = new Point[this.calibration.Count * 2];
+            int pos = 0;
+            foreach (var c in this.calibration)
+            {
+                points[pos++] = c.Expected;
+                points[pos++] = c.Actual;
+            }
+            testSettings["PrimaryScreenSize"] = screen.Size;
+            testSettings["MouseCalibration"] = points;
+            testSettings.Save(testSettings.FileName);
         }
 
         [TestCleanup()]
@@ -134,14 +183,14 @@ namespace UnitTests
             }
         }
 
-
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestCalibrateMouse()
         {
+            List<MouseCalibration> calibration = new List<MouseCalibration>();
             var screen = Screen.PrimaryScreen.WorkingArea;
-            Rectangle bounds = Rectangle.Empty;
 
+            Rectangle bounds = Rectangle.Empty;
             var window = LaunchNotepad(debugMouse: true);
             window.WaitForInteractive();
             window.SetWindowPosition(screen.Left, screen.Top);
@@ -180,7 +229,6 @@ namespace UnitTests
                 Assert.Fail("yPosition TextBox has no ValuePattern?");
             }
 
-            List<MouseCalibration> calibration = new List<MouseCalibration>();
             bounds = window.GetClientBounds();
             var center = xPosLabel.Bounds.Center();
             var b2 = statusBox.Bounds;
@@ -229,6 +277,8 @@ namespace UnitTests
                     break;
                 }
             }
+
+            this.calibration = calibration;
             this.sim.Mouse.Calibrate(calibration);
             this.calibrated = true;
             // close the form
@@ -251,7 +301,6 @@ namespace UnitTests
             w.InvokeMenuItem("newToolStripMenuItem");
             Sleep(500);
 
-            w.SetWindowSize(800, 600);
 
             Stack<bool> hasChildren = new Stack<bool>();
             XmlReader reader = XmlReader.Create(testFile);
@@ -478,6 +527,7 @@ namespace UnitTests
         }
 
         int nodeIndex = 0;
+
         private void InsertNode(string type, string mode, bool requiresName, string clip)
         {
             string command = type + mode + "ToolStripMenuItem";
@@ -545,10 +595,6 @@ namespace UnitTests
         [Timeout(TestMethodTimeout)]
         public void TestIntellisense()
         {
-            if (!calibrated)
-            {
-                TestCalibrateMouse();
-            }
             Trace.WriteLine("TestIntellisense==========================================================");
             var w = LaunchNotepad();
 
@@ -720,14 +766,14 @@ namespace UnitTests
             Sleep(100);
             CheckNodeName("woops");
 
-            Trace.WriteLine("Move to Basket element"); 
-            w.SendKeystrokes("{LEFT}"); 
+            Trace.WriteLine("Move to Basket element");
+            w.SendKeystrokes("{LEFT}");
 
             Trace.WriteLine("Navigate error with mouse double click");
             NavigateErrorWithMouse();
 
             Trace.WriteLine("We are now back on the 'woops' element.");
-            CheckNodeName("woops");            
+            CheckNodeName("woops");
 
             Trace.WriteLine("undo redo of elementBeforeToolStripMenuItem.");
             UndoRedo();
@@ -978,10 +1024,6 @@ namespace UnitTests
         [Timeout(TestMethodTimeout)]
         public void TestOptionsDialog()
         {
-            if (!calibrated)
-            {
-                TestCalibrateMouse();
-            }
             Trace.WriteLine("TestOptionsDialog==========================================================");
 
             var w = LaunchNotepad();
@@ -1000,7 +1042,7 @@ namespace UnitTests
 
             Trace.WriteLine("Font");
             AutomationWrapper font = table.FindChild("Font"); // this is the group heading
-            scrollbar.ScrollIntoView(font, table);           
+            scrollbar.ScrollIntoView(font, table);
 
             Rectangle r = font.Bounds;
             // bring up the font dialog.
@@ -1581,10 +1623,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestFind()
         {
-            if (!calibrated)
-            {
-                TestCalibrateMouse();
-            }
             ResetFindOptions();
 
             Trace.WriteLine("TestFind==========================================================");
@@ -2105,10 +2143,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestDragDrop()
         {
-            if (!calibrated)
-            {
-                TestCalibrateMouse();
-            }
             Trace.WriteLine("TestDragDrop==========================================================");
             var w = this.LaunchNotepad();
 
@@ -2243,7 +2277,7 @@ Prefix 'user' is not defined. ");
             Point treeTop = TopCenter(tree.Bounds, 2);
 
             Trace.WriteLine("--- Drag to top of tree view ---");
-            sim.Mouse.LeftButtonDragDrop(endPt.X, endPt.Y, treeTop.X, treeTop.Y, 5, 1);            
+            sim.Mouse.LeftButtonDragDrop(endPt.X, endPt.Y, treeTop.X, treeTop.Y, 5, 1);
             Sleep(1000); // autoscroll time.
             // Drag out of tree view.
             Point titleBar = TopCenter(formBounds, 20);
@@ -2266,11 +2300,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestResizePanes()
         {
-            if (!calibrated)
-            {
-                TestCalibrateMouse();
-            }
-
             Trace.WriteLine("TestResizePanes==========================================================");
             var w = this.LaunchNotepad();
 
@@ -2284,6 +2313,7 @@ Prefix 'user' is not defined. ");
 
             // Drag the resizer up a few pixels.
             sim.Mouse.LeftButtonDragDrop(mid.X, mid.Y, mid.X, mid.Y - 20, 5, 1);
+            Sleep(100);
             var newbounds = resizer.Bounds;
             Assert.IsTrue(newbounds.Center().Y < mid.Y);
 
@@ -2294,6 +2324,7 @@ Prefix 'user' is not defined. ");
             mid = bounds.Center();
             // Drag the resizer right a few pixels.
             sim.Mouse.LeftButtonDragDrop(mid.X, mid.Y, mid.X + 50, mid.Y, 5, 1);
+            Sleep(100);
             newbounds = resizer.Bounds;
             Assert.IsTrue(newbounds.Center().X > mid.X);
         }

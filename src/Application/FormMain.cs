@@ -21,7 +21,7 @@ namespace XmlNotepad
     public partial class FormMain : Form, ISite
     {
         private readonly UndoManager _undoManager;
-        private Settings _settings;
+        private Settings _settings = new Settings();
         private SettingsLoader _loader;
         private readonly DataFormats.Format _urlFormat;
         private readonly RecentFiles _recentFiles;
@@ -69,8 +69,8 @@ namespace XmlNotepad
             {
                 DispatchAction(action);
             });
-
             SetDefaultSettings();
+
             this._settings.Changed += new SettingsEventHandler(OnSettingsChanged);
 
             this._model = (XmlCache)GetService(typeof(XmlCache));
@@ -242,82 +242,11 @@ namespace XmlNotepad
 
         protected virtual void SetDefaultSettings()
         {
-            // populate default settings and provide type info.
-            this._settings["Font"] = "deleted";
-            this._settings["FontFamily"] = "Courier New";
-            this._settings["FontSize"] = 10.0;
-            this._settings["TreeIndent"] = 12;
-            this._settings["FontStyle"] = "Normal";
-            this._settings["FontWeight"] = "Normal";
-            this._settings["Theme"] = ColorTheme.Light;
-            this._settings["LightColors"] = ThemeColors.GetDefaultColors(ColorTheme.Light);
-            this._settings["DarkColors"] = ThemeColors.GetDefaultColors(ColorTheme.Dark);
-            this._settings["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
-            this._settings["WindowBounds"] = new Rectangle(0, 0, 0, 0);
-            this._settings["TaskListSize"] = 0;
-            this._settings["TreeViewSize"] = 0;
-            this._settings["RecentFiles"] = new Uri[0];
-            this._settings["RecentXsltFiles"] = new Uri[0];
-            this._settings["RecentFindStrings"] = new string[0];
-            this._settings["RecentReplaceStrings"] = new string[0];
-            this._settings["SearchWindowLocation"] = new Point(0, 0);
-            this._settings["SearchSize"] = new Size(0, 0);
-            this._settings["DynamicHelpVisible"] = false;
-            this._settings["FindMode"] = false;
-            this._settings["SearchXPath"] = false;
-            this._settings["SearchWholeWord"] = false;
-            this._settings["SearchRegex"] = false;
-            this._settings["SearchMatchCase"] = false;
-
-            this._settings["LastUpdateCheck"] = DateTime.Now;
-            this._settings["UpdateFrequency"] = TimeSpan.FromDays(20);
-            this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
-            this._settings["UpdateEnabled"] = true;
-            this._settings["DisableUpdateUI"] = false;
-
-            this._settings["DisableDefaultXslt"] = false;
-            this._settings["AutoFormatOnSave"] = true;
-            this._settings["IndentLevel"] = 2;
-            this._settings["IndentChar"] = IndentChar.Space;
-            this._settings["NewLineChars"] = Settings.EscapeNewLines("\r\n");
-            this._settings["Language"] = "";
-            this._settings["NoByteOrderMark"] = false;
-
-            this._settings["AppRegistered"] = false;
-            this._settings["MaximumLineLength"] = 10000;
-            this._settings["MaximumValueLength"] = (int)short.MaxValue;
-            this._settings["AutoFormatLongLines"] = false;
-            this._settings["IgnoreDTD"] = false;
-
-            // XSLT options
-            this._settings["BrowserVersion"] = "";
-            this._settings["EnableXsltScripts"] = true;
-            this._settings["WebView2Exception"] = "";
-            this._settings["WebView2PromptInstall"] = true;
-
-            // XmlDiff options
-            this._settings["XmlDiffIgnoreChildOrder"] = false;
-            this._settings["XmlDiffIgnoreComments"] = false;
-            this._settings["XmlDiffIgnorePI"] = false;
-            this._settings["XmlDiffIgnoreWhitespace"] = false;
-            this._settings["XmlDiffIgnoreNamespaces"] = false;
-            this._settings["XmlDiffIgnorePrefixes"] = false;
-            this._settings["XmlDiffIgnoreXmlDecl"] = false;
-            this._settings["XmlDiffIgnoreDtd"] = false;
-
-            // analytics question has been answered...
-            this.Settings["AllowAnalytics"] = false;
-            this.Settings["AnalyticsClientId"] = "";
-
-            this.Settings["SchemaCache"] = this._schemaCache = new SchemaCache(this);
-
-            // default text editor
-            string sysdir = Environment.SystemDirectory;
-            this.Settings["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
+            this._settings.SetDefaults();
+            this._settings["SchemaCache"] = this._schemaCache = new SchemaCache(this);
         }
 
-
-        private bool SettingValueMatches(object existing, object newValue)
+        public static bool SettingValueMatches(object existing, object newValue)
         {
             // just implement additional WinForms types not already implemented in the Settings class.
             if (existing is Font f1)
