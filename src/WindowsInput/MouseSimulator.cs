@@ -1,9 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using WindowsInput.Native;
 
 namespace WindowsInput
 {
+    /// <summary>
+    /// A record of an actual mouse event and where it showed up in the client app.
+    /// </summary>
+    public class MouseCalibration
+    {
+        /// <summary>
+        /// The mouse position sent.
+        /// </summary>
+        public Point Expected { get; set; }
+        /// <summary>
+        /// The mouse position received.
+        /// </summary>
+        public Point Actual { get; set; }
+    }
+
     /// <summary>
     /// Implements the <see cref="IMouseSimulator"/> interface by calling the an <see cref="IInputMessageDispatcher"/> to simulate Mouse gestures.
     /// </summary>
@@ -12,6 +29,7 @@ namespace WindowsInput
         private const int MouseWheelClickSize = 120;
         private MouseButton mouseDown;
         private readonly IInputSimulator _inputSimulator;
+        private List<MouseCalibration> calibration;
 
         /// <summary>
         /// The instance of the <see cref="IInputMessageDispatcher"/> to use for dispatching <see cref="INPUT"/> messages.
@@ -28,6 +46,15 @@ namespace WindowsInput
 
             _inputSimulator = inputSimulator;
             _messageDispatcher = new WindowsInputMessageDispatcher();
+        }
+
+        /// <summary>
+        /// Implement the calibrate method.
+        /// </summary>
+        /// <param name="points"></param>
+        public void Calibrate(List<MouseCalibration> points)
+        {
+            this.calibration = points;
         }
 
         /// <summary>
@@ -72,7 +99,7 @@ namespace WindowsInput
         /// <param name="pixelDeltaY">The distance in pixels to move the mouse vertically.</param>
         public IMouseSimulator MoveMouseBy(int pixelDeltaX, int pixelDeltaY)
         {
-            var inputList = new InputBuilder().AddRelativeMouseMovement(pixelDeltaX, pixelDeltaY, this.mouseDown).ToArray();
+            var inputList = new InputBuilder(calibration).AddRelativeMouseMovement(pixelDeltaX, pixelDeltaY, this.mouseDown).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
@@ -84,7 +111,7 @@ namespace WindowsInput
         /// <param name="absoluteY">The destination's absolute Y-coordinate on the primary display device where 0 is the top of the display device and 65535 is the bottom of the display device.</param>
         public IMouseSimulator MoveMouseTo(double absoluteX, double absoluteY)
         {
-            var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)Math.Truncate(absoluteX), (int)Math.Truncate(absoluteY), this.mouseDown).ToArray();
+            var inputList = new InputBuilder(calibration).AddAbsoluteMouseMovement((int)Math.Truncate(absoluteX), (int)Math.Truncate(absoluteY), this.mouseDown).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
@@ -96,7 +123,7 @@ namespace WindowsInput
         /// <param name="absoluteY">The destination's absolute Y-coordinate on the virtual desktop where 0 is the top of the virtual desktop and 65535 is the bottom of the virtual desktop.</param>
         public IMouseSimulator MoveMouseToPositionOnVirtualDesktop(double absoluteX, double absoluteY)
         {
-            var inputList = new InputBuilder().AddAbsoluteMouseMovementOnVirtualDesktop((int)Math.Truncate(absoluteX), (int)Math.Truncate(absoluteY), this.mouseDown).ToArray();
+            var inputList = new InputBuilder(calibration).AddAbsoluteMouseMovementOnVirtualDesktop((int)Math.Truncate(absoluteX), (int)Math.Truncate(absoluteY), this.mouseDown).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
@@ -106,7 +133,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator LeftButtonDown()
         {
-            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.LeftButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonDown(MouseButton.LeftButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.LeftButton;
             return this;
@@ -117,7 +144,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator LeftButtonUp()
         {
-            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.LeftButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonUp(MouseButton.LeftButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -128,7 +155,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator LeftButtonClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.LeftButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonClick(MouseButton.LeftButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -139,7 +166,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator LeftButtonDoubleClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.LeftButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonDoubleClick(MouseButton.LeftButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -151,7 +178,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator MiddleButtonDown()
         {
-            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.MiddleButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonDown(MouseButton.MiddleButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.MiddleButton;
             return this;
@@ -162,7 +189,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator MiddleButtonUp()
         {
-            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.MiddleButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonUp(MouseButton.MiddleButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -173,7 +200,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator MiddleButtonClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.MiddleButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonClick(MouseButton.MiddleButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -184,7 +211,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator MiddleButtonDoubleClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.MiddleButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonDoubleClick(MouseButton.MiddleButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -195,7 +222,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator RightButtonDown()
         {
-            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.RightButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonDown(MouseButton.RightButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.RightButton;
             return this;
@@ -206,7 +233,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator RightButtonUp()
         {
-            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.RightButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonUp(MouseButton.RightButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -217,7 +244,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator RightButtonClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.RightButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonClick(MouseButton.RightButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -228,7 +255,7 @@ namespace WindowsInput
         /// </summary>
         public IMouseSimulator RightButtonDoubleClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.RightButton).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseButtonDoubleClick(MouseButton.RightButton).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -240,7 +267,7 @@ namespace WindowsInput
         /// <param name="buttonId">The button id.</param>
         public IMouseSimulator XButtonDown(int buttonId)
         {
-            var inputList = new InputBuilder().AddMouseXButtonDown(buttonId).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseXButtonDown(buttonId).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -252,7 +279,7 @@ namespace WindowsInput
         /// <param name="buttonId">The button id.</param>
         public IMouseSimulator XButtonUp(int buttonId)
         {
-            var inputList = new InputBuilder().AddMouseXButtonUp(buttonId).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseXButtonUp(buttonId).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -264,7 +291,7 @@ namespace WindowsInput
         /// <param name="buttonId">The button id.</param>
         public IMouseSimulator XButtonClick(int buttonId)
         {
-            var inputList = new InputBuilder().AddMouseXButtonClick(buttonId).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseXButtonClick(buttonId).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -276,7 +303,7 @@ namespace WindowsInput
         /// <param name="buttonId">The button id.</param>
         public IMouseSimulator XButtonDoubleClick(int buttonId)
         {
-            var inputList = new InputBuilder().AddMouseXButtonDoubleClick(buttonId).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseXButtonDoubleClick(buttonId).ToArray();
             SendSimulatedInput(inputList);
             this.mouseDown = MouseButton.None;
             return this;
@@ -288,7 +315,7 @@ namespace WindowsInput
         /// <param name="scrollAmountInClicks">The amount to scroll in clicks. A positive value indicates that the wheel was rotated forward, away from the user; a negative value indicates that the wheel was rotated backward, toward the user.</param>
         public IMouseSimulator VerticalScroll(int scrollAmountInClicks)
         {
-            var inputList = new InputBuilder().AddMouseVerticalWheelScroll(scrollAmountInClicks * MouseWheelClickSize).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseVerticalWheelScroll(scrollAmountInClicks * MouseWheelClickSize).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
@@ -299,7 +326,7 @@ namespace WindowsInput
         /// <param name="scrollAmountInClicks">The amount to scroll in clicks. A positive value indicates that the wheel was rotated to the right; a negative value indicates that the wheel was rotated to the left.</param>
         public IMouseSimulator HorizontalScroll(int scrollAmountInClicks)
         {
-            var inputList = new InputBuilder().AddMouseHorizontalWheelScroll(scrollAmountInClicks * MouseWheelClickSize).ToArray();
+            var inputList = new InputBuilder(calibration).AddMouseHorizontalWheelScroll(scrollAmountInClicks * MouseWheelClickSize).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }

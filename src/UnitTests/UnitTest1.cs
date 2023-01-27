@@ -25,6 +25,8 @@ namespace UnitTests
     {
         const int TestMethodTimeout = 300000; // 5 minutes
         private readonly string _testDir;
+        private InputSimulator sim = new InputSimulator();
+        private bool calibrated;
 
         public UnitTest1()
         {
@@ -176,8 +178,8 @@ namespace UnitTests
             {
                 Assert.Fail("yPosition TextBox has no ValuePattern?");
             }
-            var sim = new InputSimulator();
 
+            List<MouseCalibration> calibration = new List<MouseCalibration>();
             bounds = window.GetClientBounds();
             var center = xPosLabel.Bounds.Center();
             var b2 = statusBox.Bounds;
@@ -214,7 +216,14 @@ namespace UnitTests
                 previousY = ay;
 
                 Debug.WriteLine("{0}, {1}  => {2}, {3}  => {4}, {5}", x, y, ax, ay, x - ax, y - ay);
+                calibration.Add(new MouseCalibration()
+                {
+                    Expected = new Point(x, y),
+                    Actual = new Point(ax, ay)
+                });
             }
+            this.sim.Mouse.Calibrate(calibration);
+            this.calibrated = true;
             // close the form
             window.Close();
         }
@@ -529,9 +538,12 @@ namespace UnitTests
         [Timeout(TestMethodTimeout)]
         public void TestIntellisense()
         {
+            if (!calibrated)
+            {
+                TestCalibrateMouse();
+            }
             Trace.WriteLine("TestIntellisense==========================================================");
             var w = LaunchNotepad();
-            var sim = new InputSimulator();
 
             Trace.WriteLine("Add <Basket>");
             w.InvokeMenuItem("elementChildToolStripMenuItem");
@@ -561,7 +573,8 @@ namespace UnitTests
             xtv.SetFocus();
 
             Rectangle treeBounds = xtv.Bounds;
-            sim.Mouse.MoveMouseTo(treeBounds.Left + 80, treeBounds.Top + 3);
+            w.Activate();
+            sim.Mouse.MoveMouseTo(treeBounds.Left + 80, treeBounds.Top + 10);
             Sleep(2000); // wait for tooltip!
 
             Trace.WriteLine("Add language='en-au'");
@@ -612,6 +625,7 @@ namespace UnitTests
             popup.SendKeystrokes("{DOWN}{LEFT} {ENTER}");
 
             Trace.WriteLine("test MouseDown on NodeTextView editor");
+            w.Activate();
             sim.Mouse.MoveMouseTo(bounds.Left + 20, bounds.Top - 10).LeftButtonClick();
             Sleep(500);
             w.SendKeystrokes("{DOWN}{ENTER}");
@@ -792,8 +806,7 @@ namespace UnitTests
             var w = NodeTextViewCompletionSet;
             Rectangle bounds = w.Bounds;
             Sleep(1000);
-            var sim = new InputSimulator();
-            sim.Mouse.MoveMouseTo(bounds.Left + 15, bounds.Top + 2).LeftButtonClick();
+            sim.Mouse.MoveMouseTo(bounds.Left + 15, bounds.Top + 10).LeftButtonClick();
             Sleep(100);
             return this.window.WaitForPopup(w.Hwnd);
         }
@@ -2129,7 +2142,6 @@ Prefix 'user' is not defined. ");
             var pos = w.AccessibleObject.PhysicalToLogicalPoint(tree.Bounds.Center());
             Cursor.Position = pos;
             Sleep(500); // wait for focus to kick in before sending mouse events.
-            var sim = new InputSimulator();
             sim.Mouse.MoveMouseTo(pos.X, pos.Y).VerticalScroll(-15);
             Sleep(500);
 
@@ -2239,6 +2251,11 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestResizePanes()
         {
+            if (!calibrated)
+            {
+                TestCalibrateMouse();
+            }
+
             Trace.WriteLine("TestResizePanes==========================================================");
             var w = this.LaunchNotepad();
 
@@ -2248,15 +2265,12 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine(resizer.Parent.Name);
             var bounds = resizer.Bounds;
             Point mid = bounds.Center();
-            var sim = new InputSimulator();
             sim.Mouse.MoveMouseTo(mid.X, mid.Y);
 
             // Drag the resizer up a few pixels.
             this.MouseDragDrop(mid, new Point(mid.X, mid.Y - 20), 10);
             var newbounds = resizer.Bounds;
-            // bugbug: no idea why this sucker isn't moving.  Seems to be a bug with SendInput.
-            // the product works fine, just an test automation bug.
-            // Assert.IsTrue(newbounds.Center().Y < mid.Y);
+            Assert.IsTrue(newbounds.Center().Y < mid.Y);
 
             Trace.WriteLine("Test tree view resizer");
             resizer = w.FindDescendant("XmlTreeResizer");
@@ -2564,7 +2578,6 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("TestMouse==========================================================");
             string testFile = _testDir + "UnitTests\\plants.xml";
             var w = this.LaunchNotepad(testFile);
-            var sim = new InputSimulator();
 
             Sleep(1000);
 
@@ -3308,7 +3321,6 @@ Prefix 'user' is not defined. ");
                 int amount = target.Left - source.Left + 300;
                 int step = 5;
 
-                var sim = new InputSimulator();
                 sim.Mouse
                    .MoveMouseTo(x, y)
                    .Sleep(100)
@@ -3358,7 +3370,6 @@ Prefix 'user' is not defined. ");
             double ex = end.X;
             double ey = end.Y;
 
-            var sim = new InputSimulator();
             sim.Mouse
                .MoveMouseTo(x, y)
                .Sleep(100)

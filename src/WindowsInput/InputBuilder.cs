@@ -17,11 +17,17 @@ namespace WindowsInput
         private readonly List<INPUT> _inputList;
 
         /// <summary>
+        /// The optional calibration data.
+        /// </summary>
+        private readonly List<MouseCalibration> _calibration;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="InputBuilder"/> class.
         /// </summary>
-        public InputBuilder()
+        public InputBuilder(List<MouseCalibration> calibration = null)
         {
             _inputList = new List<INPUT>();
+            _calibration = calibration;
         }
 
         /// <summary>
@@ -317,18 +323,31 @@ namespace WindowsInput
             var flags = (UInt32)(MouseFlag.Move | MouseFlag.Absolute) | GetMouseButtonDownFlag(button);
             var bounds = Screen.PrimaryScreen.WorkingArea;
 
+            if (this._calibration != null)
+            {
+                MouseCalibration previous = null;
+                int dx = 0, dy = 0;
+                foreach (var c in this._calibration)
+                {
+                    if (previous != null)
+                    {
+                        if (previous.Expected.X <= absoluteX && c.Expected.X >= absoluteX)
+                        {
+                            dx = c.Expected.X - c.Actual.X;
+                        }
+                        if (previous.Expected.Y <= absoluteY && c.Expected.Y >= absoluteY)
+                        {
+                            dy = c.Expected.Y - c.Actual.Y;
+                        }
+                    }
+                    previous = c;
+                }
+                absoluteX += dx;
+                absoluteY += dy;
+            }
+
             var vx = (int)((double)absoluteX * 65535.0 / (double)bounds.Width);
             var vy = (int)((double)absoluteY * 65535.0 / (double)bounds.Height);
-
-            //// BUGBUG: there seems to be some sort of DPI bug with the Y positions.
-            //// Y pos   Offby   Ratio
-            //// 919      -29    -0.031556039
-            //// 688      -21    -0.030523256
-            //// 440      -13    -0.029545455
-            //// Note: it's not even a perfect linear scale!
-            //if (vy > 900) vy -= (int)(vy * 0.031);
-            //else if (vy > 600) vy -= (int)(vy * 0.030);
-            //else vy -= (int)(vy * 0.029);
 
             movement.Data.Mouse.Flags = flags;
             movement.Data.Mouse.X = vx;

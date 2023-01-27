@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WindowsInput
 {
@@ -7,6 +8,12 @@ namespace WindowsInput
     /// </summary>
     public interface IMouseSimulator
     {
+        /// <summary>
+        /// Provide calibration data for mouse positions
+        /// </summary>
+        /// <param name="points"></param>
+        void Calibrate(List<MouseCalibration> points);
+
         /// <summary>
         /// Gets the <see cref="IKeyboardSimulator"/> instance for simulating Keyboard input.
         /// </summary>
