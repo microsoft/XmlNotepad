@@ -222,6 +222,12 @@ namespace UnitTests
                     Expected = new Point(x, y),
                     Actual = new Point(ax, ay)
                 });
+
+                if (ax > inner.Right || ay > inner.Bottom)
+                {
+                    // we already stepped outside our box, so we're done!
+                    break;
+                }
             }
             this.sim.Mouse.Calibrate(calibration);
             this.calibrated = true;
@@ -1575,7 +1581,10 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestFind()
         {
-
+            if (!calibrated)
+            {
+                TestCalibrateMouse();
+            }
             ResetFindOptions();
 
             Trace.WriteLine("TestFind==========================================================");
@@ -1594,9 +1603,7 @@ Prefix 'user' is not defined. ");
             Point start = new Point(findBounds.Left + (findBounds.Width / 2), findBounds.Top + 15);
             Point end = new Point(start.X + treeCenter.X - findCenter.X,
                                   start.Y + treeCenter.Y - findCenter.Y);
-            Mouse.MouseClick(start, MouseButtons.Left);
-            Mouse.MouseDragTo(start, end, 5, MouseButtons.Left);
-            Mouse.MouseUp(end, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(start.X, start.Y, end.X, end.Y, 5, 1);
 
             // Refocus the combo box...
             Sleep(500);
@@ -2098,6 +2105,10 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestDragDrop()
         {
+            if (!calibrated)
+            {
+                TestCalibrateMouse();
+            }
             Trace.WriteLine("TestDragDrop==========================================================");
             var w = this.LaunchNotepad();
 
@@ -2127,7 +2138,7 @@ Prefix 'user' is not defined. ");
             Point iloc = new Point(ibounds.Left + 10, ibounds.Top + 10);
             Trace.WriteLine("Dragging from " + iloc.ToString());
 
-            this.MouseDragDrop(iloc, drop, 50);
+            sim.Mouse.LeftButtonDragDrop(iloc.X, iloc.Y, drop.X, drop.Y, 5, 1);
             Sleep(500);
             openDialog.DismissPopUp("{ESC}");
 
@@ -2218,7 +2229,7 @@ Prefix 'user' is not defined. ");
             pt = bounds.Center();
             Point endPt = new Point(pt.X, pt.Y - (int)(3 * itemHeight));
             // Drag the node up three slots.
-            this.MouseDragDrop(pt, endPt, 100);
+            sim.Mouse.LeftButtonDragDrop(pt.Y, pt.X, endPt.X, endPt.Y, 5, 1);
 
             Sleep(200);
 
@@ -2232,12 +2243,12 @@ Prefix 'user' is not defined. ");
             Point treeTop = TopCenter(tree.Bounds, 2);
 
             Trace.WriteLine("--- Drag to top of tree view ---");
-            Mouse.MouseDragTo(endPt, treeTop, 5, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(endPt.X, endPt.Y, treeTop.X, treeTop.Y, 5, 1);            
             Sleep(1000); // autoscroll time.
             // Drag out of tree view.
             Point titleBar = TopCenter(formBounds, 20);
             Trace.WriteLine("--- Drag to titlebar ---");
-            Mouse.MouseDragTo(treeTop, titleBar, 10, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(treeTop.X, treeTop.Y, titleBar.X, titleBar.Y, 5, 1);
             Sleep(1000); // should now have 'no drop icon'.
 
             // code coverage on expand/collapse.
@@ -2272,7 +2283,7 @@ Prefix 'user' is not defined. ");
             sim.Mouse.MoveMouseTo(mid.X, mid.Y);
 
             // Drag the resizer up a few pixels.
-            this.MouseDragDrop(mid, new Point(mid.X, mid.Y - 20), 10);
+            sim.Mouse.LeftButtonDragDrop(mid.X, mid.Y, mid.X, mid.Y - 20, 5, 1);
             var newbounds = resizer.Bounds;
             Assert.IsTrue(newbounds.Center().Y < mid.Y);
 
@@ -2282,7 +2293,7 @@ Prefix 'user' is not defined. ");
             bounds = resizer.Bounds;
             mid = bounds.Center();
             // Drag the resizer right a few pixels.
-            this.MouseDragDrop(mid, new Point(mid.X + 50, mid.Y), 10);
+            sim.Mouse.LeftButtonDragDrop(mid.X, mid.Y, mid.X + 50, mid.Y, 5, 1);
             newbounds = resizer.Bounds;
             Assert.IsTrue(newbounds.Center().X > mid.X);
         }
@@ -3321,7 +3332,7 @@ Prefix 'user' is not defined. ");
             {
                 // Source window is completely occluding the target window, so we need to move it!
                 int x = source.Left + (source.Width / 2);
-                int y = source.Top + 7;
+                int y = source.Top + 10;
                 int amount = target.Left - source.Left + 300;
                 int step = 5;
 
@@ -3365,32 +3376,6 @@ Prefix 'user' is not defined. ");
             w.SetWindowPosition(target.Right, source.Top);
             source = acc.Bounds;
             return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
-        }
-
-        public void MouseDragDrop(Point start, Point end, int steps)
-        {
-            double x = start.X;
-            double y = start.Y;
-            double ex = end.X;
-            double ey = end.Y;
-
-            sim.Mouse
-               .MoveMouseTo(x, y)
-               .Sleep(100)
-               .LeftButtonDown()
-               .Sleep(50);
-
-            for (int i = 0; i < steps; i++)
-            {
-                double dx = (ex - x) * i / steps;
-                double dy = (ey - y) * i / steps;
-                double tx = x + dx;
-                double ty = y + dy;
-                Debug.WriteLine("Sending {0}, {1}", tx, ty);
-                sim.Mouse.MoveMouseTo((int)tx, (int)ty).Sleep(30);
-            }
-
-            sim.Mouse.Sleep(50).LeftButtonUp().Sleep(50);
         }
 
     }

@@ -62,6 +62,19 @@ namespace WindowsInput
         IMouseSimulator LeftButtonDoubleClick();
 
         /// <summary>
+        /// Perform left click drag drop operation from start to end points moving the 
+        /// mouse by the given delta each time with delay between each movement.
+        /// </summary>
+        /// <param name="sx"></param>
+        /// <param name="sy"></param>
+        /// <param name="ex"></param>
+        /// <param name="ey"></param>
+        /// <param name="delta"></param>
+        /// <param name="delay">Delay in milliseconds</param>
+        /// <returns></returns>
+        IMouseSimulator LeftButtonDragDrop(int sx, int sy, int ex, int ey, int delta, int delay);
+
+        /// <summary>
         /// Simulates a mouse right button down gesture.
         /// </summary>
         IMouseSimulator RightButtonDown();

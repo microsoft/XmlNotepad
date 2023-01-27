@@ -139,30 +139,6 @@ namespace UnitTests
             Application.DoEvents();
         }
 
-        public static void MouseMoveTo(Point start, Point end, int step)
-        {
-            MouseDragTo(start, end, step, MouseButtons.None);
-        }
-
-        public static void MouseDragTo(Point start, Point end, int step, MouseButtons button)
-        {
-            // Interpolate and move mouse smoothly over to given location.                
-            double dx = end.X - start.X;
-            double dy = end.Y - start.Y;
-            int length = (int)Math.Sqrt((dx * dx) + (dy * dy));
-            step = Math.Abs(step);
-            for (int i = 0; i < length; i += step)
-            {
-                int tx = start.X + (int)((dx * i) / length);
-                int ty = start.Y + (int)((dy * i) / length);
-                MouseMoveTo(tx, ty, button, true);
-                Thread.Sleep(1);
-                Application.DoEvents();
-            }
-
-            MouseMoveTo(end.X, end.Y, button, true);
-        }
-
         public static void MouseWheel(AutomationWrapper w, int clicks)
         {
             var c = Cursor.Position;

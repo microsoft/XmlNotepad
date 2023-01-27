@@ -350,5 +350,49 @@ namespace WindowsInput
             Thread.Sleep(timeout);
             return this;
         }
+
+        /// <summary>
+        /// Perform left click drag drop operation from start to end points moving the 
+        /// mouse by the given delta each time with delay between each movement.
+        /// </summary>
+        /// <param name="sx"></param>
+        /// <param name="sy"></param>
+        /// <param name="ex"></param>
+        /// <param name="ey"></param>
+        /// <param name="delta"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        public IMouseSimulator LeftButtonDragDrop(int sx, int sy, int ex, int ey, int delta, int delay)
+        {
+            this.MoveMouseTo(sx, sy);
+            this.LeftButtonDown();
+
+            // Interpolate and move mouse smoothly over to given location.                
+            double dx = ex - sx;
+            double dy = ey - sy;
+            if (delta < 1)
+            {
+                delta = 1;
+            }
+            int length = (int)Math.Sqrt((dx * dx) + (dy * dy));
+            if (length == 0)
+            {
+                length = 1;
+            }
+            
+            for (int i = 0; i < length; i += delta)
+            {
+                int tx = (int)(sx + ((dx * i) / length));
+                int ty = (int)(sy + ((dy * i) / length));
+                this.MoveMouseTo(tx, ty);
+                Thread.Sleep(delay);
+            }
+
+            // nail the landing.
+            this.MoveMouseTo(ex, ey)
+                .Sleep(delay)
+                .LeftButtonUp(); // release the mouse!
+            return this;
+        }
     }
 }
