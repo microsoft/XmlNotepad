@@ -657,20 +657,6 @@ namespace UnitTests
         {
             this.DismissPopUp("%{F4}");
         }
-
-        public string FileName
-        {
-            get
-            {
-                AutomationWrapper wrapper = this.dialog.FindDescendant("File name:", ControlType.Edit);
-                return wrapper.Value;
-            }
-            set
-            {
-                AutomationWrapper wrapper = this.dialog.FindDescendant("File name:", ControlType.Edit);
-                wrapper.Value = value;
-            }
-        }
     }
 
     public class FindDialog

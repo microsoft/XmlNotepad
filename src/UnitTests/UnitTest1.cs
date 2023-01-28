@@ -708,8 +708,7 @@ namespace UnitTests
             Trace.WriteLine("Test UriBuilder");
             popup = ClickXmlBuilder();
             var openDialog = new FileDialogWrapper(popup);
-            openDialog.FileName = _testDir + "UnitTests\\" + "test1.xml";
-            openDialog.DismissPopUp("{ENTER}");
+            openDialog.DismissPopUp(_testDir + "UnitTests\\" + "test1.xml{ENTER}");
 
             w.SendKeystrokes("{ENTER}");
             CheckNodeValue("test1.xml", StringComparison.OrdinalIgnoreCase);
@@ -1248,8 +1247,7 @@ namespace UnitTests
             Trace.WriteLine("open bad file");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
             FileDialogWrapper fd = w.WaitForFileDialog();
-            fd.FileName = _testDir + "UnitTests\\bad.xml";
-            fd.SendKeystrokes("{ENTER}");
+            fd.SendKeystrokes(_testDir + "UnitTests\\bad.xml{ENTER}");
             Window popup = w.WaitForPopup();
             popup.SendKeystrokes("%Y");
             Window notepad = w.WaitForPopup();
@@ -1259,8 +1257,8 @@ namespace UnitTests
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
             fd = w.WaitForFileDialog();
-            fd.FileName = _testDir + "UnitTests\\supply.xml";
-            fd.DismissPopUp("{ENTER}");
+            var filename = _testDir + "UnitTests\\supply.xml";
+            fd.DismissPopUp(filename + "{ENTER}");
 
             // make an edit.
             this.TreeView.SetFocus();
@@ -1280,8 +1278,7 @@ namespace UnitTests
             WipeFile(outFile);
             w.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
             fd = w.WaitForFileDialog();
-            fd.FileName = "out.xml";
-            fd.DismissPopUp("{ENTER}");
+            fd.DismissPopUp("out.xml{ENTER}");
 
             // Check save read only
             Trace.WriteLine("Check save read only.");
@@ -1348,8 +1345,7 @@ namespace UnitTests
             Window fileDialog = schemaDialog.WaitForPopup();
             FileDialogWrapper fd = new FileDialogWrapper(fileDialog);
             string schema = _testDir + "UnitTests\\emp.xsd";
-            fd.FileName = schema;
-            fd.DismissPopUp("{ENTER}");
+            fd.DismissPopUp(schema + "{ENTER}");
 
             schemaDialog.SendKeystrokes("^{HOME}+ "); // select first row
             Sleep(300); // just so we can watch it happen
@@ -1430,8 +1426,7 @@ namespace UnitTests
             fileDialog = schemaDialog.WaitForPopup();
             fd = new FileDialogWrapper(fileDialog);
             schema = _testDir + "UnitTests\\emp.xsd";
-            fd.FileName = schema;
-            fd.DismissPopUp("{ENTER}");
+            fd.DismissPopUp(schema + "{ENTER}");
 
             Sleep(300); // just so we can watch it happen
             schemaDialog.SendKeystrokes("^c"); // copy first row
@@ -2080,8 +2075,7 @@ Prefix 'user' is not defined. ");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
             var openDialog = w.WaitForFileDialog();
             Trace.WriteLine("Opening '" + _testDir + "UnitTests'");
-            openDialog.FileName = _testDir + "UnitTests";
-            openDialog.SendKeystrokes("{ENTER}");
+            openDialog.SendKeystrokes(_testDir + "UnitTests{ENTER}");
             Sleep(1000);
 
             // Drag/drop from open file dialog into xml notepad client area.
@@ -3041,8 +3035,7 @@ Prefix 'user' is not defined. ");
             this.window.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
             Window dialog = this.window.WaitForPopup();
             FileDialogWrapper od = new FileDialogWrapper(dialog);
-            od.FileName = outFile;
-            dialog.DismissPopUp("{ENTER}");
+            dialog.DismissPopUp(outFile + "{ENTER}");
 
             Sleep(1000); // give it time to save.
             return outFile;
