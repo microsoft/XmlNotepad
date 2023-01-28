@@ -5,12 +5,12 @@ using WindowsInput.Native;
 namespace WindowsInput
 {
     /// <summary>
-    /// Implements the <see cref="IInputMessageDispatcher"/> by calling <see cref="NativeMethods.SendInput"/>.
+    /// Implements the <see cref="IInputMessageDispatcher"/> by calling <see cref="WindowsInput.Native.NativeMethods.SendInput"/>.
     /// </summary>
     internal class WindowsInputMessageDispatcher : IInputMessageDispatcher
     {
         /// <summary>
-        /// Dispatches the specified list of <see cref="INPUT"/> messages in their specified order by issuing a single called to <see cref="NativeMethods.SendInput"/>.
+        /// Dispatches the specified list of <see cref="INPUT"/> messages in their specified order by issuing a single called to <see cref="WindowsInput.Native.NativeMethods.SendInput"/>.
         /// </summary>
         /// <param name="inputs">The list of <see cref="INPUT"/> messages to be dispatched.</param>
         /// <exception cref="ArgumentException">If the <paramref name="inputs"/> array is empty.</exception>
