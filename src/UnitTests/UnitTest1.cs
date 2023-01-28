@@ -1730,7 +1730,7 @@ Prefix 'user' is not defined. ");
             }
 
             Assert.AreEqual(
-                new string[] { "Apple", "Banana", "Grape", "Peach", "This contains the 'item' text also"
+                new string[] { "Apple", "Banana", "Grape", "Peach", "This contains the 'item' text also",
                 "This contains the 'item' text also", "Watermelon" },
                 found.ToArray(), 
                 "The found items were: " + string.Join(",", found));

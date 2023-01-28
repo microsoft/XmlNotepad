@@ -14,7 +14,6 @@
     <AssemblyName>XmlNotepad</AssemblyName>
     <ApplicationIcon>Resources\XmlNote.ico</ApplicationIcon>
     <StartupObject>XmlNotepad.Program</StartupObject>
-    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MyKeyFile)</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags></FileUpgradeFlags>
     <UpgradeBackupLocation></UpgradeBackupLocation>
@@ -62,7 +61,8 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(AssemblyOriginatorKeyFile)' != '' ">
+    <SignAssembly>true</SignAssembly>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
