@@ -1028,7 +1028,7 @@ namespace XmlNotepad
         }
         public override int GetHelpTopic(out string fileName)
         {
-            fileName = "TBD";
+            fileName = "";
             return 0;
         }
         public override AccessibleObject GetSelected()
@@ -1187,22 +1187,25 @@ namespace XmlNotepad
             }
             return _acc.GetSelected();
         }
+
         public override string Help
         {
             get
             {
-                return "TBD";
+                return null;
             }
         }
+
         public override AccessibleObject HitTest(int x, int y)
         {
             return _acc.HitTest(x, y);
         }
+
         public override string KeyboardShortcut
         {
             get
             {
-                return "TBD";
+                return null;
             }
         }
         public override string Name

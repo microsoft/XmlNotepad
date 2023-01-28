@@ -1894,7 +1894,7 @@ namespace XmlNotepad
         }
         public override int GetHelpTopic(out string fileName)
         {
-            fileName = "TBD";
+            fileName = "";
             return 0;
         }
         public override AccessibleObject GetSelected()

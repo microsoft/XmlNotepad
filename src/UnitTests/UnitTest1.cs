@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1624,7 +1625,6 @@ Prefix 'user' is not defined. ");
             Rectangle treeBounds = this.XmlTreeView.Bounds;
 
             var findDialog = OpenFindDialog();
-            findDialog.ClearFindCheckBoxes();
 
             Rectangle findBounds = findDialog.Window.GetScreenBounds();
             Point treeCenter = treeBounds.Center();
@@ -1703,6 +1703,38 @@ Prefix 'user' is not defined. ");
             CheckClipboard("<!--last comment-->");
             ;
             // find should not modify the document, so we should be able to exit without saveas dialog.
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestFindNested()
+        {
+            Trace.WriteLine("TestReplace==========================================================");
+            string testFile = _testDir + "UnitTests\\test12.xml";
+            var w = LaunchNotepad(testFile);
+
+            var findDialog = OpenFindDialog();
+            findDialog.FindString = "item";
+
+            List<string> found = new List<string>();
+
+            for (int i = 0; i < 7; i++)
+            {
+                w.Activate();
+                findDialog.FindNext();
+                Sleep(100);
+                w.WaitForInteractive();
+                var node = this.NodeTextView.GetSelectedChild();
+                var value = node.SimpleValue;
+                found.Add(value);
+            }
+
+            Assert.AreEqual(
+                new string[] { "Apple", "Banana", "Grape", "Peach", "This contains the 'item' text also"
+                "This contains the 'item' text also", "Watermelon" },
+                found.ToArray(), 
+                "The found items were: " + string.Join(",", found));
+
         }
 
         [TestMethod]

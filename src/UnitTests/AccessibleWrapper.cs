@@ -174,6 +174,19 @@ namespace UnitTests
             throw new Exception("Element '" + e.Current.Name + "' does not support InvokePattern");
         }
 
+        public string SimpleValue
+        {
+            get
+            {
+                if (e.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
+                {
+                    ValuePattern vp = (ValuePattern)o;
+                    return vp.Current.Value;
+                }
+                return "";
+            }
+        }
+
         public string Value
         {
             get
@@ -785,6 +798,12 @@ namespace UnitTests
             AutomationWrapper findCombo = this.w.FindDescendant("comboBoxFind");
             var c = findCombo.Bounds.Center();
             sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
+        }
+
+        internal void FindNext()
+        {
+            AutomationWrapper button = this.w.FindDescendant("buttonFindNext");
+            button.Invoke();
         }
     }
 

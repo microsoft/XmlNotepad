@@ -339,7 +339,7 @@ namespace UnitTests
                         if (e != null)
                         {
                             string itemName = e.Current.Name;
-                            Debug.WriteLine(itemName);
+                            // Debug.WriteLine(itemName);
                             _menuItems[itemName] = new AutomationWrapper(e);
                         }
                     }

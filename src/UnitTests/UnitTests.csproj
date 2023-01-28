@@ -75,6 +75,8 @@
     <Content Include="Test1.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="test11.xml" />
+    <Content Include="test12.xml" />
     <Content Include="test10.xml" />
     <Content Include="test2.xml" />
     <Content Include="test3.xml" />
