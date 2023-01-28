@@ -9,6 +9,9 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.8.0.66">
+    <feature>Add line/col info of selected node to the status bar, github issue#246. </feature>
+  </version>
   <version number="2.8.0.65">
     <feature>Update to SgmlReader version 1.8.28</feature>
     <feature>Update to Microsoft.Web.WebView2 version 1.0.1462.37</feature>

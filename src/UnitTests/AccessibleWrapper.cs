@@ -1,20 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.IO;
 using System.Diagnostics;
-using System.Windows.Automation;
+using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Automation;
+using System.Windows.Forms;
+using WindowsInput;
 
-namespace UnitTests {
+namespace UnitTests
+{
 
-    public class FileComparer : IComparer<string> {
-        public int Compare(string a, string b) {
-           if (a == null && b == null) return 0;
+    public class FileComparer : IComparer<string>
+    {
+        public int Compare(string a, string b)
+        {
+            if (a == null && b == null) return 0;
             if (a == null) return -1;
             if (b == null) return 1;
             // The operating system may or may not have visible "file extensions" so we do an extensionless compare
@@ -22,8 +24,10 @@ namespace UnitTests {
         }
     }
 
-    public class StringComparer : IComparer<string> {
-        public int Compare(string a, string b) {
+    public class StringComparer : IComparer<string>
+    {
+        public int Compare(string a, string b)
+        {
             return String.Compare(a, b, StringComparison.CurrentCultureIgnoreCase);
         }
     }
@@ -37,7 +41,7 @@ namespace UnitTests {
             this.e = e;
         }
 
-        internal AutomationElement AutomationElement { get { return e; } } 
+        internal AutomationElement AutomationElement { get { return e; } }
 
         public static AutomationWrapper AccessibleObjectForWindow(IntPtr hwnd)
         {
@@ -56,18 +60,54 @@ namespace UnitTests {
             AutomationElement e = AutomationElement.FromPoint(new System.Windows.Point(center.X, center.Y));
             if (e == null)
             {
-                throw new Exception("Automation element not found at this location: " +  center.ToString());
+                throw new Exception("Automation element not found at this location: " + center.ToString());
             }
             return new AutomationWrapper(e);
         }
 
-        public string Name {
-            get { return e.Current.Name; }           
+        public string Name
+        {
+            get
+            {
+                try
+                {
+                    return e.Current.Name;
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+        }
+
+        public ControlType ControlType
+        {
+            get
+            {
+                try
+                {
+                    return e.Current.ControlType;
+                }
+                catch
+                {
+                    return ControlType.Custom;
+                }
+            }
         }
 
         public string ClassName
         {
-            get { return e.Current.ClassName; }
+            get
+            {
+                try
+                {
+                    return e.Current.ClassName;
+                }
+                catch
+                {
+                    return "";
+                }
+            }
         }
 
 
@@ -79,7 +119,7 @@ namespace UnitTests {
                 try
                 {
                     parent = TreeWalker.RawViewWalker.GetParent(e);
-                } 
+                }
                 catch
                 {
                 }
@@ -99,10 +139,11 @@ namespace UnitTests {
 
         public string Status { get { return e.Current.ItemStatus; } }
 
+
         public Rectangle Bounds
         {
             get { return e.Current.BoundingRectangle.ToRectangle(); }
-        }        
+        }
 
         public int GetChildCount()
         {
@@ -133,7 +174,18 @@ namespace UnitTests {
             throw new Exception("Element '" + e.Current.Name + "' does not support InvokePattern");
         }
 
-
+        public string SimpleValue
+        {
+            get
+            {
+                if (e.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
+                {
+                    ValuePattern vp = (ValuePattern)o;
+                    return vp.Current.Value;
+                }
+                return "";
+            }
+        }
 
         public string Value
         {
@@ -236,6 +288,40 @@ namespace UnitTests {
             }
         }
 
+
+        public ScrollAutomationWrapper FindScroller()
+        {
+            var parent = this;
+
+            while (true)
+            {
+                foreach (var child in parent.GetChildren())
+                {
+                    var name = child.AutomationElement.Current.ClassName;
+                    if (name.StartsWith("WindowsForms10.SCROLLBAR."))
+                    {
+                        // we have a legacy scrollbar.
+                        return new ScrollAutomationWrapper(child, null);
+                    }
+                }
+
+                AutomationElement scrollbar = parent.AutomationElement.FindFirst(TreeScope.Descendants,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ScrollBar));
+                if (scrollbar != null)
+                {
+                    return new ScrollAutomationWrapper(null, new AutomationWrapper(scrollbar));
+                }
+
+                var next = TreeWalker.RawViewWalker.GetParent(parent.AutomationElement);
+                if (next == null)
+                {
+                    throw new Exception("Scroller not found");
+                }
+                parent = new AutomationWrapper(next);
+            }
+
+        }
+
         public AutomationWrapper FindDescendant(string name)
         {
             AutomationElement child = this.e.FindFirst(TreeScope.Descendants, new PropertyCondition(AutomationElement.NameProperty, name));
@@ -271,13 +357,13 @@ namespace UnitTests {
             var node = AutomationWrapper.AccessibleObjectAt(new Point(x, y));
             return node;
         }
-    
-        #endregion 
+
+        #endregion
 
         #region Selection 
 
         public void Select()
-        { 
+        {
             SelectionItemPattern vp = e.GetCurrentPattern(SelectionItemPattern.Pattern) as SelectionItemPattern;
             if (vp != null)
             {
@@ -312,7 +398,8 @@ namespace UnitTests {
         internal AutomationWrapper GetSelectedChild()
         {
             SelectionPattern sp = e.GetCurrentPattern(SelectionPattern.Pattern) as SelectionPattern;
-            if (sp != null){
+            if (sp != null)
+            {
                 foreach (AutomationElement selected in sp.Current.GetSelection())
                 {
                     return new AutomationWrapper(selected);
@@ -333,7 +420,7 @@ namespace UnitTests {
         }
 
         public void SetFocus()
-        {            
+        {
             e.SetFocus();
         }
 
@@ -504,22 +591,24 @@ namespace UnitTests {
         }
     }
 
-    public class OpenFileDialog
+    public class FileDialogWrapper
     {
         Window dialog;
 
-        public OpenFileDialog(Window window)
+        public FileDialogWrapper(Window window)
         {
             this.dialog = window;
         }
 
+        public Window Window => this.dialog;
+
         public AutomationWrapper GetFileItem(string fileName)
-        {        
+        {
             AutomationWrapper items = dialog.AccessibleObject.FindDescendant("Items View");
             if (items != null)
             {
                 AutomationElement item = items.AutomationElement.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, fileName, PropertyConditionFlags.IgnoreCase));
-            
+
                 while (item == null)
                 {
                     if (ScrollList(items, ScrollAmount.LargeIncrement) >= 100)
@@ -533,7 +622,7 @@ namespace UnitTests {
                     return new AutomationWrapper(item);
                 }
             }
-            
+
 
             throw new Exception("File '" + fileName + "'not found");
         }
@@ -554,6 +643,21 @@ namespace UnitTests {
             this.dialog.DismissPopUp(keyStrokes);
         }
 
+        internal void SendKeystrokes(string keyStrokes)
+        {
+            this.dialog.SendKeystrokes(keyStrokes);
+        }
+
+        internal void WaitForInteractive()
+        {
+            this.dialog.WaitForInteractive();
+        }
+
+        internal void Cancel()
+        {
+            this.DismissPopUp("%{F4}");
+        }
+
         public string FileName
         {
             get
@@ -572,10 +676,12 @@ namespace UnitTests {
     public class FindDialog
     {
         Window w;
+        InputSimulator sim;
 
         public FindDialog(Window w)
         {
             this.w = w;
+            this.sim = w.sim;
         }
 
         public Window Window { get { return this.w; } }
@@ -585,7 +691,7 @@ namespace UnitTests {
             get
             {
                 return GetCheckedState("checkBoxMatchCase");
-                
+
             }
             set
             {
@@ -682,15 +788,109 @@ namespace UnitTests {
             // seems to be a bug in the AutomationElement mapping, checkbox is not supporting the TogglePattern!
             AutomationWrapper s = w.FindDescendant(name);
             Rectangle r = s.Bounds;
-            Mouse.MouseClick(r.Center(), MouseButtons.Left);
+            var c = r.Center();
+            sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Thread.Sleep(200);
         }
 
         internal void FocusFindString()
         {
             AutomationWrapper findCombo = this.w.FindDescendant("comboBoxFind");
-            Mouse.MouseClick(findCombo.Bounds.Center(), MouseButtons.Left);
+            var c = findCombo.Bounds.Center();
+            sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
         }
+
+        internal void FindNext()
+        {
+            AutomationWrapper button = this.w.FindDescendant("buttonFindNext");
+            button.Invoke();
+        }
+    }
+
+    public class ScrollAutomationWrapper
+    {
+        AutomationWrapper legacyScrollbar;
+        AutomationWrapper properScroller;
+
+        public ScrollAutomationWrapper(AutomationWrapper legacyScrollbar, AutomationWrapper properScroller)
+        {
+            this.legacyScrollbar = legacyScrollbar;
+            this.properScroller = properScroller;
+        }
+
+        public InputSimulator Simulator { get; internal set; }
+
+        public void PageDown()
+        {
+            if (this.legacyScrollbar != null)
+            {
+                // Unfortunately UIAutomationClient is missing support for ILegacyAutomation interfaces, so the scrollbar
+                // is returns as one opaque "pane".
+                var bounds = legacyScrollbar.Bounds;
+                // hit the down arrow is the best we can do.
+                Simulator.Mouse.MoveMouseTo(bounds.Left + 10, bounds.Bottom - 10).LeftButtonClick();
+            }
+            else
+            {
+                ScrollPattern sp = (ScrollPattern)properScroller.AutomationElement.GetCurrentPattern(ScrollPattern.Pattern);
+                sp.ScrollVertical(ScrollAmount.LargeDecrement);
+            }
+        }
+
+        public void PageUp()
+        {
+            if (this.legacyScrollbar != null)
+            {
+                // Unfortunately UIAutomationClient is missing support for ILegacyAutomation interfaces, so the scrollbar
+                // is returns as one opaque "pane".
+                var bounds = legacyScrollbar.Bounds;
+                // hit the up arrow is the best we can do.
+                Simulator.Mouse.MoveMouseTo(bounds.Left + 10, bounds.Top + 10).LeftButtonClick();
+            }
+            else
+            {
+                ScrollPattern sp = (ScrollPattern)properScroller.AutomationElement.GetCurrentPattern(ScrollPattern.Pattern);
+                sp.ScrollVertical(ScrollAmount.LargeIncrement);
+            }
+        }
+
+        public void ScrollIntoView(AutomationWrapper element, AutomationWrapper container)
+        {
+            do
+            {
+                var r = element.Bounds;
+                var tb = container.Bounds;
+                if (r.Y < tb.Y)
+                {
+                    Debug.WriteLine("Paging up because {0} < {1}", r.Y, tb.Y);
+                    this.PageUp();
+                    Thread.Sleep(500);
+                    var s = element.Bounds;
+                    if (s == r)
+                    {
+                        // item didn't move, so the page keys are not working, try up arrow.
+                        Debug.WriteLine("???");
+                    }
+                }
+                else if (r.Bottom > tb.Bottom)
+                {
+                    Debug.WriteLine("Paging down because {0} > {1}", r.Y, tb.Y);
+                    this.PageDown();
+                    Thread.Sleep(500);
+                    var s = element.Bounds;
+                    if (s == r)
+                    {
+                        // item didn't move, so the page keys are not working, try down arrow.
+                        Debug.WriteLine("???");
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            } while (true);
+        }
+
     }
 
     class MainWindowWrapper
@@ -699,10 +899,12 @@ namespace UnitTests {
         AutomationWrapper xslOutputTab;
         AutomationWrapper xmlTreeViewTab;
         AutomationWrapper xsltViewer;
+        InputSimulator sim;
 
         public MainWindowWrapper(Window w)
         {
             this.window = w;
+            this.sim = w.sim;
         }
 
         public void LoadXmlAddress(string url, string expectedXmlPrefix)
@@ -710,7 +912,8 @@ namespace UnitTests {
             Trace.WriteLine("Click in the combo box location field");
             AutomationWrapper comboBoxLocation = this.window.FindDescendant("comboBoxLocation");
             Rectangle bounds = comboBoxLocation.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
 
             Trace.WriteLine("Loading: " + url);
             this.window.SendKeystrokes("{END}+{HOME}" + url + "{ENTER}");
@@ -748,7 +951,8 @@ namespace UnitTests {
         {
             AutomationWrapper s = GetXsltViewer().FindDescendant("SourceFileName");
             Rectangle bounds = s.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(500);
             this.window.SendKeystrokes("{END}+{HOME}" + filename + "{ENTER}");
         }
@@ -757,7 +961,8 @@ namespace UnitTests {
         {
             AutomationWrapper s = GetXsltViewer().FindDescendant("OutputFileName");
             Rectangle bounds = s.Bounds;
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(500);
             this.window.SendKeystrokes("{END}+{HOME}" + filename);
         }
@@ -778,7 +983,8 @@ namespace UnitTests {
         {
             Rectangle bounds = GetXsltViewer().Bounds;
             // click in HTML view
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var c = bounds.Center();
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
 
             // select all the text
             Sleep(1000);
@@ -803,7 +1009,8 @@ namespace UnitTests {
             }
             var bounds = xslOutputTab.Bounds;
             Trace.WriteLine("Select XSL output tab");
-            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
+            var c = new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5);
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(1000);
         }
 
@@ -816,7 +1023,8 @@ namespace UnitTests {
             }
             var bounds = xmlTreeViewTab.Bounds;
             Trace.WriteLine("Select XML tree view tab");
-            Mouse.MouseClick(new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5), MouseButtons.Left);
+            var c = new Point(bounds.Left + (bounds.Right - bounds.Left) / 2, bounds.Top + 5);
+            this.sim.Mouse.MoveMouseTo(c.X, c.Y).LeftButtonClick();
             Sleep(100);
         }
     }

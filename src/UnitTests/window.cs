@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
-using System.Drawing;
-using System.Reflection;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Automation;
+using System.Windows.Forms;
+using WindowsInput;
 
 namespace UnitTests
 {
@@ -24,15 +23,19 @@ namespace UnitTests
 
         private const int MenuDelay = 100;
 
-        public Window(Window parent, IntPtr handle)
+        public InputSimulator sim;
+
+        public Window(Window parent, IntPtr handle, InputSimulator sim)
         {
             this._parent = parent;
             this._handle = handle;
+            this.sim = sim;
             this._acc = AutomationWrapper.AccessibleObjectForWindow(handle);
         }
 
-        public Window(Process p, string className, string rootElementName)
+        public Window(Process p, InputSimulator sim, string className, string rootElementName)
         {
+            this.sim = sim;
             this._process = p;
             IntPtr h = p.Handle;
             while (h == IntPtr.Zero || !p.Responding)
@@ -133,6 +136,23 @@ namespace UnitTests
             return new AutomationWrapper(e);
         }
 
+        public AutomationWrapper GetTitleBar()
+        {
+            AutomationElement e = this._acc.AutomationElement.FindFirst(TreeScope.Descendants,
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "TitleBar"));
+            if (e == null)
+            {
+                throw new Exception("Window has no 'TitleBar'");
+            }
+            return new AutomationWrapper(e);
+        }
+
+        public FileDialogWrapper WaitForFileDialog()
+        {
+            var window = WaitForPopup();
+            return new FileDialogWrapper(window);
+        }
+
         public Window WaitForPopup()
         {
             return WaitForPopup(IntPtr.Zero);
@@ -151,14 +171,14 @@ namespace UnitTests
                     IntPtr popup = GetLastActivePopup(h);
                     if (popup != h && popup != excludingThisWindow && popup != IntPtr.Zero)
                     {
-                        found = new Window(this, popup);
+                        found = new Window(this, popup, sim);
                     }
                     else
                     {
                         IntPtr hwnd = GetForegroundWindow();
                         if (hwnd != h && hwnd != excludingThisWindow)
                         {
-                            found = new Window(this, hwnd);
+                            found = new Window(this, hwnd, sim);
                         }
                     }
                     if (found != null)
@@ -183,7 +203,7 @@ namespace UnitTests
             }
             if (found != null)
             {
-                Sleep(100); // give it time to get ready to receive keystrokes.
+                found.WaitForInteractive();
                 Trace.WriteLine("WaitForPopup found: '" + found.GetWindowText() + "', at:" + found.GetWindowBounds().ToString());
                 return found;
             }
@@ -275,6 +295,10 @@ namespace UnitTests
             }
             if (text.ToLowerInvariant() != name.ToLowerInvariant())
             {
+                if (popup != null)
+                {
+                    popup.Close();
+                }
                 throw new ApplicationException(string.Format("Expecting popup '{0}'", name));
             }
             return popup;
@@ -315,7 +339,7 @@ namespace UnitTests
                         if (e != null)
                         {
                             string itemName = e.Current.Name;
-                            Debug.WriteLine(itemName);
+                            // Debug.WriteLine(itemName);
                             _menuItems[itemName] = new AutomationWrapper(e);
                         }
                     }
@@ -381,6 +405,31 @@ namespace UnitTests
                 _parent.WaitForIdle(timeout);
             else if (_process != null && !_process.HasExited)
                 _process.WaitForInputIdle(timeout);
+        }
+
+        public void WaitForInteractive(int retries = 5, int delay = 50)
+        {
+            WaitForIdle(200);
+            WindowPattern wp = (WindowPattern)_acc.AutomationElement.GetCurrentPattern(WindowPattern.Pattern);
+            WindowInteractionState state = WindowInteractionState.NotResponding;
+            for (; retries > 0; retries--)
+            {
+                state = wp.Current.WindowInteractionState;
+                if (state == WindowInteractionState.ReadyForUserInteraction)
+                {
+                    return;
+                }
+                try
+                {
+                    Thread.Sleep(delay);
+                    this._acc.SetFocus();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Cannot set focus: " + ex.Message);
+                }
+            }
+            throw new Exception("Timeout waiting for window to be ready for user interaction, it is stuck in state: " + state);
         }
 
         public bool Closed
@@ -520,6 +569,18 @@ namespace UnitTests
             if (GetWindowInfo(this._handle, ref wi))
             {
                 RECT r = wi.rcWindow;
+                return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
+            }
+            return Rectangle.Empty;
+        }
+
+        public Rectangle GetClientBounds()
+        {
+            WINDOWINFO wi = new WINDOWINFO();
+            wi.cbSize = Marshal.SizeOf(wi);
+            if (GetWindowInfo(this._handle, ref wi))
+            {
+                RECT r = wi.rcClient;
                 return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
             }
             return Rectangle.Empty;
@@ -716,6 +777,5 @@ namespace UnitTests
             }
             throw new Exception(string.Format("Popup '{0}' not found", name));
         }
-
     }
 }

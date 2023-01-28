@@ -69,11 +69,14 @@
     <Content Include="includes\index.xml" />
     <Content Include="includes\r1.xml" />
     <Content Include="my.xml" />
+    <Content Include="plants.xml" />
     <Content Include="rss.xsl" />
     <Content Include="supply.xml" />
     <Content Include="Test1.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="test11.xml" />
+    <Content Include="test12.xml" />
     <Content Include="test10.xml" />
     <Content Include="test2.xml" />
     <Content Include="test3.xml" />
@@ -100,6 +103,10 @@
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{ccb469f3-9f2b-4ca2-9beb-e0b54aeefa6a}</Project>
       <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WindowsInput\WindowsInput.csproj">
+      <Project>{3549cd6f-80f8-450f-b99e-cf0a736b1f2a}</Project>
+      <Name>WindowsInput</Name>
     </ProjectReference>
     <ProjectReference Include="..\XmlNotepad\XmlNotepad.csproj">
       <Project>{E401BDD0-8862-4818-98BD-83E457607E16}</Project>

@@ -23,7 +23,7 @@ namespace XmlNotepad
 
         public event EventHandler<NodeChangeEventArgs> NodeChanged;
         public event EventHandler<NodeChangeEventArgs> NodeInserted;
-        public event EventHandler SelectionChanged;
+        public event EventHandler<NodeSelectedEventArgs> SelectionChanged;
         public event EventHandler ClipboardChanged;
 
         private XmlTreeNode _dragged;
@@ -416,7 +416,7 @@ namespace XmlNotepad
                 {
                     ScrollIntoView(n);
                 }
-                if (SelectionChanged != null) SelectionChanged(this, EventArgs.Empty);
+                if (SelectionChanged != null) SelectionChanged(this, new NodeSelectedEventArgs(n as XmlTreeNode));
             }
         }
 
@@ -1020,7 +1020,7 @@ namespace XmlNotepad
                         {
                             this._myTreeView.SelectedNode = null;
                             if (this.SelectionChanged != null)
-                                SelectionChanged(this, EventArgs.Empty);
+                                SelectionChanged(this, new NodeSelectedEventArgs(null));
                         }
                         break;
                     case Keys.X:
@@ -1551,7 +1551,7 @@ namespace XmlNotepad
             // resizer
             // 
             this.resizer.AccessibleName = "XmlTreeResizer";
-            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.resizer.Border3DStyle = System.Windows.Forms.Border3DStyle.Flat;
             this.resizer.Location = new System.Drawing.Point(200, 0);
             this.resizer.Name = "resizer";
             this.resizer.Pane1 = this._myTreeView;
@@ -1799,7 +1799,15 @@ namespace XmlNotepad
         {
             get
             {
-                return this.Node == null ? _editLabel : this.Node.Name;
+                if (this.Node == null) return _editLabel;
+
+                var name = this.Node.Name;
+                if (name == "#cdata-section")
+                {
+                    // make it less verbose.
+                    name = "#cdata";
+                }
+                return name;
             }
             set
             {
@@ -2411,6 +2419,22 @@ namespace XmlNotepad
         }
 
         public NodeChangeEventArgs(XmlTreeNode node)
+        {
+            this._node = node;
+        }
+    }
+
+    public class NodeSelectedEventArgs : EventArgs
+    {
+        private XmlTreeNode _node;
+
+        public XmlTreeNode Node
+        {
+            get { return _node; }
+            set { _node = value; }
+        }
+
+        public NodeSelectedEventArgs(XmlTreeNode node)
         {
             this._node = node;
         }

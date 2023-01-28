@@ -1,16 +1,21 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows.Forms;
-using System.IO;
-using System.Xml;
-using System.Drawing;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using XmlNotepad;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+// using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Forms;
+using System.Xml;
+using WindowsInput;
+using XmlNotepad;
 
 // Here's a handy reference on SendKeys:
 // http://msdn2.microsoft.com/en-us/library/system.windows.forms.sendkeys.aspx
@@ -23,6 +28,9 @@ namespace UnitTests
     {
         const int TestMethodTimeout = 300000; // 5 minutes
         private readonly string _testDir;
+        private bool calibrated;
+        private List<MouseCalibration> calibration;
+        private Settings testSettings;
 
         public UnitTest1()
         {
@@ -47,9 +55,65 @@ namespace UnitTests
         //public static void MyClassCleanup() {            
         //}
 
+        Settings LoadTestSettings()
+        {
+            Settings testSettings = new Settings()
+            {
+                Comparer = FormMain.SettingValueMatches,
+                StartupPath = Application.StartupPath,
+                ExecutablePath = Application.ExecutablePath
+            };
+
+            SettingsLoader ls = new SettingsLoader();
+            testSettings.SetDefaults();
+            ls.LoadSettings(testSettings, true);
+            return testSettings;
+        }
+
         [TestInitialize()]
         public void MyTestInitialize()
         {
+            this.testSettings = LoadTestSettings();
+            // Find the test settings we care about.
+            var screen = Screen.PrimaryScreen.WorkingArea;
+            Size s = (Size)testSettings["PrimaryScreenSize"];
+            var points = (Point[])testSettings["MouseCalibration"];
+            if (points.Length > 10 && s == screen.Size)
+            {
+                var calibration = new List<MouseCalibration>();
+                for (int i = 0; i + 1 < points.Length; i += 2)
+                {
+                    Point expected = points[i];
+                    Point actual = points[i + 1];
+                    calibration.Add(new MouseCalibration() { Expected = expected, Actual = actual });
+                }
+                this.calibration = calibration;
+                sim.Mouse.Calibrate(calibration);
+                this.calibrated = true;
+            }
+
+            // reset the test settings before each test.
+            testSettings.SetDefaults();
+
+            // Now calibrate the mouse once
+            if (!this.calibrated)
+            {
+                TestCalibrateMouse();
+            }
+
+            // Always restore the updated calibration settings.
+            points = new Point[this.calibration.Count * 2];
+            int pos = 0;
+            foreach (var c in this.calibration)
+            {
+                points[pos++] = c.Expected;
+                points[pos++] = c.Actual;
+            }
+            testSettings["PrimaryScreenSize"] = screen.Size;
+            testSettings["MouseCalibration"] = points;
+
+            // Save the reset settings so next LaunchNotepad picks them up
+            testSettings.Save(testSettings.FileName);
         }
 
         [TestCleanup()]
@@ -61,20 +125,27 @@ namespace UnitTests
             }
         }
 
-        Window LaunchNotepad()
+        Window LaunchNotepad(bool debugMouse = false)
         {
-            this.window = LaunchNotepad(null);
-            this.window.InvokeMenuItem("newToolStripMenuItem");
+            this.window = LaunchNotepad(null, debugMouse: debugMouse);
+            if (!debugMouse)
+            {
+                this.window.InvokeMenuItem("newToolStripMenuItem");
+            }
             Sleep(1000);
             return window;
         }
 
-        Window LaunchNotepad(string filename, bool testSettings = true)
+        Window LaunchNotepad(string filename, bool testSettings = true, bool debugMouse = false)
         {
             string args = "\"" + filename + "\"";
             if (testSettings)
             {
                 args = "-test " + args;
+            }
+            if (debugMouse)
+            {
+                args = "-debugMouse " + args;
             }
             this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", args, "FormMain");
             return window;
@@ -124,6 +195,108 @@ namespace UnitTests
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
+        public void TestCalibrateMouse()
+        {
+            List<MouseCalibration> calibration = new List<MouseCalibration>();
+            var screen = Screen.PrimaryScreen.WorkingArea;
+
+            Rectangle bounds = Rectangle.Empty;
+            var window = LaunchNotepad(debugMouse: true);
+            window.WaitForInteractive();
+            window.SetWindowPosition(screen.Left, screen.Top);
+            window.SetWindowSize(screen.Width, screen.Height);
+            window.WaitForInteractive();
+            Sleep(1000);
+
+            var xPosLabel = window.FindDescendant("XPosition");
+            var yPosLabel = window.FindDescendant("YPosition");
+            var statusBox = window.FindDescendant("Status");
+            ValuePattern xPattern = null;
+            ValuePattern yPattern = null;
+            ValuePattern sPattern = null;
+            if (xPosLabel.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
+            {
+                xPattern = (ValuePattern)o;
+            }
+            else
+            {
+                Assert.Fail("xPosition TextBox has no ValuePattern?");
+            }
+            if (yPosLabel.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object yo))
+            {
+                yPattern = (ValuePattern)yo;
+            }
+            else
+            {
+                Assert.Fail("yPosition TextBox has no ValuePattern?");
+            }
+            if (statusBox.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object so))
+            {
+                sPattern = (ValuePattern)so;
+            }
+            else
+            {
+                Assert.Fail("yPosition TextBox has no ValuePattern?");
+            }
+
+            bounds = window.GetClientBounds();
+            var center = xPosLabel.Bounds.Center();
+            var b2 = statusBox.Bounds;
+            sim.Mouse.MoveMouseTo(center.X, center.Y);
+            sim.Mouse.MoveMouseTo(bounds.Left, bounds.Bottom);
+            sim.Mouse.MoveMouseTo(b2.Left, b2.Bottom);
+
+            Rectangle inner = bounds;
+            inner.Inflate(-20, -20);
+            int steps = 60;
+            int previousX = 0;
+            int previousY = 0;
+            for (int i = 0; i < steps; i++)
+            {
+                int x = (int)(inner.Left + ((double)i * inner.Width) / steps);
+                int y = (int)(inner.Top + ((double)i * inner.Height) / steps);
+                sim.Mouse.MoveMouseTo(x, y);
+                while (string.IsNullOrEmpty(xPattern.Current.Value) || string.IsNullOrEmpty(yPattern.Current.Value))
+                {
+                    sim.Mouse.MoveMouseTo(x, y);
+                    Thread.Sleep(30);
+                }
+                int ax = previousX;
+                int ay = previousY;
+                // wait for fields to update
+                while (ax == previousX || ay == previousY)
+                {
+                    Thread.Sleep(30);
+                    // winforms mouse move is relative to content not including window frame
+                    ax = int.Parse(xPattern.Current.Value) + bounds.Left;
+                    ay = int.Parse(yPattern.Current.Value) + bounds.Top;
+                }
+                previousX = ax;
+                previousY = ay;
+
+                Debug.WriteLine("{0}, {1}  => {2}, {3}  => {4}, {5}", x, y, ax, ay, x - ax, y - ay);
+                calibration.Add(new MouseCalibration()
+                {
+                    Expected = new Point(x, y),
+                    Actual = new Point(ax, ay)
+                });
+
+                if (ax > inner.Right || ay > inner.Bottom)
+                {
+                    // we already stepped outside our box, so we're done!
+                    break;
+                }
+            }
+
+            this.calibration = calibration;
+            this.sim.Mouse.Calibrate(calibration);
+            this.calibrated = true;
+            // close the form
+            window.Close();
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
         public void TestUndoRedo()
         {
             Trace.WriteLine("TestUndoRedo==========================================================");
@@ -138,7 +311,6 @@ namespace UnitTests
             w.InvokeMenuItem("newToolStripMenuItem");
             Sleep(500);
 
-            w.SetWindowSize(800, 600);
 
             Stack<bool> hasChildren = new Stack<bool>();
             XmlReader reader = XmlReader.Create(testFile);
@@ -365,6 +537,7 @@ namespace UnitTests
         }
 
         int nodeIndex = 0;
+
         private void InsertNode(string type, string mode, bool requiresName, string clip)
         {
             string command = type + mode + "ToolStripMenuItem";
@@ -456,12 +629,15 @@ namespace UnitTests
             Sleep(500);
             Trace.WriteLine("Point to xsd2.xsd");
             w.SendKeystrokes("{ENTER}test2.xsd{ENTER}");
+            Sleep(500); // wait for keys to settle.
 
             Trace.WriteLine("Get intellisense tooltip");
             AutomationWrapper xtv = this.XmlTreeView;
-            Sleep(2000); // wait for tooltip!
+            xtv.SetFocus();
+
             Rectangle treeBounds = xtv.Bounds;
-            Mouse.MouseMoveTo(Control.MousePosition, new Point(treeBounds.Left + 20, treeBounds.Top + 10), 5);
+            w.Activate();
+            sim.Mouse.MoveMouseTo(treeBounds.Left + 80, treeBounds.Top + 10);
             Sleep(2000); // wait for tooltip!
 
             Trace.WriteLine("Add language='en-au'");
@@ -512,7 +688,8 @@ namespace UnitTests
             popup.SendKeystrokes("{DOWN}{LEFT} {ENTER}");
 
             Trace.WriteLine("test MouseDown on NodeTextView editor");
-            Mouse.MouseClick(new Point(bounds.Left + 20, bounds.Top - 10), MouseButtons.Left);
+            w.Activate();
+            sim.Mouse.MoveMouseTo(bounds.Left + 20, bounds.Top - 10).LeftButtonClick();
             Sleep(500);
             w.SendKeystrokes("{DOWN}{ENTER}");
 
@@ -530,8 +707,9 @@ namespace UnitTests
 
             Trace.WriteLine("Test UriBuilder");
             popup = ClickXmlBuilder();
-            popup.SendKeystrokes(_testDir + "UnitTests\\" + "test1.xml");
-            popup.DismissPopUp("{ENTER}");
+            var openDialog = new FileDialogWrapper(popup);
+            openDialog.FileName = _testDir + "UnitTests\\" + "test1.xml";
+            openDialog.DismissPopUp("{ENTER}");
 
             w.SendKeystrokes("{ENTER}");
             CheckNodeValue("test1.xml", StringComparison.OrdinalIgnoreCase);
@@ -598,16 +776,14 @@ namespace UnitTests
             Sleep(100);
             CheckNodeName("woops");
 
-            // TODO: NavigateErrorWithMouse is doing something crazy on 150% DPI
+            Trace.WriteLine("Move to Basket element");
+            w.SendKeystrokes("{LEFT}");
 
-            //Trace.WriteLine("Move to Basket element"); 
-            //w.SendKeystrokes("{LEFT}"); 
+            Trace.WriteLine("Navigate error with mouse double click");
+            NavigateErrorWithMouse();
 
-            //Trace.WriteLine("Navigate error with mouse double click");
-            //NavigateErrorWithMouse();
-
-            //Trace.WriteLine("We are now back on the 'woops' element.");
-            //CheckNodeName("woops");            
+            Trace.WriteLine("We are now back on the 'woops' element.");
+            CheckNodeName("woops");
 
             Trace.WriteLine("undo redo of elementBeforeToolStripMenuItem.");
             UndoRedo();
@@ -631,7 +807,7 @@ namespace UnitTests
             row = row.NextSibling;
             Point pt = row.Bounds.Center();
             // Double click it
-            Mouse.MouseDoubleClick(pt, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonDoubleClick();
         }
 
         private void NavigateNextError()
@@ -691,7 +867,7 @@ namespace UnitTests
             var w = NodeTextViewCompletionSet;
             Rectangle bounds = w.Bounds;
             Sleep(1000);
-            Mouse.MouseClick(new Point(bounds.Left + 15, bounds.Top + 10), MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(bounds.Left + 15, bounds.Top + 10).LeftButtonClick();
             Sleep(100);
             return this.window.WaitForPopup(w.Hwnd);
         }
@@ -871,18 +1047,18 @@ namespace UnitTests
 
             AutomationWrapper table = acc.FindChild("Properties Window");
 
+            ScrollAutomationWrapper scrollbar = table.FindScroller();
+            scrollbar.Simulator = this.sim;
+
             Trace.WriteLine("Font");
             AutomationWrapper font = table.FindChild("Font"); // this is the group heading
-            if (!font.IsVisible || font.Bounds.Top > table.Bounds.Bottom)
-            {
-                table.SetFocus();
-                options.SendKeystrokes("{PGDN}");
-            }
+            scrollbar.ScrollIntoView(font, table);
 
             Rectangle r = font.Bounds;
             // bring up the font dialog.
             var pt = new Point(r.Right - 10, r.Top + r.Height / 2);
-            Mouse.MouseClick(pt, MouseButtons.Left);
+            options.Activate();
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             Sleep(500);
             Rectangle r2 = font.Bounds;
             if (r2 != r)
@@ -891,12 +1067,11 @@ namespace UnitTests
                 // so it scrolls up a bit when it is selected.
                 r = r2;
                 pt = new Point(r.Right - 10, r.Top + r.Height / 2);
-                Mouse.MouseClick(pt, MouseButtons.Left);
+                sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             }
             Sleep(500);
-            Mouse.MouseClick(pt, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             Window popup = options.WaitForPopup();
-
             popup.DismissPopUp("{ENTER}");
 
             string[] names = new string[] { "Element", "Attribute", "Text",
@@ -913,8 +1088,10 @@ namespace UnitTests
                 Trace.WriteLine("Click " + name);
 
                 AutomationWrapper child = table.FindChild(name);
+                scrollbar.ScrollIntoView(child, table);
+
                 r = child.Bounds;
-                Mouse.MouseClick(new Point(r.Left + 10, r.Top + 6), MouseButtons.Left);
+                sim.Mouse.MoveMouseTo(r.Left + 20, r.Top + 6).LeftButtonClick();
                 Sleep(100);
                 popup.SendKeystrokes("{TAB}" + values[i] + "{ENTER}");
 
@@ -930,20 +1107,24 @@ namespace UnitTests
             Sleep(2000); // give it time to write out the new settings.
 
             // verify persisted colors.
-            XmlDocument doc = LoadSettings();
+            this.testSettings = LoadTestSettings();
+            ThemeColors colors = (ThemeColors)this.testSettings["LightColors"];
+
+            Color[] found = new Color[]
+            {
+                colors.Element, colors.Attribute, colors.Text, colors.Background, colors.Comment, colors.PI, colors.CDATA
+            };
+            TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
+
             for (int i = 0, n = names.Length; i < n; i++)
             {
                 string ename = names[i];
-                XmlNode node = doc.SelectSingleNode("Settings/Colors/" + ename);
-                if (node != null)
+                var expected = values[i];
+                var actual = tc.ConvertToString(found[i]);
+                if (expected != actual)
                 {
-                    string expected = values[i];
-                    string actual = node.InnerText;
-                    if (expected != actual)
-                    {
-                        Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
-                        passed = false;
-                    }
+                    Trace.WriteLine(string.Format("Color '{0}' has unexpected value '{1}'", ename, actual));
+                    passed = false;
                 }
             }
 
@@ -953,30 +1134,10 @@ namespace UnitTests
             }
         }
 
-        XmlDocument LoadSettings() 
-        {
-            XmlDocument doc = new XmlDocument();
-            string path = GetSettingsPath();
-            if (File.Exists(path))
-            {
-                doc.Load(path);
-            }
-            return doc;
-        }
-
-        string GetSettingsPath()
-        {
-            return System.IO.Path.Combine(Path.GetTempPath(), "Microsoft", "Xml Notepad", "XmlNotepad.settings");
-        }
-
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestDialogs()
         {
-
-            // ensure we get this warning dialog.
-            ResetFormatLongLines();
-
             // ensure we get a horizontal scroll bar on the supply.xml file.
             SetTreeViewWidth(290);
 
@@ -1086,19 +1247,20 @@ namespace UnitTests
             // open bad file.            
             Trace.WriteLine("open bad file");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
+            FileDialogWrapper fd = w.WaitForFileDialog();
+            fd.FileName = _testDir + "UnitTests\\bad.xml";
+            fd.SendKeystrokes("{ENTER}");
             Window popup = w.WaitForPopup();
-            popup.SendKeystrokes(_testDir + "UnitTests\\bad.xml{ENTER}");
-            popup = w.WaitForPopup();
             popup.SendKeystrokes("%Y");
-            popup = w.WaitForPopup();
-            popup.DismissPopUp("%{F4}");
+            Window notepad = w.WaitForPopup();
+            notepad.DismissPopUp("%{F4}");
 
             // Test OpenFileDialog
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes(_testDir + "UnitTests\\supply.xml");
-            popup.DismissPopUp("{ENTER}");
+            fd = w.WaitForFileDialog();
+            fd.FileName = _testDir + "UnitTests\\supply.xml";
+            fd.DismissPopUp("{ENTER}");
 
             // make an edit.
             this.TreeView.SetFocus();
@@ -1117,9 +1279,9 @@ namespace UnitTests
             string outFile = _testDir + "UnitTests\\out.xml";
             WipeFile(outFile);
             w.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
-            popup = w.WaitForPopup();
-            popup.SendKeystrokes("out.xml");
-            popup.DismissPopUp("{ENTER}");
+            fd = w.WaitForFileDialog();
+            fd.FileName = "out.xml";
+            fd.DismissPopUp("{ENTER}");
 
             // Check save read only
             Trace.WriteLine("Check save read only.");
@@ -1184,7 +1346,7 @@ namespace UnitTests
             Sleep(1000);
 
             Window fileDialog = schemaDialog.WaitForPopup();
-            OpenFileDialog fd = new OpenFileDialog(fileDialog);
+            FileDialogWrapper fd = new FileDialogWrapper(fileDialog);
             string schema = _testDir + "UnitTests\\emp.xsd";
             fd.FileName = schema;
             fd.DismissPopUp("{ENTER}");
@@ -1266,7 +1428,7 @@ namespace UnitTests
             schemaDialog.InvokeAsyncMenuItem("addSchemasToolStripMenuItem");
 
             fileDialog = schemaDialog.WaitForPopup();
-            fd = new OpenFileDialog(fileDialog);
+            fd = new FileDialogWrapper(fileDialog);
             schema = _testDir + "UnitTests\\emp.xsd";
             fd.FileName = schema;
             fd.DismissPopUp("{ENTER}");
@@ -1455,9 +1617,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestFind()
         {
-
-            ResetFindOptions();
-
             Trace.WriteLine("TestFind==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
@@ -1466,7 +1625,6 @@ Prefix 'user' is not defined. ");
             Rectangle treeBounds = this.XmlTreeView.Bounds;
 
             var findDialog = OpenFindDialog();
-            findDialog.ClearFindCheckBoxes();
 
             Rectangle findBounds = findDialog.Window.GetScreenBounds();
             Point treeCenter = treeBounds.Center();
@@ -1474,9 +1632,7 @@ Prefix 'user' is not defined. ");
             Point start = new Point(findBounds.Left + (findBounds.Width / 2), findBounds.Top + 15);
             Point end = new Point(start.X + treeCenter.X - findCenter.X,
                                   start.Y + treeCenter.Y - findCenter.Y);
-            Mouse.MouseClick(start, MouseButtons.Left);
-            Mouse.MouseDragTo(start, end, 5);
-            Mouse.MouseUp(end, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(start.X, start.Y, end.X, end.Y, 5, 1);
 
             // Refocus the combo box...
             Sleep(500);
@@ -1545,17 +1701,46 @@ Prefix 'user' is not defined. ");
             Sleep(500);
             w.SendKeystrokes("^c");
             CheckClipboard("<!--last comment-->");
-
-            ResetFindOptions();
+            ;
             // find should not modify the document, so we should be able to exit without saveas dialog.
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestFindNested()
+        {
+            Trace.WriteLine("TestReplace==========================================================");
+            string testFile = _testDir + "UnitTests\\test12.xml";
+            var w = LaunchNotepad(testFile);
+
+            var findDialog = OpenFindDialog();
+            findDialog.FindString = "item";
+
+            List<string> found = new List<string>();
+
+            for (int i = 0; i < 7; i++)
+            {
+                w.Activate();
+                findDialog.FindNext();
+                Sleep(100);
+                w.WaitForInteractive();
+                var node = this.NodeTextView.GetSelectedChild();
+                var value = node.SimpleValue;
+                found.Add(value);
+            }
+
+            Assert.AreEqual(
+                new string[] { "Apple", "Banana", "Grape", "Peach", "This contains the 'item' text also",
+                "This contains the 'item' text also", "Watermelon" },
+                found.ToArray(), 
+                "The found items were: " + string.Join(",", found));
+
         }
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestReplaceMany()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestReplace==========================================================");
             string testFile = _testDir + "UnitTests\\test10.xml";
             var w = LaunchNotepad(testFile);
@@ -1596,8 +1781,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestReplace()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestReplace==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
@@ -1671,7 +1854,6 @@ Prefix 'user' is not defined. ");
 
             w.Dispose();
             Sleep(2000);
-            ResetFindOptions();
 
         }
 
@@ -1679,8 +1861,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestReplaceBackwards()
         {
-            ResetFindOptions();
-
             Trace.WriteLine("TestReplaceBackwards==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             var w = LaunchNotepad(testFile);
@@ -1719,99 +1899,12 @@ Prefix 'user' is not defined. ");
 
             w.Dispose();
             Sleep(2000);
-            ResetFindOptions();
-        }
-
-        void ResetFindOptions()
-        {
-            string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-
-            RemoveNode(doc, "//SearchWholeWord");
-            RemoveNode(doc, "//SearchRegex");
-            RemoveNode(doc, "//SearchMatchCase");
-            RemoveNode(doc, "//SearchXPath");
-            RemoveNode(doc, "//FindMode");
-            RemoveNode(doc, "//RecentFindStrings");
-            RemoveNode(doc, "//RecentReplaceStrings");
-            doc.Save(path);
-        }
-
-        void ResetFormatLongLines()
-        {
-            string path = GetSettingsPath();
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-
-            RemoveNode(doc, "//AutoFormatLongLines");
-            doc.Save(path);
         }
 
         void SetTreeViewWidth(int width)
         {
-            XmlDocument doc = LoadSettings();
-            if (doc.DocumentElement == null)
-            {
-                XmlElement e = doc.CreateElement("Settings");
-                doc.AppendChild(e);
-            }
-
-            XmlNode node = doc.SelectSingleNode("//TreeViewSize");
-            if (node == null)
-            {
-                node = doc.CreateElement("TreeViewSize");
-                node.AppendChild(doc.CreateTextNode(width.ToString()));
-                doc.DocumentElement.AppendChild(node);
-            }
-            else
-            {
-                XmlNode child = node.FirstChild;
-                child.Value = width.ToString();
-            }
-            doc.Save(GetSettingsPath());
-        }
-
-        void ClearSchemaCache()
-        {
-            string path = Environment.GetEnvironmentVariable("USERPROFILE") + "\\Local Settings\\Application Data\\Microsoft\\Xml Notepad\\XmlNotepad.settings";
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-
-            RemoveNodes(doc, "//Schema");
-            doc.Save(path);
-        }
-
-        void RemoveNode(XmlDocument doc, string xpath)
-        {
-            XmlNode node = doc.SelectSingleNode(xpath);
-            if (node != null) node.ParentNode.RemoveChild(node);
-        }
-
-        void RemoveNodes(XmlDocument doc, string xpath)
-        {
-            List<XmlNode> toRemove = new List<XmlNode>();
-            foreach (XmlNode node in doc.SelectNodes(xpath))
-            {
-                toRemove.Add(node);
-            }
-            foreach (XmlNode node in toRemove)
-            {
-                node.ParentNode.RemoveChild(node);
-            }
-
+            this.testSettings["TreeViewSize"] = width;
+            this.testSettings.Save(this.testSettings.FileName);
         }
 
         [TestMethod]
@@ -1985,19 +2078,18 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("OpenFileDialog");
             w.InvokeAsyncMenuItem("openToolStripMenuItem");
-            Window openDialog = w.WaitForPopup();
+            var openDialog = w.WaitForFileDialog();
             Trace.WriteLine("Opening '" + _testDir + "UnitTests'");
-            openDialog.SendKeystrokes(_testDir + "UnitTests{ENTER}");
+            openDialog.FileName = _testDir + "UnitTests";
+            openDialog.SendKeystrokes("{ENTER}");
             Sleep(1000);
 
             // Drag/drop from open file dialog into xml notepad client area.
-            OpenFileDialog dialogWrapper = new OpenFileDialog(openDialog);
-
-            Point drop = GetDropSpot(openDialog, treeBounds);
+            Point drop = GetDropSpot(openDialog.Window, treeBounds);
+            Sleep(500); // give time for window to update before starting drag/drop
             Trace.WriteLine("Drop spot = " + drop.ToString());
 
-            AutomationWrapper item = dialogWrapper.GetFileItem("test1.xml");
-
+            var item = openDialog.GetFileItem("test1.xml");
             if (item == null)
             {
                 // try finding the item using the keyboard.
@@ -2007,10 +2099,10 @@ Prefix 'user' is not defined. ");
             Rectangle ibounds = item.Bounds;
             Point iloc = new Point(ibounds.Left + 10, ibounds.Top + 10);
             Trace.WriteLine("Dragging from " + iloc.ToString());
-
-            Mouse.MouseDragDrop(iloc, drop, 5, MouseButtons.Left);
-            Sleep(1000);
-            dialogWrapper.DismissPopUp("{ESC}");
+            w.Activate();
+            sim.Mouse.LeftButtonDragDrop(iloc.X, iloc.Y, drop.X, drop.Y, 5, 1);
+            Sleep(500);
+            openDialog.DismissPopUp("{ESC}");
 
             // need bigger window to test drag/drop
             w.SetWindowSize(800, 600);
@@ -2024,11 +2116,10 @@ Prefix 'user' is not defined. ");
 
             w.SendKeystrokes("{HOME}");
             // AutomationElement returns physical coords, but Cursor.Position wants Logical coords.
-            Cursor.Position = w.AccessibleObject.PhysicalToLogicalPoint(tree.Bounds.Center());
+            var pos = w.AccessibleObject.PhysicalToLogicalPoint(tree.Bounds.Center());
+            Cursor.Position = pos;
             Sleep(500); // wait for focus to kick in before sending mouse events.
-            Mouse.MouseWheel(w.AccessibleObject, -120 * 15); // first one doesn't get thru for some reason!
-            Sleep(500);
-            Mouse.MouseWheel(w.AccessibleObject, 120 * 15);
+            sim.Mouse.MoveMouseTo(pos.X, pos.Y).VerticalScroll(-15);
             Sleep(500);
 
             // Test navigation keys
@@ -2048,7 +2139,7 @@ Prefix 'user' is not defined. ");
             CheckNodeName(node, "Office");
             Rectangle bounds = node.Bounds;
             Point center = bounds.Center();
-            Mouse.MouseClick(center, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(center.X, center.Y).LeftButtonClick();
 
             // test edit of node value using AccessibilityObject
             string office = "35/1682";
@@ -2088,7 +2179,7 @@ Prefix 'user' is not defined. ");
             pt.Y -= (itemHeight * 2);
 
             // Test mouse down in tree view;
-            Mouse.MouseClick(pt, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(pt.X, pt.Y).LeftButtonClick();
             Sleep(200);
             node = tree.GetSelectedChild();
             CheckNodeName(node, "Country");
@@ -2100,7 +2191,7 @@ Prefix 'user' is not defined. ");
             pt = bounds.Center();
             Point endPt = new Point(pt.X, pt.Y - (int)(3 * itemHeight));
             // Drag the node up three slots.
-            Mouse.MouseDragDrop(pt, endPt, 5, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(pt.X, pt.Y, endPt.X, endPt.Y, 5, 10);
 
             Sleep(200);
 
@@ -2109,29 +2200,23 @@ Prefix 'user' is not defined. ");
 
             // Drag/drop to auto scroll, then leave the window and drop it on desktop
             Rectangle formBounds = w.GetScreenBounds();
-            Mouse.MouseDown(endPt, MouseButtons.Left);
+
             // Autoscroll
             Point treeTop = TopCenter(tree.Bounds, 2);
-
             Trace.WriteLine("--- Drag to top of tree view ---");
-            Mouse.MouseDragTo(endPt, treeTop, 5);
+            sim.Mouse.LeftButtonDragDrop(endPt.X, endPt.Y, treeTop.X, treeTop.Y + itemHeight, 5, 10);
             Sleep(1000); // autoscroll time.
+
             // Drag out of tree view.
             Point titleBar = TopCenter(formBounds, 20);
             Trace.WriteLine("--- Drag to titlebar ---");
-            Mouse.MouseDragTo(treeTop, titleBar, 10);
+            w.Activate();
+            bounds = node.Bounds;
+            pt = bounds.Center();
+            sim.Mouse.LeftButtonDragDrop(pt.X, pt.Y, titleBar.X, titleBar.Y, 5, 10);
             Sleep(1000); // should now have 'no drop icon'.
-            Mouse.MouseUp(titleBar, MouseButtons.Left);
 
-            // code coverage on expand/collapse.
-            w.SendKeystrokes("^ICountry");
-            node.Invoke();
-            Sleep(500);
-            w.SendKeystrokes("{RIGHT}");
-            Sleep(500);
-            w.SendKeystrokes("{LEFT}");
-
-            this.SaveAndCompare("out.xml", "test4.xml");
+            this.SaveAndCompare("out.xml", "test11.xml");
         }
 
         [TestMethod]
@@ -2147,12 +2232,12 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine(resizer.Parent.Name);
             var bounds = resizer.Bounds;
             Point mid = bounds.Center();
+            sim.Mouse.MoveMouseTo(mid.X, mid.Y);
 
             // Drag the resizer up a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X, mid.Y - 20), 1, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(mid.X, mid.Y, mid.X, mid.Y - 20, 5, 1);
+            Sleep(100);
             var newbounds = resizer.Bounds;
-            // bugbug: no idea why this sucker isn't moving.  Seems to be a bug with SendInput.
-            // the product works fine, just an test automation bug.
             Assert.IsTrue(newbounds.Center().Y < mid.Y);
 
             Trace.WriteLine("Test tree view resizer");
@@ -2161,61 +2246,12 @@ Prefix 'user' is not defined. ");
             bounds = resizer.Bounds;
             mid = bounds.Center();
             // Drag the resizer right a few pixels.
-            Mouse.MouseDragDrop(mid, new Point(mid.X + 50, mid.Y), 1, MouseButtons.Left);
+            sim.Mouse.LeftButtonDragDrop(mid.X, mid.Y, mid.X + 50, mid.Y, 5, 1);
+            Sleep(100);
             newbounds = resizer.Bounds;
             Assert.IsTrue(newbounds.Center().X > mid.X);
         }
 
-        /// <summary>
-        /// Make the given rectangle visible by moving the given window out of the way.
-        /// </summary>
-        /// <param name="w"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        Point GetDropSpot(Window w, Rectangle target)
-        {
-            AutomationWrapper acc = w.AccessibleObject;
-            Rectangle source = acc.Bounds;
-            source.Inflate(20, 20); // add extra margin
-            if (source.Contains(target))
-            {
-                // Source window is completely occluding the target window, so we need to move it!
-                Point from = new Point(source.Left + (source.Width / 2), source.Top + 5);
-                int amount = target.Left - source.Left + 300;
-                Point end = new Point(from.X + amount, from.Y);
-                // Move window to the right.
-                Mouse.MouseDown(from, MouseButtons.Left);
-                Mouse.MouseDragDrop(from, end, 5, MouseButtons.Left);
-
-                source = acc.Bounds;
-            }
-            if (source.Left > target.Left)
-            {
-                // pick a spot along the left margin
-                return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
-            }
-            else if (source.Right < target.Right)
-            {
-                // pick a spot along the right margin
-                return new Point((target.Right + source.Right) / 2, (target.Top + target.Bottom) / 2);
-            }
-            else if (source.Top > target.Top)
-            {
-                // top margin
-                return new Point((target.Right + target.Left) / 2, (source.Top + target.Top) / 2);
-            }
-            else if (source.Bottom < target.Bottom)
-            {
-                // bottom margin
-                return new Point((target.Right + target.Left) / 2, (source.Bottom + target.Bottom) / 2);
-            }
-
-            // Then MOVE the window so it's not in the way!
-            w.SetWindowPosition(target.Right, source.Top);
-            Sleep(1000);
-            source = acc.Bounds;
-            return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
-        }
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestAccessibility()
@@ -2416,7 +2452,7 @@ Prefix 'user' is not defined. ");
 
             Trace.WriteLine("Test goto definition on schemaLocation");
             w.SendKeystrokes("^Ixsi{F12}");
-            Window popup = w.ExpectingPopup("XML Notepad - " + xsdFile);
+            Window popup = w.ExpectingPopup("emp.xsd");
             popup.DismissPopUp("%{F4}");
 
             Trace.WriteLine("Test namespace intellisense, make sure emp.xsd namespace is in the list.");
@@ -2500,6 +2536,13 @@ Prefix 'user' is not defined. ");
             Undo();
             Undo();
 
+            // code coverage on expand/collapse.
+            w.SendKeystrokes("^ICountry");
+            Sleep(500);
+            w.SendKeystrokes("{RIGHT}");
+            Sleep(500);
+            w.SendKeystrokes("{LEFT}");
+
             Sleep(1000);
             this.SaveAndCompare("out.xml", "emp.xml");
         }
@@ -2509,7 +2552,7 @@ Prefix 'user' is not defined. ");
         public void TestMouse()
         {
             Trace.WriteLine("TestMouse==========================================================");
-            string testFile = _testDir + "UnitTests\\emp.xml";
+            string testFile = _testDir + "UnitTests\\plants.xml";
             var w = this.LaunchNotepad(testFile);
 
             Sleep(1000);
@@ -2517,7 +2560,8 @@ Prefix 'user' is not defined. ");
             // Test mouse click on +/-.
             AutomationWrapper tree = this.TreeView;
             AutomationWrapper node = tree.FirstChild;
-            node = node.LastChild;
+            node = node.NextSibling;
+            node = node.FirstChild;
             node.Select();
 
             Rectangle bounds = node.Bounds;
@@ -2531,8 +2575,8 @@ Prefix 'user' is not defined. ");
             //}
 
             // minus tree indent and image size
-            Point plusminus = new Point(bounds.Left - 30 - 16, (bounds.Top + bounds.Bottom) / 2);
-            Mouse.MouseClick(plusminus, MouseButtons.Left);
+            sim.Mouse.MoveMouseTo(bounds.Left - 30 - 13, (bounds.Top + bounds.Bottom) / 2)
+                .LeftButtonClick();
 
             Sleep(500);
 
@@ -2543,10 +2587,11 @@ Prefix 'user' is not defined. ");
             //}
 
             //mouse down edit of node name
-            Mouse.MouseClick(bounds.Center(), MouseButtons.Left);
+            var center = bounds.Center();
+            sim.Mouse.MoveMouseTo(center.X, center.Y).LeftButtonClick();
             Sleep(1000); // give it enough time to kick into edit mode.
 
-            CheckOuterXml("Employee");
+            CheckOuterXml("PLANT");
             this.window.SendKeystrokes("{ESCAPE}");
 
             // code coverage on scrollbar interaction
@@ -2554,12 +2599,15 @@ Prefix 'user' is not defined. ");
             bounds = vscroll.Bounds;
 
             Point downArrow = new Point((bounds.Left + bounds.Right) / 2, bounds.Bottom - (bounds.Width / 2));
+            sim.Mouse.MoveMouseTo(downArrow.X, downArrow.Y);
             for (int i = 0; i < 10; i++)
             {
-                Mouse.MouseClick(downArrow, MouseButtons.Left);
+                sim.Mouse.LeftButtonClick();
                 Sleep(500);
             }
 
+            Rectangle finalBounds = node.Bounds;
+            Assert.IsTrue(finalBounds.Y < bounds.Y);
         }
 
         [TestMethod]
@@ -2744,9 +2792,6 @@ Prefix 'user' is not defined. ");
         [Timeout(TestMethodTimeout)]
         public void TestUnicode()
         {
-
-            ClearSchemaCache();
-
             Trace.WriteLine("TestUnicode==========================================================");
             string testFile = _testDir + "UnitTests\\unicode.xml";
             var w = this.LaunchNotepad(testFile);
@@ -2979,7 +3024,6 @@ Prefix 'user' is not defined. ");
         //==================================================================================
         private void SaveAndCompare(string outname, string compareWith)
         {
-
             string outFile = Save(outname);
 
             string expectedFile = _testDir + "UnitTests\\" + compareWith;
@@ -2996,7 +3040,7 @@ Prefix 'user' is not defined. ");
             // Has to be "Async" otherwise automation locks up because of the popup dialog.
             this.window.InvokeAsyncMenuItem("saveAsToolStripMenuItem");
             Window dialog = this.window.WaitForPopup();
-            OpenFileDialog od = new OpenFileDialog(dialog);
+            FileDialogWrapper od = new FileDialogWrapper(dialog);
             od.FileName = outFile;
             dialog.DismissPopUp("{ENTER}");
 
@@ -3091,7 +3135,7 @@ Prefix 'user' is not defined. ");
             {
                 if (Clipboard.ContainsText())
                 {
-                    return Clipboard.GetText();                    
+                    return Clipboard.GetText();
                 }
                 Sleep(250);
             }
@@ -3227,6 +3271,68 @@ Prefix 'user' is not defined. ");
                 }
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Make the given rectangle visible by moving the given window out of the way.
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        Point GetDropSpot(Window w, Rectangle target)
+        {
+            AutomationWrapper acc = w.AccessibleObject;
+            Rectangle source = acc.Bounds;
+            Rectangle inflated = source;
+            inflated.Inflate(20, 20); // add extra margin
+            if (inflated.Contains(target))
+            {
+                // Source window is completely occluding the target window, so we need to move it!
+                int x = source.Left + (source.Width / 2);
+                int y = source.Top + 10;
+                int amount = target.Left - source.Left + 300;
+                int step = 5;
+
+                sim.Mouse
+                   .MoveMouseTo(x, y)
+                   .Sleep(100)
+                   .LeftButtonDown();
+
+                for (int i = x; i < x + amount; i += step)
+                {
+                    sim.Mouse.MoveMouseTo(i, y).Sleep(1);
+                }
+
+                sim.Mouse.LeftButtonUp();
+
+                // get new moved bounds.
+                source = acc.Bounds;
+            }
+            if (source.Left > target.Left)
+            {
+                // pick a spot along the left margin
+                return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
+            }
+            else if (source.Right < target.Right)
+            {
+                // pick a spot along the right margin
+                return new Point((target.Right + source.Right) / 2, (target.Top + target.Bottom) / 2);
+            }
+            else if (source.Top > target.Top)
+            {
+                // top margin
+                return new Point((target.Right + target.Left) / 2, (source.Top + target.Top) / 2);
+            }
+            else if (source.Bottom < target.Bottom)
+            {
+                // bottom margin
+                return new Point((target.Right + target.Left) / 2, (source.Bottom + target.Bottom) / 2);
+            }
+
+            // Then MOVE the window so it's not in the way!
+            w.SetWindowPosition(target.Right, source.Top);
+            source = acc.Bounds;
+            return new Point((target.Left + source.Left) / 2, (target.Top + target.Bottom) / 2);
         }
 
     }

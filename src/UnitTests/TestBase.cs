@@ -1,20 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Text;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Threading;
-using System.Xml;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+using WindowsInput;
 
 namespace UnitTests
 {
     public class TestBase
     {
+        protected InputSimulator sim = new InputSimulator();
+
         public class NodeInfo
         {
             private readonly XmlNodeType _nt;
@@ -99,7 +98,7 @@ namespace UnitTests
             {
                 throw new Exception(string.Format("Failed to launch '{0}', exit code {1}", exeFileName, p.ExitCode.ToString()));
             }
-            Window w = new Window(p, null, rootElementName);
+            Window w = new Window(p, sim, null, rootElementName);
             w.TestBase = this;
             return w;
         }
@@ -254,7 +253,7 @@ namespace UnitTests
 
             if (ie != null)
             {
-                Window w = new Window(p, "IEFrame", null);
+                Window w = new Window(p, sim, "IEFrame", null);
                 w.TestBase = this;
                 return w;
             }

@@ -42,34 +42,34 @@ namespace XmlNotepad {
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.buttonReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            //
+            // 
             // buttonOK
-            //
+            // 
             resources.ApplyResources(this.buttonOK, "buttonOK");
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Click += new System.EventHandler(this.OnButtonOKClick);
-            //
+            // 
             // buttonCancel
-            //
+            // 
             resources.ApplyResources(this.buttonCancel, "buttonCancel");
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Name = "buttonCancel";
-            //
+            // 
             // propertyGrid1
-            //
+            // 
             resources.ApplyResources(this.propertyGrid1, "propertyGrid1");
             this.propertyGrid1.Name = "propertyGrid1";
-            //
+            // 
             // buttonReset
-            //
+            // 
             resources.ApplyResources(this.buttonReset, "buttonReset");
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.UseVisualStyleBackColor = true;
             this.buttonReset.Click += new System.EventHandler(this.OnButtonResetClick);
-            //
+            // 
             // FormOptions
-            //
+            // 
             this.AcceptButton = this.buttonOK;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;

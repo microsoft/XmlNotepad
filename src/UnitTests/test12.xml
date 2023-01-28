@@ -1,0 +1,10 @@
+﻿<test>
+  <items>
+    <item>Apple</item>
+    <item>Banana</item>
+    <item>Grape</item>
+    <item>Peach</item>
+    <item>This contains the 'item' text also</item>
+    <item>Watermelon</item>
+  </items>
+</test>

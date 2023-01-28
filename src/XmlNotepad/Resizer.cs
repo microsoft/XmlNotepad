@@ -7,6 +7,8 @@ using System.Drawing.Imaging;
 using System.Data;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace XmlNotepad
 {
@@ -22,8 +24,12 @@ namespace XmlNotepad
         private int _width = 5;
         private bool _down;
         private Rectangle _start;
-        private Border3DStyle _style = Border3DStyle.Raised;
+        private Border3DStyle _style = Border3DStyle.Flat;
         private HatchControl _feedback;
+
+        public PaneResizer()
+        {
+        }
 
         public int PaneWidth
         {
@@ -72,6 +78,11 @@ namespace XmlNotepad
         }
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (this._down)
+            {
+                // unit test can send another down with no matching up, so we ignore those.
+                return;
+            }
             if (this._feedback == null)
             {
                 this._feedback = new HatchControl();
@@ -89,17 +100,21 @@ namespace XmlNotepad
             this._feedback.Bounds = this.Bounds;
             this._pos = new Point(e.X, e.Y);
             this._down = true;
+            // Debug.WriteLine("Down {0},{1}", e.X, e.Y);
         }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            // Debug.WriteLine("Up {0},{1}", e.X, e.Y);
             this._down = false;
             HandleMove(e.X, e.Y);
             this.Parent.Controls.Remove(this._feedback);
             this.Cursor = Cursors.Default;
             this._feedback = null;
         }
+
         void HandleMove(int x, int y)
-        {
+        {            
             if (this.Vertical)
             {
                 x = this.Left + (x - this._pos.X);
@@ -153,9 +168,10 @@ namespace XmlNotepad
             }
         }
         protected override void OnMouseMove(MouseEventArgs e)
-        {
+        {            
             if (this._down)
             {
+                // Debug.WriteLine("Move {0},{1}", e.X, e.Y);
                 HandleMove(e.X, e.Y);
             }
         }

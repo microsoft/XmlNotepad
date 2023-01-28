@@ -486,6 +486,13 @@ namespace XmlNotepad
                 sibling2 = match;
             }
 
+            if (sibling1 == sibling2)
+            {
+                // then selected is a direct child of match, therefore match does NOT
+                // come after its parent, by definition
+                return false;
+            }
+
             for (XmlNode s1 = sibling1; s1 != null; s1 = s1.NextSibling)
             {
                 if (s1 == sibling2)

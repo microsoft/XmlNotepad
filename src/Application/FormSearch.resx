@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -133,7 +133,7 @@
     <value>0, 0, 0, 0</value>
   </data>
   <data name="checkBoxMatchCase.Size" type="System.Drawing.Size, System.Drawing">
-    <value>82, 17</value>
+    <value>95, 20</value>
   </data>
   <data name="checkBoxMatchCase.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -160,13 +160,13 @@
     <value>True</value>
   </data>
   <data name="checkBoxWholeWord.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 17</value>
+    <value>0, 20</value>
   </data>
   <data name="checkBoxWholeWord.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="checkBoxWholeWord.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 17</value>
+    <value>132, 20</value>
   </data>
   <data name="checkBoxWholeWord.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -193,13 +193,13 @@
     <value>True</value>
   </data>
   <data name="checkBoxRegex.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 34</value>
+    <value>0, 40</value>
   </data>
   <data name="checkBoxRegex.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="checkBoxRegex.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 17</value>
+    <value>172, 20</value>
   </data>
   <data name="checkBoxRegex.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -226,13 +226,13 @@
     <value>True</value>
   </data>
   <data name="checkBoxXPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 51</value>
+    <value>0, 60</value>
   </data>
   <data name="checkBoxXPath.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="checkBoxXPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 17</value>
+    <value>89, 20</value>
   </data>
   <data name="checkBoxXPath.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -265,13 +265,13 @@
     <value>Fill</value>
   </data>
   <data name="dataGridViewNamespaces.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 180</value>
+    <value>3, 204</value>
   </data>
   <data name="dataGridViewNamespaces.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>340, 92</value>
   </data>
   <data name="dataGridViewNamespaces.Size" type="System.Drawing.Size, System.Drawing">
-    <value>483, 147</value>
+    <value>483, 123</value>
   </data>
   <data name="dataGridViewNamespaces.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
@@ -307,7 +307,7 @@
     <value>16, 42</value>
   </data>
   <data name="radioButtonDown.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 17</value>
+    <value>59, 20</value>
   </data>
   <data name="radioButtonDown.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
@@ -337,7 +337,7 @@
     <value>16, 19</value>
   </data>
   <data name="radioButtonUp.Size" type="System.Drawing.Size, System.Drawing">
-    <value>39, 17</value>
+    <value>43, 20</value>
   </data>
   <data name="radioButtonUp.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -358,7 +358,7 @@
     <value>1</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>402, 91</value>
+    <value>402, 106</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>78, 77</value>
@@ -427,7 +427,7 @@
     <value>6, 16</value>
   </data>
   <data name="comboBoxFilter.Size" type="System.Drawing.Size, System.Drawing">
-    <value>146, 21</value>
+    <value>146, 24</value>
   </data>
   <data name="comboBoxFilter.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -511,7 +511,7 @@
     <value>4</value>
   </data>
   <data name="tableLayoutPanel6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 68</value>
+    <value>172, 80</value>
   </data>
   <data name="tableLayoutPanel6.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -535,13 +535,13 @@
     <value>Off</value>
   </data>
   <data name="tableLayoutPanel5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 91</value>
+    <value>3, 106</value>
   </data>
   <data name="tableLayoutPanel5.RowCount" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="tableLayoutPanel5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 74</value>
+    <value>393, 86</value>
   </data>
   <data name="tableLayoutPanel5.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -580,10 +580,10 @@
     <value>Top, Left, Right</value>
   </data>
   <data name="comboBoxReplace.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 16</value>
+    <value>3, 19</value>
   </data>
   <data name="comboBoxReplace.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 21</value>
+    <value>393, 24</value>
   </data>
   <data name="comboBoxReplace.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -607,7 +607,7 @@
     <value>3, 0</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 13</value>
+    <value>87, 16</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -628,7 +628,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 40</value>
+    <value>0, 43</value>
   </data>
   <data name="tableLayoutPanel4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
@@ -637,7 +637,7 @@
     <value>2</value>
   </data>
   <data name="tableLayoutPanel4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 40</value>
+    <value>399, 46</value>
   </data>
   <data name="tableLayoutPanel4.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -676,10 +676,10 @@
     <value>Top, Left, Right</value>
   </data>
   <data name="comboBoxFind.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 16</value>
+    <value>3, 19</value>
   </data>
   <data name="comboBoxFind.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 21</value>
+    <value>393, 24</value>
   </data>
   <data name="comboBoxFind.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -699,11 +699,14 @@
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 9.75pt</value>
+  </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 0</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 13</value>
+    <value>66, 16</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -733,7 +736,7 @@
     <value>2</value>
   </data>
   <data name="tableLayoutPanel3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 40</value>
+    <value>399, 43</value>
   </data>
   <data name="tableLayoutPanel3.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -777,8 +780,11 @@
   <data name="buttonReplace.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
+  <data name="buttonReplace.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>80, 30</value>
+  </data>
   <data name="buttonReplace.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 24</value>
+    <value>80, 30</value>
   </data>
   <data name="buttonReplace.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -805,13 +811,16 @@
     <value>Top, Right</value>
   </data>
   <data name="buttonReplaceAll.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 24</value>
+    <value>0, 30</value>
   </data>
   <data name="buttonReplaceAll.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
+  <data name="buttonReplaceAll.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>80, 30</value>
+  </data>
   <data name="buttonReplaceAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 24</value>
+    <value>80, 30</value>
   </data>
   <data name="buttonReplaceAll.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -832,7 +841,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>411, 40</value>
+    <value>403, 43</value>
   </data>
   <data name="tableLayoutPanel2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
@@ -841,7 +850,7 @@
     <value>2</value>
   </data>
   <data name="tableLayoutPanel2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 48</value>
+    <value>80, 60</value>
   </data>
   <data name="tableLayoutPanel2.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -868,13 +877,16 @@
     <value>Bottom, Right</value>
   </data>
   <data name="buttonFindNext.Location" type="System.Drawing.Point, System.Drawing">
-    <value>411, 16</value>
+    <value>403, 13</value>
   </data>
   <data name="buttonFindNext.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
+  <data name="buttonFindNext.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>80, 30</value>
+  </data>
   <data name="buttonFindNext.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 24</value>
+    <value>80, 30</value>
   </data>
   <data name="buttonFindNext.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -901,7 +913,7 @@
     <value>3</value>
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>483, 171</value>
+    <value>483, 195</value>
   </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -977,6 +989,9 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>489, 330</value>
+  </data>
+  <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 9.75pt</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value> Find</value>

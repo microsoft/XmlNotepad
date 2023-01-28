@@ -4,7 +4,6 @@ using Microsoft.Xml;
 using Microsoft.XmlDiffPatch;
 using Sgml;
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -22,7 +21,7 @@ namespace XmlNotepad
     public partial class FormMain : Form, ISite
     {
         private readonly UndoManager _undoManager;
-        private Settings _settings;
+        private Settings _settings = new Settings();
         private SettingsLoader _loader;
         private readonly DataFormats.Format _urlFormat;
         private readonly RecentFiles _recentFiles;
@@ -50,7 +49,7 @@ namespace XmlNotepad
         private XmlCache _model;
         private bool _testing; // we are running a test.
 
-        readonly private string _undoLabel; 
+        readonly private string _undoLabel;
         readonly private string _redoLabel;
 
         public FormMain(bool testing)
@@ -70,8 +69,8 @@ namespace XmlNotepad
             {
                 DispatchAction(action);
             });
-
             SetDefaultSettings();
+
             this._settings.Changed += new SettingsEventHandler(OnSettingsChanged);
 
             this._model = (XmlCache)GetService(typeof(XmlCache));
@@ -128,7 +127,7 @@ namespace XmlNotepad
 
             // Event wiring
             this.xmlTreeView1.SetSite(this);
-            this.xmlTreeView1.SelectionChanged += new EventHandler(treeView1_SelectionChanged);
+            this.xmlTreeView1.SelectionChanged += new EventHandler<NodeSelectedEventArgs>(treeView1_SelectionChanged);
             this.xmlTreeView1.ClipboardChanged += new EventHandler(treeView1_ClipboardChanged);
             this.xmlTreeView1.NodeChanged += new EventHandler<NodeChangeEventArgs>(treeView1_NodeChanged);
             this.xmlTreeView1.KeyDown += new KeyEventHandler(treeView1_KeyDown);
@@ -243,82 +242,11 @@ namespace XmlNotepad
 
         protected virtual void SetDefaultSettings()
         {
-            // populate default settings and provide type info.
-            this._settings["Font"] = "deleted";
-            this._settings["FontFamily"] = "Courier New";
-            this._settings["FontSize"] = 10.0;
-            this._settings["TreeIndent"] = 12;
-            this._settings["FontStyle"] = "Normal";
-            this._settings["FontWeight"] = "Normal";
-            this._settings["Theme"] = ColorTheme.Light;
-            this._settings["LightColors"] = ThemeColors.GetDefaultColors(ColorTheme.Light);
-            this._settings["DarkColors"] = ThemeColors.GetDefaultColors(ColorTheme.Dark);
-            this._settings["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
-            this._settings["WindowBounds"] = new Rectangle(0, 0, 0, 0);
-            this._settings["TaskListSize"] = 0;
-            this._settings["TreeViewSize"] = 0;
-            this._settings["RecentFiles"] = new Uri[0];
-            this._settings["RecentXsltFiles"] = new Uri[0];
-            this._settings["RecentFindStrings"] = new string[0];
-            this._settings["RecentReplaceStrings"] = new string[0];
-            this._settings["SearchWindowLocation"] = new Point(0, 0);
-            this._settings["SearchSize"] = new Size(0, 0);
-            this._settings["DynamicHelpVisible"] = false;
-            this._settings["FindMode"] = false;
-            this._settings["SearchXPath"] = false;
-            this._settings["SearchWholeWord"] = false;
-            this._settings["SearchRegex"] = false;
-            this._settings["SearchMatchCase"] = false;
-
-            this._settings["LastUpdateCheck"] = DateTime.Now;
-            this._settings["UpdateFrequency"] = TimeSpan.FromDays(20);
-            this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
-            this._settings["UpdateEnabled"] = true;
-            this._settings["DisableUpdateUI"] = false;
-
-            this._settings["DisableDefaultXslt"] = false;
-            this._settings["AutoFormatOnSave"] = true;
-            this._settings["IndentLevel"] = 2;
-            this._settings["IndentChar"] = IndentChar.Space;
-            this._settings["NewLineChars"] = Settings.EscapeNewLines("\r\n");
-            this._settings["Language"] = "";
-            this._settings["NoByteOrderMark"] = false;
-
-            this._settings["AppRegistered"] = false;
-            this._settings["MaximumLineLength"] = 10000;
-            this._settings["MaximumValueLength"] = (int)short.MaxValue;
-            this._settings["AutoFormatLongLines"] = false;
-            this._settings["IgnoreDTD"] = false;
-
-            // XSLT options
-            this._settings["BrowserVersion"] = "";
-            this._settings["EnableXsltScripts"] = true;
-            this._settings["WebView2Exception"] = "";
-            this._settings["WebView2PromptInstall"] = true;
-
-            // XmlDiff options
-            this._settings["XmlDiffIgnoreChildOrder"] = false;
-            this._settings["XmlDiffIgnoreComments"] = false;
-            this._settings["XmlDiffIgnorePI"] = false;
-            this._settings["XmlDiffIgnoreWhitespace"] = false;
-            this._settings["XmlDiffIgnoreNamespaces"] = false;
-            this._settings["XmlDiffIgnorePrefixes"] = false;
-            this._settings["XmlDiffIgnoreXmlDecl"] = false;
-            this._settings["XmlDiffIgnoreDtd"] = false;
-
-            // analytics question has been answered...
-            this.Settings["AllowAnalytics"] = false;
-            this.Settings["AnalyticsClientId"] = "";
-
-            this.Settings["SchemaCache"] = this._schemaCache = new SchemaCache(this);
-
-            // default text editor
-            string sysdir = Environment.SystemDirectory;
-            this.Settings["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
+            this._settings.SetDefaults();
+            this._settings["SchemaCache"] = this._schemaCache = new SchemaCache(this);
         }
 
-
-        private bool SettingValueMatches(object existing, object newValue)
+        public static bool SettingValueMatches(object existing, object newValue)
         {
             // just implement additional WinForms types not already implemented in the Settings class.
             if (existing is Font f1)
@@ -526,8 +454,8 @@ namespace XmlNotepad
             }
         }
 
-        void ShowUpdateButton() 
-        { 
+        void ShowUpdateButton()
+        {
             this.toolStripMenuItemUpdate.Visible = true;
             this._delayedActions.StartDelayedAction(HideUpdateButtonAction, () =>
             {
@@ -552,7 +480,7 @@ namespace XmlNotepad
             else
             {
                 bool updateAvailable = UpdateRequired(status.Latest);
-                
+
                 this.toolStripMenuItemUpdate.Tag = updateAvailable;
                 if (updateAvailable)
                 {
@@ -569,7 +497,7 @@ namespace XmlNotepad
                     this.menuStrip1.ShowItemToolTips = true;
                 }
             }
-            
+
             return label;
         }
 
@@ -864,7 +792,7 @@ namespace XmlNotepad
         }
 
         private void WebView2PromptInstall()
-        { 
+        {
             // prompt and download the setup program so user can easily run it.
             var rc = MessageBox.Show(this.Owner, SR.WebView2InstallReady, SR.WebView2InstallTitle, MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
             if (rc == DialogResult.OK)
@@ -1324,7 +1252,8 @@ namespace XmlNotepad
                 try
                 {
                     fname = System.IO.Path.GetFileName(_model.FileName);
-                } catch { }
+                }
+                catch { }
             }
 
             string caption = string.IsNullOrEmpty(fname) ? this.Caption : fname;
@@ -1392,10 +1321,10 @@ namespace XmlNotepad
             try
             {
                 this._loading = true;
-                
+
                 // allow user to have a local settings file (xcopy deployable).
                 _loader.LoadSettings(_settings, this._testing);
-            
+
                 // convert old format to the new one
                 object oldFont = this._settings["Font"];
                 if (oldFont is string s && s != "deleted")
@@ -1410,7 +1339,7 @@ namespace XmlNotepad
                         this._settings.Remove("Font");
                     }
                     catch { }
-                } 
+                }
                 else
                 {
                     // convert serialized settings to a winforms Font object.
@@ -1425,7 +1354,7 @@ namespace XmlNotepad
                     lightColors.EditorBackground = Color.FromArgb(255, 250, 205); // lemon chiffon.
                 }
                 _settings.AddDefaultColors("DarkColors", ColorTheme.Dark);
-                        
+
                 string updates = (string)this._settings["UpdateLocation"];
                 if (string.IsNullOrEmpty(updates) ||
                     updates.Contains("download.microsoft.com") ||
@@ -1453,8 +1382,8 @@ namespace XmlNotepad
             this.xsltViewer.GetXsltControl().WebBrowserException += OnWebBrowserException;
         }
 
-        private void InitializeHelpViewer() 
-        { 
+        private void InitializeHelpViewer()
+        {
             this._dynamicHelpViewer.SetSite(this);
             if (this._settings.GetBoolean("DynamicHelpVisible", false))
             {
@@ -1545,7 +1474,7 @@ namespace XmlNotepad
         #endregion
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
-        {   
+        {
             if (e.ModelChangeType == ModelChangeType.Reloaded)
             {
                 this._undoManager.Clear();
@@ -1599,8 +1528,10 @@ namespace XmlNotepad
                         try
                         {
                             _loader.MoveSettings(this._settings);
-                        } catch (Exception ex) { 
-                            MessageBox.Show("Error moving settings: " + ex.Message + "\r\nSettings were not moved.", "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error moving settings: " + ex.Message + "\r\nSettings were not moved.", "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     break;
@@ -1676,10 +1607,26 @@ namespace XmlNotepad
             Open(fileName, true);
         }
 
-        private void treeView1_SelectionChanged(object sender, EventArgs e)
+        private void treeView1_SelectionChanged(object sender, NodeSelectedEventArgs e)
         {
             UpdateMenuState();
             DisplayHelp();
+            if (e != null)
+            {
+                DisplayLineInfo(e.Node);
+            }
+        }
+
+        private void DisplayLineInfo(XmlTreeNode node)
+        {
+            if (node != null && node.Node != null && _model != null)
+            {
+                LineInfo info = _model.GetLineInfo(node.Node);
+                if (info != null)
+                {
+                    ShowStatus(string.Format("Line {0}, Column {1}", info.LineNumber, info.LinePosition));
+                }
+            }
         }
 
         private void DisplayHelp()
@@ -2946,6 +2893,94 @@ namespace XmlNotepad
         {
             GC.Collect();
         }
+
+        private void goToLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this._model != null)
+            {
+                var form = new FormGotoLine();
+                form.MaxLineNumber = this._model.GetLastLine();
+                if (this.xmlTreeView1.SelectedNode != null)
+                {
+                    var xmlNode = this.xmlTreeView1.SelectedNode.Node;
+                    var info = this._model.GetLineInfo(xmlNode);
+                    if (info != null)
+                    {
+                        form.LineNumber = info.LineNumber;
+                    }
+                }
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Now find this line number in the line info cache.
+                    var node = this._model.FindNodeAt(form.LineNumber, form.Column);
+                    if (node != null)
+                    {
+                        XmlTreeNode tn = this.xmlTreeView1.FindNode(node);
+                        if (tn != null)
+                        {
+                            this.xmlTreeView1.SelectedNode = tn;
+                            this.SelectTreeView();
+                        }
+                    }
+                }
+            }
+        }
+
+        #region Debug Mouse Position for Testing
+        TextBox xPos;
+        TextBox yPos;
+        TextBox status;
+
+        internal void ShowMousePosition()
+        {
+            this.Controls.Clear();
+            TableLayoutPanel panel = new TableLayoutPanel();
+            panel.BackColor = Color.Turquoise;
+            panel.MouseMove += Panel_MouseMove;
+            panel.Dock = DockStyle.Fill;
+            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
+            panel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            panel.ColumnStyles.Add(new ColumnStyle() { Width = 100, SizeType = SizeType.Percent });
+            panel.ColumnStyles.Add(new ColumnStyle() { Width = 100, SizeType = SizeType.Absolute });
+            panel.ColumnStyles.Add(new ColumnStyle() { Width = 100, SizeType = SizeType.Absolute });
+
+            xPos = new TextBox();
+            xPos.Width = 100;
+            xPos.AccessibleName = "XPosition";
+            xPos.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            xPos.Margin = new Padding(10);
+            panel.Controls.Add(xPos);
+
+            yPos = new TextBox();
+            yPos.Width = 100;
+            yPos.AccessibleName = "YPosition";
+            yPos.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            yPos.Margin = new Padding(10);
+            panel.Controls.Add(yPos);
+
+            status = new TextBox();
+            status.Width = 100;
+            status.AccessibleName = "Status";
+            status.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+            status.Margin = new Padding(10);
+            panel.Controls.Add(status);
+
+            panel.SetRow(xPos, 0);
+            panel.SetRow(yPos, 0);
+            panel.SetRow(status, 1);
+            panel.SetColumn(xPos, 1);
+            panel.SetColumn(yPos, 2);
+            panel.SetColumn(status, 0);
+
+            this.Controls.Add(panel);
+        }
+
+        private void Panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            xPos.Text = e.X.ToString();
+            yPos.Text = e.Y.ToString();
+        }
+        #endregion
     }
 
 }

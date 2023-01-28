@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.XPath;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.XPath;
 
 namespace XmlNotepad
 {
@@ -262,7 +262,17 @@ namespace XmlNotepad
 
         public LineInfo GetLineInfo(XmlNode node)
         {
-            return _loader.GetLineInfo(node);
+            return _loader?.GetLineInfo(node);
+        }
+
+        public XmlNode FindNodeAt(int line, int column)
+        {
+            return _loader?.FindNodeAt(line, column);
+        }
+
+        public int GetLastLine()
+        {
+            return _loader == null ? 0 : _loader.GetLastLine();
         }
 
         void OnValidationEvent(object sender, ValidationEventArgs e)
@@ -542,7 +552,7 @@ namespace XmlNotepad
 
                     FireFileChanged();
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 _retries--;
@@ -607,8 +617,9 @@ namespace XmlNotepad
                         pending.Add(change);
                     }
                 }
-            } catch
-            {}
+            }
+            catch
+            { }
         }
 
         private void OnRenamed(string oldName, string newName)

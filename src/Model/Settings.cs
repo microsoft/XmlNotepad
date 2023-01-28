@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -73,7 +72,7 @@ namespace XmlNotepad
                     Background = Color.FromArgb(0x1e, 0x1e, 0x1e),
                     ContainerBackground = Color.FromArgb(0x25, 0x25, 0x26),
                     EditorBackground = Color.FromArgb(24, 24, 44),
-                    Markup = Color.FromArgb(100,100,100),
+                    Markup = Color.FromArgb(100, 100, 100),
                 };
             }
         }
@@ -213,7 +212,7 @@ namespace XmlNotepad
     {
         Portable,
         Local,
-        Roaming        
+        Roaming
     }
 
     /// <summary>
@@ -263,7 +262,7 @@ namespace XmlNotepad
         public Settings()
         {
             _instance = this;
-        }        
+        }
 
         public ValueMatchHandler Comparer
         {
@@ -301,9 +300,10 @@ namespace XmlNotepad
         /// <summary>
         /// Object used to raise the change events on the right thread.
         /// </summary>
-        public DelayedActions DelayedActions { 
-            get => _delayedActions; 
-            set => _delayedActions = value; 
+        public DelayedActions DelayedActions
+        {
+            get => _delayedActions;
+            set => _delayedActions = value;
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace XmlNotepad
                     w.WriteStartElement("Settings");
                     // create save stability.
                     List<string> keys = new List<string>();
-                    foreach(string key in _map.Keys)
+                    foreach (string key in _map.Keys)
                     {
                         keys.Add(key);
                     }
@@ -662,7 +662,7 @@ namespace XmlNotepad
                 // make sure file is not still locked by the writer.
                 string text = File.ReadAllText(this._filename);
                 OnChanged("File");
-            } 
+            }
             catch (Exception)
             {
                 if (retries > 0)
@@ -753,7 +753,7 @@ namespace XmlNotepad
             else if (existing is IXmlSerializable)
             {
                 // then object comparison is enough.
-                return existing != newValue;
+                return existing == newValue;
             }
             else if (existing is int i1)
             {
@@ -852,6 +852,81 @@ namespace XmlNotepad
             return nl.Replace("\\r", "\r").Replace("\\n", "\n");
         }
 
+        public void SetDefaults()
+        {
+            // populate default settings and provide type info.
+            this["Font"] = "deleted";
+            this["FontFamily"] = "Courier New";
+            this["FontSize"] = 10.0;
+            this["TreeIndent"] = 12;
+            this["FontStyle"] = "Normal";
+            this["FontWeight"] = "Normal";
+            this["Theme"] = ColorTheme.Light;
+            this["LightColors"] = ThemeColors.GetDefaultColors(ColorTheme.Light);
+            this["DarkColors"] = ThemeColors.GetDefaultColors(ColorTheme.Dark);
+            this["FileName"] = new Uri("/", UriKind.RelativeOrAbsolute);
+            this["WindowBounds"] = new Rectangle(0, 0, 0, 0);
+            this["TaskListSize"] = 0;
+            this["TreeViewSize"] = 0;
+            this["RecentFiles"] = new Uri[0];
+            this["RecentXsltFiles"] = new Uri[0];
+            this["RecentFindStrings"] = new string[0];
+            this["RecentReplaceStrings"] = new string[0];
+            this["SearchWindowLocation"] = new Point(0, 0);
+            this["SearchSize"] = new Size(0, 0);
+            this["DynamicHelpVisible"] = false;
+            this["FindMode"] = false;
+            this["SearchXPath"] = false;
+            this["SearchWholeWord"] = false;
+            this["SearchRegex"] = false;
+            this["SearchMatchCase"] = false;
+
+            this["LastUpdateCheck"] = DateTime.Now;
+            this["UpdateFrequency"] = TimeSpan.FromDays(20);
+            this["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
+            this["UpdateEnabled"] = true;
+            this["DisableUpdateUI"] = false;
+
+            this["DisableDefaultXslt"] = false;
+            this["AutoFormatOnSave"] = true;
+            this["IndentLevel"] = 2;
+            this["IndentChar"] = IndentChar.Space;
+            this["NewLineChars"] = Settings.EscapeNewLines("\r\n");
+            this["Language"] = "";
+            this["NoByteOrderMark"] = false;
+
+            this["AppRegistered"] = false;
+            this["MaximumLineLength"] = 10000;
+            this["MaximumValueLength"] = (int)short.MaxValue;
+            this["AutoFormatLongLines"] = false;
+            this["IgnoreDTD"] = false;
+
+            // XSLT options
+            this["BrowserVersion"] = "";
+            this["EnableXsltScripts"] = true;
+            this["WebView2Exception"] = "";
+            this["WebView2PromptInstall"] = true;
+
+            // XmlDiff options
+            this["XmlDiffIgnoreChildOrder"] = false;
+            this["XmlDiffIgnoreComments"] = false;
+            this["XmlDiffIgnorePI"] = false;
+            this["XmlDiffIgnoreWhitespace"] = false;
+            this["XmlDiffIgnoreNamespaces"] = false;
+            this["XmlDiffIgnorePrefixes"] = false;
+            this["XmlDiffIgnoreXmlDecl"] = false;
+            this["XmlDiffIgnoreDtd"] = false;
+
+            // analytics question has been answered...
+            this["AllowAnalytics"] = false;
+            this["AnalyticsClientId"] = "";
+
+            // default text editor
+            string sysdir = Environment.SystemDirectory;
+            this["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
+            this["MouseCalibration"] = new Point[0];
+            this["PrimaryScreenSize"] = new Size();
+        }
     }
 
     /// <summary>
