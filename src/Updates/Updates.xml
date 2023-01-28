@@ -9,6 +9,13 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.0">
+    <feature>Add Ctrl+G to goto node at the given line/column.</feature>
+    <bug>Fix Strange behaviour of "find" command and add unit test (bug 232)</bug>
+    <bug>Rename CDATA nodes to just '#cdata".</bug>
+    <bug>Change resizer to flat 3D style.</bug>
+    <bug>Switching to WindowsInput library for unit testing</bug>
+  </version>
   <version number="2.8.0.66">
     <feature>Add line/col info of selected node to the status bar, github issue#246. </feature>
   </version>
