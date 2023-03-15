@@ -28,18 +28,25 @@ namespace XmlNotepad
 
         private async void SendMeasurement(string path, string title)
         {
-            var a = new Analytics()
+            try
             {
-                ApiSecret = ApiKey,
-                MeasurementId = TrackingId,
-                ClientId = _clientId
-            };
-            a.Events.Add(new PageMeasurement()
+                var a = new Analytics()
+                {
+                    ApiSecret = ApiKey,
+                    MeasurementId = TrackingId,
+                    ClientId = _clientId
+                };
+                a.Events.Add(new PageMeasurement()
+                {
+                    Path = "https://" + HostName + path,
+                    Title = title
+                });
+                await HttpProtocol.PostMeasurements(a);
+            }
+            catch
             {
-                Path = "https://" + HostName + path,
-                Title = title
-            });
-            await HttpProtocol.PostMeasurements(a);
+                // Ignore.
+            }
         }
 
         public void RecordAppLaunched()
