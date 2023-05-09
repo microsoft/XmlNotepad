@@ -2,14 +2,14 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.9.0.0</ApplicationVersion>
+    <ApplicationVersion>2.9.0.1</ApplicationVersion>
     <Version>$(ApplicationVersion)</Version>
     <Authors>Chris Lovett</Authors>
     <Product>XmlNotepad</Product>
     <RepositoryUrl>https://github.com/microsoft/xmlnotepad</RepositoryUrl>
     <PackageProjectUrl>https://microsoft.github.io/XmlNotepad/</PackageProjectUrl>
     <Company>Microsoft Corporation</Company>
-    <Copyright>Copyright © 2022 Microsoft Corporation</Copyright>
+    <Copyright>Copyright © 2023 Microsoft Corporation</Copyright>
     <WebView2Version>1.0.1462.37</WebView2Version>
   </PropertyGroup>
 </Project>

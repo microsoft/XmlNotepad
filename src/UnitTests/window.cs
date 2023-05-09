@@ -78,9 +78,9 @@ namespace UnitTests
 
         void OnExited(object sender, EventArgs e)
         {
-            if (!_disposed)
+            if (!_disposed && !_closed)
             {
-                throw new Exception("Process exited.");
+                throw new Exception("Unexpected process exit.");
             }
         }
 

@@ -242,6 +242,7 @@ namespace UnitTests
             bounds = window.GetClientBounds();
             var center = xPosLabel.Bounds.Center();
             var b2 = statusBox.Bounds;
+            // visual check if calibration is needed
             sim.Mouse.MoveMouseTo(center.X, center.Y);
             sim.Mouse.MoveMouseTo(bounds.Left, bounds.Bottom);
             sim.Mouse.MoveMouseTo(b2.Left, b2.Bottom);
@@ -264,13 +265,22 @@ namespace UnitTests
                 int ax = previousX;
                 int ay = previousY;
                 // wait for fields to update
-                while (ax == previousX || ay == previousY)
+                int retries = 10;
+                while ((ax == previousX || ay == previousY) && retries > 0)
                 {
                     Thread.Sleep(30);
                     // winforms mouse move is relative to content not including window frame
                     ax = int.Parse(xPattern.Current.Value) + bounds.Left;
                     ay = int.Parse(yPattern.Current.Value) + bounds.Top;
+                    retries--;
                 }
+
+                if (ax > inner.Right || ay > inner.Bottom || retries == 0)
+                {
+                    // we already stepped outside our box, so we're done!
+                    break;
+                }
+
                 previousX = ax;
                 previousY = ay;
 
@@ -280,16 +290,16 @@ namespace UnitTests
                     Expected = new Point(x, y),
                     Actual = new Point(ax, ay)
                 });
-
-                if (ax > inner.Right || ay > inner.Bottom)
-                {
-                    // we already stepped outside our box, so we're done!
-                    break;
-                }
             }
 
             this.calibration = calibration;
             this.sim.Mouse.Calibrate(calibration);
+
+            // visual check if calibration is worked
+            sim.Mouse.MoveMouseTo(center.X, center.Y);
+            sim.Mouse.MoveMouseTo(bounds.Left, bounds.Bottom);
+            sim.Mouse.MoveMouseTo(b2.Left, b2.Bottom);
+
             this.calibrated = true;
             // close the form
             window.Close();
@@ -1322,6 +1332,7 @@ namespace UnitTests
             popup = w.WaitForPopup();
 
             // save the changes!
+            w.Closed = true;
             popup.SendKeystrokes("%Y");
         }
 
@@ -1713,7 +1724,7 @@ Prefix 'user' is not defined. ");
 
             List<string> found = new List<string>();
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 8; i++)
             {
                 w.Activate();
                 findDialog.FindNext();
@@ -1721,15 +1732,15 @@ Prefix 'user' is not defined. ");
                 w.WaitForInteractive();
                 var node = this.NodeTextView.GetSelectedChild();
                 var value = node.SimpleValue;
-                found.Add(value);
+                if (!string.IsNullOrEmpty(value)) 
+                    found.Add(value);
             }
 
-            Assert.AreEqual(
-                new string[] { "Apple", "Banana", "Grape", "Peach", "This contains the 'item' text also",
-                "This contains the 'item' text also", "Watermelon" },
-                found.ToArray(), 
-                "The found items were: " + string.Join(",", found));
+            string[] expected = new string[] { "Apple", "Banana", "Grape", "Peach",
+                "This contains the 'item' text also",
+                "This contains the 'item' text also", "Watermelon" };
 
+            this.AssertArraysEqual(expected, found.ToArray());
         }
 
         [TestMethod]

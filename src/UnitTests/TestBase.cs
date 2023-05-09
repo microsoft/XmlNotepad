@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -173,6 +174,15 @@ namespace UnitTests
                 }
             }
             return nodes;
+        }
+
+        public void AssertArraysEqual<T>(T[] a, T[] b)
+        {
+            Assert.AreEqual(a.Length, b.Length, string.Format("Arrays have different lengths {0} versus {1}", a.Length, b.Length));
+            for (int i = 0, n = a.Length; i < n; i++)
+            {
+                Assert.AreEqual(a[i], b[i], string.Format("Array items at index {0} are different {0} versus {1}", i, a[i], b[i]));
+            }
         }
 
         public virtual void CheckClipboard(string expected)

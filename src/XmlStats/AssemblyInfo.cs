@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("XmlStats")]
-[assembly: AssemblyDescription("Reports statistics about about the elements, attributes and text in XML files.")]
+[assembly: AssemblyDescription("Reports statistics about the elements, attributes and text in XML files.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyProduct("XmlStats")]
 [assembly: AssemblyTrademark("")]
