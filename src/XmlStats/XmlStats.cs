@@ -286,20 +286,27 @@ namespace Microsoft.Xml
                             break;
                         }
                     case XmlNodeType.Element:
-                        this._elemCount++;
-
-                        if (r.IsEmptyElement)
-                        {
-                            this._emptyCount++;
-                        }
                         int dec = 0;
                         if (hasFilters && this._filters.Contains(r.LocalName))
                         {
                             selected++;
                             if (r.IsEmptyElement) dec = 1;
                         }
-                        NodeStats es = CountNode(this._elements, r.Name);
-                        es.Selected = selected;
+                        if (selected > 0)
+                        {
+                            this._elemCount++;
+                        }
+
+                        if (r.IsEmptyElement && selected > 0)
+                        {
+                            this._emptyCount++;
+                        }
+                        NodeStats es = null;
+                        if (selected > 0)
+                        {
+                            es = CountNode(this._elements, r.Name);
+                            es.Selected = selected;
+                        }
                         elementStack.Push(es);
                         currentElement = es;
 
