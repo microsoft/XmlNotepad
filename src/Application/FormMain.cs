@@ -2801,18 +2801,16 @@ namespace XmlNotepad
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
 
-            var temp = Path.GetTempPath();
-            var scratch = Path.Combine(temp, "XmlNotepad");
-            Directory.CreateDirectory(scratch);
+            var path = GetWritableApplicationPath();
 
-            string exePath = Path.Combine(scratch, "XmlStats.exe");
+            string exePath = Path.Combine(path, "XmlStats.exe");
 
             if (!ExtractEmbeddedResourceAsFile("XmlNotepad.Resources.XmlStats.exe", exePath))
             {
                 return;
             }
 
-            string fileNameFile = Path.Combine(scratch, "names.txt");
+            string fileNameFile = Path.Combine(path, "names.txt");
 
             // need proper utf-8 encoding of the file name which can't be done with "cmd /k" command line.
             using (TextWriter cmdFile = new StreamWriter(fileNameFile, false, Encoding.UTF8))
@@ -2822,7 +2820,7 @@ namespace XmlNotepad
 
             // now we can use "xmlstats -f names.txt" to generate the stats in a console window, this
             // way the user learns they can use xmlstats from the command line.
-            string tempFile = Path.Combine(scratch, "stats.cmd");
+            string tempFile = Path.Combine(path, "stats.cmd");
             using (TextWriter cmdFile = new StreamWriter(tempFile, false, Encoding.Default))
             {
                 cmdFile.WriteLine("@echo off");
@@ -2837,8 +2835,50 @@ namespace XmlNotepad
 
             ProcessStartInfo pi = new ProcessStartInfo(cmd, "/K " + tempFile);
             pi.UseShellExecute = true;
-            pi.WorkingDirectory = scratch;
+            pi.WorkingDirectory = path;
             Process.Start(pi);
+        }
+
+        private string GetWritableApplicationPath()
+        {
+            var path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            try
+            {
+                System.IO.File.WriteAllText(System.IO.Path.Combine(path, "names.txt"), "test");
+                return path;
+            } 
+            catch(Exception ex)
+            {
+                // nope! 
+            }
+
+            // Ok, try the %USERPROFILE%\AppData\Local\Programs.
+            var local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            path = Path.Combine(local, "Programs");
+            try
+            {
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                }
+                path = System.IO.Path.Combine(path, "XmlNotepad");
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                }
+                System.IO.File.WriteAllText(System.IO.Path.Combine(path, "names.txt"), "test");
+                return path;
+            } 
+            catch (Exception ex)
+            {
+                // nope?!
+            }
+
+            // fall back on last resort!
+            var temp = Path.GetTempPath();
+            var scratch = Path.Combine(temp, "XmlNotepad");
+            Directory.CreateDirectory(scratch);
+            return scratch;
         }
 
         private void sampleToolStripMenuItem_Click(object sender, EventArgs e)
