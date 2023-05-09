@@ -47,6 +47,12 @@ namespace XmlNotepad
             _recentReplaceCombo.SelectFirstItemByDefault = false;
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            this.AutoSizeMode = AutoSizeMode.GrowOnly;
+        }
+
         protected override void OnDpiChanged(DpiChangedEventArgs e)
         {
             base.OnDpiChanged(e);

@@ -265,13 +265,13 @@
     <value>Fill</value>
   </data>
   <data name="dataGridViewNamespaces.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 204</value>
+    <value>3, 207</value>
   </data>
   <data name="dataGridViewNamespaces.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>340, 92</value>
   </data>
   <data name="dataGridViewNamespaces.Size" type="System.Drawing.Size, System.Drawing">
-    <value>483, 123</value>
+    <value>483, 120</value>
   </data>
   <data name="dataGridViewNamespaces.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
@@ -358,7 +358,7 @@
     <value>1</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>402, 106</value>
+    <value>402, 109</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>78, 77</value>
@@ -469,7 +469,7 @@
     <value>0</value>
   </data>
   <data name="tableLayoutPanel7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>199, 3</value>
+    <value>198, 3</value>
   </data>
   <data name="tableLayoutPanel7.RowCount" type="System.Int32, mscorlib">
     <value>1</value>
@@ -535,13 +535,13 @@
     <value>Off</value>
   </data>
   <data name="tableLayoutPanel5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 106</value>
+    <value>3, 109</value>
   </data>
   <data name="tableLayoutPanel5.RowCount" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="tableLayoutPanel5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 86</value>
+    <value>390, 86</value>
   </data>
   <data name="tableLayoutPanel5.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -583,7 +583,7 @@
     <value>3, 19</value>
   </data>
   <data name="comboBoxReplace.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 24</value>
+    <value>390, 24</value>
   </data>
   <data name="comboBoxReplace.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -628,7 +628,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 43</value>
+    <value>0, 46</value>
   </data>
   <data name="tableLayoutPanel4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
@@ -637,7 +637,7 @@
     <value>2</value>
   </data>
   <data name="tableLayoutPanel4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 46</value>
+    <value>396, 46</value>
   </data>
   <data name="tableLayoutPanel4.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -679,7 +679,7 @@
     <value>3, 19</value>
   </data>
   <data name="comboBoxFind.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 24</value>
+    <value>390, 24</value>
   </data>
   <data name="comboBoxFind.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -736,7 +736,7 @@
     <value>2</value>
   </data>
   <data name="tableLayoutPanel3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 43</value>
+    <value>396, 46</value>
   </data>
   <data name="tableLayoutPanel3.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -774,8 +774,11 @@
   <data name="buttonReplace.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
+  <data name="buttonReplace.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="buttonReplace.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+    <value>7, 0</value>
   </data>
   <data name="buttonReplace.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
@@ -810,6 +813,9 @@
   <data name="buttonReplaceAll.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
+  <data name="buttonReplaceAll.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="buttonReplaceAll.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 30</value>
   </data>
@@ -820,7 +826,7 @@
     <value>80, 30</value>
   </data>
   <data name="buttonReplaceAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 30</value>
+    <value>87, 30</value>
   </data>
   <data name="buttonReplaceAll.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -841,7 +847,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanel2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>403, 43</value>
+    <value>396, 46</value>
   </data>
   <data name="tableLayoutPanel2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
@@ -850,7 +856,7 @@
     <value>2</value>
   </data>
   <data name="tableLayoutPanel2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 60</value>
+    <value>87, 60</value>
   </data>
   <data name="tableLayoutPanel2.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -876,8 +882,11 @@
   <data name="buttonFindNext.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
   </data>
+  <data name="buttonFindNext.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="buttonFindNext.Location" type="System.Drawing.Point, System.Drawing">
-    <value>403, 13</value>
+    <value>403, 16</value>
   </data>
   <data name="buttonFindNext.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
@@ -913,7 +922,7 @@
     <value>3</value>
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>483, 195</value>
+    <value>483, 198</value>
   </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>

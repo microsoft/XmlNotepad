@@ -319,6 +319,7 @@ namespace XmlNotepad {
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanelRoot.ResumeLayout(false);
             this.tableLayoutPanelRoot.PerformLayout();
             this.ResumeLayout(false);
