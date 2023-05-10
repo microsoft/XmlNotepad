@@ -8,7 +8,7 @@ namespace XmlNotepad
 {
     public partial class FormCsvImport : Form
     {
-        private string _fileName;
+        private FileEntity _file;
         private static string[] _delimiterNames = new string[] { "Comma (,)", "Tab", "Space", "Semicolon (;)", "Colon (:)", "Vertical bar (|)", "Slash (/)" };
         private static char[] _delimiters = new char[] { ',', '\t', ' ', ';', ':', '|', '/' };
 
@@ -33,10 +33,10 @@ namespace XmlNotepad
             this.labelStatus.Text = msg;
         }
 
-        public string FileName
+        public FileEntity File
         {
-            get { return this._fileName; }
-            set { this._fileName = value; SniffHeaders(); }
+            get { return this._file; }
+            set { this._file = value; SniffHeaders(); }
         }
 
         public char Deliminter { get; set; }
@@ -46,12 +46,6 @@ namespace XmlNotepad
         void SniffHeaders()
         {
             flowLayoutPanel1.Controls.Clear();
-
-            // Sniff the file, see if we can figure out the delimiter
-            if (string.IsNullOrEmpty(this._fileName) || !File.Exists(this._fileName))
-            {
-                return;
-            }
 
             string userText = null;
             if (this.comboBoxDelimiters.SelectedIndex >= 0)
@@ -79,7 +73,12 @@ namespace XmlNotepad
 
             ShowStatus("");
 
-            using (StreamReader reader = new StreamReader(this._fileName))
+            if (this._file == null)
+            {
+                return;
+            }
+
+            using (StreamReader reader = new StreamReader(this._file.Stream, this._file.Encoding, false, 64000, true))
             {
                 CsvReader csvReader = new CsvReader(reader, 8192);
                 if (userText == null)
@@ -113,6 +112,8 @@ namespace XmlNotepad
                     ShowStatus("No rows found in that file.");
                 }
             }
+
+            this._file.Stream.Seek(0, SeekOrigin.Begin);
         }
 
 

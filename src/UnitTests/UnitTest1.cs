@@ -1621,6 +1621,29 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
+        public void TestHtmlConversion()
+        {
+            var url = "https://github.com/microsoft/XmlNotepad/";
+
+            Trace.WriteLine("TestHtmlConversion==========================================================");
+
+            var w = LaunchNotepad();
+
+            MainWindowWrapper xw = new MainWindowWrapper(w);
+            xw.LoadXmlAddress(url, null);
+
+            var findDialog = OpenFindDialog();
+            findDialog.Window.SendKeystrokes("XML Notepad is a Windows program{ENTER}");
+            Sleep(500);
+
+            findDialog.Window.DismissPopUp("{ESC}");
+            w.SendKeystrokes("^c{ESC}");
+            CheckClipboard("XML Notepad is a Windows program");
+            Sleep(200);
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
         public void TestFind()
         {
             Trace.WriteLine("TestFind==========================================================");

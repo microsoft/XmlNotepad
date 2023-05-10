@@ -904,8 +904,11 @@ namespace UnitTests
             Trace.WriteLine("Loading: " + url);
             this.window.SendKeystrokes("{END}+{HOME}" + url + "{ENTER}");
 
-            Trace.WriteLine("Wait for rss to be loaded");
-            WaitForText("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            if (!string.IsNullOrEmpty(expectedXmlPrefix))
+            {
+                Trace.WriteLine("Wait for rss to be loaded");
+                WaitForText(expectedXmlPrefix);
+            }
         }
 
         void WaitForText(string value)

@@ -2,9 +2,12 @@ using System;
 using System.Xml;
 using System.Text;
 using System.Runtime.InteropServices;
-using System.Drawing;
 using System.IO;
-using Microsoft.Win32;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace XmlNotepad
 {
@@ -22,6 +25,124 @@ namespace XmlNotepad
                 }
             }
             return path;
+        }
+    }
+
+    public class FileEntity
+    {
+        Encoding encoding = Encoding.UTF8;
+        Stream stream;
+        Uri uri;
+        string mimeType;
+        string localPath;
+
+        public string MimeType => mimeType;
+        public Encoding Encoding => encoding;
+        public Stream Stream => stream;
+        public Uri Uri => uri;
+        public string LocalPath => localPath;
+
+        public static async Task<FileEntity> Fetch(string url)
+        {
+            // if it is http then we have to sniff the url to get the content MimeType since
+            // a url like "https://en.wikipedia.org/" has no file extension.
+            Uri baseUri = new Uri("file:///" + Directory.GetCurrentDirectory().Replace('\\', '/') + "\\");
+            Uri resolved = new Uri(baseUri, url);
+            FileEntity e = new FileEntity() { uri = resolved };
+
+            if (resolved.Scheme != "file")
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var response = await client.GetAsync(resolved, HttpCompletionOption.ResponseHeadersRead))
+                    {
+                        var contentType = response.Content.Headers.ContentType;
+                        // todo: contentType.CharSet is also interesting for getting the right Encoding!
+                        e.mimeType = contentType.MediaType;
+                        MemoryStream ms = new MemoryStream();
+                        using (var s = await response.Content.ReadAsStreamAsync())
+                        {
+                            s.CopyTo(ms);
+                            ms.Seek(0, SeekOrigin.Begin);
+                        }
+                        e.stream = ms;
+                        if (!string.IsNullOrEmpty(contentType.CharSet))
+                        {
+                            try
+                            {
+                                e.encoding = System.Text.Encoding.GetEncoding(contentType.CharSet);
+                            }
+                            catch { }
+                        }
+                    }
+                }
+
+                string filename = resolved.Segments.Length > 1 ? resolved.Segments[resolved.Segments.Length - 1] : "index";
+                if (url.EndsWith("/"))
+                {
+                    filename = "index";
+                }
+                filename = System.IO.Path.GetFileNameWithoutExtension(filename);
+                filename += e.GetFileExtension();
+                e.localPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), filename);
+            }
+            else
+            {
+                string ext = System.IO.Path.GetExtension(url).ToLowerInvariant();
+                switch (ext)
+                {
+                    case ".csv":
+                        e.mimeType = "text/csv";
+                        break;
+                    case ".htm":
+                    case ".html":
+                        e.mimeType = "text/html";
+                        break;
+                    default:
+                        e.mimeType = "text/xml";
+                        break;
+                }
+                e.stream = new FileStream(url, FileMode.Open, FileAccess.Read, FileShare.Read);
+                e.localPath = url;
+            }
+            return e;
+        }
+
+        public void Close()
+        {
+            using (var s = this.stream)
+            {
+                this.stream = null;
+            }
+        }
+
+        private string GetFileExtension()
+        {
+            if (this.mimeType == "text/plain")
+            {
+                // Hmmm, server didn't specify correctly, so check the file extension.
+                var extension = System.IO.Path.GetExtension(this.uri.OriginalString);
+                switch (extension)
+                {
+                    case ".csv":
+                        this.mimeType = "text/csv";
+                        break;
+                    case ".htm":
+                    case ".html":
+                        this.mimeType = "text/html";
+                        break;
+                }
+
+            }
+            switch (this.mimeType)
+            {
+                case "text/csv":
+                    return ".csv";
+                case "text/html":
+                    return ".htm";
+                default:
+                    return ".xml";
+            }
         }
     }
 

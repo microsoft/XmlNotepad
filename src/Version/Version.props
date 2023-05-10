@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.9.0.1</ApplicationVersion>
+    <ApplicationVersion>2.9.0.2</ApplicationVersion>
     <Version>$(ApplicationVersion)</Version>
     <Authors>Chris Lovett</Authors>
     <Product>XmlNotepad</Product>

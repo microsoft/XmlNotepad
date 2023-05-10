@@ -9,6 +9,16 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.2">
+    <feature>Update to SgmlReader version 1.8.30</feature>
+    <feature>Allow HTTP URL's in the XML Notepad address bar (for .xml, .csv and .html content)</feature>
+    <bug>Fix issue #280: Do not run scripts from Temp folder</bug>
+  </version>
+  <version number="2.9.0.1">
+    <bug>Fix issue #266: try catch around SendMeasurement (thanks to Anders.Chen)</bug>
+    <bug>Fix issue #255: Replace dialogue - (re)size issues</bug>
+    <bug>Fix issue #254: XMLStats and employee.xml</bug>
+  </version>
   <version number="2.9.0.0">
     <feature>Add Ctrl+G to goto node at the given line/column.</feature>
     <bug>Fix Strange behaviour of "find" command and add unit test (bug 232)</bug>

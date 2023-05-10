@@ -54,7 +54,7 @@ namespace XmlNotepad
             Application.DoEvents();
             if (!string.IsNullOrEmpty(filename))
             {
-                form.Open(filename);
+                _ = form.Open(filename);
             }
             Application.Run(form);
         }

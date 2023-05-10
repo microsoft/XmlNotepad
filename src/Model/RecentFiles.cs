@@ -109,7 +109,7 @@ namespace XmlNotepad
             try
             {
                 Uri trimmed = new Uri(RemoveQuotes(fileName.OriginalString), UriKind.RelativeOrAbsolute);
-                AddRecentFileName(fileName);
+                AddRecentFileName(trimmed);
                 SyncRecentFilesUI();
             }
             catch (Exception ex)

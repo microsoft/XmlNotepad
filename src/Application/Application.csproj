@@ -15,13 +15,16 @@
     <ApplicationIcon>Resources\XmlNote.ico</ApplicationIcon>
     <StartupObject>XmlNotepad.Program</StartupObject>
     <AssemblyOriginatorKeyFile>$(MyKeyFile)</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags></FileUpgradeFlags>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>..\..\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -69,7 +72,8 @@
     <ManifestCertificateThumbprint>50D58171E20BB6188B199ACA7C20A26DA0DFBF35</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestTimestampUrl></ManifestTimestampUrl>
+    <ManifestTimestampUrl>
+    </ManifestTimestampUrl>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -84,8 +88,8 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SgmlReaderDll, Version=1.8.29.0, Culture=neutral, PublicKeyToken=d2e0d325f5b08396, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.29\lib\net47\SgmlReaderDll.dll</HintPath>
+    <Reference Include="SgmlReaderDll, Version=1.8.30.0, Culture=neutral, PublicKeyToken=d2e0d325f5b08396, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xml.SgmlReader.1.8.30\lib\net47\SgmlReaderDll.dll</HintPath>
     </Reference>
     <Reference Include="SimpleGoogleAnalytics, Version=1.1.6.0, Culture=neutral, PublicKeyToken=d2e0d325f5b08396, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleGoogleAnalytics.1.1.6\lib\netstandard2.0\SimpleGoogleAnalytics.dll</HintPath>
@@ -95,6 +99,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Security.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.AccessControl.5.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
       <Private>True</Private>
@@ -163,7 +168,8 @@
     <Compile Include="FormSearch.Designer.cs">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs"></Compile>
+    <Compile Include="Program.cs">
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormGotoLine.resx">
       <DependentUpon>FormGotoLine.cs</DependentUpon>
@@ -291,64 +297,80 @@
   <ItemGroup>
     <PublishFile Include="Samples\basket.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\basket.xsd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xsd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Hamlet.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rss.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rsspretty.xsl">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\willy.xsl">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
