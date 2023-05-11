@@ -1593,6 +1593,7 @@ namespace XmlNotepad
                 {
                     brush = new SolidBrush(this.ForeColor);
                 }
+                text += GetSchemaAwareText(this);
                 Layout(g, f, lineHeight, startX, indent, state.Depth, y, imgSize);
                 g.DrawString(text, f, brush, this._labelBounds.Left, this._labelBounds.Top, StringFormat.GenericTypographic);
                 brush.Dispose();
@@ -1644,6 +1645,24 @@ namespace XmlNotepad
             }
         }
 
+        internal TreeNode GetFirstChild(TreeNode n)
+        {
+            if (n.Children.Count > 0)
+            {
+                return n.Children[0];
+            }
+            return null;
+        }
+
+        internal string GetSchemaAwareText(TreeNode n)
+        {
+            TreeNode firstChild = GetFirstChild(n);
+            if (firstChild != null && firstChild.Text != null)
+            {
+                return "[\"" + firstChild.Text + "\"]";
+            }
+            return "";
+        }
 
         public static TreeNode GetLastVisibleNode(TreeNodeCollection nodes)
         {
