@@ -31,7 +31,14 @@ if EXIST "%ROOT%\publish" rd /s /q "%ROOT%\publish"
 if EXIST "%PUBLISH%" rd /s /q "%PUBLISH%"
 
 nuget restore src\xmlnotepad.sln
-if ERRORLEVEL 1 goto :nobits
+if ERRORLEVEL 1 goto :eof
+
+msbuild /target:rebuild src\UpdateVersions\UpdateVersions.csproj /p:Configuration=Release
+if ERRORLEVEL 1 goto :eof
+
+D:\git\lovettchris\XmlNotepad\src\UpdateVersions\bin\x64\Release\net7.0\UpdateVersions.exe
+if ERRORLEVEL 1 goto :eof
+
 msbuild /target:rebuild src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :nobits
 msbuild /target:publish src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"

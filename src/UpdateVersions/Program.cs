@@ -1,42 +1,40 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml.Linq;
 
-namespace XmlNotepadBuildTasks
+namespace UpdateVersions
 {
-    public class SyncVersions : Task
+    public class LogWriter
     {
-        [Required]
+        public void LogError(string message)
+        {
+            var saved = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ForegroundColor = saved;
+        }
+
+        public void LogMessage(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
+    public class SyncVersions
+    {
+        public LogWriter Log { get; set; }
         public string MasterVersionFile { get; set; }
-
-        [Required]
         public string CSharpVersionFile { get; set; }
-
-        [Required]
         public string WixFile { get; set; }
-
-        [Required]
         public string ApplicationProjectFile { get; set; }
-
-        [Required]
         public string AppManifestFile { get; set; }
-
-        [Required]
         public string DropDir { get; set; }
-
-        [Required]
         public string UpdatesFile { get; set; }
-
-        [Output]
         public string WebView2Version { get; set; }
 
-        public override bool Execute()
+        public bool Execute()
         {
             if (!System.IO.File.Exists(this.MasterVersionFile))
             {
@@ -61,7 +59,7 @@ namespace XmlNotepadBuildTasks
                 return false;
             }
 
-            Log.LogMessage(MessageImportance.High, "SyncVersions to " + v.ToString());
+            Log.LogMessage("SyncVersions to " + v.ToString());
 
             bool result = UpdateWebView2Version(doc);
             result &= UpdateCSharpVersion(v);
@@ -73,7 +71,7 @@ namespace XmlNotepadBuildTasks
         }
 
         private bool UpdateWebView2Version(XDocument props)
-        {            
+        {
             var dir = Path.GetDirectoryName(this.ApplicationProjectFile);
             var xmlnotepadProject = Path.Combine(dir, "..", "XmlNotepad", "XmlNotepad.csproj");
             var doc = XDocument.Load(xmlnotepadProject);
@@ -95,7 +93,7 @@ namespace XmlNotepadBuildTasks
                 WebView2Version = version;
                 ns = props.Root.Name.Namespace;
                 var wve = props.Root.Descendants(ns + "WebView2Version").FirstOrDefault();
-                if (wve !=null)
+                if (wve != null)
                 {
                     var v = wve.Value;
                     if (v != version)
@@ -105,7 +103,7 @@ namespace XmlNotepadBuildTasks
                         Log.LogMessage("Updating WebView2Version to " + version);
                     }
                     return true;
-                } 
+                }
                 else
                 {
                     Log.LogError("Missing <WebView2Version> property in " + this.MasterVersionFile);
@@ -210,7 +208,7 @@ namespace XmlNotepadBuildTasks
 
                 if (changed)
                 {
-                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.ApplicationProjectFile);
+                    Log.LogMessage("SyncVersions updating " + this.ApplicationProjectFile);
                     doc.Save(this.ApplicationProjectFile);
                 }
             }
@@ -227,7 +225,7 @@ namespace XmlNotepadBuildTasks
         private string FixeIncludeVersion(string src, string prefix, string expected)
         {
             string[] parts = src.Split('\\');
-            for(int i = 0, n = parts.Length; i<n; i++)
+            for (int i = 0, n = parts.Length; i < n; i++)
             {
                 var s = parts[i];
                 if (s.StartsWith(prefix))
@@ -242,7 +240,7 @@ namespace XmlNotepadBuildTasks
         {
             XDocument doc = XDocument.Load(projectFile);
             var ns = doc.Root.Name.Namespace;
-            foreach(var e in doc.Descendants(ns + "Reference"))
+            foreach (var e in doc.Descendants(ns + "Reference"))
             {
                 string include = (string)e.Attribute("Include");
                 if (include.Contains(prefix))
@@ -287,7 +285,7 @@ namespace XmlNotepadBuildTasks
 
                 if (changed)
                 {
-                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.AppManifestFile);
+                    Log.LogMessage("SyncVersions updating " + this.AppManifestFile);
                     doc.Save(this.AppManifestFile);
                 }
             }
@@ -316,7 +314,7 @@ namespace XmlNotepadBuildTasks
                 result &= UpdateFeature(doc);
                 if (result)
                 {
-                    Log.LogMessage(MessageImportance.High, "SyncVersions updating " + this.WixFile);
+                    Log.LogMessage("SyncVersions updating " + this.WixFile);
                     doc.Save(this.WixFile);
                 }
             }
@@ -554,7 +552,7 @@ namespace XmlNotepadBuildTasks
                 XElement firstVersion = doc.Root.Element("version");
                 if (v.ToString() != (string)firstVersion.Attribute("number"))
                 {
-                    Log.LogMessage(MessageImportance.High, "Please remember to add new version section to : " + this.UpdatesFile);
+                    Log.LogMessage("Please remember to add new version section to : " + this.UpdatesFile);
                 }
             }
             catch (Exception ex)
@@ -564,6 +562,47 @@ namespace XmlNotepadBuildTasks
             }
             // return that there is no error.
             return true;
+        }
+    }
+
+    internal class Program
+    {
+        static int Main(string[] args)
+        {
+            SyncVersions sync = new SyncVersions();
+            sync.Log = new LogWriter();
+            var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var solutionPath = Path.GetDirectoryName(exePath);
+            while (!string.IsNullOrEmpty(solutionPath))
+            {
+                var sln = Path.Combine(solutionPath, "XmlNotepad.sln");
+                if (File.Exists(sln))
+                {
+                    break;
+                }
+                var parent = Path.GetDirectoryName(solutionPath);
+                if (parent == sln)
+                {
+                    break;
+                }
+                solutionPath = parent;
+            }
+
+            if (!File.Exists(Path.Combine(solutionPath, "XmlNotepad.sln")))
+            {
+                Console.WriteLine("Error: Cannot find XmlNotepad.sln");
+                return 1;
+            }
+
+            sync.MasterVersionFile = Path.Combine(solutionPath, "Version", "Version.props");
+            sync.CSharpVersionFile = Path.Combine(solutionPath, "Version", "Version.cs");
+            sync.WixFile = Path.Combine(solutionPath, "XmlNotepadSetup", "Product.wxs");
+            sync.ApplicationProjectFile = Path.Combine(solutionPath, "Application", "Application.csproj");
+            sync.AppManifestFile = Path.Combine(solutionPath, "XmlNotepadPackage", "Package.appxmanifest");
+            sync.DropDir = Path.Combine(solutionPath, "drop");
+            sync.UpdatesFile = Path.Combine(solutionPath, "Updates", "Updates.xml");
+            bool rc = sync.Execute();
+            return rc ? 0 : 1;
         }
     }
 }
