@@ -3,10 +3,10 @@
 nuget restore src\XmlNotepad.sln
 if ERRORLEVEL 1 goto :eof
 
-msbuild /target:rebuild src\UpdateVersions\UpdateVersions.csproj /p:Configuration=Release
+msbuild /target:rebuild src\UpdateVersions\UpdateVersions.csproj /p:Configuration=Release "/p:Platform=AnyCPU"
 if ERRORLEVEL 1 goto :eof
 
-D:\git\lovettchris\XmlNotepad\src\UpdateVersions\bin\x64\Release\net7.0\UpdateVersions.exe
+%~dp0\src\UpdateVersions\bin\Release\UpdateVersions.exe
 if ERRORLEVEL 1 goto :eof
 
 for %%i in (Release, Debug) do (     
