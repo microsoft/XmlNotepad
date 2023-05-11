@@ -24,7 +24,17 @@ namespace XmlNotepad
             {
                 string path = Path.GetDirectoryName(this.GetType().Assembly.Location);
                 Debug.Assert(!string.IsNullOrEmpty(path));
-                return System.IO.Path.Combine(path, "XmlNotepad.template.settings");
+                var settings = System.IO.Path.Combine(path, "XmlNotepad.template.settings");
+                if (File.Exists(settings))
+                {
+                    return settings;
+                }
+                settings = System.IO.Path.Combine(path, "Resources", "XmlNotepad.template.settings");
+                if (File.Exists(settings))
+                {
+                    return settings;
+                }
+                return null;
             }
         }
 
@@ -68,55 +78,85 @@ namespace XmlNotepad
             }
         }
 
-        public void LoadSettings(Settings settings, bool testing)
+        public void LoadSettings(Settings settings, SettingsLocation location = SettingsLocation.Auto)
         {
             settings.SetDefaults();
-            if (testing)
+
+            string fileName = null;
+
+            if (location == SettingsLocation.Auto)
             {
-                // always start with no settings.                
-                settings.Load(this.TestConfigFile);
-                settings["SettingsLocation"] = (int)SettingsLocation.Roaming;
-            }
-            else
-            {
-                // allow user to have a local settings file (xcopy deployable).
-                SettingsLocation location = SettingsLocation.Portable;
-                var path = PortableConfigFile;
-                if (!File.Exists(path))
+                // but we prefer the existing settings file wherever that was.
+                if (!string.IsNullOrEmpty(settings.FileName) && File.Exists(settings.FileName))
                 {
-                    path = LocalConfigFile;
+                    fileName = settings.FileName;
+                    location = settings.GetLocation();
+                }
+                else
+                {
+                    // try portable.
+                    fileName = PortableConfigFile;
+                    location = SettingsLocation.Portable;
+                }
+                
+                if (!File.Exists(fileName))
+                {
+                    // try local
+                    fileName = LocalConfigFile;
                     location = SettingsLocation.Local;
                 }
-                if (!File.Exists(path))
+
+                if (!File.Exists(fileName))
                 {
-                    path = RoamingConfigFile;
+                    // try roaming.
+                    fileName = RoamingConfigFile;
                     location = SettingsLocation.Roaming;
                 }
 
-                if (File.Exists(path))
+                if (File.Exists(fileName))
                 {
-                    Debug.WriteLine(path);
-                    settings.Load(path);
-                    settings["SettingsLocation"] = (int)location;
-                    _settingsLocation = location;
+                    if (fileName != settings.FileName)
+                    {
+                        settings.Load(fileName);
+                    }
+                    // use this path
                 }
                 else if (File.Exists(PortableTemplateFile))
                 {
                     // brand new user, so load the template
                     settings.Load(PortableTemplateFile);
-                    settings.FileName = path; // but store it in RoamingConfigFile.
+                    location = SettingsLocation.Roaming;
+                    fileName = RoamingConfigFile; // and store it in RoamingConfigFile.
                 }
+            }
 
-                if (string.IsNullOrEmpty(settings.FileName))
-                {
-                    settings.FileName = path;
-                }
+            if (location == SettingsLocation.Test)
+            {
+                // always start with no settings.                
+                settings.Load(this.TestConfigFile);
+                location = SettingsLocation.Roaming;
+                fileName = RoamingConfigFile; // and store it in RoamingConfigFile.
+            }
+            else if (location == SettingsLocation.PortableTemplate)
+            {
+                // testing the portable template works.
+                settings.Load(PortableTemplateFile);
+                location = SettingsLocation.Roaming;
+                fileName = RoamingConfigFile; // and store it in RoamingConfigFile.
+            }
+
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                Debug.WriteLine(fileName);
+                settings.FileName = fileName;
+                settings.SetLocation(location);
+                _settingsLocation = location;
             }
         }
 
         public void MoveSettings(Settings settings)
         {
-            SettingsLocation location = (SettingsLocation)settings["SettingsLocation"];
+            SettingsLocation location = settings.GetLocation();
             string existingLocation = settings.FileName;
             string newLocation = null;
             switch (location)
@@ -140,6 +180,7 @@ namespace XmlNotepad
             }
             else
             {
+                bool moved = false;
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(newLocation));
@@ -150,14 +191,18 @@ namespace XmlNotepad
                     if (File.Exists(existingLocation))
                     {
                         File.Move(existingLocation, newLocation);
+                        moved = true;
                     }
                     settings.FileName = newLocation;
                     this._settingsLocation = location;
                 }
                 finally
                 {
-                    // revert the change
-                    settings["SettingsLocation"] = (int)this._settingsLocation;
+                    if (!moved)
+                    {
+                        // revert the change
+                        settings.SetLocation(this._settingsLocation);
+                    }
                 }
             }
         }

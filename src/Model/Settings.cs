@@ -20,6 +20,18 @@ namespace XmlNotepad
         Dark
     }
 
+    // order is serialization dependent here, so don't change them
+    public enum SettingsLocation
+    {
+        Portable,
+        Local,
+        Roaming,
+        PortableTemplate,
+        Temporary,
+        Test,
+        Auto
+    }
+
     public class ThemeColors : IXmlSerializable
     {
         public Color Element = Color.Transparent;
@@ -32,7 +44,7 @@ namespace XmlNotepad
         public Color ContainerBackground = Color.Transparent;
         public Color EditorBackground = Color.Transparent;
         public Color Markup = Color.Transparent;
-        static TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
+        static readonly TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
 
         public override int GetHashCode()
         {
@@ -208,13 +220,6 @@ namespace XmlNotepad
         #endregion IXmlSerializable
     }
 
-    public enum SettingsLocation
-    {
-        Portable,
-        Local,
-        Roaming
-    }
-
     /// <summary>
     /// Settings is a container for persistent settings that you want to store in a file
     /// like XmlNotepad.settings.  Each setting has a name and some typed value.  The
@@ -239,7 +244,7 @@ namespace XmlNotepad
         private static Settings _instance;
         private string _filename;
         private FileSystemWatcher _watcher;
-        private Hashtable _map = new Hashtable();
+        private readonly Hashtable _map = new Hashtable();
         private DelayedActions _delayedActions = null;
         private PersistentFileNames _pfn;
 
@@ -397,17 +402,16 @@ namespace XmlNotepad
                                 if (o != null)
                                 {
                                     object value = null;
-                                    if (o is Hashtable)
+                                    if (o is Hashtable ht)
                                     {
-                                        ReadHashTable(r, (Hashtable)o);
+                                        ReadHashTable(r, ht);
                                     }
-                                    else if (o is Array)
+                                    else if (o is Array a)
                                     {
-                                        value = ReadArray(name, (Array)o, r);
+                                        value = ReadArray(a, r);
                                     }
-                                    else if (o is IXmlSerializable)
+                                    else if (o is IXmlSerializable xs)
                                     {
-                                        IXmlSerializable xs = (IXmlSerializable)o;
                                         xs.ReadXml(r);
                                     }
                                     else
@@ -443,40 +447,41 @@ namespace XmlNotepad
                 if (this._filename != value)
                 {
                     this._filename = value;
+                    if (this._filename != null)
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(this._filename));
+                        StopWatchingFileChanges();
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(this._filename));
-                    StopWatchingFileChanges();
+                        this._watcher = new FileSystemWatcher(Path.GetDirectoryName(_filename),
+                            Path.GetFileName(_filename));
 
-                    this._watcher = new FileSystemWatcher(Path.GetDirectoryName(_filename),
-                        Path.GetFileName(_filename));
-
-                    this._watcher.Changed += new FileSystemEventHandler(watcher_Changed);
-                    this._watcher.EnableRaisingEvents = true;
+                        this._watcher.Changed += new FileSystemEventHandler(OnWatcherChanged);
+                        this._watcher.EnableRaisingEvents = true;
+                    }
                 }
             }
         }
 
         string ConvertToString(object value)
         {
-            if (value is Uri)
+            if (value is Uri uri)
             {
                 if (_pfn == null)
                 {
                     _pfn = new PersistentFileNames(Settings.Instance.StartupPath);
                 }
-                return _pfn.GetPersistentFileName((Uri)value);
+                return _pfn.GetPersistentFileName(uri);
             }
-            else if (value is string)
+            else if (value is string s)
             {
-                return (string)value;
+                return s;
             }
             else
             {
                 TypeConverter tc = TypeDescriptor.GetConverter(value.GetType());
                 if (tc != null)
                 {
-                    string s = tc.ConvertToString(value);
-                    return s;
+                    return tc.ConvertToString(value);
                 }
                 throw new ApplicationException(string.Format(Strings.TypeConvertError, value.GetType().FullName));
             }
@@ -529,20 +534,19 @@ namespace XmlNotepad
                         object value = _map[key];
                         if (value != null)
                         {
-                            if (value is Hashtable)
+                            if (value is Hashtable ht)
                             {
                                 w.WriteStartElement(key); // container element      
-                                WriteHashTable(w, (Hashtable)value);
+                                WriteHashTable(w, ht);
                                 w.WriteEndElement();
                             }
-                            else if (value is Array)
+                            else if (value is Array va)
                             {
-                                WriteArray(w, key, (Array)value);
+                                WriteArray(w, key, va);
                             }
-                            else if (value is IXmlSerializable)
+                            else if (value is IXmlSerializable xs)
                             {
-                                w.WriteStartElement(key); // container element      
-                                IXmlSerializable xs = (IXmlSerializable)value;
+                                w.WriteStartElement(key); // container element   
                                 xs.WriteXml(w);
                                 w.WriteEndElement();
                             }
@@ -605,7 +609,7 @@ namespace XmlNotepad
             }
         }
 
-        Array ReadArray(string name, Array a, XmlReader r)
+        Array ReadArray(Array a, XmlReader r)
         {
             Type et = a.GetType().GetElementType();
             ArrayList list = new ArrayList();
@@ -642,7 +646,7 @@ namespace XmlNotepad
             w.WriteEndElement();
         }
 
-        private void watcher_Changed(object sender, FileSystemEventArgs e)
+        private void OnWatcherChanged(object sender, FileSystemEventArgs e)
         {
             // The trick here is that the file system seems to generate lots of
             // events and we don't want to have lots of dialogs popping up asking the
@@ -685,10 +689,7 @@ namespace XmlNotepad
         protected virtual void Dispose(bool disposing)
         {
             this.StopWatchingFileChanges();
-            if (this._delayedActions != null)
-            {
-                this._delayedActions.Close();
-            }
+            this._delayedActions?.Close();
             GC.SuppressFinalize(this);
         }
 
@@ -723,6 +724,32 @@ namespace XmlNotepad
         {
             object settingValue = this[settingName];
             return settingValue != null ? settingValue.ToString() : defaultValue;
+        }
+
+        public T GetEnum<T>(string settingName, T defaultValue)
+        {
+            object settingValue = this[settingName];
+            return settingValue != null ? (T)Enum.Parse(typeof(T), settingValue.ToString()) : defaultValue;
+        }
+
+        public SettingsLocation GetLocation()
+        {
+            var sloc = this.GetInteger("SettingsLocation", -1);
+            if (sloc != -1)
+            {
+                // migrate off using an integer
+                return (SettingsLocation)sloc;
+            }
+            else
+            {
+                // use the proper enum and default to SettingsLocation.Auto.
+                return this.GetEnum<SettingsLocation>("SettingsLocation", SettingsLocation.Auto);
+            }
+        }
+
+        public void SetLocation(SettingsLocation loc)
+        {
+            this["SettingsLocation"] = loc.ToString();
         }
 
         public ThemeColors AddDefaultColors(string name, ColorTheme theme)

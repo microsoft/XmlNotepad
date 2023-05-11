@@ -119,10 +119,10 @@ namespace XmlNotepad
 
         public static XmlNamespaceManager GetNamespaceScope(XmlNode context)
         {
-            XmlDocument owner = null;
-            if (context is XmlDocument)
+            XmlDocument owner;
+            if (context is XmlDocument xd)
             {
-                owner = (XmlDocument)context;
+                owner = xd;
             }
             else
             {

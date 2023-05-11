@@ -31,8 +31,8 @@ namespace Microsoft.Xml
         private long _piChars;
         private string _newLine = "\n";
         private WhitespaceHandling _whiteSpace = WhitespaceHandling.All;
-        private Stopwatch _watch = new Stopwatch();
-        HashSet<string> _filters = new HashSet<string>();
+        private readonly Stopwatch _watch = new Stopwatch();
+        private readonly HashSet<string> _filters = new HashSet<string>();
 
         private static void PrintUsage()
         {
@@ -577,8 +577,7 @@ namespace Microsoft.Xml
 
         internal static NodeStats CountNode(Dictionary<string, NodeStats> ht, string name)
         {
-            NodeStats es = null;
-            if (!ht.TryGetValue(name, out es))
+            if (!ht.TryGetValue(name, out NodeStats es))
             {                
                 ht[name] = es = new NodeStats(name);
             }

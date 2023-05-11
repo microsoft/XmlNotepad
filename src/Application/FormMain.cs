@@ -50,14 +50,15 @@ namespace XmlNotepad
         private readonly System.CodeDom.Compiler.TempFileCollection _tempFiles = new System.CodeDom.Compiler.TempFileCollection();
 
         private XmlCache _model;
-        private bool _testing; // we are running a test.
+        private SettingsLocation _loc;
 
         readonly private string _undoLabel;
         readonly private string _redoLabel;
 
-        public FormMain(bool testing)
+        public FormMain(SettingsLocation location)
         {
-            this._testing = testing;
+            this._loc = location;
+            bool testing = (location == SettingsLocation.Test || location == SettingsLocation.PortableTemplate);
             this.DoubleBuffered = true;
             this._settings = new Settings()
             {
@@ -1324,7 +1325,7 @@ namespace XmlNotepad
                 this._loading = true;
 
                 // allow user to have a local settings file (xcopy deployable).
-                _loader.LoadSettings(_settings, this._testing);
+                _loader.LoadSettings(_settings, this._loc);
 
                 // convert old format to the new one
                 object oldFont = this._settings["Font"];

@@ -59,9 +59,9 @@ namespace XmlNotepad
                 if (elementNode != null && elementNode.NodeType == XmlNodeType.Element)
                 {
                     this._xn = elementNode.Node;
-                    if (_xn is XmlElement)
+                    if (_xn is XmlElement xe)
                     {
-                        this._checker = new Checker((XmlElement)_xn,
+                        this._checker = new Checker(xe,
                             elementNode == this._node.ParentNode ? IntellisensePosition.FirstChild :
                             (this._node.Node == null ? IntellisensePosition.AfterNode : IntellisensePosition.OnNode)
                             );
@@ -92,7 +92,7 @@ namespace XmlNotepad
         public virtual XmlSchemaType GetSchemaType()
         {
             XmlSchemaInfo info = GetSchemaInfo();
-            return info != null ? info.SchemaType : null;
+            return info?.SchemaType;
         }
 
         XmlSchemaInfo GetSchemaInfo()
@@ -151,8 +151,7 @@ namespace XmlNotepad
 
         public XmlIntellisenseList GetNamespaceList(XmlNode node)
         {
-            var list = new XmlIntellisenseList();
-            list.IsOpen = true;
+            var list = new XmlIntellisenseList() { IsOpen = true };
 
             foreach (XmlNode a in node.SelectNodes("namespace::*"))
             {
@@ -195,9 +194,9 @@ namespace XmlNotepad
                     {
                         foreach (XmlSchemaParticle p in particles)
                         {
-                            if (p is XmlSchemaElement)
+                            if (p is XmlSchemaElement se)
                             {
-                                list.Add(GetQualifiedName((XmlSchemaElement)p), SchemaCache.GetAnnotation(p, SchemaCache.AnnotationNode.Tooltip, null));
+                                list.Add(GetQualifiedName(se), SchemaCache.GetAnnotation(p, SchemaCache.AnnotationNode.Tooltip, null));
                             }
                             else
                             {
@@ -437,7 +436,7 @@ namespace XmlNotepad
         XmlSchema GetSchema(XmlSchemaObject o)
         {
             if (o == null) return null;
-            if (o is XmlSchema) return (XmlSchema)o;
+            if (o is XmlSchema s) return s;
             return GetSchema(o.Parent);
         }
 

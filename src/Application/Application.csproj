@@ -240,7 +240,7 @@
     <EmbeddedResource Include="..\XmlStats\bin\$(Configuration)\XmlStats.exe">
       <Link>Resources\XmlStats.exe</Link>
     </EmbeddedResource>
-    <Content Include="Resources\XmlNotepad.template.settings" Link="XmlNotepad.template.settings">
+    <Content Include="Resources\XmlNotepad.template.settings">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

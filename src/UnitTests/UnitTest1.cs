@@ -66,7 +66,7 @@ namespace UnitTests
 
             SettingsLoader ls = new SettingsLoader();
             testSettings.SetDefaults();
-            ls.LoadSettings(testSettings, true);
+            ls.LoadSettings(testSettings, SettingsLocation.Test);
             return testSettings;
         }
 
@@ -125,9 +125,9 @@ namespace UnitTests
             }
         }
 
-        Window LaunchNotepad(bool debugMouse = false)
+        Window LaunchNotepad(bool debugMouse = false, bool testTemplate = false)
         {
-            this.window = LaunchNotepad(null, debugMouse: debugMouse);
+            this.window = LaunchNotepad(null, debugMouse: debugMouse, testTemplate: testTemplate);
             if (!debugMouse)
             {
                 this.window.InvokeMenuItem("newToolStripMenuItem");
@@ -136,10 +136,14 @@ namespace UnitTests
             return window;
         }
 
-        Window LaunchNotepad(string filename, bool testSettings = true, bool debugMouse = false)
+        Window LaunchNotepad(string filename, bool testSettings = true, bool debugMouse = false, bool testTemplate = false)
         {
             string args = "\"" + filename + "\"";
-            if (testSettings)
+            if (testTemplate)
+            {
+                args = "-template " + args;
+            }
+            else if (testSettings)
             {
                 args = "-test " + args;
             }
@@ -2282,9 +2286,23 @@ Prefix 'user' is not defined. ");
 
         [TestMethod]
         [Timeout(TestMethodTimeout)]
+        public void TestSettingsTemplate()
+        {
+            Trace.WriteLine("TestAccessibility==========================================================");
+            string testFile = _testDir + "UnitTests\\test1.xml";
+            Window w = this.LaunchNotepad(testFile, testTemplate:true);
+            Sleep(1000);
+            // Get AutomationWrapper to selected node in the tree.
+            AutomationWrapper tree = this.TreeView;
+            AutomationWrapper root = tree.GetChild(3); // Root
+            root.Select();
+            CheckNodeName(root, "Root");
+        }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
         public void TestAccessibility()
         {
-
             Trace.WriteLine("TestAccessibility==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
             Window w = this.LaunchNotepad(testFile);

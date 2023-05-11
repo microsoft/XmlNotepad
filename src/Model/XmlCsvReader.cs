@@ -35,7 +35,7 @@ namespace Microsoft.Xml
         private Uri _href;
         private string _root = "root";
         private string _rowname = "row";
-        private XmlNameTable _nt;
+        private readonly XmlNameTable _nt;
         private string[] _names;
         private State _state = State.Initial;
         private int _attr = 0;
@@ -48,10 +48,7 @@ namespace Microsoft.Xml
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            if (_csvReader != null)
-            {
-                _csvReader.Close();
-            }
+            _csvReader?.Close();
         }
 
         public override void Close()
@@ -123,7 +120,7 @@ namespace Microsoft.Xml
         /// </summary>
         public Encoding Encoding
         {
-            get { return _encoding == null ? System.Text.Encoding.UTF8 : _encoding; }
+            get { return _encoding ?? System.Text.Encoding.UTF8; }
             set { _encoding = value; }
         }
 
@@ -176,11 +173,10 @@ namespace Microsoft.Xml
         /// </summary>
         public TextReader TextReader
         {
-            get { return _csvReader == null ? null : _csvReader.Reader; }
+            get { return _csvReader?.Reader; }
             set
             {
-                _csvReader = new CsvReader(value, 4096);
-                _csvReader.Delimiter = this.Delimiter;
+                _csvReader = new CsvReader(value, 4096) { Delimiter = this.Delimiter };
                 Init();
             }
         }
@@ -686,8 +682,7 @@ namespace Microsoft.Xml
         public override string ReadInnerXml()
         {
             StringWriter sw = new StringWriter();
-            XmlWriterSettings ws = new XmlWriterSettings();
-            ws.Indent = true;
+            XmlWriterSettings ws = new XmlWriterSettings() { Indent = true };
             using (XmlWriter xw = XmlWriter.Create(sw, ws))
             {
                 while (!this.EOF && this.NodeType != XmlNodeType.EndElement)
@@ -702,8 +697,7 @@ namespace Microsoft.Xml
         {
             StringWriter sw = new StringWriter();
 
-            XmlWriterSettings ws = new XmlWriterSettings();
-            ws.Indent = true;
+            XmlWriterSettings ws = new XmlWriterSettings() { Indent = true };
             using (XmlWriter xw = XmlWriter.Create(sw, ws))
             {
                 xw.WriteNode(this, true);
@@ -748,8 +742,8 @@ namespace Microsoft.Xml
 
     public class CsvReader
     {
-        TextReader _r;
-        char[] _buffer;
+        readonly TextReader _r;
+        readonly char[] _buffer;
         int _pos;
         int _used;
 
@@ -760,7 +754,7 @@ namespace Microsoft.Xml
         char _colDelim; // possible values ',', ';', '\t', '|'
         char _quoteChar;
 
-        ArrayList _values;
+        readonly ArrayList _values;
         int _fields;
 
         public CsvReader(Stream stm, Encoding encoding, int bufsize)
@@ -780,8 +774,6 @@ namespace Microsoft.Xml
         {
             get { return _r; }
         }
-
-        const int EOF = 0xffff;
 
         public bool Read()
         { // read a record.
@@ -863,7 +855,7 @@ namespace Microsoft.Xml
                     ch = ReadChar();
                     if (ch == '\n' || ch == '\r')
                     {
-                        sb = AddField(); // blank field.
+                        AddField(); // blank field.
                     }
                 }
             }

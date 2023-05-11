@@ -15,6 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlNotepad", "XmlNotepad\Xm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{07661035-BFE2-4169-ADEF-364839871457}"
 	ProjectSection(ProjectDependencies) = postProject
+		{BA2AED71-4942-4F51-959E-963CEF7D0895} = {BA2AED71-4942-4F51-959E-963CEF7D0895}
 		{C33DB045-65F8-45F1-A703-C7D2969F06CA} = {C33DB045-65F8-45F1-A703-C7D2969F06CA}
 	EndProjectSection
 EndProject
@@ -37,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsInput", "WindowsInput\WindowsInput.csproj", "{3549CD6F-80F8-450F-B99E-CF0A736B1F2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateVersions", "UpdateVersions\UpdateVersions.csproj", "{55B3617B-D064-47C7-8D37-CDDC653808D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateVersions", "UpdateVersions\UpdateVersions.csproj", "{55B3617B-D064-47C7-8D37-CDDC653808D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

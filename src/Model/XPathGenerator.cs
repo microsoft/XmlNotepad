@@ -39,7 +39,7 @@ namespace Microsoft.Xml
     public class XPathGenerator
     {
         private int _nextPrefix;
-        private bool _useIndices;
+        private readonly bool _useIndices;
 
         /// <summary>
         /// Construct new XPathGenerator.  
@@ -122,12 +122,8 @@ namespace Microsoft.Xml
         {
             if (node != null)
             {
-                XmlNode parent = node.ParentNode;
-                if (parent == null)
-                {
-                    // ParentNode doesn't work on Attributes!
-                    parent = node.SelectSingleNode("..");
-                }
+                // ParentNode doesn't work on Attributes!
+                XmlNode parent = node.ParentNode ?? node.SelectSingleNode("..");
                 NodeToXPath(parent, sb, nsmgr);
                 string path = GetPathInParent(node, nsmgr);
                 if (path != null)

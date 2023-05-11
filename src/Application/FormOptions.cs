@@ -121,6 +121,13 @@ namespace XmlNotepad
             WebView2,
         }
 
+        public enum SettingsLocationUX
+        {
+            Portable = SettingsLocation.Portable,
+            Local = SettingsLocation.Local,
+            Roaming = SettingsLocation.Roaming
+        }
+
         // This class keeps s a local snapshot of the settings until the user clicks the Ok button,
         // then the Apply() method is called to propagate the new settings to the underlying Settings object.
         // It also provides localizable strings for the property grid.
@@ -186,7 +193,7 @@ namespace XmlNotepad
                 _indentChar = (IndentChar)this._settings["IndentChar"];
                 _newLineChars = this._settings.GetString("NewLineChars");
                 _language = this._settings.GetString("Language");
-                _settingsLocation = (SettingsLocation)this._settings.GetInteger("SettingsLocation", (int)SettingsLocation.Roaming);
+                _settingsLocation = this._settings.GetLocation();                
                 _maximumLineLength = this._settings.GetInteger("MaximumLineLength");
                 _autoFormatLongLines = this._settings.GetBoolean("AutoFormatLongLines");
                 _ignoreDTD = this._settings.GetBoolean("IgnoreDTD");
@@ -278,7 +285,7 @@ namespace XmlNotepad
                 this._settings["IndentChar"] = _indentChar;
                 this._settings["NewLineChars"] = _newLineChars;
                 this._settings["NoByteOrderMark"] = _noByteOrderMark;
-                this._settings["SettingsLocation"] = (int)_settingsLocation;
+                this._settings.SetLocation(_settingsLocation);
 
                 this._settings["Language"] = ("" + this._language).Trim();
                 this._settings["MaximumLineLength"] = this._maximumLineLength;
@@ -558,15 +565,15 @@ namespace XmlNotepad
             [SRCategory("SettingsCategory")]
             [LocDisplayName("SettingsLocation")]
             [SRDescription("SettingsLocationDescription")]
-            public SettingsLocation SettingsLocation
+            public SettingsLocationUX SettingsLocation
             {
                 get
                 {
-                    return this._settingsLocation;
+                    return (SettingsLocationUX)this._settingsLocation;
                 }
                 set
                 {
-                    this._settingsLocation = value;
+                    this._settingsLocation = (SettingsLocation)value;
                 }
             }
 

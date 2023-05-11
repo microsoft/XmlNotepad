@@ -20,7 +20,7 @@ namespace XmlNotepad
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            bool testing = false;
+            SettingsLocation loc = SettingsLocation.Auto;
             bool showMousePosition = false;
             string filename = null;
             foreach (string arg in args)
@@ -33,7 +33,10 @@ namespace XmlNotepad
                         switch (arg.TrimStart('-').ToLowerInvariant())
                         {
                             case "test":
-                                testing = true;
+                                loc = SettingsLocation.Test;
+                                break;
+                            case "template":
+                                loc = SettingsLocation.PortableTemplate;
                                 break;
                             case "debugmouse":
                                 showMousePosition = true;
@@ -47,7 +50,7 @@ namespace XmlNotepad
                 }
             }
 
-            FormMain form = new FormMain(testing);
+            FormMain form = new FormMain(loc);
             if (showMousePosition) form.ShowMousePosition();
             form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
             form.Show();

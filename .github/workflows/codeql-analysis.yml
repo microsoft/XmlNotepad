@@ -37,6 +37,10 @@ jobs:
         queries: security-and-quality
         languages: csharp
 
+    # Restore the application again to avoid codeql messing things up
+    - name: Restore the application
+      run: nuget restore ./src/XmlNotepad.sln
+
     - name: Build the application
       run: msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal /p:UseSharedCompilation=False
 
