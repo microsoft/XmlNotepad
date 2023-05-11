@@ -135,7 +135,7 @@ namespace XmlNotepad
                 // always start with no settings.                
                 settings.Load(this.TestConfigFile);
                 location = SettingsLocation.Roaming;
-                fileName = RoamingConfigFile; // and store it in RoamingConfigFile.
+                fileName = this.TestConfigFile; 
             }
             else if (location == SettingsLocation.PortableTemplate)
             {
