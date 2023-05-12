@@ -59,6 +59,10 @@ namespace XmlNotepad
 
         public void OnClosed()
         {
+            this._fileName = null;
+            // This serves 2 purposes, it reclaims memory while XSLT output is not visible
+            // and it clears the Find dialog so it does not float over the XmlTreeView.
+            this.Display("<html></html>");
             CleanupTempFile();
         }
 

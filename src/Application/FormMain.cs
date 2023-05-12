@@ -815,6 +815,10 @@ namespace XmlNotepad
 
         public virtual void DisplayXsltResults()
         {
+            if (_search != null)
+            {
+                _search.Close();
+            }
             this.xsltViewer.DisplayXsltResults();
             this._analytics.RecordXsltView();
         }
