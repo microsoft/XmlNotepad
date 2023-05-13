@@ -1,0 +1,25 @@
+<!ELEMENT patient_list (patient+, medicine+, doctor+)>
+<!ELEMENT patient (firstname, lastname, gender, medref*, docref*)>
+<!ATTLIST patient serialNo CDATA #REQUIRED>
+<!ELEMENT firstname (#PCDATA)>
+<!ELEMENT lastname (#PCDATA)>
+<!ELEMENT gender (#PCDATA)>
+
+<!ATTLIST medicine medID ID #REQUIRED>
+<!ATTLIST doctor docID ID #REQUIRED>
+
+<!ELEMENT medref EMPTY>
+<!ATTLIST medref refid IDREF #REQUIRED>
+
+<!ELEMENT docref EMPTY>
+<!ATTLIST docref refid IDREF #REQUIRED>
+
+<!ELEMENT medicine (name, manufacture, regNo)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT manufacture (#PCDATA)>
+<!ELEMENT regNo (#PCDATA)>
+
+<!ELEMENT doctor (registration, firstname, lastname, specialization)>
+<!ELEMENT registration (#PCDATA)>
+<!ATTLIST registration ID CDATA #REQUIRED>
+<!ELEMENT specialization (#PCDATA)>

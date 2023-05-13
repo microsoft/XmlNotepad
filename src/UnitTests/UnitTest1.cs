@@ -2593,6 +2593,61 @@ Prefix 'user' is not defined. ");
             this.SaveAndCompare("out.xml", "emp.xml");
         }
 
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestGotoIdRef()
+        {
+            Trace.WriteLine("TestGotoIdRef==========================================================");
+            string testFile = _testDir + "UnitTests\\patients.xml";
+            var w = this.LaunchNotepad(testFile);
+
+            Sleep(1000);
+
+            Trace.WriteLine("Test goto definition on element containing an IDREF attribute");
+            w.InvokeAsyncMenuItem("findToolStripMenuItem");
+            var popup = w.WaitForPopup();
+            FindDialog fd = new FindDialog(popup);
+            fd.UseRegex = false;
+            fd.UseXPath = false;
+            fd.UseWholeWord = false;
+            fd.FindString = "medref";
+            popup.SendKeystrokes("{ENTER}");
+            popup.DismissPopUp("{ESC}");
+            Sleep(100);
+
+            this.TreeView.SetFocus();
+            w.SendKeystrokes("{TAB}");
+            w.SendKeystrokes("{F12}");
+            Sleep(100);
+
+            // should be on the <medicine> element.
+            CheckNodeName("medID");
+            CheckNodeValue("M1");
+
+            Trace.WriteLine("Test goto definition on an IDREF attribute");
+            w.InvokeAsyncMenuItem("findToolStripMenuItem");
+            popup = w.WaitForPopup();
+            fd = new FindDialog(popup);
+            fd.UseRegex = false;
+            fd.UseXPath = false;
+            fd.UseWholeWord = false;
+            fd.FindString = "docref";
+            popup.SendKeystrokes("{ENTER}");
+            popup.DismissPopUp("{ESC}");
+            Sleep(100);
+
+            this.TreeView.SetFocus();
+            w.SendKeystrokes("{TAB}{RIGHT}{DOWN}");
+            w.SendKeystrokes("{F12}");
+
+            Sleep(100);
+
+            // should be on the <doctor> element.
+            CheckNodeName("docID");
+            CheckNodeValue("D37");
+        }
+
         [TestMethod]
         [Timeout(TestMethodTimeout)]
         public void TestMouse()

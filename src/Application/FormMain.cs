@@ -1413,7 +1413,7 @@ namespace XmlNotepad
 
         private void CheckAnalytics()
         {
-            if ((string)this.Settings["AnalyticsClientId"] == "" && AllowAnalytics)
+            if ((string)this.Settings["AnalyticsClientId"] == "" && AllowAnalytics && this.Settings.GetBoolean("AllowAnalytics", true))
             {
                 // have not yet asked for permission!
                 this.Settings["AnalyticsClientId"] = Guid.NewGuid().ToString();

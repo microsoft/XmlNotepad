@@ -721,6 +721,43 @@ namespace XmlNotepad
             }
         }
 
+        public IEnumerable<XmlSchemaAttribute> GetIdAttributes()
+        {
+            foreach (CacheEntry ce in this.GetSchemas())
+            {
+                if (ce.Schema == null) continue;
+                foreach (var so in ce.Schema.Items)
+                {
+                    if (so is XmlSchemaAttribute sa)
+                    {
+                        if (sa.SchemaTypeName.Name == "ID")
+                        {
+                            yield return sa;
+                        }
+                    }
+                    else if (so is XmlSchemaElement se)
+                    {
+                        if (se.SchemaType is XmlSchemaComplexType ct)
+                        {
+                            if (ct.Attributes != null)
+                            {
+                                foreach (var a in ct.Attributes)
+                                {
+                                    if (a is XmlSchemaAttribute sa2)
+                                    {
+                                        if (sa2.SchemaTypeName.Name == "ID")
+                                        {
+                                            yield return sa2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 

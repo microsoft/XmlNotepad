@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Schema;
 using SR = XmlNotepad.StringResources;
 
@@ -257,6 +259,33 @@ namespace XmlNotepad
             foreach (XmlTreeNode xn in nodes)
             {
                 if (xn.Node == node) return xn;
+            }
+
+            return null;
+        }
+
+        XmlTreeNode FindIdAttribute(HashSet<string> attributeNames, string value)
+        {
+            if (attributeNames.Count == 0)
+            {
+                return null;
+            }
+            return FindIdAttribute(this._myTreeView.Nodes, attributeNames, value);
+        }
+
+        XmlTreeNode FindIdAttribute(TreeNodeCollection nodes, HashSet<string> attributeNames, string value)
+        {
+            foreach (XmlTreeNode xn in nodes)
+            {
+                if (xn.NodeType == XmlNodeType.Attribute && attributeNames.Contains(xn.Node.Name) && xn.Node.Value == value)
+                {
+                    return xn;
+                }
+                if (xn.Children != null)
+                {
+                    var found = FindIdAttribute(xn.Children, attributeNames, value);
+                    if (found != null) return found;
+                }
             }
 
             return null;
@@ -1632,6 +1661,20 @@ namespace XmlNotepad
         {
             this._saving = false;
         }
+
+        internal XmlTreeNode FindElementById(string id)
+        {
+            HashSet<string> names = new HashSet<string>();
+            if (this.Model != null && this.Model.SchemaCache != null)
+            {
+                foreach (XmlSchemaAttribute a in this.Model.SchemaCache.GetIdAttributes())
+                {
+                    names.Add(a.Name);
+                }
+            }
+
+            return this.FindIdAttribute(names, id);
+        }
         #endregion
     }
 
@@ -2064,6 +2107,15 @@ namespace XmlNotepad
             }
             if (string.IsNullOrEmpty(ipath))
             {
+                var e = this.GetIdRef();
+                if (e != null)
+                {
+                    this.XmlTreeView.SelectedNode = e;
+                    return null;
+                }
+            }
+            if (string.IsNullOrEmpty(ipath))
+            {
                 ipath = this.GetTypeInfo();
             }
 
@@ -2126,6 +2178,55 @@ namespace XmlNotepad
             }
             return null;
         }
+
+        public virtual XmlTreeNode GetIdRef()
+        {
+            XmlSchemaAttribute found = null;
+            XmlSchemaObject o = GetSchemaObject();
+            if (o is XmlSchemaElement e)
+            {
+                if (e.ElementSchemaType is XmlSchemaComplexType ct)
+                {
+                    foreach (var attr in ct.Attributes)
+                    {
+                        if (attr is XmlSchemaAttribute a && a.SchemaTypeName.Name == "IDREF")
+                        {
+                            found = a;
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (o is XmlSchemaAttribute a)
+            {
+                found = a;
+            }
+
+            if (found != null && found.SchemaTypeName.Name == "IDREF")
+            {
+                // then this is an IDREF we can jump to some other place in the document that has the matching "ID".
+                string id = this.GetAttributeValue(found.Name);
+                if (this._view != null)
+                {
+                    return _view.FindElementById(id);
+                }
+            }
+            return null;
+        }
+
+        private string GetAttributeValue(string name)
+        {
+            if (this.Node is XmlElement e && e.HasAttributes)
+            {
+                return e.GetAttribute(name);
+            }
+            else if (this.Node is XmlAttribute a && a.Name == name)
+            {
+                return a.Value;
+            }
+            return null;
+        }
+        
 
         public virtual string GetTypeInfo()
         {

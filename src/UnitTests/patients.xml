@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<patient_list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="patients.xsd">
+  <patient serialNo="a1b2c3">
+    <firstname>Jon</firstname>
+    <lastname>Won</lastname>
+    <gender>male</gender>
+    <medref refid="M1" />
+    <docref refid="D37" />
+  </patient>
+  <patient serialNo="k4t5g2">
+    <firstname>Min</firstname>
+    <lastname>Hin</lastname>
+    <gender>female</gender>
+    <medref refid="M2" />
+    <docref refid="D21" />
+  </patient>
+  <medicine medID="M1">
+    <name>Panadol</name>
+    <manufacture>GSK</manufacture>
+    <regNo>oo9807</regNo>
+  </medicine>
+  <medicine medID="M2">
+    <name>Alprazolam</name>
+    <manufacture>Novartis</manufacture>
+    <regNo>hu5432</regNo>
+  </medicine>
+  <doctor docID="D21">
+    <registration ID="8472392" />
+    <firstname>Alfred</firstname>
+    <lastname>Campbell</lastname>
+    <specialization>Pediatrics</specialization>
+  </doctor>
+  <doctor docID="D37">
+    <registration ID="4364786" />
+    <firstname>Mick</firstname>
+    <lastname>Foley</lastname>
+    <specialization>Psychiatry</specialization>
+  </doctor>
+  <doctor>
+    <registration ID="ABC" />
+    <firstname>Glen</firstname>
+    <lastname>Baker</lastname>
+    <specialization>General</specialization>
+  </doctor>
+</patient_list>

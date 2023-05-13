@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="lastname" type="xs:string" />
+  <xs:element name="regNo" type="xs:string" />
+  <xs:element name="specialization" type="xs:string" />
+  <xs:element name="patient">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="firstname" />
+        <xs:element ref="lastname" />
+        <xs:element ref="gender" />
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="medref" />
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="docref" />
+      </xs:sequence>
+      <xs:attribute name="serialNo" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="docref">
+    <xs:complexType>
+      <xs:attribute name="refid" type="xs:IDREF" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name" type="xs:string" />
+  <xs:element name="gender" type="xs:string" />
+  <xs:element name="firstname" type="xs:string" />
+  <xs:element name="medref">
+    <xs:complexType>
+      <xs:attribute name="refid" type="xs:IDREF" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="patient_list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="patient" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="medicine" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="doctor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="doctor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="registration" />
+        <xs:element ref="firstname" />
+        <xs:element ref="lastname" />
+        <xs:element ref="specialization" />
+      </xs:sequence>
+      <xs:attribute name="docID" type="xs:ID" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="registration">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="ID" type="xs:string" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="manufacture" type="xs:string" />
+  <xs:element name="medicine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name" />
+        <xs:element ref="manufacture" />
+        <xs:element ref="regNo" />
+      </xs:sequence>
+      <xs:attribute name="medID" type="xs:ID" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

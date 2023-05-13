@@ -69,6 +69,7 @@
     <Content Include="includes\index.xml" />
     <Content Include="includes\r1.xml" />
     <Content Include="my.xml" />
+    <Content Include="patients.xml" />
     <Content Include="plants.xml" />
     <Content Include="rss.xsl" />
     <Content Include="supply.xml" />
@@ -119,6 +120,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="emp2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="patients.dtd" />
+    <None Include="patients.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="test2.xsd">
