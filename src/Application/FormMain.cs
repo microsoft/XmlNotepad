@@ -2873,7 +2873,7 @@ namespace XmlNotepad
 
             string cmd = Path.Combine(Environment.GetEnvironmentVariable("WINDIR"), "System32", "cmd.exe");
 
-            ProcessStartInfo pi = new ProcessStartInfo(cmd, "/K " + tempFile);
+            ProcessStartInfo pi = new ProcessStartInfo(cmd, string.Format("/K \"{0}\"", tempFile));
             pi.UseShellExecute = true;
             pi.WorkingDirectory = path;
             Process.Start(pi);
