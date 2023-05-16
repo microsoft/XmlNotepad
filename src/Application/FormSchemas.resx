@@ -223,7 +223,7 @@
     <value>undoToolStripMenuItem</value>
   </data>
   <data name="undoToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Z</value>
+    <value>Control+Z</value>
   </data>
   <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>165, 22</value>
@@ -235,7 +235,7 @@
     <value>redoToolStripMenuItem</value>
   </data>
   <data name="redoToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Y</value>
+    <value>Control+Y</value>
   </data>
   <data name="redoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>165, 22</value>
