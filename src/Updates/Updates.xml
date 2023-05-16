@@ -11,6 +11,7 @@
   </application>
   <version number="2.9.0.4">
     <feature>Add F12 goto definition support on XSD IDREF attributes to their matching ID attributes</feature>
+    <bug>Bug 284: View stastistics was broken if your Program Files folder was read/write.</bug>
   </version>
   <version number="2.9.0.3">
     <bug>Fix bug with XmlNotepad.template.settings file setup</bug>
