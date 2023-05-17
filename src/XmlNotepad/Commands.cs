@@ -2321,10 +2321,6 @@ namespace XmlNotepad
             }
             this.position = position;
             this.view = view;
-            if (td != null)
-            {
-                this.source = td.GetTreeNode(this.doc, this.target, this.view);
-            }
         }
 
         public XmlTreeNode NewNode { get { return this.source; } }
@@ -2340,9 +2336,14 @@ namespace XmlNotepad
 
         public override void Do()
         {
-
             if (td != null)
             {
+                this.view.Model.BeginUpdate();
+                if (this.source == null)
+                {
+                    this.source = td.GetTreeNode(this.doc, this.target, this.view);
+                }
+
                 InsertNode icmd = new InsertNode(this.view);
                 icmd.Initialize(source, this.target, position);
                 this.cmd = icmd;
@@ -2351,6 +2352,8 @@ namespace XmlNotepad
                 {
                     this.source.Expand();
                 }
+
+                this.view.Model.EndUpdate();
             }
         }
 
