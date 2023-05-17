@@ -1645,11 +1645,13 @@ namespace XmlNotepad
         public void BeginUpdate()
         {
             this._updating++;
+            this.Model.BeginUpdate();
         }
 
         public void EndUpdate()
         {
             this._updating--;
+            this.Model.EndUpdate();
         }
 
         public void BeginSave()

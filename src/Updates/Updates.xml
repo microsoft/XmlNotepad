@@ -11,6 +11,7 @@
   </application>
   <version number="2.9.0.5">
     <bug>Bug 285: Resx files were updated to fix build functionality in german VS (thanks to Oleg Missal!).</bug>
+    <bug>Bug 82: Paste very slow.</bug>
   </version>
   <version number="2.9.0.4">
     <feature>Add F12 goto definition support on XSD IDREF attributes to their matching ID attributes</feature>
