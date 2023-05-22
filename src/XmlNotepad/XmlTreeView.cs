@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -31,9 +32,10 @@ namespace XmlNotepad
         private XmlTreeNode _dragged;
         private XmlTreeViewDropFeedback _feedback;
         private IntelliTip _tip;
-        private DelayedActions _delayedActions;
         private NodeTextView _nodeTextView;
         private TreeView _myTreeView;
+        private HashSet<string> _schemaAwareNames;
+        private bool _showSchemaAwareText;
 
         public XmlTreeView()
         {
@@ -135,8 +137,7 @@ namespace XmlNotepad
             this.IntellisenseProvider.RegisterBuilder("XmlNotepad.UriBuilder", typeof(UriBuilder));
             this.IntellisenseProvider.RegisterEditor("XmlNotepad.DateTimeEditor", typeof(DateTimeEditor));
 
-            this._model = (XmlCache)this.Site.GetService(typeof(XmlCache));
-            this._delayedActions = (DelayedActions)this.Site.GetService(typeof(DelayedActions));
+            this._model = (XmlCache)this.Site.GetService(typeof(XmlCache));            
             if (this._model != null)
             {
                 this._model.FileChanged += new EventHandler(OnFileChanged);
@@ -148,9 +149,15 @@ namespace XmlNotepad
                 this._settings.Changed += new SettingsEventHandler(OnSettingsChanged);
                 int indent = this.Settings.GetInteger("TreeIndent");
                 this._myTreeView.TreeIndent = indent;
+                this._schemaAwareNames = new HashSet<string>(this._settings.GetString("SchemaAwareNames").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries), StringComparer.InvariantCultureIgnoreCase);
+                this._showSchemaAwareText = this._settings.GetBoolean("SchemaAwareText");
             }
             if (this._model != null) BindTree();
         }
+
+        public HashSet<string> SchemaAwareNames => this._schemaAwareNames;
+
+        public bool ShowSchemaAwareText => this._showSchemaAwareText;
 
         [Browsable(false)]
         public XmlCache Model
@@ -1225,6 +1232,16 @@ namespace XmlNotepad
                 this._myTreeView.TreeIndent = indent;
                 update = true;
             }
+            if (name == "SchemaAwareNames")
+            {
+                this._schemaAwareNames = new HashSet<string>(this._settings.GetString("SchemaAwareNames").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries), StringComparer.InvariantCultureIgnoreCase);
+                update = true;
+            }
+            if (name == "SchemaAwareText")
+            {
+                this._showSchemaAwareText = this._settings.GetBoolean("SchemaAwareText");
+                update = true;
+            }
 
             if (update)
             {
@@ -1704,6 +1721,8 @@ namespace XmlNotepad
         private XmlSchemaType _type;
         private XmlNodeType _nodeType;
         private string _editLabel;
+        private string _schemaAwareText;
+        private Color _schemaAwareColor;
 
         public XmlTreeNode(XmlTreeView view)
         {
@@ -1758,8 +1777,6 @@ namespace XmlNotepad
             }
         }
 
-
-
         public override void Remove()
         {
             base.Remove();
@@ -1810,10 +1827,33 @@ namespace XmlNotepad
             {
                 this._settings = _view.Settings;
                 this._img = CalculateNodeImage(this.Node);
-                this._foreColor = this.GetForeColor(this._img);
+                this.InitForeColor(this._img);
+                this._schemaAwareText = null;
             }
         }
 
+        internal string GetSchemaAwareText()
+        {
+            string id = GetIdAttributeValue();
+            if (!string.IsNullOrEmpty(id))
+            {
+                return id;
+            }
+            TreeNodeCollection nodes = GetChildren(this);
+            if (nodes != null)
+            {
+                foreach (var node in nodes)
+                {
+                    if (!string.IsNullOrEmpty(node.Label) && this._view.SchemaAwareNames.Contains(node.Label))
+                    {
+                        return node.Text;
+                    }
+                }
+            }
+            // must not return null, as the difference between null and string.Empty is
+            // used to determine if this has already been computed for efficiency reasons.
+            return string.Empty; 
+        }
 
         public override void Invalidate()
         {
@@ -1860,6 +1900,25 @@ namespace XmlNotepad
                 this.Invalidate();
             }
         }
+
+        public override string Label2 {
+            get {
+                // very important this is lazily constructed only for visible nodes because it is expensive!
+                if (this._schemaAwareText == null && this._view?.ShowSchemaAwareText == true)
+                {
+                    this._schemaAwareText = this.GetSchemaAwareText();
+                    if (!string.IsNullOrEmpty(this._schemaAwareText))
+                    {
+                        this._schemaAwareText = ": " + this._schemaAwareText;
+                    }
+                }
+                return this._schemaAwareText;
+            }
+            set => this._schemaAwareText = value;
+        }
+
+        public override Color Label2Color => this._schemaAwareColor;
+
         public override bool IsLabelEditable
         {
             get
@@ -1868,6 +1927,7 @@ namespace XmlNotepad
                     ((this._node is XmlAttribute || this._node is XmlElement)));
             }
         }
+
         public override string Text
         {
             get
@@ -1936,28 +1996,34 @@ namespace XmlNotepad
             }
         }
 
-        public Color GetForeColor(NodeImage img)
+        public void InitForeColor(NodeImage img)
         {
             var theme = (ColorTheme)this._settings["Theme"];
             var colorSetName = theme == ColorTheme.Light ? "LightColors" : "DarkColors";
             ThemeColors colors = (ThemeColors)this._settings[colorSetName];
+            Color color = colors.Text;
             switch (img)
             {
                 case NodeImage.Element:
                 case NodeImage.OpenElement:
                 case NodeImage.Leaf:
-                    return colors.Element;
+                    color = colors.Element;
+                    break;
                 case NodeImage.Attribute:
-                    return colors.Attribute;
+                    color = colors.Attribute;
+                    break;
                 case NodeImage.PI:
-                    return colors.PI;
+                    color = colors.PI;
+                    break;
                 case NodeImage.CData:
-                    return colors.CDATA;
+                    color = colors.CDATA;
+                    break;
                 case NodeImage.Comment:
-                    return colors.Comment;
-                default:
-                    return colors.Text;
+                    color = colors.Comment;
+                    break;
             }
+            this._foreColor = color;
+            this._schemaAwareColor = colors.SchemaAwareTextColor;
         }
 
         NodeImage CalculateNodeImage(XmlNode n)
@@ -2177,6 +2243,33 @@ namespace XmlNotepad
                 if (st != null) return st;
 
                 return si.SchemaType;
+            }
+            return null;
+        }
+
+        public virtual string GetIdAttributeValue()
+        {
+            XmlSchemaAttribute found = null;
+            XmlSchemaObject o = GetSchemaObject();
+            if (o is XmlSchemaElement e)
+            {
+                if (e.ElementSchemaType is XmlSchemaComplexType ct)
+                {
+                    foreach (var attr in ct.Attributes)
+                    {
+                        if (attr is XmlSchemaAttribute a && a.SchemaTypeName.Name == "ID")
+                        {
+                            found = a;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (found != null)
+            {
+                // then this is an ID attribute so return the attribute value.
+                return this.GetAttributeValue(found.Name);
             }
             return null;
         }

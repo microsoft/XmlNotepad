@@ -10,6 +10,10 @@
     <frequency>1.00:00:00</frequency>
   </application>
   <version number="2.9.0.5">
+    <feature>
+      Add SchemaAwareText for XML elements that contain a child id, name, title or xsd:key.  New options allow you
+      to configure the color (SchemaAwareTextColor) and whether to show it, and what default element names should
+      be promoted where the defaults are "id, name, key, title". Thanks to Tomasz Wilczyński!.</feature>
     <bug>Bug 285: Resx files were updated to fix build functionality in german VS (thanks to Oleg Missal!).</bug>
     <bug>Bug 82: Paste very slow.</bug>
   </version>

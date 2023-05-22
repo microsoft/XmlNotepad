@@ -1315,8 +1315,6 @@ namespace XmlNotepad
         private TreeView _view;
         internal int _bottom; // Y coordinate of bottom of last grandchild.
         private AccessibleObject _acc;
-        private readonly Brush _schemaAwareBrush = new SolidBrush(Color.LightBlue); // schemaAware color
-        private readonly string[] _schemaAwareLabels = { "name", "title", "id", "key" };
 
         protected TreeNode()
         {
@@ -1354,9 +1352,11 @@ namespace XmlNotepad
 
         public abstract string Label { get; set; }
         public abstract bool IsLabelEditable { get; }
+        public abstract string Label2 { get; set; }
         public abstract TreeNodeCollection Children { get; }
         public abstract int ImageIndex { get; }
         public abstract Color ForeColor { get; }
+        public abstract Color Label2Color { get; }
         public abstract string Text { get; set; }
 
         TreeNodeCollection ParentCollection
@@ -1616,7 +1616,10 @@ namespace XmlNotepad
                 }
                 Layout(g, f, lineHeight, startX, indent, state.Depth, y, imgSize);
                 g.DrawString(text, f, brush, this._labelBounds.Left, this._labelBounds.Top, StringFormat.GenericTypographic);
-                DrawSchemaAware(this, g, f);
+                if (!string.IsNullOrEmpty(this.Label2))
+                {
+                    DrawLabel2(g, f);
+                }
                 brush.Dispose();
             }
         }
@@ -1666,9 +1669,16 @@ namespace XmlNotepad
             }
         }
 
-        internal void DrawSchemaAware(TreeNode n, Graphics g, Font f)
+        internal void DrawLabel2(Graphics g, Font f)
         {
-            g.DrawString(GetSchemaAwareText(n), f, _schemaAwareBrush, n._labelBounds.Right, n._labelBounds.Top, StringFormat.GenericTypographic);
+            var brush = new SolidBrush(this.Label2Color);
+            int gap = (f.Height / 4) + 1; // gap is proportional to font size.
+            SizeF s = g.MeasureString(this.Label2, f);
+            if (_labelBounds.Right + gap + s.Width > this.TreeView.Width)
+            {
+                // todo: trim the string and add an elipsis?
+            }
+            g.DrawString(this.Label2, f, brush, _labelBounds.Right + gap, _labelBounds.Top, StringFormat.GenericTypographic);
         }
 
         internal static TreeNodeCollection GetChildren(TreeNode n)
@@ -1678,36 +1688,6 @@ namespace XmlNotepad
                 return n.Children;
             }
             return null;
-        }
-
-        internal TreeNode GetSchemaAwareChild(TreeNode n)
-        {
-            TreeNodeCollection nodes = GetChildren(n);
-            if (TreeView.documentType == "html" || nodes == null)
-            {
-                return null;
-            }
-            foreach (var label in _schemaAwareLabels)
-            {
-                foreach (var node in nodes)
-                {
-                    if (label == node.Label.ToLower())
-                    {
-                        return node;
-                    }
-                }
-            }
-            return null;
-        }
-
-        internal string GetSchemaAwareText(TreeNode n)
-        {
-            TreeNode schemaAwareChild = GetSchemaAwareChild(n);
-            if (schemaAwareChild != null && schemaAwareChild.Text != null)
-            {
-                return "[\"" + schemaAwareChild.Text + "\"]";
-            }
-            return "";
         }
 
         public static TreeNode GetLastVisibleNode(TreeNodeCollection nodes)
@@ -1776,15 +1756,6 @@ namespace XmlNotepad
             }
         }
 
-        // dead code.
-        //public void BeginEdit(string name) {
-        //    Debug.Assert(this.view != null);
-        //    if (this.view != null) {
-        //        this.view.SelectedNode = this;
-        //        this.view.BeginEdit(name);
-        //    }
-        //}
-
         public bool EndEdit(bool cancel)
         {
             Debug.Assert(this._view != null);
@@ -1797,7 +1768,9 @@ namespace XmlNotepad
 
         public bool IsEditing
         {
-            get { return this._view != null && this._view.IsEditing; }
+            get { 
+                return this._view != null && this._view.IsEditing; 
+            }
         }
 
         public virtual void Expand()
@@ -2269,18 +2242,10 @@ namespace XmlNotepad
         {
             get
             {
-                //string s = node.Text;
-                //if (s == null) s = "";
-                //return s;
                 return _node.Label;
             }
             set
             {
-                //// hack alert - this is breaking architectural layering!
-                //XmlTreeNode xnode = (XmlTreeNode)node;
-                //XmlTreeView xview = xnode.XmlTreeView;
-                //xview.UndoManager.Push(new EditNodeValue(xview, xnode, value));
-
                 // hack alert - this is breaking architectural layering!
                 XmlTreeNode xnode = (XmlTreeNode)_node;
                 xnode.XmlTreeView.UndoManager.Push(new EditNodeName(xnode, value));

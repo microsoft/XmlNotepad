@@ -1327,6 +1327,69 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Special names that are promoted even without schema information..
+        /// </summary>
+        public static string SchemaAwareNamesDescription {
+            get {
+                return ResourceManager.GetString("SchemaAwareNamesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special names.
+        /// </summary>
+        public static string SchemaAwareNamesName {
+            get {
+                return ResourceManager.GetString("SchemaAwareNamesName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schema aware text color.
+        /// </summary>
+        public static string SchemaAwareTextColor {
+            get {
+                return ResourceManager.GetString("SchemaAwareTextColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color for schema aware text that is promoted to the parent element..
+        /// </summary>
+        public static string SchemaAwareTextColorDescription {
+            get {
+                return ResourceManager.GetString("SchemaAwareTextColorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Promote xsd keys and ids from element content up to the element name row in the TreeView..
+        /// </summary>
+        public static string SchemaAwareTextDescription {
+            get {
+                return ResourceManager.GetString("SchemaAwareTextDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show schema aware text.
+        /// </summary>
+        public static string SchemaAwareTextName {
+            get {
+                return ResourceManager.GetString("SchemaAwareTextName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schema Options.
+        /// </summary>
+        public static string SchemaCategory {
+            get {
+                return ResourceManager.GetString("SchemaCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Schema Error.
         /// </summary>
         public static string SchemaError {

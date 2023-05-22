@@ -35,6 +35,7 @@ namespace XmlNotepad
     public class ThemeColors : IXmlSerializable
     {
         public Color Element = Color.Transparent;
+        public Color SchemaAwareTextColor = Color.Transparent;
         public Color Attribute = Color.Transparent;
         public Color Text = Color.Transparent;
         public Color Comment = Color.Transparent;
@@ -48,7 +49,7 @@ namespace XmlNotepad
 
         public override int GetHashCode()
         {
-            return Element.GetHashCode() + Attribute.GetHashCode() + Text.GetHashCode() + Comment.GetHashCode() +
+            return Element.GetHashCode() + SchemaAwareTextColor.GetHashCode() + Attribute.GetHashCode() + Text.GetHashCode() + Comment.GetHashCode() +
                 PI.GetHashCode() + CDATA.GetHashCode() + Background.GetHashCode() + ContainerBackground.GetHashCode() +
                 EditorBackground.GetHashCode() + Markup.GetHashCode();
         }
@@ -60,6 +61,7 @@ namespace XmlNotepad
                 return new ThemeColors()
                 {
                     Element = Color.FromArgb(0, 64, 128),
+                    SchemaAwareTextColor = Color.FromArgb(0, 134, 198),
                     Attribute = Color.Maroon,
                     Text = Color.Black,
                     Comment = Color.Green,
@@ -76,6 +78,7 @@ namespace XmlNotepad
                 return new ThemeColors()
                 {
                     Element = Color.FromArgb(0x35, 0x7D, 0xCE),
+                    SchemaAwareTextColor = Color.FromArgb(13, 85, 166),
                     Attribute = Color.FromArgb(0x92, 0xCA, 0xF3),
                     Text = Color.FromArgb(0xC0, 0xC0, 0xC0),
                     Comment = Color.FromArgb(0x45, 0x8A, 0x23),
@@ -101,6 +104,7 @@ namespace XmlNotepad
         internal void Merge(ThemeColors defaults)
         {
             Element = MergeColor(this.Element, defaults.Element);
+            SchemaAwareTextColor = MergeColor(this.SchemaAwareTextColor, defaults.SchemaAwareTextColor);
             Attribute = MergeColor(this.Attribute, defaults.Attribute);
             Text = MergeColor(this.Text, defaults.Text);
             Comment = MergeColor(this.Comment, defaults.Comment);
@@ -126,6 +130,7 @@ namespace XmlNotepad
             if (t != null)
             {
                 return this.Element == t.Element &&
+                    this.SchemaAwareTextColor == t.SchemaAwareTextColor && 
                     this.Attribute == t.Attribute &&
                     this.Text == t.Text &&
                     this.Comment == t.Comment &&
@@ -173,6 +178,9 @@ namespace XmlNotepad
                                 case "Element":
                                     this.Element = c;
                                     break;
+                                case "SchemaAwareTextColor":
+                                    this.SchemaAwareTextColor = c;
+                                    break;
                                 case "Attribute":
                                     this.Attribute = c;
                                     break;
@@ -208,6 +216,7 @@ namespace XmlNotepad
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString("Element", tc.ConvertToString(this.Element));
+            writer.WriteElementString("SchemaAwareTextColor", tc.ConvertToString(this.SchemaAwareTextColor));
             writer.WriteElementString("Attribute", tc.ConvertToString(this.Attribute));
             writer.WriteElementString("Text", tc.ConvertToString(this.Text));
             writer.WriteElementString("Comment", tc.ConvertToString(this.Comment));
@@ -907,6 +916,8 @@ namespace XmlNotepad
             this["SearchWholeWord"] = false;
             this["SearchRegex"] = false;
             this["SearchMatchCase"] = false;
+            this["SchemaAwareText"] = true;
+            this["SchemaAwareNames"] = "id,name,title,key";
 
             this["LastUpdateCheck"] = DateTime.Now;
             this["UpdateFrequency"] = TimeSpan.FromDays(20);
