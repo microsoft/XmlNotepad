@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.Remoting.Messaging;
 
 namespace XmlNotepad
 {
@@ -30,6 +31,7 @@ namespace XmlNotepad
         private int _mouseDownEditDelay = 400;
         private Point _scrollPosition;
         private AccessibleTree _acc;
+        internal string documentType = "";
 
         /// <summary> 
         /// Required designer variable.
@@ -225,7 +227,23 @@ namespace XmlNotepad
             {
                 ClearSelection();
                 this._nodes = value;
+                SetDocumentType();
                 PerformLayout();
+            }
+        }
+
+        private void SetDocumentType()
+        {
+            if (this.Nodes != null && this.Nodes.Count > 0)
+            {
+                if (this.Nodes[0].Label.ToLower() == "html")
+                {
+                    documentType = "html";
+                }
+                else
+                {
+                    documentType = "xml";
+                }
             }
         }
 
@@ -1297,6 +1315,8 @@ namespace XmlNotepad
         private TreeView _view;
         internal int _bottom; // Y coordinate of bottom of last grandchild.
         private AccessibleObject _acc;
+        private readonly Brush _schemaAwareBrush = new SolidBrush(Color.LightBlue); // schemaAware color
+        private readonly string[] _schemaAwareLabels = { "name", "title", "id", "key" };
 
         protected TreeNode()
         {
@@ -1499,7 +1519,8 @@ namespace XmlNotepad
         public Rectangle LabelBounds
         {
             get { return this._labelBounds; }
-            set { 
+            set
+            {
                 this._labelBounds = value;
                 if (this.Label == "PLAY" && value.X == 33)
                 {
@@ -1595,6 +1616,7 @@ namespace XmlNotepad
                 }
                 Layout(g, f, lineHeight, startX, indent, state.Depth, y, imgSize);
                 g.DrawString(text, f, brush, this._labelBounds.Left, this._labelBounds.Top, StringFormat.GenericTypographic);
+                DrawSchemaAware(this, g, f);
                 brush.Dispose();
             }
         }
@@ -1644,6 +1666,49 @@ namespace XmlNotepad
             }
         }
 
+        internal void DrawSchemaAware(TreeNode n, Graphics g, Font f)
+        {
+            g.DrawString(GetSchemaAwareText(n), f, _schemaAwareBrush, n._labelBounds.Right, n._labelBounds.Top, StringFormat.GenericTypographic);
+        }
+
+        internal static TreeNodeCollection GetChildren(TreeNode n)
+        {
+            if (n.Children.Count > 0)
+            {
+                return n.Children;
+            }
+            return null;
+        }
+
+        internal TreeNode GetSchemaAwareChild(TreeNode n)
+        {
+            TreeNodeCollection nodes = GetChildren(n);
+            if (TreeView.documentType == "html" || nodes == null)
+            {
+                return null;
+            }
+            foreach (var label in _schemaAwareLabels)
+            {
+                foreach (var node in nodes)
+                {
+                    if (label == node.Label.ToLower())
+                    {
+                        return node;
+                    }
+                }
+            }
+            return null;
+        }
+
+        internal string GetSchemaAwareText(TreeNode n)
+        {
+            TreeNode schemaAwareChild = GetSchemaAwareChild(n);
+            if (schemaAwareChild != null && schemaAwareChild.Text != null)
+            {
+                return "[\"" + schemaAwareChild.Text + "\"]";
+            }
+            return "";
+        }
 
         public static TreeNode GetLastVisibleNode(TreeNodeCollection nodes)
         {
@@ -1685,7 +1750,6 @@ namespace XmlNotepad
             }
             return n;
         }
-
 
         public TreeNode NextVisibleNode
         {
