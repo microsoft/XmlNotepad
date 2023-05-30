@@ -1,2 +1,4 @@
 @echo off
-vstest.console  .\src\UnitTests\bin\Debug\UnitTests.dll
+set TEST_DLL=.\src\UnitTests\bin\Debug\UnitTests.dll
+
+vstest.console "%TEST_DLL%"
