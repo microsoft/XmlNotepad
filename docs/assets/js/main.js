@@ -1,22 +1,27 @@
 jQuery(document).ready(function ($) {
+  const navbar = $('.navbar-default');
+  const cookieBanner = $('.cookie-banner');
+  const brandHome = $('.brand-home');
+  const panelHeading = $('.panel-heading');
 
-  // shrink nav onscroll - mobile first ux
+  // Shrink nav on scroll - mobile-first UX
   $(window).scroll(function () {
     if ($(document).scrollTop() > 20) {
-      $('.navbar-default').addClass('shrink');
-      $('.cookie-banner').addClass('shrink');
+      navbar.addClass('shrink');
+      cookieBanner.addClass('shrink');
     } else {
-      $('.navbar-default').removeClass('shrink');
-      $('.cookie-banner').removeClass('shrink');
-    };
+      navbar.removeClass('shrink');
+      cookieBanner.removeClass('shrink');
+    }
+
     if ($(document).scrollTop() > 320) {
-      $('.brand-home').addClass('slide-out-top');
+      brandHome.addClass('slide-out-top');
     } else {
-      $('.brand-home').removeClass('slide-out-top');
+      brandHome.removeClass('slide-out-top');
     }
   });
 
-  //toggle sidenav arrows up or down
+  // Toggle sidenav arrows up or down
   $('.panel-collapse').on('show.bs.collapse', function () {
     $(this).siblings('.panel-heading').addClass('active');
   });
@@ -25,7 +30,6 @@ jQuery(document).ready(function ($) {
     $(this).siblings('.panel-heading').removeClass('active');
   });
 
-  var year = (new Date()).getFullYear();
-  $("#copyright").append("&copy; " + year + " Microsoft");
-
+  const year = new Date().getFullYear();
+  $('#copyright').append(`&copy; ${year} Microsoft`);
 });
