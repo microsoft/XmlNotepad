@@ -13,16 +13,48 @@ namespace XmlNotepad
         [STAThread]
         static void Main(string[] args)
         {
-            if (Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_HIGH_DPI") == "1")
+            if (IsHighDpiDisabled())
             {
-                var section = ConfigurationManager.GetSection("System.Windows.Forms.ApplicationConfigurationSection") as NameValueCollection;
-                section.Set("DpiAwareness", "false");
+                DisableHighDpiAwareness();
             }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            SettingsLocation loc = SettingsLocation.Auto;
-            bool showMousePosition = false;
-            string filename = null;
+            
+            // Added new features
+            SettingsLocation loc = GetSettingsLocation(args);
+            bool showMousePosition = IsDebugMouseEnabled(args);
+            string filename = GetFilename(args);
+
+            FormMain form = new FormMain(loc);
+            if (showMousePosition)
+            {
+                form.ShowMousePosition();
+            }
+            form.AllowAnalytics = !IsAnalyticsDisabled();
+            form.Show();
+            Application.DoEvents();
+            if (!string.IsNullOrEmpty(filename))
+            {
+                _ = form.Open(filename);
+            }
+            Application.Run(form);
+        }
+
+        static bool IsHighDpiDisabled()
+        {
+            return Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_HIGH_DPI") == "1";
+        }
+
+        static void DisableHighDpiAwareness()
+        {
+            var section = ConfigurationManager.GetSection("System.Windows.Forms.ApplicationConfigurationSection") as NameValueCollection;
+            section?.Set("DpiAwareness", "false");
+        }
+
+        // New feature: Get the settings location from command-line arguments
+        static SettingsLocation GetSettingsLocation(string[] args)
+        {
             foreach (string arg in args)
             {
                 if (!string.IsNullOrEmpty(arg))
@@ -33,34 +65,45 @@ namespace XmlNotepad
                         switch (arg.TrimStart('-').ToLowerInvariant())
                         {
                             case "test":
-                                loc = SettingsLocation.Test;
-                                break;
+                                return SettingsLocation.Test;
                             case "template":
-                                loc = SettingsLocation.PortableTemplate;
-                                break;
-                            case "debugmouse":
-                                showMousePosition = true;
-                                break;
+                                return SettingsLocation.PortableTemplate;
                         }
-                    }
-                    else if (filename == null)
-                    {
-                        filename = arg;
                     }
                 }
             }
+            return SettingsLocation.Auto;
+        }
 
-            FormMain form = new FormMain(loc);
-            if (showMousePosition) form.ShowMousePosition();
-            form.AllowAnalytics = Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1";
-            form.Show();
-            Application.DoEvents();
-            if (!string.IsNullOrEmpty(filename))
+        // New feature: Check if the debug mouse option is enabled from command-line arguments
+        static bool IsDebugMouseEnabled(string[] args)
+        {
+            foreach (string arg in args)
             {
-                _ = form.Open(filename);
+                if (!string.IsNullOrEmpty(arg) && arg.TrimStart('-').ToLowerInvariant() == "debugmouse")
+                {
+                    return true;
+                }
             }
-            Application.Run(form);
+            return false;
+        }
+
+        // New feature: Get the filename from command-line arguments
+        static string GetFilename(string[] args)
+        {
+            foreach (string arg in args)
+            {
+                if (!string.IsNullOrEmpty(arg) && arg[0] != '-' && arg[0] != '/')
+                {
+                    return arg;
+                }
+            }
+            return null;
+        }
+
+        static bool IsAnalyticsDisabled()
+        {
+            return Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") == "1";
         }
     }
-
 }
