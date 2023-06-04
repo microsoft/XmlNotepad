@@ -1,41 +1,42 @@
-﻿<script type="text/javascript">
+<script type="text/javascript">
     var current = -1;
 
-    function onNext(){
+    function onNext() {
         var anchors = document.getElementsByTagName("a");
         if (current + 1 < anchors.length) {
-        current++;
+            current++;
+        } else {
+            current = 0;
+        }
         var a = anchors[current];
         a.scrollIntoView(true);
-        }
     }
+
     function onPrev() {
         var anchors = document.getElementsByTagName("a");
-        if (current != 0) {
-        if (current == -1) {
-            current = 0;
-        } else {
+        if (current - 1 >= 0) {
             current--;
+        } else {
+            current = anchors.length - 1;
         }
         var a = anchors[current];
         a.scrollIntoView(true);
-        }
     }
 </script>
 <body>
     <div id="header">
-        <b>Legend:</b> <span class='add' style="padding:5px;color:black;">added</span>&nbsp;&nbsp;
-        <span class='remove' style="padding:5px;color:black;">removed</span>&nbsp;&nbsp;
-        <span class='change' style="padding:5px;color:black;">changed</span>&nbsp;&nbsp;
-        <span class='movefrom' style="padding:5px;color:black;">moved from</span>&nbsp;&nbsp;
-        <span class='moveto' style="padding:5px;color:black;">moved to</span>&nbsp;&nbsp;
+        <b>Legend:</b>
+        <span class='add' style="padding:5px;color:black;">added</span>
+        <span class='remove' style="padding:5px;color:black;">removed</span>
+        <span class='change' style="padding:5px;color:black;">changed</span>
+        <span class='movefrom' style="padding:5px;color:black;">moved from</span>
+        <span class='moveto' style="padding:5px;color:black;">moved to</span>
         <span class='ignore' style="padding:5px;">ignored</span>
         <input type="button" value="next" onclick="onNext()" style='padding:5px 10px' />
         <input type="button" value="prev" onclick="onPrev()" style='padding:5px 10px' />
     </div>
     <div id="main">
         <table border='0' width='100%' style='table-layout:fixed;'>
-            <COL WIDTH='40'>
-            <COL WIDTH='50%'>
-            <COL WIDTH='50%'>
-
+            <col width='40'>
+            <col width='30%'>
+            <col width='30%'>
