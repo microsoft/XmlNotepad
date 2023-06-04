@@ -1,9 +1,8 @@
-﻿
 body, div {
     margin: 0;
     padding: 0;
-    font-family:Calibri (Body);
-    font-size:11pt;
+    font-family: Calibri, sans-serif;
+    font-size: 11pt;
 }
 
 body {
@@ -16,55 +15,66 @@ body {
 #header {
     /* Provide scrollbars if needed and fix the header dimensions */
     overflow: auto;
-    position: absolute;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 40px;
+    height: 60px;
     padding: 10px;
     background: #333333;
-    color:#CCE1E1;
+    color: #CCE1E1;
 }
 
 .match {
+    /* Add styles for matching elements */
+    font-weight: bold;
 }
 
 .ignore {
+    /* Add styles for ignored elements */
     color: #AAAAAA;
+    text-decoration: line-through;
 }
 
 .add {
+    /* Add styles for added elements */
     background-color: yellow;
 }
 
 .moveto {
+    /* Add styles for moved elements */
     background-color: cyan;
     color: navy;
 }
 
 .remove {
+    /* Add styles for removed elements */
     background-color: red;
 }
 
 .movefrom {
+    /* Add styles for moved-from elements */
     background-color: cyan;
     color: navy;
 }
 
 .change {
+    /* Add styles for changed elements */
     background-color: lightgreen;
 }
 
 .code {
-    font-family: Courier New;
-    font-size: 12;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
 }
-
 
 #main {
     /* Provide scrollbars if needed, position below header, and derive height from top/bottom */
     overflow: auto;
-    position: absolute;
-    width: 100%;
+    position: fixed;
     top: 60px;
+    left: 0;
+    width: 100%;
     bottom: 0;
     padding: 10px;
 }
