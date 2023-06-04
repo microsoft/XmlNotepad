@@ -1,16 +1,16 @@
-﻿<Settings>
+<Settings>
   <AutoFormatLongLines>False</AutoFormatLongLines>
   <AutoFormatOnSave>True</AutoFormatOnSave>
   <BrowserVersion />
   <DarkColors>
-    <Element>53, 125, 206</Element>
-    <Attribute>146, 202, 243</Attribute>
-    <Text>192, 192, 192</Text>
-    <Comment>69, 138, 35</Comment>
-    <PI>172, 145, 106</PI>
-    <CDATA>194, 203, 133</CDATA>
-    <Background>30, 30, 30</Background>
-    <ContainerBackground>37, 37, 38</ContainerBackground>
+    <Element>#357DCE</Element>
+    <Attribute>#92CAF3</Attribute>
+    <Text>#C0C0C0</Text>
+    <Comment>#458A23</Comment>
+    <PI>#AC916A</PI>
+    <CDATA>#C2CB85</CDATA>
+    <Background>#1E1E1E</Background>
+    <ContainerBackground>#252526</ContainerBackground>
   </DarkColors>
   <DisableDefaultXslt>False</DisableDefaultXslt>
   <DisableUpdateUI>False</DisableUpdateUI>
@@ -24,7 +24,7 @@
   <IndentChar>Space</IndentChar>
   <IndentLevel>2</IndentLevel>
   <LightColors>
-    <Element>0, 64, 128</Element>
+    <Element>#004080</Element>
     <Attribute>Maroon</Attribute>
     <Text>Black</Text>
     <Comment>Green</Comment>
