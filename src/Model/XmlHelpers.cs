@@ -1,30 +1,14 @@
-﻿using System.Xml;
+using System;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace XmlNotepad
 {
     public class XmlName
     {
-        private string _prefix;
-        private string _localName;
-        private string _namespaceUri;
-
-        public string Prefix
-        {
-            get { return _prefix; }
-            set { _prefix = value; }
-        }
-
-        public string LocalName
-        {
-            get { return _localName; }
-            set { _localName = value; }
-        }
-
-        public string NamespaceUri
-        {
-            get { return _namespaceUri; }
-            set { _namespaceUri = value; }
-        }
+        public string Prefix { get; set; }
+        public string LocalName { get; set; }
+        public string NamespaceUri { get; set; }
     }
 
     public sealed class XmlHelpers
@@ -133,19 +117,19 @@ namespace XmlNotepad
             XmlNode parent = context;
             while (parent != null)
             {
-                if (parent is XmlElement)
+                if (parent is XmlElement element)
                 {
-                    if (parent.Attributes != null)
+                    if (element.HasAttributes)
                     {
-                        foreach (XmlAttribute a in parent.Attributes)
+                        foreach (XmlAttribute attribute in element.Attributes)
                         {
-                            if (a.NamespaceURI == XmlnsUri)
+                            if (attribute.NamespaceURI == XmlnsUri)
                             {
-                                string prefix = nt.Add(a.LocalName);
+                                string prefix = nt.Add(attribute.LocalName);
                                 if (prefix == "xmlns") prefix = "";
                                 if (!nsmgr.HasNamespace(prefix))
                                 {
-                                    nsmgr.AddNamespace(prefix, nt.Add(a.Value));
+                                    nsmgr.AddNamespace(prefix, nt.Add(attribute.Value));
                                 }
                             }
                         }
@@ -173,9 +157,8 @@ namespace XmlNotepad
             XmlAttribute xmlns = context.OwnerDocument.CreateAttribute("xmlns", name.Prefix, XmlHelpers.XmlnsUri);
             if (context.HasAttribute(xmlns.Name))
             {
-                // already have an attribute with this name! This is a tricky case where
-                // user is deleting a namespace declaration.  We don't want to reinsert it
-                // automatically in that case!
+                // Already have an attribute with this name. This is a tricky case where
+                // the user is deleting a namespace declaration. We don't want to reinsert it automatically.
                 return null;
             }
             xmlns.Value = name.NamespaceUri;
