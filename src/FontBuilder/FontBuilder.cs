@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml.Schema;
 using XmlNotepad;
 
@@ -18,7 +18,7 @@ namespace Microsoft
     /// </summary>
     class FontBuilder : IXmlBuilder
     {
-        private FontDialog _fd = new FontDialog();
+        private FontDialog _fd;
         private ISite _site;
         private IIntellisenseProvider _owner;
 
@@ -44,6 +44,10 @@ namespace Microsoft
             try
             {
                 f = (Font)fc.ConvertFromString(input);
+                if (_fd == null)
+                {
+                    _fd = new FontDialog();
+                }
                 _fd.Font = f;
             }
             catch
