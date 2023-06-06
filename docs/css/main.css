@@ -3,7 +3,8 @@ code {
   color: #DCDCDC;
 }
 
-th, td {
+th,
+td {
   padding: 5px;
 }
 
@@ -20,7 +21,11 @@ Top bar
   color: #F6F6F6;
 }
 
-.wm-top-link, .wm-top-link:hover, .wm-top-link:active, .wm-top-link:visited, .wm-top-link:focus {
+.wm-top-link,
+.wm-top-link:hover,
+.wm-top-link:active,
+.wm-top-link:visited,
+.wm-top-link:focus {
   color: #F6F6F6;
 }
 
@@ -29,14 +34,17 @@ Top bar
 }
 
 .wm-top-tool-expanded {
-background-color: #4D4D4D;
+  background-color: #4D4D4D;
 }
 
 /***********************************************************************
 Table of contents (side pane)
 ***********************************************************************/
 
-.wm-toctree a, .wm-toctree a:visited, .wm-toctree a:hover, .wm-toctree a:focus {
+.wm-toctree a,
+.wm-toctree a:visited,
+.wm-toctree a:hover,
+.wm-toctree a:focus {
   color: #F6F6F6;
 }
 
@@ -44,7 +52,8 @@ span.wm-toc-text {
   color: #F6F6F6;
 }
 
-.wm-toc-li.wm-current, .wm-toc-li.wm-current:hover {
+.wm-toc-li.wm-current,
+.wm-toc-li.wm-current:hover {
   background-color: #4D4D4D;
   color: #21252B;
 }
@@ -53,25 +62,54 @@ span.wm-toc-text {
   border-left: 1px solid #F6F6F6;
 }
 
-button, .btn, .btn-sm, .btn-xs, .btn-default, #hist-fwd, #hist-back, #wm-toc-button, #wm-search-go {
+button,
+.btn,
+.btn-sm,
+.btn-xs,
+.btn-default,
+#hist-fwd,
+#hist-back,
+#wm-toc-button,
+#wm-search-go {
   color: #F6F6F6;
 }
 
-button:focus, .btn:focus, .btn-sm:focus, .btn-xs:focus, .btn-default:focus, .btn-link:focus, #hist-fwd:focus, #hist-back:focus, #wm-toc-button:focus, #wm-search-go:focus {
+button:focus,
+.btn:focus,
+.btn-sm:focus,
+.btn-xs:focus,
+.btn-default:focus,
+.btn-link:focus,
+#hist-fwd:focus,
+#hist-back:focus,
+#wm-toc-button:focus,
+#wm-search-go:focus {
   color: #F6F6F6;
   border-color: #F6F6F6;
 }
 
-button:hover, .btn:hover, .btn-sm:hover, .btn-xs:hover, .btn-default:hover, .btn-link:hover, #hist-fwd:hover, #hist-back:hover, #wm-toc-button:hover, #wm-search-go:hover {
+button:hover,
+.btn:hover,
+.btn-sm:hover,
+.btn-xs:hover,
+.btn-default:hover,
+.btn-link:hover,
+#hist-fwd:hover,
+#hist-back:hover,
+#wm-toc-button:hover,
+#wm-search-go:hover {
   color: #F6F6F6;
-  border-color:#F6F6F6;
+  border-color: #F6F6F6;
 }
 
 .wm-article-nav {
   color: #F6F6F6;
 }
 
-.wm-article-nav > a, .wm-article-nav > a:visited, .wm-article-nav > a:hover, .wm-article-nav > a:focus {
+.wm-article-nav>a,
+.wm-article-nav>a:visited,
+.wm-article-nav>a:hover,
+.wm-article-nav>a:focus {
   color: #F6F6F6;
 }
 
@@ -79,7 +117,7 @@ button:hover, .btn:hover, .btn-sm:hover, .btn-xs:hover, .btn-default:hover, .btn
 * Dropdown search results
 ***********************************************************************/
 
-.search-text > b {
+.search-text>b {
   color: #F6F6F6;
 }
 
@@ -92,7 +130,11 @@ h1 {
   color: #F6F6F6;
 }
 
-h2, h3, h4, h5, h6 {
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: #F6F6F6;
 }
 
@@ -110,16 +152,23 @@ input#mkdocs-search-query.form-control {
   border: 1px solid #F6F6F6;
 }
 
-a, a:visited, a:hover, a:focus {
-color: rgb(152, 198, 255);
-text-decoration: none;
-outline: none;
+a,
+a:visited,
+a:hover,
+a:focus {
+  color: #6294E4;
+  text-decoration: none;
+  outline: none;
 }
 
 .wm-page-content a {
-  color: rgb(152, 198, 255) !important;
+  color: #6294E4 !important;
   text-decoration: none;
   outline: none;
+}
+
+.wm-page-content a:hover {
+  text-decoration: underline;
 }
 
 .search-title {
@@ -127,10 +176,10 @@ outline: none;
 }
 
 .wm-top-title::before {
-  content:  url("https://microsoft.github.io/XmlNotepad/assets/images/icon.png");
+  content: url("https://microsoft.github.io/XmlNotepad/assets/images/icon.png");
 }
 
-.wm-top-title   {
+.wm-top-title {
   color: transparent;
   overflow: hidden;
 }
@@ -151,7 +200,8 @@ outline: none;
   height: 60px;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
