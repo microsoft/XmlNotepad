@@ -2,7 +2,7 @@
 
 By [Chris Lovett](http://lovettsoftware.com/), Microsoft
 
-In the github repo you'll find the core `XmlNotepad` dll project, an `Application` project that
+In the GitHub repo, you'll find the core `XmlNotepad` DLL project, an `Application` project that
 builds XmlNotepad.exe, and some setup projects like `XmlNotepadSetup` which builds the .msi
 installer, and the `UnitTests` project for testing XML Notepad.
 
@@ -24,9 +24,9 @@ The Find dialog supports full text, regex, or XPath expressions and can filter b
 
 ## Model
 
-The core data model behind the UI is `System.Xml.XmlDocument` and it's `XmlNode` objects.  These
-nodes are wrapped by `TreeNode` UI objects. To facilitate support of the XML Include spec there is a
-custom reader that processes XML Includes and there is also a custom DomLoader that keeps track of
+The core data model behind the UI is `System.Xml.XmlDocument` and its `XmlNode` objects. These
+nodes are wrapped by `TreeNode` UI objects. To facilitate support for the XML Include spec, there is a
+custom reader that processes XML Includes, and there is also a custom DomLoader that keeps track of
 line information for error messages.
 
 ![model](../assets/images/model.png)
@@ -43,7 +43,7 @@ The way this works is that the Checker runs after each edit operation to validat
 report errors in the TaskList. This process also puts `System.Xml.Schema.XmlSchemaType` information
 on each element and attribute in the XmlDocument; then, when editing the value of that node, the
 TextEditorOverlay uses the `XmlIntelliSenseProvider` to get back a list of possible values. In the
-above example it returns the values from the simpleType enumeration facets. For element name
+above example, it returns the values from the simpleType enumeration facets. For element name
 IntelliSense in the tree view, the `XmlIntelliSenseProvider` invokes the Checker again, captures
 GetExpectedParticles and GetExpectedAttributes on the `System.Xml.Schema.XmlSchemaValidator`, and
 uses that to provide IntelliSense.
@@ -61,9 +61,9 @@ information.
 
 ## Infinite Undo/Redo
 
-To implement undo/redo XML Notepad follows a common design pattern of Command objects with Undo and
+To implement undo/redo, XML Notepad follows a common design pattern of Command objects with Undo and
 Redo methods. Commands operate on both a `TreeNode` and an `XmlNode` because some commands like
-`InsertNode` don't have an `XmlNode` yet until they are performed but the command needs to know
+`InsertNode` don't have an `XmlNode` yet until they are performed, but the command needs to know
 where in the tree this new node will be inserted and during `Undo` where it should be removed. The
 UndoManager collects these in a list. Then the state of the UndoManager controls the
 enabled/disabled state of the Undo/Redo MenuItems. When the user selects the Undo menu item, the
@@ -71,8 +71,8 @@ Undo method is called on the active command, and that command is pushed onto the
 
 ![undo.png](../assets/images/undo.png)
 
-Some operations in the editor cause many edits in the tree including the replace-all operation and
-editing the value of a namespace attribute. (When you change the value of a namespace attribute.
+Some operations in the editor cause many edits in the tree, including the replace-all operation and
+editing the value of a namespace attribute. (When you change the value of a namespace attribute,
 every XmlNode bound to that namespace needs to be reconstructed with a new namespace URI, which can
 obviously affect a lot of nodes in the tree!) So, to make these operations one atomic undo
 operation, there is a `CompoundCommand` object that contains a list of smaller edit commands, and
@@ -84,19 +84,17 @@ objects:
 ![commands.png](../assets/images/commands.png)
 
 The PasteCommand is special because it takes random XML text off the clipboard and parses it in
-context of the currently selected element in the tree, inheriting the namespaces in scope. The
+the context of the currently selected element in the tree, inheriting the namespaces in scope. The
 helper class TreeData uses the special XmlTextReader constructor that takes an XmlParserContext as
 input.
 
 ### Accessibility
 
-In order to make testing possible using `System.Windows.Automation` there are some custom
+In order to make testing possible using `System.Windows.Automation`, there are some custom
 `AccessibleObject` implementations inside the TreeView and NodeTextView. See `AccessibleNode` and
 `AccessibleNodeTextViewNode`. These accessibility classes should also make Windows accessibility
 features work better with those custom views.
 
 ### Missing Documentation?
 
-If you want more detailed documentation on some aspect of XML Notepad please create a new [GitHub issue](https://github.com/microsoft/XmlNotepad/issues).
-
-
+If you want more detailed documentation on some aspect of XML Notepad, please create a new [GitHub issue](https://github.com/microsoft/XmlNotepad/issues).
