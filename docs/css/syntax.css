@@ -1,4 +1,4 @@
-/* light theme
+/* light theme */
 .hljs-comment {
   color: #008000;
 }
@@ -22,14 +22,7 @@
 }
 
 .hljs-string {
-  color: #AB1515
-}
-*/
-
-.hljs,
-.language-plain {
-  color: #DCDCDC;
-  /* default color */
+  color: #AB1515;
 }
 
 /* dark theme */
@@ -56,5 +49,10 @@
 }
 
 .hljs-string {
-  color: #D69D85
+  color: #D69D85;
+}
+
+.hljs,
+.language-plain {
+  color: #DCDCDC; /* default color */
 }

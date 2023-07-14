@@ -2251,17 +2251,14 @@ namespace XmlNotepad
         {
             XmlSchemaAttribute found = null;
             XmlSchemaObject o = GetSchemaObject();
-            if (o is XmlSchemaElement e)
+            if (o is XmlSchemaElement e && e.ElementSchemaType is XmlSchemaComplexType ct)
             {
-                if (e.ElementSchemaType is XmlSchemaComplexType ct)
+                foreach (var attr in ct.Attributes)
                 {
-                    foreach (var attr in ct.Attributes)
+                    if (attr is XmlSchemaAttribute a && a.SchemaTypeName.Name == "ID")
                     {
-                        if (attr is XmlSchemaAttribute a && a.SchemaTypeName.Name == "ID")
-                        {
-                            found = a;
-                            break;
-                        }
+                        found = a;
+                        break;
                     }
                 }
             }

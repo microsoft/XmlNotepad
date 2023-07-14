@@ -1671,14 +1671,16 @@ namespace XmlNotepad
 
         internal void DrawLabel2(Graphics g, Font f)
         {
-            var brush = new SolidBrush(this.Label2Color);
-            int gap = (f.Height / 4) + 1; // gap is proportional to font size.
-            SizeF s = g.MeasureString(this.Label2, f);
-            if (_labelBounds.Right + gap + s.Width > this.TreeView.Width)
+            using (var brush = new SolidBrush(this.Label2Color))
             {
-                // todo: trim the string and add an elipsis?
+                int gap = (f.Height / 4) + 1; // gap is proportional to font size.
+                SizeF s = g.MeasureString(this.Label2, f);
+                if (_labelBounds.Right + gap + s.Width > this.TreeView.Width)
+                {
+                    // todo: trim the string and add an elipsis?
+                }
+                g.DrawString(this.Label2, f, brush, _labelBounds.Right + gap, _labelBounds.Top, StringFormat.GenericTypographic);
             }
-            g.DrawString(this.Label2, f, brush, _labelBounds.Right + gap, _labelBounds.Top, StringFormat.GenericTypographic);
         }
 
         internal static TreeNodeCollection GetChildren(TreeNode n)
