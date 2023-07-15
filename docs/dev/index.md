@@ -54,16 +54,11 @@ The tests all pass on Windows 10, but currently some tests fail on Windows 11, t
 some breaking changes in the Windows Automation layer that XML notepad tests are using.  This is
 being investigated.
 
-### BuildTasks
+### UpdateVersions
 
-The `BuildTasks` project contains special MSBuild task that is used to synchronize the `Version.props` information
-across multiple places so you can edit the version number there be sure to update both the `ApplicationRevision`
-and the `ApplicationVersion` so that the final number in the `ApplicationVersion` matches the `ApplicationRevision`.
-```
-    <ApplicationRevision>36</ApplicationRevision>
-    <ApplicationVersion>2.8.0.36</ApplicationVersion>
-```
-Then when you do a build the following will be updated automatically:
+The `UpdateVersions` project synchronizes the `Version.props` information
+across multiple places so you can edit the version number in `Version.props` and this tool will
+replicate that across the following:
 
 1. The `Version.cs` file which sets the assembly version for all projects in the solution.
 1. The WIX based setup file `Product.wxs`.
@@ -74,21 +69,18 @@ Then when you do a build the following will be updated automatically:
 You will also have to restart Visual Studio so that the new versions are picked up by the ClickOnce
 deployment information in  `Application.csproj`.
 
-**Note**: if you change the `SyncVersions.cs` code, and build a new DLL you will need to close VS, and copy the
-resulting `BuildTasks\bin\Debug\XmlNotepadBuildTasks.dll` to `BuildTasks\XmlNotepadBuildTasks.dll`, then reload the
-XmlNotepad.sln. This is done this way because Visual Studio will lock this file after doing a build, so you wouldn't be
-able to compile the new version.
+### Publish the app and all setups
 
-### Publish the ClickOnce installer
+The `publish.cmd` script runs UpdateVersions, builds Release bits, builds the ClickOnce installer and the winget.msix
+installer from `XmlNotepadPackage`, and the standalone .msi installer from `XmlNotepadSetup`, it zips these files so
+they can be available on the Github Release page then it creates the new github release for the current version.  It
+also signs the assemblies and installers using the signing certificate specified by the environment variable
+`MYKEYFILE`.
 
-Open the `Application` project properties and you will see a Publish option there. This will place
-the publish bits in a folder named `d:\git\lovettchris\XmlNotepad\publish\` you can change this on
-the Project properties.  It is recommended you use strongly signed bits.  The signing certificate is
-specified using environment variable `MYKEYFILE`, but you can build, debug and test XML Notepad
-without this environment variable set.
-
-This setup provides the ClickOnce installed version of XML Notepad installable from [lovettsoftware](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application).  This is the most convenient installer since it is
-a single click and also provide auto-updating whenever a new version is published.
+The ClickOnce installed is uploaded to
+[lovettsoftware](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application) using
+the environment variable LOVETTSOFTWARE_STORAGE_CONNECTION_STRING.  Click once is convenient because it provides
+auto-updating whenever a new version is published.
 
 ### Build the setup .msi installer
 
@@ -115,15 +107,14 @@ XmlNotepadPackage\AppPackages folder.  These can then be uploaded to the server 
 packages and you can then update the manifest in
 [winget-pkgs](https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/XMLNotepad).
 
-
 This package provides the `winget install xmlnotepad` setup option.
 
 ### Publishing the bits to Azure Blob Store
 
-The `publish.cmd` script then takes all the above built binaries and collects them together and uploads
-them to the appropriate places in Azure using [AzurePublishClickOnce](https://github.com/clovett/tools/tree/master/AzurePublishClickOnce) and it also prepares a new manifest for `winget-pkgs`.
-This step uses an environment variable named `LOVETTSOFTWARE_STORAGE_CONNECTION_STRING` to find the
-Azure storage account.
+The `publish.cmd` script uses the [AzurePublishClickOnce](https://github.com/clovett/tools/tree/master/AzurePublishClickOnce) tool
+which uses the environment variable named `LOVETTSOFTWARE_STORAGE_CONNECTION_STRING` to access the Azure storage account
+where it uploads the new clickonce installer, and removes the older versions so that the storage account does not
+keep growing and growing.
 
 ### Design
 
