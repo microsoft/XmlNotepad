@@ -93,6 +93,7 @@ if "%GITRELEASE%" == "0" goto :upload
 echo Creating new release for version %VERSION%
 %ROOT%\tools\xsl -e -s src\Updates\LatestVersion.xslt src\Updates\Updates.xml > notes.txt
 gh release create %VERSION% "%bundle%" "%zipfile%" --notes-file notes.txt --title "Xml Notepad %VERSION%"
+if ERRORLEVEL 1 goto :nogh
 del notes.txt
 
 :upload
@@ -224,4 +225,8 @@ exit /b 1
 
 :gitError
 echo ### error : %1
+exit /b 1
+
+:nogh
+echo ### gh release failed, do you need to run gh auth login?
 exit /b 1
