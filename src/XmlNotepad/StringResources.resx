@@ -926,4 +926,32 @@ Error: {0}</value>
     <value>We will download the WebView2 setup program named "MicrosoftEdgeWebview2Setup", and you will find it in your downloads folder.  When the download is finished please run it then restart XML Notepad.</value>
     <comment>Message box prompt</comment>
   </data>
+  <data name="SchemaAwareNamesDescription" xml:space="preserve">
+    <value>Special names that are promoted even without schema information.</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="SchemaAwareNamesName" xml:space="preserve">
+    <value>Special names</value>
+    <comment>Property Grid name</comment>
+  </data>
+  <data name="SchemaAwareTextDescription" xml:space="preserve">
+    <value>Promote xsd keys and ids from element content up to the element name row in the TreeView.</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="SchemaAwareTextName" xml:space="preserve">
+    <value>Show schema aware text</value>
+    <comment>Property Grid name</comment>
+  </data>
+  <data name="SchemaCategory" xml:space="preserve">
+    <value>Schema Options</value>
+    <comment>Property Grid Category</comment>
+  </data>
+  <data name="SchemaAwareTextColor" xml:space="preserve">
+    <value>Schema aware text color</value>
+    <comment>Property Grid Name</comment>
+  </data>
+  <data name="SchemaAwareTextColorDescription" xml:space="preserve">
+    <value>Color for schema aware text that is promoted to the parent element.</value>
+    <comment>Property Grid Description</comment>
+  </data>
 </root>

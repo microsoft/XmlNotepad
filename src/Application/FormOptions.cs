@@ -140,6 +140,7 @@ namespace XmlNotepad
             private ThemeColors _lightColors;
             private ThemeColors _darkColors;
             private Color _elementColor;
+            private Color _schemaAwareTextColor;
             private Color _commentColor;
             private Color _attributeColor;
             private Color _piColor;
@@ -174,6 +175,8 @@ namespace XmlNotepad
             private bool _xmlDiffIgnoreDtd;
             private bool _allowAnalytics;
             private string _textEditor;
+            private bool _schemaAwareText;
+            private string _schemaAwareNames;
 
             public UserSettings(Settings s)
             {
@@ -193,7 +196,9 @@ namespace XmlNotepad
                 _indentChar = (IndentChar)this._settings["IndentChar"];
                 _newLineChars = this._settings.GetString("NewLineChars");
                 _language = this._settings.GetString("Language");
-                _settingsLocation = this._settings.GetLocation();                
+                _settingsLocation = this._settings.GetLocation();
+                _schemaAwareText = this._settings.GetBoolean("SchemaAwareText");
+                _schemaAwareNames = this._settings.GetString("SchemaAwareNames");
                 _maximumLineLength = this._settings.GetInteger("MaximumLineLength");
                 _autoFormatLongLines = this._settings.GetBoolean("AutoFormatLongLines");
                 _ignoreDTD = this._settings.GetBoolean("IgnoreDTD");
@@ -218,6 +223,7 @@ namespace XmlNotepad
             {
                 ThemeColors colors = this._theme == ColorTheme.Light ? _lightColors : _darkColors;
                 _elementColor = colors.Element;
+                _schemaAwareTextColor = colors.SchemaAwareTextColor;
                 _commentColor = colors.Comment;
                 _attributeColor = colors.Attribute;
                 _piColor = colors.PI;
@@ -232,6 +238,7 @@ namespace XmlNotepad
             {
                 ThemeColors colors = this._theme == ColorTheme.Light ? this._lightColors : this._darkColors;
                 colors.Element = this._elementColor;
+                colors.SchemaAwareTextColor = this._schemaAwareTextColor;
                 colors.Comment = this._commentColor;
                 colors.CDATA = this._cdataColor;
                 colors.Attribute = this._attributeColor;
@@ -288,6 +295,8 @@ namespace XmlNotepad
                 this._settings.SetLocation(_settingsLocation);
 
                 this._settings["Language"] = ("" + this._language).Trim();
+                this._settings["SchemaAwareText"] = this._schemaAwareText;
+                this._settings["SchemaAwareNames"] = this._schemaAwareNames.Trim();
                 this._settings["MaximumLineLength"] = this._maximumLineLength;
                 this._settings["MaximumValueLength"] = this._maximumValueLength;
                 this._settings["AutoFormatLongLines"] = this._autoFormatLongLines;
@@ -367,6 +376,21 @@ namespace XmlNotepad
                 set
                 {
                     this._elementColor = value;
+                }
+            }
+
+            [SRCategory("ColorCategory")]
+            [LocDisplayName("SchemaAwareTextColor")]
+            [SRDescription("SchemaAwareTextColorDescription")]
+            public Color SchemaAwareTextColor
+            {
+                get
+                {
+                    return this._schemaAwareTextColor;
+                }
+                set
+                {
+                    this._schemaAwareTextColor = value;
                 }
             }
 
@@ -514,6 +538,36 @@ namespace XmlNotepad
                 set
                 {
                     this._language = value;
+                }
+            }
+
+            [SRCategory("SchemaCategory")]
+            [LocDisplayName("SchemaAwareTextName")]
+            [SRDescription("SchemaAwareTextDescription")]
+            public bool SchemaAwareText
+            {
+                get
+                {
+                    return this._schemaAwareText;
+                }
+                set
+                {
+                    this._schemaAwareText = value;
+                }
+            }
+
+            [SRCategory("SchemaCategory")]
+            [LocDisplayName("SchemaAwareNamesName")]
+            [SRDescription("SchemaAwareNamesDescription")]
+            public string SchemaAwareNames
+            {
+                get
+                {
+                    return this._schemaAwareNames;
+                }
+                set
+                {
+                    this._schemaAwareNames = value;
                 }
             }
 
