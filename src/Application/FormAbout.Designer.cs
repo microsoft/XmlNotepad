@@ -7,7 +7,6 @@ namespace XmlNotepad {
         private Label label2;
         private Label labelVersion;
         private Label label1;
-        private Label labelURL;
         private TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel linkLabel1;
@@ -40,8 +39,8 @@ namespace XmlNotepad {
             this.label2 = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.labelURL = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -86,22 +85,21 @@ namespace XmlNotepad {
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Name = "label1";
             // 
-            // labelURL
-            // 
-            resources.ApplyResources(this.labelURL, "labelURL");
-            this.labelURL.BackColor = System.Drawing.Color.Transparent;
-            this.labelURL.Name = "labelURL";
-            // 
             // tableLayoutPanel1
             // 
             resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.labelURL, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.labelVersion, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.linkLabel1, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
             // 
             // FormAbout
             // 
@@ -118,8 +116,10 @@ namespace XmlNotepad {
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
+        private Label label3;
     }
 }

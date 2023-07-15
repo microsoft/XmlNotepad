@@ -48,7 +48,7 @@ namespace XmlNotepad
 
         private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
-            string url = labelURL.Text;
+            string url = HelpService.HelpBaseUri;
             WebBrowser.OpenUrl(this.Handle, url);
         }
 

@@ -6,7 +6,7 @@ namespace XmlNotepad
 {
     public sealed class HelpService
     {
-        public string HelpBaseUri
+        public static string HelpBaseUri
         {
             get
             {

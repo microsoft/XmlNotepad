@@ -218,7 +218,7 @@ namespace XmlNotepad
                     client.UseDefaultCredentials = true;
                     try
                     {
-                        string html = await client.DownloadStringTaskAsync(this._helpService.HelpBaseUri);
+                        string html = await client.DownloadStringTaskAsync(HelpService.HelpBaseUri);
                         if (html.Contains("XML Notepad"))
                         {
                             this.BeginInvoke(new Action(FoundOnlineHelp));
