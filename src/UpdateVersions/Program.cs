@@ -397,7 +397,7 @@ namespace UpdateVersions
                 XNamespace ns = wixdoc.Root.Name.Namespace;
                 XElement product = wixdoc.Root.Element(ns + "Product");
 
-                foreach (string subdir in new string[] { "Help", "samples" })
+                foreach (string subdir in new string[] { "samples" })
                 {
                     GetOrCreateDirRef(wixdoc, Path.Combine(this.DropDir, subdir));
                 }
