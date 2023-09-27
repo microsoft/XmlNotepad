@@ -18,14 +18,15 @@ namespace XmlNotepad
         {
             get
             {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "index.html";
-                }
-                else
-                {
-                    return FileHelpers.ValidPath(Settings.Instance.StartupPath + "\\Help\\index.html");
-                }
+                return HelpBaseUri + "index.html";                
+            }
+        }
+
+        public string XsltHelp
+        {
+            get
+            {
+                return HelpBaseUri + "help/xslt";
             }
         }
 
@@ -33,14 +34,7 @@ namespace XmlNotepad
         {
             get
             {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "help/options";
-                }
-                else
-                {
-                    return FileHelpers.ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\options.htm");
-                }
+                return HelpBaseUri + "help/options";
             }
         }
 
@@ -48,14 +42,7 @@ namespace XmlNotepad
         {
             get
             {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "help/schemas";
-                }
-                else
-                {
-                    return FileHelpers.ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\schemas.htm");
-                }
+                return HelpBaseUri + "help/schemas";
             }
         }
 
@@ -64,18 +51,9 @@ namespace XmlNotepad
         {
             get
             {
-                if (OnlineHelpAvailable)
-                {
-                    return HelpBaseUri + "help/find";
-                }
-                else
-                {
-                    return FileHelpers.ValidPath(Settings.Instance.StartupPath + "\\Help\\help\\find.htm");
-                }
+                return HelpBaseUri + "help/find";
             }
         }
-
-        public bool OnlineHelpAvailable { get; set; }
 
         public bool DynamicHelpEnabled { get; set; }
     }

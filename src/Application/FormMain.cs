@@ -205,43 +205,6 @@ namespace XmlNotepad
 
             // install Xml notepad as an available editor for .xml files.
             FileAssociation.AddXmlProgids(Application.ExecutablePath);
-
-            await CheckNetwork();
-        }
-
-        private async System.Threading.Tasks.Task CheckNetwork()
-        {
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            {
-                using (System.Net.WebClient client = new System.Net.WebClient())
-                {
-                    client.UseDefaultCredentials = true;
-                    try
-                    {
-                        string html = await client.DownloadStringTaskAsync(HelpService.HelpBaseUri);
-                        if (html.Contains("XML Notepad"))
-                        {
-                            this.BeginInvoke(new Action(FoundOnlineHelp));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("online help is not reachable " + ex.Message);
-                    }
-                }
-            }
-
-            if (!Directory.Exists(Path.Combine(Application.StartupPath, "Help")))
-            {
-                // Must use online help in this case since we have no offline help
-                this._helpService.OnlineHelpAvailable = true;
-            }
-        }
-
-        private void FoundOnlineHelp()
-        {
-            this._helpService.OnlineHelpAvailable = true;
-            InitializeHelp(this.helpProvider1);
         }
 
         protected virtual void SetDefaultSettings()
@@ -771,11 +734,13 @@ namespace XmlNotepad
         {
             if (e.TabPage == this.tabPageHtmlView)
             {
+                this.helpProvider1.HelpNamespace = this._helpService.XsltHelp;
                 this.CheckWebViewVersion();
                 this.DisplayXsltResults();
             }
             else
             {
+                this.helpProvider1.HelpNamespace = this._helpService.DefaultHelp;
                 this.xsltViewer.OnClosed(); // good time to cleanup temp files.
             }
         }
