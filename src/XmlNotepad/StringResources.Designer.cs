@@ -1774,6 +1774,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string XmlDiffHideIdenticalDescription {
+            get {
+                return ResourceManager.GetString("XmlDiffHideIdenticalDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide identical.
+        /// </summary>
+        public static string XmlDiffHideIdenticalProperty {
+            get {
+                return ResourceManager.GetString("XmlDiffHideIdenticalProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore differences in the order of child elements.
         /// </summary>
         public static string XmlDiffIgnoreChildOrderDescription {

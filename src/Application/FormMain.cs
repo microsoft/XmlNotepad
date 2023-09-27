@@ -2552,6 +2552,8 @@ namespace XmlNotepad
 
             XmlDiffOptions options = this._settings.GetXmlDiffOptions();
 
+            bool omitIdentical = this._settings.GetBoolean("XmlDiffHideIdentical");
+
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
             string filename = this._model.FileName;
@@ -2609,7 +2611,7 @@ namespace XmlNotepad
                     using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8))
                     {
                         SideBySideXmlNotepadHeader(this._model.FileName, changed, htmlWriter);
-                        diffView.GetHtml(htmlWriter);
+                        diffView.GetHtml(htmlWriter, omitIdentical);
                         htmlWriter.WriteLine("</body></html>");
                     }
                 }

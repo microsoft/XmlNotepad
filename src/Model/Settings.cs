@@ -954,6 +954,7 @@ namespace XmlNotepad
             this["XmlDiffIgnorePrefixes"] = false;
             this["XmlDiffIgnoreXmlDecl"] = false;
             this["XmlDiffIgnoreDtd"] = false;
+            this["XmlDiffHideIdentical"] = false;
 
             // analytics question has been answered...
             this["AllowAnalytics"] = false;

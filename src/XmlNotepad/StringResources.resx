@@ -954,4 +954,12 @@ Error: {0}</value>
     <value>Color for schema aware text that is promoted to the parent element.</value>
     <comment>Property Grid Description</comment>
   </data>
+  <data name="XmlDiffHideIdenticalDescription" xml:space="preserve">
+    <value />
+    <comment>Hide identical elements and attributes to compress the size of the HTML output in large documents.</comment>
+  </data>
+  <data name="XmlDiffHideIdenticalProperty" xml:space="preserve">
+    <value>Hide identical</value>
+    <comment>Property Grid caption</comment>
+  </data>
 </root>

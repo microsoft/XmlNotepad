@@ -173,6 +173,7 @@ namespace XmlNotepad
             private bool _xmlDiffIgnorePrefixes;
             private bool _xmlDiffIgnoreXmlDecl;
             private bool _xmlDiffIgnoreDtd;
+            private bool _xmlDiffHideIdentical;
             private bool _allowAnalytics;
             private string _textEditor;
             private bool _schemaAwareText;
@@ -313,6 +314,7 @@ namespace XmlNotepad
                 this._settings["XmlDiffIgnorePrefixes"] = this._xmlDiffIgnorePrefixes;
                 this._settings["XmlDiffIgnoreXmlDecl"] = this._xmlDiffIgnoreXmlDecl;
                 this._settings["XmlDiffIgnoreDtd"] = this._xmlDiffIgnoreDtd;
+                this._settings["XmlDiffHideIdentical"] = this._xmlDiffHideIdentical;
 
                 this._settings["AllowAnalytics"] = this._allowAnalytics;
                 this._settings["TextEditor"] = this._textEditor;
@@ -898,6 +900,17 @@ namespace XmlNotepad
                 get { return this._xmlDiffIgnoreDtd; }
                 set { this._xmlDiffIgnoreDtd = value; }
             }
+
+            [SRCategory("XmlDiff")]
+            [LocDisplayName("XmlDiffHideIdenticalProperty")]
+            [SRDescription("XmlDiffHideIdenticalDescription")]
+            public bool XmlDiffHideIdentical
+            {
+                get { return this._xmlDiffHideIdentical; }
+                set { this._xmlDiffHideIdentical = value; }
+            }
+            
+
 
             [SRCategory("EditingCategory")]
             [LocDisplayName("TextEditorProperty")]
