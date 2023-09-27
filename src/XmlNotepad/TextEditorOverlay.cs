@@ -298,15 +298,22 @@ namespace XmlNotepad
             {
                 if (this._currentEditor.Visible)
                 {
+                    bool hideEdit = true;
                     if (this.CommitEdit != null)
                     {
                         string value = (this._editor != null) ? this._editor.XmlValue : this._currentEditor.Text;
                         TextEditorEventArgs args = new TextEditorEventArgs(value, cancel);
                         CommitEdit(this, args);
                         if (args.Cancelled && !cancel)
+                        {
                             success = false;
+                            hideEdit = false;
+                        }                    
                     }
-                    HideEdit();
+                    if (hideEdit)
+                    {
+                        HideEdit();
+                    }
                 }
             }
             catch (Exception e)

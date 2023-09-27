@@ -2230,6 +2230,10 @@ namespace XmlNotepad
 
         public virtual XmlSchemaAnnotated GetSchemaObject()
         {
+            if (this.Node == null)
+            {
+                return null;
+            }
             XmlSchemaInfo si = this.XmlTreeView.Model.GetTypeInfo(this.Node);
             if (si != null)
             {
