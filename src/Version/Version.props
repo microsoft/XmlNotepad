@@ -10,6 +10,6 @@
     <PackageProjectUrl>https://microsoft.github.io/XmlNotepad/</PackageProjectUrl>
     <Company>Microsoft Corporation</Company>
     <Copyright>Copyright © 2023 Microsoft Corporation</Copyright>
-    <WebView2Version>1.0.1823.32</WebView2Version>
+    <WebView2Version>1.0.2045.28</WebView2Version>
   </PropertyGroup>
 </Project>
