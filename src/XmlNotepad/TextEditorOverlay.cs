@@ -292,7 +292,7 @@ namespace XmlNotepad
         {
             if (ending) return false; // don't let it be re-entrant!
             ending = true;
-
+            bool success = true;
             _cset.EndEdit(cancel);
             try
             {
@@ -304,7 +304,7 @@ namespace XmlNotepad
                         TextEditorEventArgs args = new TextEditorEventArgs(value, cancel);
                         CommitEdit(this, args);
                         if (args.Cancelled && !cancel)
-                            return false;
+                            success = false;
                     }
                     HideEdit();
                 }
@@ -317,7 +317,7 @@ namespace XmlNotepad
             {
                 ending = false;
             }
-            return true;
+            return success;
         }
 
         const ushort WM_CHAR = 0x0102;

@@ -38,7 +38,7 @@ namespace XmlNotepad
             }
 
             // now let the user resize it.
-            this.AutoSize = false;
+            this.AutoSizeMode = AutoSizeMode.GrowOnly;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -57,7 +57,7 @@ namespace XmlNotepad
         {
             if (keyData == Keys.Escape)
             {
-                this.Close();
+                this.SavePositionAndClose();
                 return true;
             }
             else
@@ -94,15 +94,49 @@ namespace XmlNotepad
 
                     MemberFilter filter = new MemberFilter(this._userSettings, hiddenProperties.ToArray());
                     this.propertyGrid1.SelectedObject = filter;
+
+                    Size s = this.ClientSize;
+                    object size = this._settings["OptionsWindowSize"];
+                    if (size != null && (Size)size != Size.Empty)
+                    {
+                        Size cs = (Size)size;
+                        // but not smaller than the computed size.
+                        s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
+                        this.ClientSize = s;
+                    }
+                    object location = this._settings["OptionsWindowLocation"];
+                    if (location != null && (Point)location != Point.Empty)
+                    {
+                        Control ctrl = this.Site as Control;
+                        if (ctrl != null)
+                        {
+                            Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
+                            Point newPos = this.MoveOnscreen((Point)location, ownerBounds);
+                            this.Location = newPos;                            
+                            this.StartPosition = FormStartPosition.Manual;
+                        }
+                    }
                 }
             }
+        }
+
+        private void SavePositionAndClose()
+        {
+            this._settings["OptionsWindowLocation"] = this.Location;
+            this._settings["OptionsWindowSize"] = this.ClientSize;
+            this.Close();
+        }
+
+        private void OnButtonCancelClick(object sender, EventArgs e)
+        {
+            this.SavePositionAndClose();
         }
 
         private void OnButtonOKClick(object sender, System.EventArgs e)
         {
             this._userSettings.Apply();
             this.SelectedFont = this._userSettings.Font;
-            this.Close();
+            this.SavePositionAndClose();
         }
 
         private void OnButtonResetClick(object sender, EventArgs e)
@@ -251,7 +285,7 @@ namespace XmlNotepad
             }
 
             public void Apply()
-            {
+            {        
                 // and copy to cross-platform settings.
                 this._settings["FontFamily"] = this._font.FontFamily.Name;
                 this._settings["FontSize"] = (double)this._font.SizeInPoints;

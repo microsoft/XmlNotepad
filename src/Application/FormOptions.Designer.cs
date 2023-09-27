@@ -55,6 +55,7 @@ namespace XmlNotepad {
             resources.ApplyResources(this.buttonCancel, "buttonCancel");
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Click += new System.EventHandler(this.OnButtonCancelClick);
             // 
             // propertyGrid1
             // 

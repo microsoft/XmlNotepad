@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace XmlNotepad
 {

@@ -541,10 +541,11 @@ namespace XmlNotepad
         {
             if (this._ev != null && this._ev.IsEditing && this._match != null)
             {
+                bool success = true;
                 try
                 {
                     this._doingReplace = true;
-                    this._ev.ReplaceText(this._match.Index, this._match.Length, replaceWith);
+                    success = this._ev.ReplaceText(this._match.Index, this._match.Length, replaceWith);
                     this._match.Replaced = true; // cannot match this node any more when we cycle around.
                     this.FixOffsets(this._match, replaceWith);
                 } 
@@ -552,7 +553,7 @@ namespace XmlNotepad
                 {
                     this._doingReplace = false;
                 }
-                return true;
+                return success;
             }
             return false;
         }

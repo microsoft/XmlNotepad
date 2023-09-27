@@ -718,7 +718,7 @@ namespace XmlNotepad
             if (this._editor.IsEditing)
             {
                 bool rc = this._editor.Replace(index, length, replacement);
-                this.EndEdit(false);
+                rc = this.EndEdit(false);
                 return rc;
             }
             return false;

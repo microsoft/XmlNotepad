@@ -167,8 +167,11 @@ namespace XmlNotepad
                 while (rc)
                 {
                     Application.DoEvents();
-                    _target.ReplaceCurrent(replacement);
-                    rc = FindNext(true);
+                    rc = _target.ReplaceCurrent(replacement);
+                    if (rc)
+                    {
+                        rc = FindNext(true);
+                    }
                 }
             }
             catch (Exception ex)
@@ -401,7 +404,6 @@ namespace XmlNotepad
             _recentFindStrings.SetValues(this._settings["RecentFindStrings"] as string[]);
             _recentReplaceStrings.SetValues(this._settings["RecentReplaceStrings"] as string[]);
 
-            Size s = this.ClientSize;
             object o = this._settings["FindMode"];
             if (o != null)
             {
@@ -409,13 +411,14 @@ namespace XmlNotepad
                 SetFindModeControls(!this._findOnly);
             }
 
+            Size s = this.ClientSize;
             object size = this._settings["SearchSize"];
             if (size != null && (Size)size != Size.Empty)
             {
                 Size cs = (Size)size;
-                s = new Size(cs.Width, cs.Height);
+                s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
+                this.ClientSize = s;
             }
-            this.ClientSize = s;
 
             object location = this._settings["SearchWindowLocation"];
             if (location != null && (Point)location != Point.Empty)
@@ -424,49 +427,12 @@ namespace XmlNotepad
                 if (ctrl != null)
                 {
                     Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
-                    if (IsSameScreen((Point)location, ownerBounds))
-                    {
-                        this.Location = (Point)location;
-                    }
-                    else
-                    {
-                        this.Location = CenterPosition(ownerBounds);
-                    }
+                    this.Location = this.MoveOnscreen((Point)location, ownerBounds);
                     this.StartPosition = FormStartPosition.Manual;
                 }
             }
 
             this.ResumeLayout();
-        }
-
-        Point CenterPosition(Rectangle bounds)
-        {
-            Size s = this.ClientSize;
-            Point center = new Point(bounds.Left + (bounds.Width / 2) - (s.Width / 2),
-                bounds.Top + (bounds.Height / 2) - (s.Height / 2));
-
-            if (center.X < 0) center.X = 0;
-            if (center.Y < 0) center.Y = 0;
-
-            return center;
-        }
-
-        bool IsSameScreen(Point location, Rectangle ownerBounds)
-        {
-            Point center = new Point(ownerBounds.Left + ownerBounds.Width / 2,
-                ownerBounds.Top + ownerBounds.Height / 2);
-
-            foreach (Screen s in Screen.AllScreens)
-            {
-                Rectangle sb = s.WorkingArea;
-                if (sb.Contains(location))
-                {
-                    return sb.Contains(center);
-                }
-            }
-
-            // Who knows where that location is (perhaps secondary monitor was removed!)
-            return false;
         }
 
         protected override void OnClosing(CancelEventArgs e)

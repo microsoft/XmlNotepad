@@ -910,6 +910,8 @@ namespace XmlNotepad
             this["RecentReplaceStrings"] = new string[0];
             this["SearchWindowLocation"] = new Point(0, 0);
             this["SearchSize"] = new Size(0, 0);
+            this["OptionsWindowLocation"] = new Point(0, 0);
+            this["OptionsWindowSize"] = new Size(0, 0);
             this["DynamicHelpVisible"] = false;
             this["FindMode"] = false;
             this["SearchXPath"] = false;

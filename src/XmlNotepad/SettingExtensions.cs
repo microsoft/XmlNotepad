@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace XmlNotepad
 {
@@ -103,6 +104,39 @@ namespace XmlNotepad
                 options |= XmlDiffOptions.IgnoreDtd;
             }
             return options;
+        }
+
+        public static Point CenterPosition(this Form w, Rectangle bounds)
+        {
+            Size s = w.ClientSize;
+            Point center = new Point(bounds.Left + (bounds.Width / 2) - (s.Width / 2),
+                bounds.Top + (bounds.Height / 2) - (s.Height / 2));
+
+            if (center.X < 0) center.X = 0;
+            if (center.Y < 0) center.Y = 0;
+
+            return center;
+        }
+
+        public static Point MoveOnscreen(this Form w, Point topLeft, Rectangle ownerBounds)
+        {
+            // This code ensures a window location is not off in never never land which can
+            // happen if a user changes the monitor configuration or copies the settings from
+            // a different machine that has different monitor setup.
+            Point bottomRight = topLeft + w.ClientSize;
+
+            foreach (Screen s in Screen.AllScreens)
+            {
+                Rectangle sb = s.WorkingArea;
+                if (sb.Contains(topLeft) && sb.Contains(bottomRight))
+                {
+                    return topLeft;
+                }
+            }
+        
+            // location is spanning monitors, or is off in never never land, so reset it
+            // back to something reasonable.
+            return w.CenterPosition(ownerBounds);
         }
     }
 }
