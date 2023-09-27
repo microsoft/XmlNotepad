@@ -39,3 +39,5 @@ The status bar at the bottom shows various messages indicating the state of the 
 
 ### Resizers
 You can move the resizers to change the ratio of space allocated to each of the main three panels.
+
+See also [XML Notepad File Association](help/fileassociation.md).

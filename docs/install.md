@@ -42,3 +42,5 @@ winget install XmlNotepad
 WebView2 is an optional component that you can install from Microsoft. XML Notepad will use this component as the HTML rendering engine
 behind the [XSLT Output tab](help/xslt.md).  WebView2 provides a
 significant performance boost on large XSLT outputs.
+
+See [XML Notepad File Association](help/fileassociation.md).

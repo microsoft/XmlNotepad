@@ -41,3 +41,5 @@ o make it easier to pre-configure XML notepad across a bunch of machines, you ca
 customized `XmlNotepad.template.settings` template file next to `XmlNotepad.exe` and the first time
 a user launches XmlNotepad on a machine it will use this template for the initial default settings
 for that user, which is then copied to the `Roaming` location.
+
+See also [XML Notepad File Association](help/fileassociation.md).
