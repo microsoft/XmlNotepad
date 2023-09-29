@@ -368,6 +368,7 @@ namespace XmlNotepad
             this._dynamicHelpViewer = new XmlNotepad.XsltControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.openXmlDiffStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenu1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -711,6 +712,7 @@ namespace XmlNotepad
             this.openToolStripMenuItem,
             this.reloadToolStripMenuItem,
             this.openSettingsToolStripMenuItem,
+            this.openXmlDiffStylesToolStripMenuItem,
             this.toolStripMenuItem1,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
@@ -1581,6 +1583,12 @@ namespace XmlNotepad
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
             // 
+            // openXmlDiffStylesToolStripMenuItem
+            // 
+            this.openXmlDiffStylesToolStripMenuItem.Name = "openXmlDiffStylesToolStripMenuItem";
+            resources.ApplyResources(this.openXmlDiffStylesToolStripMenuItem, "openXmlDiffStylesToolStripMenuItem");
+            this.openXmlDiffStylesToolStripMenuItem.Click += new System.EventHandler(this.openXmlDiffStylesToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             resources.ApplyResources(this, "$this");
@@ -1614,5 +1622,6 @@ namespace XmlNotepad
         private ToolStripMenuItem openSettingsToolStripMenuItem;
         private ToolStripMenuItem gCCollectToolStripMenuItem;
         private ToolStripMenuItem goToLineToolStripMenuItem;
+        private ToolStripMenuItem openXmlDiffStylesToolStripMenuItem;
     }
 }

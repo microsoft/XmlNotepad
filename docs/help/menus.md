@@ -8,6 +8,9 @@ The file menu contains the following commands:
 - **New** Start a new XML document.
 - **Open** Open an XML document for editing.  Can also open .csv and .htm files converting them to XML.
 - **Reload** Discard any edits you've made and reload the file as it exists on disk.
+- **Open Xml Settings...** Opens the current XmlNotepad.settings file in Xml Notepad.
+- **Open XmlDiff Styles...** Opens the XmlDiffStyles.css file in your text editor so you 
+can change the appearence of the XmlDiff output window. Delete the file to reset back to the original styles.  The files lives in %LOCALAPPDATA%\Microsoft\Xml Notepad\XmlDiffStyles.css.
 - **Save** Save any edits you've made to the file disk.
 - **Save As** Save the current document to a different file name on disk.
 - **Export Errors** Save the contents of the Error List in an XML format.

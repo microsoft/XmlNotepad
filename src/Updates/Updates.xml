@@ -9,6 +9,14 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.7">
+    <feature>
+      Add new File/Open XmlDiff Styles menu item so you can edit the CSS styles for the XmlDiff output window.
+      Delete the file to reset back to the original styles.
+      The files lives in %LOCALAPPDATA%\Microsoft\Xml Notepad\XmlDiffStyles.css.
+    </feature>
+    <bug>Fix Schema dialog row copy so it gives you a valid xsi:schemaLocation value.</bug>
+  </version>
   <version number="2.9.0.6">
     <feature>
       Add new Xml Diff option to "hide identical" elements in the output so that the HTML diff

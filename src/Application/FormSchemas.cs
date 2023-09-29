@@ -7,6 +7,7 @@ using System.Xml.Schema;
 using System.Xml;
 using System.Diagnostics;
 using SR = XmlNotepad.StringResources;
+using System.Data.SqlClient;
 
 namespace XmlNotepad
 {
@@ -333,6 +334,11 @@ namespace XmlNotepad
             cmd.ProcessSelectedRows(delegate (DataGridViewRow row, SchemaItem item)
             {
                 Debug.WriteLine("copyToolStripMenuItem_Click selected row " + row.Index);
+                clip.Append(row.Cells[1].Value as string);
+                if (clip.Length > 0)
+                {
+                    clip.Append(" ");
+                }
                 cmd.AddEscapedUri(clip, row.Cells[2].Value as string);
             });
             if (clip.Length > 0)

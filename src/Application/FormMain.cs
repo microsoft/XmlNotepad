@@ -47,7 +47,7 @@ namespace XmlNotepad
         private SchemaCache _schemaCache;
         private readonly DelayedActions _delayedActions;
         private readonly HelpService _helpService = new HelpService();
-        private readonly System.CodeDom.Compiler.TempFileCollection _tempFiles = new System.CodeDom.Compiler.TempFileCollection();
+        private XmlDiffWrapper _diffWrapper = new XmlDiffWrapper();
 
         private XmlCache _model;
         private SettingsLocation _loc;
@@ -511,7 +511,7 @@ namespace XmlNotepad
         protected override void OnClosed(EventArgs e)
         {
             this.xmlTreeView1.Close();
-            CleanupTempFiles();
+            this._diffWrapper.CleanupTempFiles();
             if (this._updater != null)
             {
                 this._updater.Dispose();
@@ -1702,17 +1702,22 @@ namespace XmlNotepad
                     path = System.IO.Path.GetTempFileName();
                     _model.SaveCopy(path);
                 }
-                string notepad = (string)this.Settings["TextEditor"];
-                if (string.IsNullOrEmpty(notepad) || !File.Exists(notepad))
-                {
-                    string sysdir = Environment.SystemDirectory;
-                    notepad = Path.Combine(sysdir, "notepad.exe");
-                }
-                if (File.Exists(notepad))
-                {
-                    ProcessStartInfo pi = new ProcessStartInfo(notepad, "\"" + path + "\"");
-                    Process.Start(pi);
-                }
+                OpenTextFile(path);
+            }
+        }
+
+        protected void OpenTextFile(string path)
+        {
+            string notepad = (string)this.Settings["TextEditor"];
+            if (string.IsNullOrEmpty(notepad) || !File.Exists(notepad))
+            {
+                string sysdir = Environment.SystemDirectory;
+                notepad = Path.Combine(sysdir, "notepad.exe");
+            }
+            if (File.Exists(notepad))
+            {
+                ProcessStartInfo pi = new ProcessStartInfo(notepad, "\"" + path + "\"");
+                Process.Start(pi);
             }
         }
 
@@ -2453,136 +2458,13 @@ namespace XmlNotepad
                 }
             }
         }
-
-        string GetEmbeddedString(string name)
+        private void DoCompare(string otherXmlFile)
         {
-            using (Stream stream = typeof(XmlNotepad.FormMain).Assembly.GetManifestResourceStream(name))
-            {
-                if (stream == null)
-                {
-                    throw new Exception(string.Format("You have a build problem: resource '{0} not found", name));
-                }
-                using (StreamReader sr = new StreamReader(stream))
-                {
-                    return sr.ReadToEnd();
-                }
-            }
-        }
-
-        /// <summary>
-        /// The html header used by XmlNotepad.
-        /// </summary>
-        /// <param name="sourceXmlFile">name of baseline xml data</param>
-        /// <param name="changedXmlFile">name of file being compared</param>
-        /// <param name="resultHtml">Output file</param>
-        private void SideBySideXmlNotepadHeader(
-            string sourceXmlFile,
-            string changedXmlFile,
-            TextWriter resultHtml)
-        {
-
-            // this initializes the html
-            resultHtml.WriteLine("<html><head>");
-            resultHtml.WriteLine("<style TYPE='text/css'>");
-            resultHtml.WriteLine(GetEmbeddedString("XmlNotepad.Resources.XmlReportStyles.css"));
-            resultHtml.WriteLine("</style>");
-            resultHtml.WriteLine("</head>");
-            resultHtml.WriteLine(GetEmbeddedString("XmlNotepad.Resources.XmlDiffHeader.html"));
-
-            resultHtml.WriteLine(string.Format(SR.XmlDiffBody,
-                    System.IO.Path.GetDirectoryName(sourceXmlFile),
-                    sourceXmlFile,
-                    System.IO.Path.GetDirectoryName(changedXmlFile),
-                    changedXmlFile
-            ));
-
-        }
-
-        void CleanupTempFiles()
-        {
-            try
-            {
-                this._tempFiles.Delete();
-            }
-            catch
-            {
-            }
-        }
-
-        private void DoCompare(string changed)
-        {
-            CleanupTempFiles();
-
-            // todo: add UI for setting XmlDiffOptions.
-
-            XmlDiffOptions options = this._settings.GetXmlDiffOptions();
-
-            bool omitIdentical = this._settings.GetBoolean("XmlDiffHideIdentical");
-
             this.xmlTreeView1.Commit();
             this.SaveIfDirty(false);
-            string filename = this._model.FileName;
-
-            // load file from disk, as saved doc can be slightly different
-            // (e.g. it might now have an XML declaration).  This ensures we
-            // are diffing the exact same doc as we see loaded below on the
-            // diffView.Load call.
-            XmlDocument original = new XmlDocument();
-            XmlReaderSettings settings = _model.GetReaderSettings();
-            using (XmlReader reader = XmlReader.Create(filename, settings))
-            {
-                original.Load(reader);
-            }
-
-            XmlDocument doc = new XmlDocument();
-            settings = _model.GetReaderSettings();
-            using (XmlReader reader = XmlReader.Create(changed, settings))
-            {
-                doc.Load(reader);
-            }
-
-            //output diff file.
-            string diffFile = Path.Combine(Path.GetTempPath(),
-                Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + ".xml");
-            this._tempFiles.AddFile(diffFile, false);
-
-            bool isEqual = false;
-            XmlTextWriter diffWriter = new XmlTextWriter(diffFile, Encoding.UTF8);
-            diffWriter.Formatting = Formatting.Indented;
-            using (diffWriter)
-            {
-                XmlDiff diff = new XmlDiff(options);
-                isEqual = diff.Compare(original, doc, diffWriter);
-            }
-
-            if (isEqual)
-            {
-                //This means the files were identical for given options.
-                MessageBox.Show(this, SR.FilesAreIdenticalPrompt, SR.FilesAreIdenticalCaption,
-                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            string tempFile = Path.Combine(Path.GetTempPath(),
-                Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + ".htm");
-            _tempFiles.AddFile(tempFile, false);
-
-            using (XmlReader diffGram = XmlReader.Create(diffFile, settings))
-            {
-                XmlDiffView diffView = new XmlDiffView();
-                using (var reader = new XmlTextReader(filename))
-                {
-                    diffView.Load(reader, diffGram);
-                    using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8))
-                    {
-                        SideBySideXmlNotepadHeader(this._model.FileName, changed, htmlWriter);
-                        diffView.GetHtml(htmlWriter, omitIdentical);
-                        htmlWriter.WriteLine("</body></html>");
-                    }
-                }
-            }
-
-            WebBrowser.OpenUrl(this.Handle, tempFile);
+            var options = this._settings.GetXmlDiffOptions();
+            bool omitIdentical = this._settings.GetBoolean("XmlDiffHideIdentical");
+            this._diffWrapper.DoCompare(this, this._model, otherXmlFile, options, omitIdentical);
         }
 
         string ApplicationPath
@@ -2957,6 +2839,11 @@ namespace XmlNotepad
             }
         }
 
+        private void openXmlDiffStylesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.OpenTextFile(this._diffWrapper.GetOrCreateLocalStyles());
+        }
+        
         private void gCCollectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GC.Collect();
@@ -3049,6 +2936,7 @@ namespace XmlNotepad
             yPos.Text = e.Y.ToString();
         }
         #endregion
+
     }
 
 }
