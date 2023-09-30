@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -366,11 +367,20 @@ namespace XmlNotepad
                         {
                             if (inode.RequiresName)
                             {
-                                inode.XmlNode = inode.CreateNode(context, e.Label);
+                                inode.XmlNode = inode.CreateNode(context, e.Label, e.Namespace);
                                 // Cause selection event to be triggered so that menu state
                                 // is recalculated.
                                 this._myTreeView.SelectedNode = null;
                                 this.OnNodeInserted(inode.NewNode);
+                                if (!string.IsNullOrEmpty(e.Namespace) && !XmlHelpers.IsNamespaceInScope(context, e.Namespace))
+                                {
+                                    XmlDocument doc = context is XmlDocument ? (XmlDocument)context : context.OwnerDocument;
+                                    XmlAttribute attr = doc.CreateAttribute("", "xmlns", XmlHelpers.XmlnsUri);
+                                    attr.Value = e.Namespace;
+                                    inode.XmlNode.Attributes.Append(attr);
+                                    xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
+                                    xn.Expand();
+                                }
                             }
                         }
                     }
@@ -576,6 +586,7 @@ namespace XmlNotepad
         private void OnModelChanged(object sender, ModelChangedEventArgs e)
         {
             if (_disposed) return;
+            if (this._updating > 0) return;
             ModelChangeType t = e.ModelChangeType;
             switch (t)
             {

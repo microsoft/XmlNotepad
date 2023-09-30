@@ -117,6 +117,12 @@ namespace XmlNotepad
             return result;
         }
 
+        public static bool IsNamespaceInScope(XmlNode context, string nsuri)
+        {
+            var scope = GetNamespaceScope(context);
+            return scope.HasNamespace(nsuri);
+        }
+
         public static XmlNamespaceManager GetNamespaceScope(XmlNode context)
         {
             XmlDocument owner;

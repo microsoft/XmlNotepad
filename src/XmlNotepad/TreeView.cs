@@ -677,7 +677,7 @@ namespace XmlNotepad
                 string text = value != null ? value : sel.Label;
                 if (this.BeforeLabelEdit != null)
                 {
-                    NodeLabelEditEventArgs args = new NodeLabelEditEventArgs(sel, text);
+                    NodeLabelEditEventArgs args = new NodeLabelEditEventArgs(sel, text, null);
                     this.BeforeLabelEdit(this, args);
                     if (args.CancelEdit)
                         return false;
@@ -752,7 +752,7 @@ namespace XmlNotepad
                 bool cancel = args.Cancelled;
                 if (this.AfterLabelEdit != null)
                 {
-                    NodeLabelEditEventArgs a = new NodeLabelEditEventArgs(sel, args.Text);
+                    NodeLabelEditEventArgs a = new NodeLabelEditEventArgs(sel, args.Text, args.NamespaceContext);
                     a.CancelEdit = cancel;
                     this.AfterLabelEdit(this, a);
                     cancel = args.Cancelled = a.CancelEdit;
@@ -1856,14 +1856,18 @@ namespace XmlNotepad
         private TreeNode _node;
         private bool _cancel;
         private string _label;
+        private string _nsContext;
 
-        public NodeLabelEditEventArgs(TreeNode node, string label)
+        public NodeLabelEditEventArgs(TreeNode node, string label, string nsContext)
         {
             this._node = node;
             this._label = label;
+            this._nsContext = nsContext;
         }
 
         public string Label { get { return this._label; } }
+
+        public string Namespace { get { return this._nsContext; } }
 
         public TreeNode Node { get { return this._node; } }
 

@@ -38,7 +38,9 @@ namespace XmlNotepad {
         // Count of items in the list
         int Count { get; }
         // Returns intellisense string at given position.
-        string GetValue(int i);
+        string GetName(int i);
+        // Returns optional namespace info at given position.
+        string GetNamespace(int i);
         // Returns tooltip for given item
         string GetTooltip(int i);
     }

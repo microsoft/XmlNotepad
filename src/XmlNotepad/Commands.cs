@@ -340,6 +340,10 @@ namespace XmlNotepad
             this._p = this._a.OwnerElement;
             Debug.Assert(this._p != null);
             _name = XmlHelpers.ParseName(this._p, e.Label, XmlNodeType.Attribute);
+            if (!string.IsNullOrEmpty(e.Namespace))
+            {
+                this._name.NamespaceUri = e.Namespace;
+            }
         }
         public EditAttributeName(XmlTreeNode node, string newName)
         {
@@ -696,7 +700,7 @@ namespace XmlNotepad
             get { return this._newNode; }
         }
 
-        public XmlNode CreateNode(XmlNode context, string name)
+        public XmlNode CreateNode(XmlNode context, string name, string namespaceOverride)
         {
             XmlNode n = null;
             switch (_type)
@@ -704,6 +708,10 @@ namespace XmlNotepad
                 case XmlNodeType.Attribute:
                     {
                         XmlName qname = XmlHelpers.ParseName(context, name, _type);
+                        if (!string.IsNullOrEmpty(namespaceOverride))
+                        {
+                            qname.NamespaceUri = namespaceOverride;
+                        }
                         if (qname.Prefix == null)
                         {
                             n = _doc.CreateAttribute(qname.LocalName);
@@ -727,6 +735,10 @@ namespace XmlNotepad
                 case XmlNodeType.Element:
                     {
                         XmlName qname = XmlHelpers.ParseName(context, name, _type);
+                        if (!string.IsNullOrEmpty(namespaceOverride))
+                        {
+                            qname.NamespaceUri = namespaceOverride;
+                        }
                         n = _doc.CreateElement(qname.Prefix, qname.LocalName, qname.NamespaceUri);
                         break;
                     }
@@ -795,7 +807,7 @@ namespace XmlNotepad
                 }
                 else if (_newNode.Node == null)
                 {
-                    this.XmlNode = CreateNode(null, null);
+                    this.XmlNode = CreateNode(null, null, null);
                     this._view.OnNodeInserted(_newNode);
                 }
                 if (_expandNewNode)
@@ -1090,6 +1102,10 @@ namespace XmlNotepad
             this._xe = n;
             this._node = e.Node as XmlTreeNode;
             this._name = XmlHelpers.ParseName(n, e.Label, n.NodeType);
+            if (!string.IsNullOrEmpty(e.Namespace))
+            {
+                this._name.NamespaceUri = e.Namespace;
+            }
         }
         public EditElementName(XmlTreeNode node, string newName)
         {

@@ -11,6 +11,11 @@
   </application>
   <version number="2.9.0.7">
     <feature>
+      Add some bootstrapping help creating an empty document by providing intellisense from
+      loaded schemas to show possible root elements and when an element is selected from the
+      list set the namespace correctly on the new element so intellisense continues from there.
+    </feature>
+    <feature>
       Add new File/Open XmlDiff Styles menu item so you can edit the CSS styles for the XmlDiff output window.
       Delete the file to reset back to the original styles.
       The files lives in %LOCALAPPDATA%\Microsoft\Xml Notepad\XmlDiffStyles.css.

@@ -10,3 +10,6 @@ You can click the browse buttons on the right hand side to bring up the Open Fil
 The first column contains check boxes which can be used to temporarily disable a schema from being used in validation.
 
 This list of schemas is persisted in the `XmlNotepad.settings` file so it is remembered next time you load XML Notepad.
+
+When you add schemas this way you can create a new document and
+when you add a new root element you should see some intellisense showing possible root elements and when you select from the dropdown the new element is associated with the correct namespace so that intellisense continues from there.

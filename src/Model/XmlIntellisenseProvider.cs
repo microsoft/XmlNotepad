@@ -156,16 +156,16 @@ namespace XmlNotepad
             foreach (XmlNode a in node.SelectNodes("namespace::*"))
             {
                 string tns = a.Value;
-                list.Add(tns, null);
+                list.Add(tns, null, null);
             }
             foreach (CacheEntry ce in this._model.SchemaCache.GetSchemas())
             {
                 if (ce.Schema == null) continue;
                 string tns = ce.Schema.TargetNamespace;
-                list.Add(tns, null);
+                list.Add(tns, null, null);
             }
-            list.Add("http://www.w3.org/2001/XMLSchema-instance", null);
-            list.Add("http://www.w3.org/2001/XMLSchema", null);
+            list.Add("http://www.w3.org/2001/XMLSchema-instance", null, null);
+            list.Add("http://www.w3.org/2001/XMLSchema", null, null);
             list.Sort();
 
             return list;
@@ -173,30 +173,37 @@ namespace XmlNotepad
 
         public virtual IIntellisenseList GetExpectedNames()
         {
-            if (_checker != null)
+            var checker = this._checker;
+            if (checker == null)
+            {
+                // fall back on the model checker so we can get top level intellisense in an empty doc.
+                checker = this._model.Checker;
+            }
+
+            if (checker != null)
             {
                 XmlIntellisenseList list = new XmlIntellisenseList();
                 if (_node.NodeType == XmlNodeType.Attribute)
                 {
-                    XmlSchemaAttribute[] expected = _checker.GetExpectedAttributes();
+                    XmlSchemaAttribute[] expected = checker.GetExpectedAttributes();
                     if (expected != null)
                     {
                         foreach (XmlSchemaAttribute a in expected)
                         {
-                            list.Add(GetQualifiedName(a), SchemaCache.GetAnnotation(a, SchemaCache.AnnotationNode.Tooltip, null));
+                            list.Add(GetQualifiedName(a), a.QualifiedName.Namespace, SchemaCache.GetAnnotation(a, SchemaCache.AnnotationNode.Tooltip, null));
                         }
                     }
                 }
                 else
                 {
-                    XmlSchemaParticle[] particles = _checker.GetExpectedParticles();
+                    XmlSchemaParticle[] particles = checker.GetExpectedParticles();
                     if (particles != null)
                     {
                         foreach (XmlSchemaParticle p in particles)
                         {
                             if (p is XmlSchemaElement se)
                             {
-                                list.Add(GetQualifiedName(se), SchemaCache.GetAnnotation(p, SchemaCache.AnnotationNode.Tooltip, null));
+                                list.Add(GetQualifiedName(se), se.QualifiedName.Namespace, SchemaCache.GetAnnotation(p, SchemaCache.AnnotationNode.Tooltip, null));
                             }
                             else
                             {
@@ -465,10 +472,12 @@ namespace XmlNotepad
         private class Entry
         {
             public string name;
+            public string ns;
             public string tooltip;
-            public Entry(string name, string tip)
+            public Entry(string name, string ns, string tip)
             {
                 this.name = name;
+                this.ns = ns;
                 this.tooltip = string.IsNullOrEmpty(tip) ? null : tip;
             }
         }
@@ -495,11 +504,11 @@ namespace XmlNotepad
             set { this._isOpen = value; }
         }
 
-        public void Add(string s, string tip)
+        public void Add(string s, string ns, string tip)
         {
             if (!string.IsNullOrEmpty(s) && !_unique.ContainsKey(s))
             {
-                Entry e = new Entry(s, tip);
+                Entry e = new Entry(s, ns, tip);
                 _unique[s] = e;
                 _items.Add(e);
             }
@@ -515,9 +524,14 @@ namespace XmlNotepad
             get { return _items.Count; }
         }
 
-        public string GetValue(int i)
+        public string GetName(int i)
         {
             return _items[i].name;
+        }
+
+        public string GetNamespace(int i)
+        {
+            return _items[i].ns;
         }
 
         public string GetTooltip(int i)

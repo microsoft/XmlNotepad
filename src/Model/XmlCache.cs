@@ -56,6 +56,8 @@ namespace XmlNotepad
         public string FileName => this._fileName;
         public string NewName => this._renamed;
 
+        public Checker Checker => this._checker;
+
         public bool IsFile
         {
             get

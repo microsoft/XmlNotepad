@@ -7,6 +7,7 @@ using System.IO;
 using System.Globalization;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace XmlNotepad
 {
@@ -168,7 +169,8 @@ namespace XmlNotepad
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
         PersistentFileNames pfn;
         IServiceProvider site;
-        private XmlResolver resolver; 
+        private XmlResolver resolver;
+        private List<XmlSchemaElement> globalElementCache;
 
         public SchemaCache(IServiceProvider site)
         {
@@ -179,6 +181,7 @@ namespace XmlNotepad
 
         void FireOnChanged()
         {
+            globalElementCache = null;
             if (null != this.Changed)
             {
                 this.Changed(this, EventArgs.Empty);
@@ -280,7 +283,7 @@ namespace XmlNotepad
                     {
                         s = LoadSchema(new Uri(new Uri(i.SourceUri), i.SchemaLocation));
                     }
-                    if (s != null && !ContainsSchema(i.Schema))
+                    if (s != null && !ContainsSchema(s))
                     {
                         Add(s);
                     }
@@ -531,15 +534,15 @@ namespace XmlNotepad
                     case XmlTypeCode.Language:
                         foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
                         {
-                            list.Add(ci.Name, ci.DisplayName);
+                            list.Add(ci.Name, null, ci.DisplayName);
                         }
                         list.Sort();
                         break;
                     case XmlTypeCode.Boolean:
-                        list.Add("0", null);
-                        list.Add("1", null);
-                        list.Add("true", null);
-                        list.Add("false", null);
+                        list.Add("0", null, null);
+                        list.Add("1", null, null);
+                        list.Add("true", null, null);
+                        list.Add("false", null, null);
                         break;
                 }
             }
@@ -569,7 +572,7 @@ namespace XmlNotepad
                     if (f is XmlSchemaEnumerationFacet)
                     {
                         XmlSchemaEnumerationFacet ef = (XmlSchemaEnumerationFacet)f;
-                        list.Add(ef.Value, GetAnnotation(ef, SchemaCache.AnnotationNode.Tooltip, null));
+                        list.Add(ef.Value, null, GetAnnotation(ef, SchemaCache.AnnotationNode.Tooltip, null));
                     }
                 }
             }
@@ -756,6 +759,46 @@ namespace XmlNotepad
                     }
                 }
             }
+        }
+
+        internal IEnumerable<XmlSchemaElement> GetPossibleTopLevelElements()
+        {
+            if (globalElementCache == null)
+            {
+                globalElementCache = new List<XmlSchemaElement>();
+                foreach (var entry in this.GetSchemas())
+                {
+                    if (entry.Schema == null)
+                    {
+                        if (entry.Location != null)
+                        {
+                            entry.Schema = this.LoadSchema(entry.Location);
+                        }
+                    }
+                    if (entry.Schema != null)
+                    {
+                        XmlSchemaSet set = new XmlSchemaSet();
+                        set.Add(entry.Schema);
+
+                        try
+                        {
+                            set.Compile();
+                            foreach (var o in set.GlobalElements.Values)
+                            {
+                                if (o is XmlSchemaElement e)
+                                {
+                                    globalElementCache.Add(e);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                }
+            }
+
+            return globalElementCache;
         }
 
         #endregion

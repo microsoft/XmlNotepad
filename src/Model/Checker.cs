@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Schema;
 
 namespace XmlNotepad
@@ -58,12 +60,12 @@ namespace XmlNotepad
 
         public XmlSchemaAttribute[] GetExpectedAttributes()
         {
-            return _expectedAttributes;
+            return this._expectedAttributes;
         }
 
         public XmlSchemaParticle[] GetExpectedParticles()
         {
-            return _expectedParticles;
+            return this._expectedParticles;
         }
 
         public void ValidateContext(XmlCache xcache)
@@ -118,11 +120,28 @@ namespace XmlNotepad
                 this._validator.Initialize();
 
                 this._nsResolver.Context = doc;
-                ValidateContent(doc);
+                if (doc.DocumentElement == null)
+                {
+                    GetExpectedRootElements(sc);
+                }
+                else
+                {
+                    ValidateContent(doc);
+                }
                 this._nsResolver.Context = doc;
 
                 this._validator.EndValidation();
             }
+        }
+
+        private void GetExpectedRootElements(SchemaCache cache)
+        {
+            List<XmlSchemaParticle> expected = new List<XmlSchemaParticle>();
+            foreach (XmlSchemaElement root in cache.GetPossibleTopLevelElements())
+            {
+                expected.Add(root);
+            }
+            this._expectedParticles = expected.ToArray();
         }
 
         public void Validate(XmlCache xcache)
@@ -142,24 +161,25 @@ namespace XmlNotepad
         bool LoadSchemas(XmlDocument doc, XmlSchemaSet set, SchemaResolver resolver)
         {
             XmlElement root = doc.DocumentElement;
-            if (root == null) return false;
-            // Give Xsi schemas highest priority.
-            bool result = LoadXsiSchemas(doc, set, resolver);
-
-            SchemaCache sc = this._cache.SchemaCache;
-            foreach (XmlAttribute a in root.Attributes)
+            if (root != null)
             {
-                if (a.NamespaceURI == "http://www.w3.org/2000/xmlns/")
+                // Give Xsi schemas highest priority.
+                bool result = LoadXsiSchemas(doc, set, resolver);
+
+                SchemaCache sc = this._cache.SchemaCache;
+                foreach (XmlAttribute a in root.Attributes)
                 {
-                    string nsuri = a.Value;
-                    result |= LoadSchemasForNamespace(set, resolver, sc, nsuri, a);
+                    if (a.NamespaceURI == "http://www.w3.org/2000/xmlns/")
+                    {
+                        string nsuri = a.Value;
+                        result |= LoadSchemasForNamespace(set, resolver, sc, nsuri, a);
+                    }
+                }
+                if (string.IsNullOrEmpty(root.NamespaceURI))
+                {
+                    result |= LoadSchemasForNamespace(set, resolver, sc, "", root);
                 }
             }
-            if (string.IsNullOrEmpty(root.NamespaceURI))
-            {
-                result |= LoadSchemasForNamespace(set, resolver, sc, "", root);
-            }
-
             // Make sure all the required includes or imports are there. 
             // This is making up for a possible bug in XmlSchemaSet where it
             // refuses to load an XmlSchema containing a DTD.  Our XmlSchemaResolver
@@ -170,7 +190,7 @@ namespace XmlNotepad
                 CopyImports(s, set, visited);
             }
 
-            return result;
+            return true;
         }
 
         private void CopyImports(XmlSchema s, XmlSchemaSet set, HashSet<XmlSchema> visited)
