@@ -30,6 +30,7 @@ namespace UpdateVersions
         public string MasterVersionFile { get; set; }
         public string CSharpVersionFile { get; set; }
         public string WixFile { get; set; }
+        public string WixBundleFile { get; set; }
         public string ApplicationProjectFile { get; set; }
         public string AppManifestFile { get; set; }
         public string DropDir { get; set; }
@@ -65,7 +66,7 @@ namespace UpdateVersions
 
             bool result = UpdateWebView2Version(doc);
             result &= UpdateCSharpVersion(v);
-            result &= UpdateWixDoc(v);
+            result &= UpdateWixDocs(v);
             result &= UpdatePackageManifest(v);
             result &= UpdateApplicationProjectFile(v);
             result &= CheckUpdatesFile(v);
@@ -300,30 +301,33 @@ namespace UpdateVersions
             return true;
         }
 
-        private bool UpdateWixDoc(Version v)
+        private bool UpdateWixDocs(Version v)
         {
-            if (!System.IO.File.Exists(this.WixFile))
+            foreach (var name in new string[] { this.WixFile, WixBundleFile }) 
             {
-                Log.LogError("WIX file not found: " + this.WixFile);
-                return false;
-            }
-
-            try
-            {
-                XDocument doc = XDocument.Load(this.WixFile);
-                bool result = UpdateWixVersion(doc, v);
-                result &= UpdateDropFiles(doc, v);
-                result &= UpdateFeature(doc);
-                if (result)
+                if (!System.IO.File.Exists(name))
                 {
-                    Log.LogMessage("SyncVersions updating " + this.WixFile);
-                    doc.Save(this.WixFile);
+                    Log.LogError("WIX file not found: " + name);
+                    return false;
                 }
-            }
-            catch (Exception ex)
-            {
-                Log.LogError("file '" + this.WixFile + "' edit failed: " + ex.Message);
-                return false;
+
+                try
+                {
+                    XDocument doc = XDocument.Load(name);
+                    bool result = UpdateWixVersion(doc, v);
+                    result |= UpdateDropFiles(doc, v);
+                    result |= UpdateFeature(doc);
+                    if (result)
+                    {
+                        Log.LogMessage("SyncVersions updating " + name);
+                        doc.Save(name);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.LogError("file '" + name + "' edit failed: " + ex.Message);
+                    return false;
+                }
             }
             // return that there is no error.
             return true;
@@ -333,6 +337,10 @@ namespace UpdateVersions
         {
             XNamespace ns = wixdoc.Root.Name.Namespace;
             XElement product = wixdoc.Root.Element(ns + "Product");
+            if (product == null)
+            {
+                return false;
+            }
             XElement feature = product.Element(ns + "Feature");
 
             List<string> components = new List<string>();
@@ -375,6 +383,10 @@ namespace UpdateVersions
         {
             XNamespace ns = wixdoc.Root.Name.Namespace;
             XElement product = wixdoc.Root.Element(ns + "Product");
+            if (product == null)
+            {
+                product = wixdoc.Root.Element(ns + "Bundle");
+            }
             if (v.ToString() != (string)product.Attribute("Version"))
             {
                 product.SetAttributeValue("Version", v.ToString());
@@ -396,10 +408,12 @@ namespace UpdateVersions
             {
                 XNamespace ns = wixdoc.Root.Name.Namespace;
                 XElement product = wixdoc.Root.Element(ns + "Product");
-
-                foreach (string subdir in new string[] { "samples" })
+                if (product != null)
                 {
-                    GetOrCreateDirRef(wixdoc, Path.Combine(this.DropDir, subdir));
+                    foreach (string subdir in new string[] { "samples" })
+                    {
+                        GetOrCreateDirRef(wixdoc, Path.Combine(this.DropDir, subdir));
+                    }
                 }
             }
             catch (Exception ex)
@@ -599,6 +613,7 @@ namespace UpdateVersions
             sync.MasterVersionFile = Path.Combine(solutionPath, "Version", "Version.props");
             sync.CSharpVersionFile = Path.Combine(solutionPath, "Version", "Version.cs");
             sync.WixFile = Path.Combine(solutionPath, "XmlNotepadSetup", "Product.wxs");
+            sync.WixBundleFile = Path.Combine(solutionPath, "XmlNotepadBundle", "Bundle.wxs"); 
             sync.ApplicationProjectFile = Path.Combine(solutionPath, "Application", "Application.csproj");
             sync.AppManifestFile = Path.Combine(solutionPath, "XmlNotepadPackage", "Package.appxmanifest");
             sync.DropDir = Path.Combine(solutionPath, "drop");

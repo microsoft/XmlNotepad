@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <RemotePayload CertificatePublicKey="F49F9B33E25E33CCA0BFB15A62B7C29FFAB3880B" CertificateThumbprint="ABDCA79AF9DD48A0EA702AD45260B3C03093FB4B" Description="Microsoft .NET Framework 4.8 Setup" Hash="4181398AA1FD5190155AC3A388434E5F7EA0B667" ProductName="Microsoft .NET Framework 4.8" Size="1439328" Version="4.8.4115.0" />
+    </Fragment>
+</Wix>

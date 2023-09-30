@@ -14,6 +14,7 @@ set WINGET=1
 set GITRELEASE=1
 set UPLOAD=1
 set PUBLISH=%ROOT%\src\Application\bin\Release\app.publish
+set WIXBIN=%ProgramFiles% (x86)\WiX Toolset v3.11\bin
 
 :parse
 if "%1"=="/nowinget" set WINGET=0
@@ -50,12 +51,12 @@ move "%PUBLISH%" "%ROOT%\publish"
 msbuild /target:build src\xmlnotepadsetup.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :noappx
 
-if not EXIST "C:\Program Files (x86)\WiX Toolset v3.11\bin\WixUtilExtension.dll" goto :nowix
+if not EXIST "%WIXBIN%\WixUtilExtension.dll" goto :nowix
 
 pushd src\XmlNotepadSetup
 echo echo Building XmlNotepadSetup.msi... > build.cmd
-echo candle.exe -d"DevEnvDir=%DevEnvDir%\" -dSolutionDir=%ROOT%\src\ -dSolutionExt=.sln -dSolutionFileName=xmlnotepadsetup.sln -dSolutionName=xmlnotepadsetup -dSolutionPath=%ROOT%\src\xmlnotepadsetup.sln -dConfiguration=Release -dOutDir=bin\Release\ -dPlatform=AnyCPU -dProjectDir=%ROOT%\src\XmlNotepadSetup\ -dProjectExt=.wixproj -dProjectFileName=XmlNotepadSetup.wixproj -dProjectName=XmlNotepadSetup -dProjectPath=%ROOT%\src\XmlNotepadSetup\XmlNotepadSetup.wixproj -dTargetDir=%ROOT%\src\XmlNotepadSetup\bin\Release\ -dTargetExt=.msi -dTargetFileName=XmlNotepadSetup.msi -dTargetName=XmlNotepadSetup -dTargetPath=%ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi -dApplication.Configuration=Release -d"Application.FullConfiguration=Release|AnyCPU" -dApplication.Platform=AnyCPU -dApplication.ProjectDir=%ROOT%\src\Application\ -dApplication.ProjectExt=.csproj -dApplication.ProjectFileName=Application.csproj -dApplication.ProjectName=Application -dApplication.ProjectPath=%ROOT%\src\Application\Application.csproj -dApplication.TargetDir=%ROOT%\src\Application\bin\Release\ -dApplication.TargetExt=.exe -dApplication.TargetFileName=XmlNotepad.exe -dApplication.TargetName=XmlNotepad -dApplication.TargetPath=%ROOT%\src\Application\bin\Release\XmlNotepad.exe -out obj\Release\ -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\WixUtilExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\WixUIExtension.dll" Product.wxs	>> build.cmd
-echo light.exe -sw1105 -out %ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi -pdbout %ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.wixpdb -cultures:null -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\\WixUtilExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.11\bin\WixUIExtension.dll" -contentsfile obj\Release\XmlNotepadSetup.wixproj.BindContentsFileListnull.txt -outputsfile obj\Release\XmlNotepadSetup.wixproj.BindOutputsFileListnull.txt -builtoutputsfile obj\Release\XmlNotepadSetup.wixproj.BindBuiltOutputsFileListnull.txt -wixprojectfile %ROOT%\src\XmlNotepadSetup\XmlNotepadSetup.wixproj obj\Release\Product.wixobj >> build.cmd
+echo candle.exe -d"DevEnvDir=%DevEnvDir%\" -dSolutionDir=%ROOT%\src\ -dSolutionExt=.sln -dSolutionFileName=xmlnotepadsetup.sln -dSolutionName=xmlnotepadsetup -dSolutionPath=%ROOT%\src\xmlnotepadsetup.sln -dConfiguration=Release -dOutDir=bin\Release\ -dPlatform=AnyCPU -dProjectDir=%ROOT%\src\XmlNotepadSetup\ -dProjectExt=.wixproj -dProjectFileName=XmlNotepadSetup.wixproj -dProjectName=XmlNotepadSetup -dProjectPath=%ROOT%\src\XmlNotepadSetup\XmlNotepadSetup.wixproj -dTargetDir=%ROOT%\src\XmlNotepadSetup\bin\Release\ -dTargetExt=.msi -dTargetFileName=XmlNotepadSetup.msi -dTargetName=XmlNotepadSetup -dTargetPath=%ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi -dApplication.Configuration=Release -d"Application.FullConfiguration=Release|AnyCPU" -dApplication.Platform=AnyCPU -dApplication.ProjectDir=%ROOT%\src\Application\ -dApplication.ProjectExt=.csproj -dApplication.ProjectFileName=Application.csproj -dApplication.ProjectName=Application -dApplication.ProjectPath=%ROOT%\src\Application\Application.csproj -dApplication.TargetDir=%ROOT%\src\Application\bin\Release\ -dApplication.TargetExt=.exe -dApplication.TargetFileName=XmlNotepad.exe -dApplication.TargetName=XmlNotepad -dApplication.TargetPath=%ROOT%\src\Application\bin\Release\XmlNotepad.exe -out obj\Release\ -ext "%WIXBIN%\WixUtilExtension.dll" -ext "%WIXBIN%\WixUIExtension.dll" -ext "%WIXBIN%\WixNetFxExtension.dll" -ext "%WIXBIN%\\WixBalExtension.dll"  Product.wxs	>> build.cmd
+echo light.exe -sw1105 -out %ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi -pdbout %ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.wixpdb -cultures:null -ext "%WIXBIN%\\WixUtilExtension.dll" -ext "%WIXBIN%\WixUIExtension.dll" -ext "%WIXBIN%\WixNetFxExtension.dll"  -ext "%WIXBIN%\\WixBalExtension.dll" -contentsfile obj\Release\XmlNotepadSetup.wixproj.BindContentsFileListnull.txt -outputsfile obj\Release\XmlNotepadSetup.wixproj.BindOutputsFileListnull.txt -builtoutputsfile obj\Release\XmlNotepadSetup.wixproj.BindBuiltOutputsFileListnull.txt -wixprojectfile %ROOT%\src\XmlNotepadSetup\XmlNotepadSetup.wixproj obj\Release\Product.wixobj >> build.cmd
 
 call build.cmd
 if ERRORLEVEL 1 goto :err_setup
@@ -202,7 +203,7 @@ echo Please clone git@github.com:lovettchris/winget-pkgs.git into %WINGET_SRC%
 exit /b 1
 
 :nowix
-echo Please install the wixtoolset to C:\Program Files (x86)\WiX Toolset v3.11\bin, and add this to your PATH
+echo Please install the wixtoolset to %WIXBIN%, and add this to your PATH
 exit /b 1
 
 :err_setup

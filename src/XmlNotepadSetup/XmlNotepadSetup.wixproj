@@ -22,9 +22,6 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Product.wxs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj">
       <Name>Application</Name>
       <Project>{07661035-bfe2-4169-adef-364839871457}</Project>
@@ -43,6 +40,9 @@
       <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
     </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
