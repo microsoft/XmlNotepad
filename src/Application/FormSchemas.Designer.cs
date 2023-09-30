@@ -25,6 +25,10 @@ namespace XmlNotepad {
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSchemas));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.columnDisabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnNamespace = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnFileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnBrowse = new System.Windows.Forms.DataGridViewButtonColumn();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,10 +44,6 @@ namespace XmlNotepad {
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.columnDisabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.columnNamespace = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnFileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnBrowse = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -60,6 +60,35 @@ namespace XmlNotepad {
             this.columnFileName,
             this.columnBrowse});
             this.dataGridView1.Name = "dataGridView1";
+            // 
+            // columnDisabled
+            // 
+            this.columnDisabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.columnDisabled.DataPropertyName = "Disabled";
+            this.columnDisabled.FillWeight = 89.82036F;
+            resources.ApplyResources(this.columnDisabled, "columnDisabled");
+            this.columnDisabled.Name = "columnDisabled";
+            // 
+            // columnNamespace
+            // 
+            this.columnNamespace.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnNamespace.DataPropertyName = "TargetNamespace";
+            resources.ApplyResources(this.columnNamespace, "columnNamespace");
+            this.columnNamespace.Name = "columnNamespace";
+            // 
+            // columnFileName
+            // 
+            this.columnFileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnFileName.DataPropertyName = "FileName";
+            resources.ApplyResources(this.columnFileName, "columnFileName");
+            this.columnFileName.Name = "columnFileName";
+            // 
+            // columnBrowse
+            // 
+            this.columnBrowse.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.columnBrowse.DataPropertyName = "Browse";
+            resources.ApplyResources(this.columnBrowse, "columnBrowse");
+            this.columnBrowse.Name = "columnBrowse";
             // 
             // openFileDialog1
             // 
@@ -161,35 +190,6 @@ namespace XmlNotepad {
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            // 
-            // columnDisabled
-            // 
-            this.columnDisabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.columnDisabled.DataPropertyName = "Disabled";
-            this.columnDisabled.FillWeight = 89.82036F;
-            resources.ApplyResources(this.columnDisabled, "columnDisabled");
-            this.columnDisabled.Name = "columnDisabled";
-            // 
-            // columnNamespace
-            // 
-            this.columnNamespace.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnNamespace.DataPropertyName = "TargetNamespace";
-            resources.ApplyResources(this.columnNamespace, "columnNamespace");
-            this.columnNamespace.Name = "columnNamespace";
-            // 
-            // columnFileName
-            // 
-            this.columnFileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnFileName.DataPropertyName = "FileName";
-            resources.ApplyResources(this.columnFileName, "columnFileName");
-            this.columnFileName.Name = "columnFileName";
-            // 
-            // columnBrowse
-            // 
-            this.columnBrowse.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.columnBrowse.DataPropertyName = "Browse";
-            resources.ApplyResources(this.columnBrowse, "columnBrowse");
-            this.columnBrowse.Name = "columnBrowse";
             // 
             // FormSchemas
             // 

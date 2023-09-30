@@ -103,10 +103,10 @@ namespace XmlNotepad
                 string filename = e.FormattedValue as string;
                 if (string.IsNullOrEmpty(filename))
                     return;
-                if (SchemaDialogCommand.ValidateSchema(row, filename) == null)
-                {
-                    e.Cancel = true;
-                }
+                //if (SchemaDialogCommand.ValidateSchema(row, filename) == null)
+                //{
+                //    e.Cancel = true;
+                //}
             }
         }
 
@@ -139,7 +139,10 @@ namespace XmlNotepad
         protected override void OnClosing(CancelEventArgs e)
         {
             if (!Cancel())
+            {
                 e.Cancel = true;
+                return;
+            }
 
             HelpProvider hp = this.Site.GetService(typeof(HelpProvider)) as HelpProvider;
             HelpService hs = this.Site.GetService(typeof(HelpService)) as HelpService;
@@ -252,7 +255,18 @@ namespace XmlNotepad
         void Push(Command cmd)
         {
             this._inUndoRedo = true;
-            _undoManager.Push(cmd);
+            try
+            {
+                _undoManager.Push(cmd);
+                if (cmd is SchemaDialogCommand sc && sc.Errors.Length > 0)
+                {
+                    MessageBox.Show(this, sc.Errors, "Schema Contains Errors");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Schema Contains Errors");
+            }
             UpdateMenuState();
             this._inUndoRedo = false;
         }
@@ -517,19 +531,17 @@ namespace XmlNotepad
                 fd.Multiselect = false;
                 if (fd.ShowDialog(this.DataGridView.FindForm()) == DialogResult.OK)
                 {
-                    if (SchemaDialogCommand.ValidateSchema(row, fd.FileName) != null)
-                    {
-                        row.Cells[2].Value = fd.FileName;
-                    }
+                    row.Cells[2].Value = fd.FileName;
                 }
             }
         }
 
         abstract class SchemaDialogCommand : Command
         {
-
             DataGridView view;
             List<SchemaItem> items;
+            StringBuilder log = new StringBuilder();
+
 
             public SchemaDialogCommand(DataGridView view, List<SchemaItem> items)
             {
@@ -549,6 +561,13 @@ namespace XmlNotepad
                     return false;
                 }
             }
+
+            public void LogError(string message)
+            {
+                log.AppendLine(message);
+            }
+
+            public string Errors => log.ToString();
 
             public void InvalidateRow(DataGridViewRow row)
             {
@@ -741,11 +760,11 @@ namespace XmlNotepad
                 }
             }
 
-            public static XmlSchema ValidateSchema(DataGridViewRow row, string filename)
+            public XmlSchema ValidateSchema(DataGridViewRow row, string filename)
             {
                 try
                 {
-                    XmlSchema schema = SchemaDialogCommand.LoadSchema(filename); // make sure we can load it!            
+                    XmlSchema schema = this.LoadSchema(filename); // make sure we can load it!            
                     return schema;
                 }
                 catch (Exception ex)
@@ -756,14 +775,25 @@ namespace XmlNotepad
                 }
             }
 
-            public static XmlSchema LoadSchema(string filename)
+            public XmlSchema LoadSchema(string filename)
             {
                 if (string.IsNullOrEmpty(filename)) return null;
                 using (var r = new XmlTextReader(filename, new NameTable()))
                 {
-                    return XmlSchema.Read(r, null);
+                    return XmlSchema.Read(r, (sender, args) =>
+                    {
+                        if (args.Exception is XmlSchemaException se)
+                        {
+                            LogError($"{args.Message} See line {se.LineNumber} pos {se.LinePosition} of {se.SourceUri}");
+                        }
+                        else
+                        {
+                            LogError(args.Message);
+                        }
+                    });
                 }
             }
+
         }
 
         class SchemaDialogNewRow : SchemaDialogCommand
@@ -833,7 +863,7 @@ namespace XmlNotepad
                     schema = item.Schema;
                 }
                 // should succeed because previous code already validated the filename.
-                schema = SchemaDialogCommand.LoadSchema(newSchema);
+                schema = this.LoadSchema(newSchema);
                 newNamespace = schema == null ? "" : schema.TargetNamespace;
                 index = row.Index;
             }
@@ -991,6 +1021,7 @@ namespace XmlNotepad
 
             public override void Do()
             {
+                StringBuilder errors = new StringBuilder();
                 List<DataGridViewRow> list = new List<DataGridViewRow>();
                 foreach (string file in this.files)
                 {
@@ -1027,15 +1058,17 @@ namespace XmlNotepad
                         }
                         list.Add(row);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-#if DEBUG
-                    Trace.WriteLine("Bad file name:" + file);
-#endif
+                        errors.AppendLine(ex.Message);
                     }
                 }
                 SelectRows(list);
                 Verify();
+                if (errors.Length > 0)
+                {
+                    throw new Exception(errors.ToString());
+                }
             }
 
             public override void Undo()
