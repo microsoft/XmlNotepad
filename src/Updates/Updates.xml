@@ -11,6 +11,9 @@
   </application>
   <version number="2.9.0.7">
     <feature>
+      Move to .NET Framework version 4.8.
+    </feature>
+    <feature>
       Add some bootstrapping help creating an empty document by providing intellisense from
       loaded schemas to show possible root elements and when an element is selected from the
       list set the namespace correctly on the new element so intellisense continues from there.
@@ -19,6 +22,9 @@
       Add new File/Open XmlDiff Styles menu item so you can edit the CSS styles for the XmlDiff output window.
       Delete the file to reset back to the original styles.
       The files lives in %LOCALAPPDATA%\Microsoft\Xml Notepad\XmlDiffStyles.css.
+    </feature>
+    <feature>
+      Add a Copy XPath command that gives you the XPath location of the selected element.
     </feature>
     <bug>Fix Schema dialog row copy so it gives you a valid xsi:schemaLocation value.</bug>
   </version>

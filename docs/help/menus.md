@@ -24,6 +24,7 @@ The edit menu contains the following commands:
 - **Redo** Reverses the last undo operation.
 - **Cut** Copy the selected node to the clipboard (and its children) and remove that node from the tree. See [Clipboard support](clipboard.md).
 - **Copy** Copy the selected node to the clipboard (and its children).
+- **Copy XPath** Copy the XPath expression that locates the selected node.
 - **Paste** Parse the XML in the clipboard and create new nodes in the tree under the selected node.
 - **Delete** Delete the selected node.
 - **Insert** Insert a new node of the same type (element, attribute, processing instruction, comment, etc) as the currently selected node.  This makes it easy to build a list of nodes that have the same type.

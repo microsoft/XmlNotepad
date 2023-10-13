@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using Microsoft.Xml;
+using System.Xml;
 
 namespace XmlNotepad
 {
@@ -137,6 +138,7 @@ namespace XmlNotepad
             XmlNameTable nt = owner.NameTable;
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(nt);
             XmlNode parent = context;
+            
             while (parent != null)
             {
                 if (parent is XmlElement)
@@ -157,9 +159,23 @@ namespace XmlNotepad
                         }
                     }
                 }
-                parent = parent.ParentNode;
+                if (parent.NodeType == XmlNodeType.Attribute)
+                {
+                    parent = ((XmlAttribute)parent).OwnerElement;
+                }
+                else
+                {
+                    parent = parent.ParentNode;
+                }
             }
             return nsmgr;
+        }
+
+        public static string GetXPathLocation(XmlNode context, XmlNamespaceManager scope)
+        {
+            string path = null;
+            XPathGenerator gen = new XPathGenerator();
+            return gen.GetXPath(context, scope);
         }
 
         public static bool MissingNamespace(XmlName name)

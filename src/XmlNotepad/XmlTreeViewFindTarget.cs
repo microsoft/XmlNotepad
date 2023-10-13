@@ -45,9 +45,12 @@ namespace XmlNotepad
 
         void FindNodes()
         {
-
             XmlDocument doc = this._view.Model.Document;
-            if (this._doc != doc)
+            if (this._doc == null)
+            {
+                this._doc = doc;
+            }
+            else if (this._doc != doc)
             {
                 this._doc = doc;
                 this._nsmgr = new XmlNamespaceManager(doc.NameTable);
@@ -588,57 +591,12 @@ namespace XmlNotepad
         private string GetLocation()
         {
             string path = null;
-            this._doc = this._view.Model.Document;
-            this._nsmgr = new XmlNamespaceManager(_doc.NameTable);
             XmlTreeNode node = this._view.SelectedNode as XmlTreeNode;
-            if (node != null)
+            if (node != null && node.Node != null)
             {
-                XmlNode xnode = node.Node;
-                if (xnode != null)
-                {
-                    XmlNode nsctx = xnode;
-                    if (nsctx.NodeType != XmlNodeType.Element)
-                    {
-                        if (nsctx.NodeType == XmlNodeType.Attribute)
-                        {
-                            nsctx = ((XmlAttribute)nsctx).OwnerElement;
-                        }
-                        else
-                        {
-                            nsctx = nsctx.ParentNode;
-                        }
-                    }
-                    if (nsctx == null || nsctx == this._doc)
-                        nsctx = this._doc.DocumentElement;
-
-                    foreach (XmlAttribute a in nsctx.SelectNodes("namespace::*"))
-                    {
-                        string prefix = (a.Prefix == "xmlns") ? a.LocalName : "";
-                        if (!string.IsNullOrEmpty(prefix))
-                        {
-                            string ns = a.Value;
-                            if (_nsmgr.LookupPrefix(ns) == null)
-                            {
-                                _nsmgr.AddNamespace(prefix, ns);
-                            }
-                        }
-                    }
-                    foreach (XmlElement child in nsctx.SelectNodes("//*[namespace-uri(.) != '']"))
-                    {
-                        string uri = child.NamespaceURI;
-                        if (_nsmgr.LookupPrefix(uri) == null)
-                        {
-                            string prefix = child.Prefix;
-                            if (!string.IsNullOrEmpty(prefix))
-                            {
-                                _nsmgr.AddNamespace(prefix, uri);
-                            }
-                        }
-                    }
-
-                    XPathGenerator gen = new XPathGenerator();
-                    path = gen.GetXPath(xnode, _nsmgr);
-                }
+                var xnode = node.Node;
+                this._nsmgr = XmlHelpers.GetNamespaceScope(xnode);
+                path = XmlHelpers.GetXPathLocation(xnode, _nsmgr);
             }
             return path;
         }

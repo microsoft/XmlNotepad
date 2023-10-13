@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Windows.Forms;
@@ -791,6 +792,11 @@ namespace XmlNotepad
             this._nodeTextView.OnLoaded();
         }
 
+        private void OnClipboardChanged()
+        {
+            if (ClipboardChanged != null) ClipboardChanged(this, EventArgs.Empty);
+        }
+
         public void Cut()
         {
             this.Commit();
@@ -798,7 +804,7 @@ namespace XmlNotepad
             if (selection != null)
             {
                 this.UndoManager.Push(new CutCommand(this, selection));
-                if (ClipboardChanged != null) ClipboardChanged(this, EventArgs.Empty);
+                OnClipboardChanged();
             }
         }
 
@@ -809,7 +815,23 @@ namespace XmlNotepad
             if (selection != null)
             {
                 TreeData.SetData(selection);
-                if (ClipboardChanged != null) ClipboardChanged(this, EventArgs.Empty);
+                OnClipboardChanged();
+            }
+        }
+
+        public void CopyXPath()
+        {
+            XmlTreeNode selection = (XmlTreeNode)this._myTreeView.SelectedNode;
+            if (selection != null && selection.Node != null)
+            {
+                var xnode = selection.Node;
+                var nsmgr = XmlHelpers.GetNamespaceScope(xnode);
+                string path = XmlHelpers.GetXPathLocation(xnode, nsmgr);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    Clipboard.SetText(path);
+                    OnClipboardChanged();
+                }
             }
         }
 

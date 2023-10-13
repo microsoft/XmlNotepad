@@ -340,7 +340,7 @@ namespace UnitTests
                         {
                             string itemName = e.Current.Name;
                             // Debug.WriteLine(itemName);
-                            _menuItems[itemName] = new AutomationWrapper(e);
+                            _menuItems[itemName] = new AutomationWrapper(e);                            
                         }
                     }
                     // and the toolbar buttons
