@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
@@ -20,7 +21,7 @@ namespace UnitTests
         private Dictionary<string, AutomationWrapper> _menuItems;
         private readonly Window _parent;
         private bool _disposed;
-
+        private Dictionary<string, List<string>> _menuHeirarchy;
         private const int MenuDelay = 100;
 
         public InputSimulator sim;
@@ -319,45 +320,64 @@ namespace UnitTests
             return _menuItems[name];
         }
 
+        void LoadMenuItems(AutomationElement menuItem, List<string> names)
+        {
+            if (menuItem.TryGetCurrentPattern(ExpandCollapsePattern.Pattern, out object patternObject)
+                && patternObject is ExpandCollapsePattern pattern)
+            {
+                pattern.Expand();
+                foreach (AutomationElement subMenuItem in menuItem.FindAll(TreeScope.Descendants,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
+                {
+                    var childId = subMenuItem.Current.Name;
+                    names.Add(childId);
+                    _menuItems[childId] = new AutomationWrapper(subMenuItem);
+                    LoadMenuItems(subMenuItem, names);
+                }
+                pattern.Collapse();
+            }
+        }
+
         void ReloadMenuItems(string name)
         {
             if (_menuItems == null)
             {
                 _menuItems = new Dictionary<string, AutomationWrapper>();
             }
+            if (_menuHeirarchy == null)
+            {
+                _menuHeirarchy = new Dictionary<string, List<string>>();
+            }
 
             if (_menuItems.Count == 0 || !_menuItems.ContainsKey(name))
             {
-                int retries = 5;
-                while (retries-- > 0 && _menuItems.Count == 0)
-                {
-                    // load the menu items
-                    foreach (var menuItem in this._acc.AutomationElement.FindAll(TreeScope.Descendants,
+                var menuStrip = this._acc.AutomationElement.FindFirst(TreeScope.Children,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuBar));
+
+                // enumerate the menu bar and start filling out the _menuHeirarchy.
+                // Note: starting in .NET 4.8 one has to literally expand the menu on screen to 
+                // find the menu items inside!
+                foreach (AutomationElement menuItem in menuStrip.FindAll(TreeScope.Children,
                         new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
+                {
+                    var id = menuItem.Current.Name;
+                    if (!_menuHeirarchy.ContainsKey(id))
                     {
-                        AutomationElement e = menuItem as AutomationElement;
-                        if (e != null)
+                        List<string> names = new List<string>();
+                        LoadMenuItems(menuItem, names);
+                        _menuHeirarchy[id] = names;
+                        if (names.Contains(name))
                         {
-                            string itemName = e.Current.Name;
-                            // Debug.WriteLine(itemName);
-                            _menuItems[itemName] = new AutomationWrapper(e);
+                            // found it!
+                            break;
                         }
-                    }
-                    // and the toolbar buttons
-                    foreach (var button in this._acc.AutomationElement.FindAll(TreeScope.Descendants,
-                        new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button)))
-                    {
-                        AutomationElement e = button as AutomationElement;
-                        if (e != null)
-                        {
-                            _menuItems[e.Current.Name] = new AutomationWrapper(e);
-                        }
-                    }
-                    if (_menuItems.Count == 0)
-                    {
-                        Sleep(500);
                     }
                 }
+            }
+
+            if (!_menuItems.ContainsKey(name))
+            {
+                throw new Exception($"Could not find menu item {name}");
             }
         }
 
@@ -475,7 +495,6 @@ namespace UnitTests
 
         public void Activate()
         {
-
             Debug.WriteLine("Activating window");
             ShowWindow(this._handle, (int)ShowWindowFlags.SW_SHOW);
             SetActiveWindow(this._handle);
