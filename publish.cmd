@@ -40,6 +40,7 @@ if ERRORLEVEL 1 goto :eof
 src\UpdateVersions\bin\Release\UpdateVersions.exe
 if ERRORLEVEL 1 goto :eof
 
+echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey="%XMLNOTEPAD_ANALYTICSKEY%"; } } > src\model\ApiKey.cs 
 msbuild /target:rebuild src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :nobits
 msbuild /target:publish src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"

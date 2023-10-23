@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace XmlNotepad
 {
-    public class AppAnalytics
+    public partial class AppAnalytics
     {
         private const string HostName = "microsoft.github.io";
         private const string TrackingId = "G-130J0SE94H";
-        private const string ApiKey = "DGyp7J4BQw-h8s-vlH_BDw";
         private string _clientId;
         private bool _formOptions; // did they use the options dialog during this session?
         private bool _formSchemas;
