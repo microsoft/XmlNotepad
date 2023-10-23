@@ -1654,7 +1654,7 @@ namespace XmlNotepad
 
             this.toolStripButtonCut.Enabled = this.cutToolStripMenuItem.Enabled = this.ctxcutToolStripMenuItem.Enabled = hasXmlNode;
             this.toolStripButtonDelete.Enabled = this.deleteToolStripMenuItem.Enabled = hasSelection;
-            this.toolStripButtonCopy.Enabled = this.copyToolStripMenuItem.Enabled = this.ctxMenuItemCopy.Enabled = hasXmlNode;
+            this.toolStripButtonCopy.Enabled = this.copyToolStripMenuItem.Enabled = this.ctxMenuItemCopy.Enabled = this.copyXPathToolStripMenuItem.Enabled = this.ctxMenuItemCopyXPath.Enabled = hasXmlNode;
             this.duplicateToolStripMenuItem.Enabled = hasXmlNode;
 
             this.changeToAttributeContextMenuItem.Enabled = this.changeToAttributeToolStripMenuItem1.Enabled = hasSelection;
@@ -2228,6 +2228,16 @@ namespace XmlNotepad
         {
             SelectTreeView();
             this.xmlTreeView1.Copy();
+        }
+
+        private void copyXPathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.xmlTreeView1.CopyXPath();
+        }
+
+        private void ctxMenuItemCopyXPath_Click(object sender, EventArgs e)
+        {
+            this.xmlTreeView1.CopyXPath();
         }
 
         private void toolStripButtonPaste_Click(object sender, EventArgs e)

@@ -12,7 +12,7 @@
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
       <!-- A list of the Windows versions that this application has been tested on
-           and .NET Framework 4.7.2 supports. -->
+           and .NET Framework 4.8 supports. -->
 
       <!-- Windows 7 -->
       <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}" />

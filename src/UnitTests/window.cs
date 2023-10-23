@@ -355,7 +355,7 @@ namespace UnitTests
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuBar));
 
                 // enumerate the menu bar and start filling out the _menuHeirarchy.
-                // Note: starting in .NET 4.8 one has to literally expand the menu on screen to 
+                // Note: starting in .NET 4.8 one has to literally expand the menu on screen to
                 // find the menu items inside!
                 foreach (AutomationElement menuItem in menuStrip.FindAll(TreeScope.Children,
                         new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))

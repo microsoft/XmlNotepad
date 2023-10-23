@@ -247,6 +247,7 @@ namespace XmlNotepad
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openXmlDiffStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -368,7 +369,8 @@ namespace XmlNotepad
             this._dynamicHelpViewer = new XmlNotepad.XsltControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.openXmlDiffStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyXPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuItemCopyXPath = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenu1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -389,6 +391,7 @@ namespace XmlNotepad
             this.contextMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxcutToolStripMenuItem,
             this.ctxMenuItemCopy,
+            this.ctxMenuItemCopyXPath,
             this.ctxMenuItemPaste,
             this.toolStripMenuItem13,
             this.deleteToolStripMenuItem1,
@@ -748,6 +751,12 @@ namespace XmlNotepad
             this.openSettingsToolStripMenuItem.Name = "openSettingsToolStripMenuItem";
             this.openSettingsToolStripMenuItem.Click += new System.EventHandler(this.openSettingsToolStripMenuItem_Click);
             // 
+            // openXmlDiffStylesToolStripMenuItem
+            // 
+            this.openXmlDiffStylesToolStripMenuItem.Name = "openXmlDiffStylesToolStripMenuItem";
+            resources.ApplyResources(this.openXmlDiffStylesToolStripMenuItem, "openXmlDiffStylesToolStripMenuItem");
+            this.openXmlDiffStylesToolStripMenuItem.Click += new System.EventHandler(this.openXmlDiffStylesToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -800,6 +809,7 @@ namespace XmlNotepad
             this.toolStripMenuItem4,
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
+            this.copyXPathToolStripMenuItem,
             this.pasteToolStripMenuItem,
             this.toolStripMenuItem5,
             this.deleteToolStripMenuItem,
@@ -1583,11 +1593,17 @@ namespace XmlNotepad
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
             // 
-            // openXmlDiffStylesToolStripMenuItem
+            // copyXPathToolStripMenuItem
             // 
-            this.openXmlDiffStylesToolStripMenuItem.Name = "openXmlDiffStylesToolStripMenuItem";
-            resources.ApplyResources(this.openXmlDiffStylesToolStripMenuItem, "openXmlDiffStylesToolStripMenuItem");
-            this.openXmlDiffStylesToolStripMenuItem.Click += new System.EventHandler(this.openXmlDiffStylesToolStripMenuItem_Click);
+            this.copyXPathToolStripMenuItem.Name = "copyXPathToolStripMenuItem";
+            resources.ApplyResources(this.copyXPathToolStripMenuItem, "copyXPathToolStripMenuItem");
+            this.copyXPathToolStripMenuItem.Click += new System.EventHandler(this.copyXPathToolStripMenuItem_Click);
+            // 
+            // ctxMenuItemCopyXPath
+            // 
+            this.ctxMenuItemCopyXPath.Name = "ctxMenuItemCopyXPath";
+            resources.ApplyResources(this.ctxMenuItemCopyXPath, "ctxMenuItemCopyXPath");
+            this.ctxMenuItemCopyXPath.Click += new System.EventHandler(this.ctxMenuItemCopyXPath_Click);
             // 
             // FormMain
             // 
@@ -1623,5 +1639,7 @@ namespace XmlNotepad
         private ToolStripMenuItem gCCollectToolStripMenuItem;
         private ToolStripMenuItem goToLineToolStripMenuItem;
         private ToolStripMenuItem openXmlDiffStylesToolStripMenuItem;
+        private ToolStripMenuItem copyXPathToolStripMenuItem;
+        private ToolStripMenuItem ctxMenuItemCopyXPath;
     }
 }

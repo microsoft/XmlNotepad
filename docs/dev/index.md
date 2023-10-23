@@ -2,7 +2,7 @@
 
 You can build and test XML Notepad using [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/). It uses
 .NET frameworks, so be sure to install the ".NET desktop development" feature when using the Visual Studio Installer.
-XML Notepad targets .NET Framework version 4.7.2 which is the default target for VS 2022.
+XML Notepad targets .NET Framework version 4.8.
 
 ### Coding Guidelines
 
