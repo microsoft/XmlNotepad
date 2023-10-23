@@ -22,7 +22,7 @@ namespace XmlNotepad
         public AppAnalytics(string clientId, bool enabled)
         {
             this._clientId = clientId;
-            this._enabled = enabled;
+            this._enabled = enabled && !string.IsNullOrEmpty(ApiKey);
         }
 
         private async void SendMeasurement(string path, string title)
