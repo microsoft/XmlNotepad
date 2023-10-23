@@ -1562,6 +1562,13 @@ namespace XmlNotepad
                 case "DisableUpdateUI":
                     this.checkUpdatesToolStripMenuItem.Visible = !this._settings.GetBoolean("DisableUpdateUI", false);
                     break;
+
+                case "AllowAnalytics":
+                    if (this._analytics != null)
+                    {
+                        this._analytics.SetEnabled(this._settings.GetBoolean("AllowAnalytics", false));
+                    }
+                    break;
             }
         }
 
@@ -2726,6 +2733,8 @@ namespace XmlNotepad
             pi.UseShellExecute = true;
             pi.WorkingDirectory = path;
             Process.Start(pi);
+
+            this._analytics.RecordStatistics();
         }
 
         private string GetWritableApplicationPath()

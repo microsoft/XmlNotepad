@@ -36,6 +36,7 @@ namespace XmlNotepad
         private string _defaultSSResource = "XmlNotepad.DefaultSS.xslt";
         private readonly IDictionary<Uri, bool> _trusted = new Dictionary<Uri, bool>();
         private bool _webInitialized;
+        private bool _webView2Initialized;
         private bool _webView2Supported;
         private string _tempFile;
         private bool _usingDefaultXslt;
@@ -79,6 +80,40 @@ namespace XmlNotepad
             this._tempFile = null;
         }
 
+        private async void EnsureCoreWebView2(CoreWebView2Environment environment)
+        {
+            try
+            {
+                await this.webBrowser2.EnsureCoreWebView2Async(environment);
+
+                this._settings.DelayedActions.StartDelayedAction("CompleteCoreWebView2", CompleteCoreWebView2, TimeSpan.FromMilliseconds(1));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        private void CompleteCoreWebView2()
+        {
+            if (this._webView2Initialized)
+            {
+                if (this.webBrowser2.CoreWebView2 != null)
+                {
+                    this.webBrowser2.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
+                    this.webBrowser2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+                    this.webBrowser2.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+                    this.webBrowser2.Visible = true;
+                    this.webBrowser1.Visible = false;
+                    this._webView2Supported = true;
+                }
+            }
+            if (!this._webView2Supported)
+            {
+                WebBrowserFallback();
+            }
+        }
+
         private async void InitializeBrowser(string version)
         {
             try
@@ -92,10 +127,11 @@ namespace XmlNotepad
                         this.webBrowser2.CoreWebView2InitializationCompleted += OnCoreWebView2InitializationCompleted;
                         CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
                         {
-                            AllowSingleSignOnUsingOSPrimaryAccount = true
+                            AllowSingleSignOnUsingOSPrimaryAccount = true               
                         };
+
                         CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
-                        await this.webBrowser2.EnsureCoreWebView2Async(environment);
+                        this._settings.DelayedActions.StartDelayedAction("EnsureCoreWebView2", () => EnsureCoreWebView2(environment), TimeSpan.FromMilliseconds(1));                                               
                     }
                 }
                 else
@@ -159,20 +195,11 @@ namespace XmlNotepad
                     RaiseBrowserException(new WebView2Exception(e.InitializationException.Message));
                 }
             }
-            if (this.webBrowser2.CoreWebView2 != null)
-            {
-                this.webBrowser2.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
-                this.webBrowser2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-                this.webBrowser2.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
-                this.webBrowser2.Visible = true;
-                this.webBrowser1.Visible = false;
-                this._webView2Supported = true;
-            }
             else
             {
-                WebBrowserFallback();
+                this._webView2Initialized = true;
+                _webInitialized = true;
             }
-            _webInitialized = true;
         }
 
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)

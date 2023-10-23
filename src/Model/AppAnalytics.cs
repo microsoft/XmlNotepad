@@ -25,6 +25,11 @@ namespace XmlNotepad
             this._enabled = enabled && !string.IsNullOrEmpty(ApiKey);
         }
 
+        public void SetEnabled(bool enabled)
+        {
+            this._enabled = enabled && !string.IsNullOrEmpty(ApiKey);
+        }
+
         private async void SendMeasurement(string path, string title)
         {
             try
@@ -98,6 +103,15 @@ namespace XmlNotepad
             {
                 _xsltView = true;
                 SendMeasurement("/App/XsltView", "XsltView");
+            }
+        }
+
+        public void RecordStatistics()
+        {
+            if (this._enabled && !_xsltView)
+            {
+                _xsltView = true;
+                SendMeasurement("/App/Stats", "Stats");
             }
         }
     }
