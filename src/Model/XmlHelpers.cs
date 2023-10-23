@@ -138,7 +138,7 @@ namespace XmlNotepad
             XmlNameTable nt = owner.NameTable;
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(nt);
             XmlNode parent = context;
-            
+
             while (parent != null)
             {
                 if (parent is XmlElement)
@@ -173,7 +173,6 @@ namespace XmlNotepad
 
         public static string GetXPathLocation(XmlNode context, XmlNamespaceManager scope)
         {
-            string path = null;
             XPathGenerator gen = new XPathGenerator();
             return gen.GetXPath(context, scope);
         }

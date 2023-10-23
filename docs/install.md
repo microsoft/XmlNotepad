@@ -2,8 +2,9 @@
 
 There are thee ways to install XML Notepad.
 
-This most convenient is to install it directly from the web browser.  If the browser downloads this
-file, click "Open file" to install it.
+First you must install [.NET Framework version 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48).
+
+Then the most convenient is to install it directly from the web browser using the ClickOnce installer:
 
 <div>
 <a href="https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application" class="btn btn-primary mt-20 mr-30" target="_blank">ClickOnce® installer</a>
@@ -39,8 +40,7 @@ winget install XmlNotepad
 <br/>
 </div>
 
-WebView2 is an optional component that you can install from Microsoft. XML Notepad will use this component as the HTML rendering engine
-behind the [XSLT Output tab](help/xslt.md).  WebView2 provides a
+WebView2 is an optional component that you can install from Microsoft. XML Notepad will use this component as the HTML rendering engine behind the [XSLT Output tab](help/xslt.md).  WebView2 provides a
 significant performance boost on large XSLT outputs.
 
 See [XML Notepad File Association](help/fileassociation.md).
