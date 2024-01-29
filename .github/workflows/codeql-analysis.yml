@@ -26,7 +26,7 @@ jobs:
       uses: NuGet/setup-nuget@v1
 
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.3.1
+      uses: microsoft/setup-msbuild@v1.3.2
 
     - name: Restore the application
       run: nuget restore ./src/XmlNotepad.sln
