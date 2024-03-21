@@ -2,9 +2,15 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ master ]
+    paths-ignore:
+      - 'docs/**'
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+    paths-ignore:
+      - 'website/**'
+    branches:
+      - master
   schedule:
     - cron: '40 14 * * 6'
 
