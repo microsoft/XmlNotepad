@@ -8,7 +8,7 @@ on:
       - master
   pull_request:
     paths-ignore:
-      - 'website/**'
+      - 'docs/**'
     branches:
       - master
   schedule:
