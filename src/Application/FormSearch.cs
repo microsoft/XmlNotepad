@@ -50,7 +50,7 @@ namespace XmlNotepad
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            this.AutoSizeMode = AutoSizeMode.GrowOnly;
+            // this.AutoSizeMode = AutoSizeMode.GrowOnly;
         }
 
         protected override void OnDpiChanged(DpiChangedEventArgs e)
@@ -415,9 +415,14 @@ namespace XmlNotepad
             object size = this._settings["SearchSize"];
             if (size != null && (Size)size != Size.Empty)
             {
-                Size cs = (Size)size;
-                s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
-                this.ClientSize = s;
+                // Bugbug: we cannot preserve find dialog size with only one setting, we need 
+                // a setting for CTRL+F and another for CTRL+H and 2 more depending on whether
+                // XPath setting is checked since all those have different dialog sizes
+
+                // Size cs = (Size)size;
+                // s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
+                // this.AutoSize = false;
+                // this.ClientSize = s;
             }
 
             object location = this._settings["SearchWindowLocation"];
@@ -426,9 +431,15 @@ namespace XmlNotepad
                 Control ctrl = this.Site as Control;
                 if (ctrl != null)
                 {
-                    Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
-                    this.Location = this.MoveOnscreen((Point)location, ownerBounds);
-                    this.StartPosition = FormStartPosition.Manual;
+                    Rectangle ownerBounds = ctrl.TopLevelControl.Bounds; 
+                    Point relativePos = (Point)location;
+                    Point newPos = ownerBounds.Location;
+                    newPos.Offset(relativePos.X, relativePos.Y);
+                    if (this.IsOnScreen(newPos))
+                    {
+                        this.Location = newPos;
+                        this.StartPosition = FormStartPosition.Manual;
+                    }
                 }
             }
 
@@ -442,8 +453,17 @@ namespace XmlNotepad
         }
 
         public void SaveSettings()
-        { 
-            this._settings["SearchWindowLocation"] = this.Location;
+        {
+            Point location = this.Location;
+            Control ctrl = this.Site as Control;
+            if (ctrl != null)
+            {
+                // Make saved location relative to Main window.
+                Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
+                location.X -= ownerBounds.Left;
+                location.Y -= ownerBounds.Top;
+                this._settings["SearchWindowLocation"] = location;
+            }
             // save replace mode size, since we will shink the size next time findOnly is set.
             this._settings["SearchSize"] = this.ClientSize;
             this._settings["FindMode"] = this._findOnly;
@@ -564,12 +584,15 @@ namespace XmlNotepad
             {
                 this.Expression = _target.Location;
                 XmlNamespaceManager nsmgr = _target.Namespaces;
-                foreach (string prefix in nsmgr)
+                if (nsmgr != null)
                 {
-                    if (!string.IsNullOrEmpty(prefix) && prefix != "xmlns")
+                    foreach (string prefix in nsmgr)
                     {
-                        string uri = nsmgr.LookupNamespace(prefix);
-                        this.dataTableNamespaces.Rows.Add(new object[] { prefix, uri });
+                        if (!string.IsNullOrEmpty(prefix) && prefix != "xmlns")
+                        {
+                            string uri = nsmgr.LookupNamespace(prefix);
+                            this.dataTableNamespaces.Rows.Add(new object[] { prefix, uri });
+                        }
                     }
                 }
             }

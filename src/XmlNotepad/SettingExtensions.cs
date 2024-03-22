@@ -118,9 +118,9 @@ namespace XmlNotepad
             return center;
         }
 
-        public static Point MoveOnscreen(this Form w, Point topLeft, Rectangle ownerBounds)
+        public static bool IsOnScreen(this Form w, Point topLeft)
         {
-            // This code ensures a window location is not off in never never land which can
+            // Check if a window location is off in never never land which can
             // happen if a user changes the monitor configuration or copies the settings from
             // a different machine that has different monitor setup.
             Point bottomRight = topLeft + w.ClientSize;
@@ -130,13 +130,10 @@ namespace XmlNotepad
                 Rectangle sb = s.WorkingArea;
                 if (sb.Contains(topLeft) && sb.Contains(bottomRight))
                 {
-                    return topLeft;
+                    return true;
                 }
             }
-        
-            // location is spanning monitors, or is off in never never land, so reset it
-            // back to something reasonable.
-            return w.CenterPosition(ownerBounds);
+            return false;
         }
     }
 }

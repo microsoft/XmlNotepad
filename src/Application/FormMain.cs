@@ -2,6 +2,7 @@
 
 using Microsoft.Xml;
 using Microsoft.XmlDiffPatch;
+using Newtonsoft.Json;
 using Sgml;
 using System;
 using System.ComponentModel;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -942,6 +944,9 @@ namespace XmlNotepad
                     case "text/csv":
                         ImportCsv(entity);
                         break;
+                    case "application/json":
+                        await ImportJson(entity);
+                        break;
                     case "text/html":
                         ImportHtml(entity);
                         break;
@@ -988,9 +993,8 @@ namespace XmlNotepad
 
         private void ImportHtml(FileEntity entity)
         {
-            _includesExpanded = false;
+            entity.Close();
             DateTime start = DateTime.Now;
-
             using (var reader = new SgmlReader())
             {
                 reader.DocType = "HTML";
@@ -998,21 +1002,25 @@ namespace XmlNotepad
                 reader.InputStream = new StreamReader(entity.Stream, entity.Encoding);
                 reader.WhitespaceHandling = WhitespaceHandling.Significant;
                 this._model.Load(reader, entity.Uri.OriginalString);
-            }
+                FinishLoad(entity, start);
+            }            
+        }
 
-            DateTime finish = DateTime.Now;
-            TimeSpan diff = finish - start;
-            string s = diff.ToString();
-            this._settings["FileName"] = entity.Uri.OriginalString;
-            this.UpdateCaption();
-            ShowStatus(string.Format(SR.LoadedTimeStatus, s));
-            EnableFileMenu();
-            this._recentFiles.AddRecentFile(entity.Uri);
-            SelectTreeView();
+        private async System.Threading.Tasks.Task ImportJson(FileEntity entity)
+        {
+            DateTime start = DateTime.Now;
+
+            var json = await entity.ReadText();
+            XmlDocument doc = JsonConvert.DeserializeXmlNode(json, "root");
+
+            this._model.Load(new XmlNodeReader(doc), entity.LocalPath);
+
+            FinishLoad(entity, start);
         }
 
         private void ImportCsv(FileEntity entity)
         {
+            entity.Close();
             FormCsvImport importForm = new XmlNotepad.FormCsvImport();
             importForm.File = entity;
             if (importForm.ShowDialog() == DialogResult.OK)
@@ -1027,39 +1035,36 @@ namespace XmlNotepad
                     csv.Delimiter = importForm.Deliminter;
                     csv.FirstRowHasColumnNames = importForm.FirstRowIsHeader;
 
-                    _includesExpanded = false;
                     DateTime start = DateTime.Now;
                     this._model.Load(csv, xmlFile);
-                    DateTime finish = DateTime.Now;
-                    TimeSpan diff = finish - start;
-                    string s = diff.ToString();
-                    this._settings["FileName"] = entity.Uri.OriginalString;
-                    this.UpdateCaption();
-                    ShowStatus(string.Format(SR.LoadedTimeStatus, s));
-                    EnableFileMenu();
-                    this._recentFiles.AddRecentFile(entity.Uri);
-                    SelectTreeView();
+
+                    FinishLoad(entity, start);
                 }
 
                 this._analytics.RecordCsvImport();
             }
         }
 
-        private void InternalOpen(FileEntity entity)
+        private void FinishLoad(FileEntity entity, DateTime startLoadTime)
         {
-            entity.Close();
-            _includesExpanded = false;
-            DateTime start = DateTime.Now;
-            this._model.Load(entity.Uri.OriginalString);
             DateTime finish = DateTime.Now;
-            TimeSpan diff = finish - start;
+            TimeSpan diff = finish - startLoadTime;
+            _includesExpanded = false;
             string s = diff.ToString();
             this._settings["FileName"] = entity.Uri.OriginalString;
             this.UpdateCaption();
             ShowStatus(string.Format(SR.LoadedTimeStatus, s));
             EnableFileMenu();
             this._recentFiles.AddRecentFile(entity.Uri);
-            SelectTreeView();            
+            SelectTreeView();
+        }
+
+        private void InternalOpen(FileEntity entity)
+        {
+            entity.Close();
+            DateTime start = DateTime.Now;
+            this._model.Load(entity.Uri.OriginalString);
+            FinishLoad(entity, start);
         }
 
         bool CheckXIncludes()
@@ -1446,18 +1451,36 @@ namespace XmlNotepad
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
         {
-            if (e.ModelChangeType == ModelChangeType.Reloaded)
+            switch (e.ModelChangeType)
             {
-                this._undoManager.Clear();
-                this._taskList.Clear();
-            }
-            if (e.ModelChangeType == ModelChangeType.BeginBatchUpdate)
-            {
-                _batch++;
-            }
-            else if (e.ModelChangeType == ModelChangeType.EndBatchUpdate)
-            {
-                _batch--;
+                case ModelChangeType.Reloaded:
+                    this._undoManager.Clear();
+                    this._taskList.Clear();
+                    break;
+                case ModelChangeType.Saved:
+                    break;
+                case ModelChangeType.NodeChanged:
+                    break;
+                case ModelChangeType.NodeInserted:
+                    break;
+                case ModelChangeType.NodeRemoved:
+                    break;
+                case ModelChangeType.NamespaceChanged:
+                    break;
+                case ModelChangeType.BeginBatchUpdate:
+                    _batch++;
+                    break;
+                case ModelChangeType.EndBatchUpdate:
+                    _batch--;
+                    break;
+                case ModelChangeType.Cleared:
+                    // Have to skip validation pass in this case!
+                    this._undoManager.Clear();
+                    this._taskList.Clear();
+                    UpdateCaption();
+                    return;
+                default:
+                    break;
             }
             if (_batch == 0) OnModelChanged();
         }

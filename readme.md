@@ -12,7 +12,7 @@ Just download the zip file, copy it to the machine you want to install it on, un
 - Find dialog that supports XPath
 - Support for XInclude
 - Supports XSLT transforms with inline viewer of XSLT output
-- Automatic conversion of .csv files
+- Automatic conversion of .csv, .json and .html files
 - Handy stats about your XML documents
 - XML diff to compare 2 similar XML documents
 - Vibrant community with many [updates and bug fixes](http://microsoft.github.io/XmlNotepad/help/updates/).

@@ -9,6 +9,14 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.8">
+    <feature>
+      Add ability to load .json files.
+    </feature>
+	<feature>Add #367 preserve Options Dialog box relative location and size</feature>
+    <bug>Bug 370: Error Message after SEARCHING and drag &amp; drop of a new file</bug>
+    <bug>Bug 371: Unhandled exception loading XML file with the http://www.crossref.org/schema/deposit/crossref4.4.2.xsd schemas.</bug>
+  </version>
   <version number="2.9.0.7">
     <feature>
       Move to .NET Framework version 4.8.
@@ -108,7 +116,7 @@
   <version number="2.8.0.57">
     <bug>Fix bug 182: Error when changing from roaming to local (1st time use).</bug>
   </version>
-  <version number="2.8.0.56">	  
+  <version number="2.8.0.56">
     <feature>Add support for a XmlNotepad.template.settings file that can provide default settings in an enterprise wide deployment of XmlNotepad.</feature>
   </version>
   <version number="2.8.0.55">

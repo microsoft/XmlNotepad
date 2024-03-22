@@ -38,7 +38,7 @@ namespace XmlNotepad
             }
 
             // now let the user resize it.
-            this.AutoSizeMode = AutoSizeMode.GrowOnly;
+            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -50,14 +50,37 @@ namespace XmlNotepad
                 hp.HelpNamespace = hs.DefaultHelp;
             }
 
+
+            SaveSettings();
             base.OnClosing(e);
+        }
+
+        private void SaveSettings()
+        {
+            Point location = this.Location;
+            Control ctrl = this.Site as Control;
+            if (ctrl != null)
+            {
+                // Make saved location relative to Main window.
+                Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
+                location.X -= ownerBounds.Left;
+                location.Y -= ownerBounds.Top;
+                this._settings["OptionsWindowLocation"] = location;
+            }
+            this._settings["OptionsWindowSize"] = this.ClientSize;
+        }
+
+        protected override void OnResizeBegin(EventArgs e)
+        {
+            this.AutoSize = false;
+            base.OnResizeBegin(e);
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
             if (keyData == Keys.Escape)
             {
-                this.SavePositionAndClose();
+                this.Close();
                 return true;
             }
             else
@@ -102,6 +125,7 @@ namespace XmlNotepad
                         Size cs = (Size)size;
                         // but not smaller than the computed size.
                         s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
+                        this.AutoSize = false;
                         this.ClientSize = s;
                     }
                     object location = this._settings["OptionsWindowLocation"];
@@ -111,32 +135,30 @@ namespace XmlNotepad
                         if (ctrl != null)
                         {
                             Rectangle ownerBounds = ctrl.TopLevelControl.Bounds;
-                            Point newPos = this.MoveOnscreen((Point)location, ownerBounds);
-                            this.Location = newPos;                            
-                            this.StartPosition = FormStartPosition.Manual;
+                            Point relativePos = (Point)location;
+                            Point newPos = ownerBounds.Location;
+                            newPos.Offset(relativePos.X, relativePos.Y);
+                            if (this.IsOnScreen(newPos))
+                            {
+                                this.Location = newPos;
+                                this.StartPosition = FormStartPosition.Manual;
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void SavePositionAndClose()
-        {
-            this._settings["OptionsWindowLocation"] = this.Location;
-            this._settings["OptionsWindowSize"] = this.ClientSize;
-            this.Close();
-        }
-
         private void OnButtonCancelClick(object sender, EventArgs e)
         {
-            this.SavePositionAndClose();
+            this.Close();
         }
 
         private void OnButtonOKClick(object sender, System.EventArgs e)
         {
             this._userSettings.Apply();
             this.SelectedFont = this._userSettings.Font;
-            this.SavePositionAndClose();
+            this.Close();
         }
 
         private void OnButtonResetClick(object sender, EventArgs e)
