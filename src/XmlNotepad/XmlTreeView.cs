@@ -596,6 +596,7 @@ namespace XmlNotepad
                     CheckChange(e);
                     break;
                 case ModelChangeType.Reloaded:
+                    CancelEdit();
                     BindTree();
                     break;
                 case ModelChangeType.NamespaceChanged:
