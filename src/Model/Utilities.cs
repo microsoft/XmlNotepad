@@ -92,6 +92,9 @@ namespace XmlNotepad
                     case ".csv":
                         e.mimeType = "text/csv";
                         break;
+                    case ".json":
+                        e.mimeType = "text/json";
+                        break;
                     case ".htm":
                     case ".html":
                         e.mimeType = "text/html";

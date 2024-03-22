@@ -61,19 +61,13 @@ namespace XmlNotepad
         Stream GetResponse(Uri uri)
         {
             Debug.WriteLine($"Loading Uri {uri}");
-            HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(60);
-            var result = client.GetAsync(uri).Result;
-            result.EnsureSuccessStatusCode();
-            return result.Content.ReadAsStreamAsync().Result;            
-
-            //WebRequest webReq = WebRequest.Create(uri);
-            //webReq.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
-            //webReq.Credentials = CredentialCache.DefaultCredentials;
-            //webReq.Proxy = this.GetProxy();
-            //webReq.Timeout = 60;
-            //WebResponse resp = webReq.GetResponse();
-            //return resp.GetResponseStream();
+            using (var client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromSeconds(60);
+                var result = client.GetAsync(uri).Result;
+                result.EnsureSuccessStatusCode();
+                return result.Content.ReadAsStreamAsync().Result;
+            }
         }
 
         IWebProxy GetProxy()
