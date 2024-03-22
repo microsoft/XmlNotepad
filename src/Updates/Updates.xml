@@ -13,6 +13,7 @@
     <feature>
       Add ability to load .json files.
     </feature>
+	<feature>Add #367 preserve Options Dialog box relative location and size</feature>
     <bug>Bug 370: Error Message after SEARCHING and drag &amp; drop of a new file</bug>
     <bug>Bug 371: Unhandled exception loading XML file with the http://www.crossref.org/schema/deposit/crossref4.4.2.xsd schemas.</bug>
   </version>
