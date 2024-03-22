@@ -28,8 +28,7 @@ jobs:
 
       - name: Install MkDocs
         run: |
-          pip install mkdocs
-          pip install mkdocs-macros-plugin
+          pip install mkdocs mkdocs-macros-plugin
 
       - name: MkDocs build
         run: mkdocs build
