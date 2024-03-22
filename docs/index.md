@@ -22,7 +22,7 @@ There have been over 3 million downloads since then - so thanks to everyone who 
 
 ### Handy features include:
 
-- Ability to load .csv and .htm files converting them to XML.
+- Ability to load .csv, .json and .htm files converting them to XML.
 - Tree View synchronized with Node Text View for quick editing of node names and values.
 - Incremental search (Ctrl+I) in both tree and text views, so as you type it navigates to matching nodes.
 - [Cut/copy/paste](help/clipboard.md) with full namespace support.
