@@ -296,7 +296,7 @@ namespace XmlNotepad
             this.Document = new XmlDocument();
             StopFileWatch();
             this._fileName = null;
-            FireModelChanged(ModelChangeType.Reloaded, this._doc);
+            FireModelChanged(ModelChangeType.Cleared, this._doc);
         }
 
         public void Save()
@@ -755,7 +755,8 @@ namespace XmlNotepad
         NodeRemoved,
         NamespaceChanged,
         BeginBatchUpdate,
-        EndBatchUpdate
+        EndBatchUpdate,
+        Cleared
     }
 
     public class ModelChangedEventArgs : EventArgs

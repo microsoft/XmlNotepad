@@ -106,14 +106,14 @@ namespace XmlNotepad
                     this.mimeType = "text/csv";
                     break;
                 case ".json":
-                    this.mimeType = "text/json";
+                    this.mimeType = "application/json";
                     break;
                 case ".htm":
                 case ".html":
                     this.mimeType = "text/html";
                     break;
                 default:
-                    this.mimeType = "text/xml";
+                    this.mimeType = "application/xml";
                     break;
             }
         }
@@ -161,7 +161,7 @@ namespace XmlNotepad
                         this.mimeType = "text/csv";
                         break;
                     case ".json":
-                        this.mimeType = "text/json";
+                        this.mimeType = "application/json";
                         break;
                     case ".htm":
                     case ".html":
@@ -174,7 +174,7 @@ namespace XmlNotepad
             {
                 case "text/csv":
                     return ".csv";
-                case "text/json":
+                case "application/json":
                     return ".json";
                 case "text/html":
                     return ".htm";

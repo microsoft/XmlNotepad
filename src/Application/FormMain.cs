@@ -944,7 +944,7 @@ namespace XmlNotepad
                     case "text/csv":
                         ImportCsv(entity);
                         break;
-                    case "text/json":
+                    case "application/json":
                         await ImportJson(entity);
                         break;
                     case "text/html":
@@ -1451,18 +1451,36 @@ namespace XmlNotepad
 
         void OnModelChanged(object sender, ModelChangedEventArgs e)
         {
-            if (e.ModelChangeType == ModelChangeType.Reloaded)
+            switch (e.ModelChangeType)
             {
-                this._undoManager.Clear();
-                this._taskList.Clear();
-            }
-            if (e.ModelChangeType == ModelChangeType.BeginBatchUpdate)
-            {
-                _batch++;
-            }
-            else if (e.ModelChangeType == ModelChangeType.EndBatchUpdate)
-            {
-                _batch--;
+                case ModelChangeType.Reloaded:
+                    this._undoManager.Clear();
+                    this._taskList.Clear();
+                    break;
+                case ModelChangeType.Saved:
+                    break;
+                case ModelChangeType.NodeChanged:
+                    break;
+                case ModelChangeType.NodeInserted:
+                    break;
+                case ModelChangeType.NodeRemoved:
+                    break;
+                case ModelChangeType.NamespaceChanged:
+                    break;
+                case ModelChangeType.BeginBatchUpdate:
+                    _batch++;
+                    break;
+                case ModelChangeType.EndBatchUpdate:
+                    _batch--;
+                    break;
+                case ModelChangeType.Cleared:
+                    // Have to skip validation pass in this case!
+                    this._undoManager.Clear();
+                    this._taskList.Clear();
+                    UpdateCaption();
+                    return;
+                default:
+                    break;
             }
             if (_batch == 0) OnModelChanged();
         }

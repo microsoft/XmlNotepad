@@ -8,7 +8,7 @@ XML Notepad provides a simple intuitive [User Interface](help/overview.md) for b
 XML Notepad is the result of a promise Chris Lovett made to a friend at Microsoft. The original XML
 Notepad shipped in back in 1998, written by Murray Low in C++. Later on it fell behind in support
 for XML standards and, because we didn't have time to fix it, we pulled the downloader. But Murray
-apparently did such a nice job that MSDN was inundated with requests to put the notepad back up, so
+apparently did such a nice job that MSDN was inundated with requests to put the app back up, so
 they asked for a replacement.
 
 Chris was working on System.Xml in C# in 1999, so he figured he could crank out a replacement using
@@ -18,7 +18,7 @@ interest in it, helped hold his feet to the fire, and also added some cool featu
 Doris also took pity on Chris and helped identify some great bugs. So here we are, a nifty tool that
 should be useful to those who want a quick way to view and edit XML documents.
 
-There have been over 3 million downloads since then - so thanks to everyone who tried it out!
+There have been over 6 million downloads since then - so thanks to everyone who tried it out!
 
 ### Handy features include:
 
