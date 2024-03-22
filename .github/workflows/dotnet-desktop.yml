@@ -30,7 +30,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup NuGet.exe
-      uses: NuGet/setup-nuget@v1
+      uses: NuGet/setup-nuget@v2
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
