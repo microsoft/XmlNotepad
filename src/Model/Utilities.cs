@@ -53,6 +53,10 @@ namespace XmlNotepad
                         var contentType = response.Content.Headers.ContentType;
                         // todo: contentType.CharSet is also interesting for getting the right Encoding!
                         this.mimeType = contentType.MediaType;
+                        if (this.mimeType == "text/plain")
+                        {
+                            SetMimeType(this.GetFileExtension());
+                        }
                         MemoryStream ms = new MemoryStream();
                         using (var s = await response.Content.ReadAsStreamAsync())
                         {
@@ -74,7 +78,7 @@ namespace XmlNotepad
                 string filename = uri.Segments.Length > 1 ? uri.Segments[uri.Segments.Length - 1] : "index";
                 if (uri.OriginalString.EndsWith("/"))
                 {
-                    filename = "index";
+                    filename = "index" + this.GetFileExtension();
                 }
                 filename = System.IO.Path.GetFileNameWithoutExtension(filename);
                 filename += this.GetFileExtension();
@@ -84,28 +88,33 @@ namespace XmlNotepad
             {
                 var filename = uri.LocalPath;
                 string ext = System.IO.Path.GetExtension(filename).ToLowerInvariant();
-                switch (ext)
-                {
-                    case ".csv":
-                        this.mimeType = "text/csv";
-                        break;
-                    case ".json":
-                        this.mimeType = "text/json";
-                        break;
-                    case ".htm":
-                    case ".html":
-                        this.mimeType = "text/html";
-                        break;
-                    default:
-                        this.mimeType = "text/xml";
-                        break;
-                }                
+                SetMimeType(ext);
                 this.stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
                 this.localPath = filename;
             }
             if (this.encoding == null)
             {
                 this.encoding = EncodingHelpers.SniffEncoding(this.stream);
+            }
+        }
+
+        private void SetMimeType(string ext)
+        {
+            switch (ext)
+            {
+                case ".csv":
+                    this.mimeType = "text/csv";
+                    break;
+                case ".json":
+                    this.mimeType = "text/json";
+                    break;
+                case ".htm":
+                case ".html":
+                    this.mimeType = "text/html";
+                    break;
+                default:
+                    this.mimeType = "text/xml";
+                    break;
             }
         }
 
@@ -151,6 +160,9 @@ namespace XmlNotepad
                     case ".csv":
                         this.mimeType = "text/csv";
                         break;
+                    case ".json":
+                        this.mimeType = "text/json";
+                        break;
                     case ".htm":
                     case ".html":
                         this.mimeType = "text/html";
@@ -162,6 +174,8 @@ namespace XmlNotepad
             {
                 case "text/csv":
                     return ".csv";
+                case "text/json":
+                    return ".json";
                 case "text/html":
                     return ".htm";
                 default:
