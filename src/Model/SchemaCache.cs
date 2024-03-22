@@ -259,6 +259,11 @@ namespace XmlNotepad
 
         public CacheEntry Add(XmlSchema s)
         {
+            if (s.SourceUri == null)
+            {
+                // then this is a built in schema like the one for http://www.w3.org/XML/1998/namespace
+                return null;
+            }
             CacheEntry e = Add(s.TargetNamespace, new Uri(s.SourceUri), false);
             if (e.Schema == null)
             {
