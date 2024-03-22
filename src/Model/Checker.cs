@@ -206,7 +206,7 @@ namespace XmlNotepad
                 else if (o is XmlSchemaImport j)
                 {
                     XmlSchema js = j.Schema;
-                    if (js == null)
+                    if (js == null && !string.IsNullOrEmpty(j.Namespace))
                     {
                         js = this._cache.SchemaCache.FindSchemasByNamespace(j.Namespace)?.Schema;
                     }
