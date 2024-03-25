@@ -595,6 +595,7 @@ namespace XmlNotepad
                 case ModelChangeType.NodeChanged:
                     CheckChange(e);
                     break;
+                case ModelChangeType.Cleared:
                 case ModelChangeType.Reloaded:
                     CancelEdit();
                     BindTree();

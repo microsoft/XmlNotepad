@@ -40,7 +40,7 @@ if ERRORLEVEL 1 goto :eof
 src\UpdateVersions\bin\Release\UpdateVersions.exe
 if ERRORLEVEL 1 goto :eof
 
-echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey="%XMLNOTEPAD_ANALYTICSKEY%"; } } > src\model\ApiKey.cs 
+echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey="%XMLNOTEPAD_ANALYTICSKEY%"; } } > src\model\ApiKey.cs
 msbuild /target:rebuild src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :nobits
 msbuild /target:publish src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
@@ -146,6 +146,7 @@ echo Preparing winget package
 set TARGET=%WINGET_SRC%\manifests\m\Microsoft\XMLNotepad\%VERSION%\
 if not exist %TARGET% mkdir %TARGET%
 copy /y tools\Microsoft.XMLNotepad*.yaml  %TARGET%
+winget update wingetcreate
 wingetcreate update Microsoft.XMLNotepad --version %VERSION% -o %WINGET_SRC% -u https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
 if ERRORLEVEL 1 goto :eof
 

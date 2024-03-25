@@ -296,6 +296,7 @@ namespace XmlNotepad
             this.Document = new XmlDocument();
             StopFileWatch();
             this._fileName = null;
+            this._dirty = false;
             FireModelChanged(ModelChangeType.Cleared, this._doc);
         }
 
