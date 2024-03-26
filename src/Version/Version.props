@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/microsoft/xmlnotepad</RepositoryUrl>
     <PackageProjectUrl>https://microsoft.github.io/XmlNotepad/</PackageProjectUrl>
     <Company>Microsoft Corporation</Company>
-    <Copyright>Copyright © 2023 Microsoft Corporation</Copyright>
+    <Copyright>Copyright © 2024 Microsoft Corporation</Copyright>
     <WebView2Version>1.0.2151.40</WebView2Version>
   </PropertyGroup>
 </Project>
