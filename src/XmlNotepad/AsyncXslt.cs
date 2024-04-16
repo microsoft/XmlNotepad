@@ -120,28 +120,10 @@ namespace XmlNotepad
 
         public override bool CanWrite => this.inner.CanWrite;
 
-        public override long Length 
-        {
-            get 
-            {
-                if (!disposed)
-                {
-                    lastLength = this.inner.Length;
-                }
-                return lastLength;
-            }
-        }
+        public override long Length => lastLength;
 
-        public override long Position
-        {
-            get
-            {
-                if (!disposed)
-                {
-                    lastPosition = this.inner.Position;
-                }
-                return lastPosition;
-            }
+        public override long Position { 
+            get => lastPosition;
             set => this.inner.Position = value; 
         }
 
@@ -156,17 +138,24 @@ namespace XmlNotepad
             {
                 throw new OperationCanceledException();
             }
-            return this.inner.Read(buffer, offset, count);
+            int rc =  this.inner.Read(buffer, offset, count);
+            lastPosition = this.inner.Position;
+            lastLength = this.inner.Length;
+            return rc;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return this.inner.Seek(offset, origin);
+            var pos = this.inner.Seek(offset, origin);
+            lastPosition = this.inner.Position;
+            lastLength = this.inner.Length;
+            return pos;
         }
 
         public override void SetLength(long value)
         {
             this.inner.SetLength(value);
+            lastLength = this.inner.Length;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -176,6 +165,8 @@ namespace XmlNotepad
             {
                 this.EstimatedSize = this.Position * 2;
             }
+            lastPosition = this.inner.Position;
+            lastLength = this.inner.Length;
             if (cancelled)
             {
                 disposed = true;
