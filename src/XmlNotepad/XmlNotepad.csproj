@@ -104,12 +104,19 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AsyncXslt.cs" />
     <Compile Include="Brushes.cs" />
     <Compile Include="Builders.cs" />
     <Compile Include="Commands.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EditableView.cs" />
+    <Compile Include="FormTransformProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTransformProgress.Designer.cs">
+      <DependentUpon>FormTransformProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="HLSColor.cs" />
     <Compile Include="IntelliTip.cs" />
     <Compile Include="localizableattributes.cs" />
@@ -161,6 +168,9 @@
     <Compile Include="XsltViewer.Designer.cs">
       <DependentUpon>XsltViewer.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormTransformProgress.resx">
+      <DependentUpon>FormTransformProgress.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NodeTextView.resx">
       <DependentUpon>NodeTextView.cs</DependentUpon>
       <SubType>Designer</SubType>

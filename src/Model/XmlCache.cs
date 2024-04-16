@@ -227,6 +227,7 @@ namespace XmlNotepad
             settings.DtdProcessing = this._settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
             settings.CheckCharacters = false;
             settings.XmlResolver = Settings.Instance.Resolver;
+            settings.IgnoreWhitespace = false;
             return settings;
         }
 

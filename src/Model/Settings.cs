@@ -932,6 +932,7 @@ namespace XmlNotepad
             this["IndentLevel"] = 2;
             this["IndentChar"] = IndentChar.Space;
             this["NewLineChars"] = Settings.EscapeNewLines("\r\n");
+            this["PreserveWhitespace"] = false;
             this["Language"] = "";
             this["NoByteOrderMark"] = false;
 

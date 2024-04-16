@@ -214,6 +214,7 @@ namespace XmlNotepad
             private int _indentLevel;
             private IndentChar _indentChar;
             private string _newLineChars;
+            private bool _preserveWhitespace;
             private string _language;
             private int _maximumLineLength;
             private int _maximumValueLength;
@@ -252,6 +253,7 @@ namespace XmlNotepad
                 _indentLevel = this._settings.GetInteger("IndentLevel");
                 _indentChar = (IndentChar)this._settings["IndentChar"];
                 _newLineChars = this._settings.GetString("NewLineChars");
+                _preserveWhitespace = this._settings.GetBoolean("PreserveWhitespace");
                 _language = this._settings.GetString("Language");
                 _settingsLocation = this._settings.GetLocation();
                 _schemaAwareText = this._settings.GetBoolean("SchemaAwareText");
@@ -348,6 +350,7 @@ namespace XmlNotepad
                 this._settings["IndentLevel"] = _indentLevel;
                 this._settings["IndentChar"] = _indentChar;
                 this._settings["NewLineChars"] = _newLineChars;
+                this._settings["PreserveWhitespace"] = _preserveWhitespace;
                 this._settings["NoByteOrderMark"] = _noByteOrderMark;
                 this._settings.SetLocation(_settingsLocation);
 
@@ -762,6 +765,21 @@ namespace XmlNotepad
                 set
                 {
                     this._newLineChars = value;
+                }
+            }
+
+            [SRCategory("FormatCategory")]
+            [LocDisplayName("PreserveWhitespace")]
+            [SRDescription("PreserveWhitespaceDescription")]
+            public bool PreserveWhitespace
+            {
+                get
+                {
+                    return this._preserveWhitespace;
+                }
+                set
+                {
+                    this._preserveWhitespace = value;
                 }
             }
 

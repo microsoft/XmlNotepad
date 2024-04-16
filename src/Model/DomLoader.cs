@@ -179,6 +179,7 @@ namespace XmlNotepad
             this._lineInfos = new List<LineInfo>();
             this._firstRealLine = null;
             this._doc = new XmlDocument();
+            this._doc.PreserveWhitespace = Settings.Instance.GetBoolean("PreserveWhitespace");
             this._doc.XmlResolver = Settings.Instance.Resolver;
             this._doc.Schemas.XmlResolver = Settings.Instance.Resolver;
             SetLoading(this._doc, true);
@@ -206,7 +207,7 @@ namespace XmlNotepad
 
         private void LoadDocument()
         {
-            bool preserveWhitespace = false;
+            bool preserveWhitespace = this._doc.PreserveWhitespace;
             XmlReader r = this._reader;
             XmlNode parent = this._doc;
             XmlElement element;

@@ -144,7 +144,6 @@ namespace XmlNotepad
                     {
                         try
                         {
-                            Debug.WriteLine("invoking delayed action: " + this.name);
                             a();
                         }
                         catch (Exception ex)

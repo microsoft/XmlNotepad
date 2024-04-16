@@ -23,7 +23,7 @@ namespace XmlNotepad
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
-    public partial class FormMain : Form, ISite
+    public partial class FormMain : Form, ISite, ITrustService
     {
         private readonly UndoManager _undoManager;
         private Settings _settings = new Settings();
@@ -179,7 +179,7 @@ namespace XmlNotepad
 
         private void DispatchAction(Action action)
         {
-            if (!this.Disposing)
+            if (!this.Disposing && !this.closing)
             {
                 ISynchronizeInvoke si = (ISynchronizeInvoke)this;
                 if (si.InvokeRequired)
@@ -505,6 +505,7 @@ namespace XmlNotepad
                     return;
                 }
             }
+            this.closing = true;
             this._delayedActions.Close();
             SaveConfig();
             base.OnClosing(e);
@@ -567,6 +568,7 @@ namespace XmlNotepad
         /// </summary>
         protected override void Dispose(bool disposing)
         {
+            this.closing = true;
             if (disposing)
             {
                 if (components != null)
@@ -2927,6 +2929,7 @@ namespace XmlNotepad
         TextBox xPos;
         TextBox yPos;
         TextBox status;
+        private bool closing;
 
         internal void ShowMousePosition()
         {
@@ -2976,6 +2979,19 @@ namespace XmlNotepad
         {
             xPos.Text = e.X.ToString();
             yPos.Text = e.Y.ToString();
+        }
+
+        public async System.Threading.Tasks.Task<bool> CanTrustUrl(Uri location)
+        {
+            bool result = false;
+            this.Invoke(new Action(() =>
+            {
+                result = MessageBox.Show(this, SR.XslScriptCodePrompt, SR.XslScriptCodeCaption,
+                           MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes;
+            }
+            ));
+            await System.Threading.Tasks.Task.CompletedTask;
+            return result;
         }
         #endregion
 

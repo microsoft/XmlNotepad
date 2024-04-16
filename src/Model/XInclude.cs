@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 namespace XmlNotepad
@@ -16,6 +17,9 @@ namespace XmlNotepad
         private Stack<XmlReader> _stack = new Stack<XmlReader>();
         private Stack<Uri> _baseUris = new Stack<Uri>();
         private Uri _baseUri;
+        private bool _cancelled;
+        private long _position;
+        private long _size;
 
         public const string XIncludeNamespaceUri = "http://www.w3.org/2001/XInclude";
 
@@ -26,6 +30,15 @@ namespace XmlNotepad
             r._settings = settings;
             return r;
         }
+
+        public void Cancel()
+        {
+            this._cancelled = true;
+        }
+
+        public long Position => _position;
+
+        public long Size => _size;
 
         // [cjl] dead code removal
         //public static XmlIncludeReader CreateIncludeReader(Stream stream, XmlReaderSettings settings, string baseUri) {
@@ -55,7 +68,23 @@ namespace XmlNotepad
             r._reader = new XmlNodeReader(doc);
             r._settings = settings;
             r._baseUri = new Uri(baseUri);
+            r._size = CountNodes(doc);
+            r._position = 0;
             return r;
+        }
+
+        static long CountNodes(XmlNode node)
+        {
+            long count = 1;            
+            for (var child = node.FirstChild; child != null; child = child.NextSibling)
+            {
+                count++;
+                if (child.HasChildNodes)
+                {
+                    count += CountNodes(child);
+                }
+            }
+            return count;
         }
 
         public override XmlNodeType NodeType
@@ -197,6 +226,12 @@ namespace XmlNotepad
         /// we have reached the end of the top level document.</returns>
         public override bool Read()
         {
+            if (_cancelled)
+            {
+                throw new System.Threading.Tasks.TaskCanceledException();
+            }
+            _position++;
+
             bool rc = _reader.Read();
         pop:
             while (!rc && _stack.Count > 0)
@@ -262,6 +297,7 @@ namespace XmlNotepad
                     _stack.Push(_reader);
                     _baseUris.Push(resolved);
                     _reader = new XmlNodeReader(include);
+                    _size += CountNodes(include);
                     return _reader.Read(); // initialize reader to first node in document.
                 }
             }
@@ -274,6 +310,7 @@ namespace XmlNotepad
                     _stack.Push(_reader);
                     _reader = new XmlNodeReader(fallback);
                     _reader.Read(); // initialize reader
+                    _size += CountNodes(fallback);
                     return _reader.Read(); // consume fallback start tag.
                 }
                 else

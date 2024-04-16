@@ -1129,6 +1129,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preserve Whitespace.
+        /// </summary>
+        public static string PreserveWhitespace {
+            get {
+                return ResourceManager.GetString("PreserveWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preserve all whitespace in XML document so you can see the Whitespace nodes in the tree..
+        /// </summary>
+        public static string PreserveWhitespaceDescription {
+            get {
+                return ResourceManager.GetString("PreserveWhitespaceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The target file is read only, would you like to overwrite &apos;{0}&apos;?.
         /// </summary>
         public static string ReadOnly {

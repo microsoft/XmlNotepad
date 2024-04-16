@@ -102,30 +102,59 @@ namespace XmlNotepad
             }
         }
 
-        public void DisplayXsltResults()
+        private bool IsValidPath(string path)
         {
-            string xpath = this.SourceFileName.Text.Trim();
+            try
+            {
+                Uri uri = new Uri(path, UriKind.RelativeOrAbsolute);
+                if (uri.IsAbsoluteUri && uri.Scheme == Uri.UriSchemeFile)
+                {
+                    string valid = System.IO.Path.GetFullPath(uri.LocalPath);
+                }
+                else
+                {
+                    string valid = System.IO.Path.GetFullPath(path);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Invalid Path", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return false;
+        }
+
+        public async void DisplayXsltResults()
+        {
+            string xpath = this.SourceFileName.Text.Trim().Trim('"');
             if (!string.IsNullOrEmpty(xpath) && this._xsltFiles != null)
             {
+                if (!IsValidPath(xpath))
+                {
+                    return;
+                }
                 Uri uri = this.xsltControl.ResolveRelativePath(xpath);
                 if (uri != null)
                 {
                     this._xsltFiles.AddRecentFile(uri);
                 }
             }
-            string output = this.OutputFileName.Text.Trim();
+            string output = this.OutputFileName.Text.Trim().Trim('"');
             if (string.IsNullOrWhiteSpace(output))
             {
                 _userSpecifiedOutput = false;
             }
-            bool hasXsltOutput = !string.IsNullOrEmpty(this._model.XsltDefaultOutput);
-            if (!_userSpecifiedOutput && hasXsltOutput)
+            else if (!IsValidPath(output))
+            {
+                return;
+            }
+            bool hasDefaultXsltOutput = !string.IsNullOrEmpty(this._model.XsltDefaultOutput);
+            if (!_userSpecifiedOutput && hasDefaultXsltOutput)
             {
                 output = this._model.XsltDefaultOutput;
             }
-            this.xsltControl.HasXsltOutput = hasXsltOutput;
 
-            output = this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output, _userSpecifiedOutput);
+            output = await this.xsltControl.DisplayXsltResults(this._model.Document, xpath, output, _userSpecifiedOutput, hasDefaultXsltOutput);
             if (!string.IsNullOrWhiteSpace(output))
             {
                 this.OutputFileName.Text = MakeRelative(output);

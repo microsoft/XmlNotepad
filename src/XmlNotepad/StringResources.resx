@@ -962,4 +962,12 @@ Error: {0}</value>
     <value>Hide identical</value>
     <comment>Property Grid caption</comment>
   </data>
+  <data name="PreserveWhitespace" xml:space="preserve">
+    <value>Preserve Whitespace</value>
+    <comment>Property Grid caption</comment>
+  </data>
+  <data name="PreserveWhitespaceDescription" xml:space="preserve">
+    <value>Preserve all whitespace in XML document so you can see the Whitespace nodes in the tree.</value>
+    <comment>Property Grid description</comment>
+  </data>
 </root>
