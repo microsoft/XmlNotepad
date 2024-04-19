@@ -406,7 +406,7 @@ namespace UnitTests
                 _menuItems[childId] = new AutomationWrapper(subMenuItem);
                 LoadMenuItems(subMenuItem, names);
             }
-            if (pattern != null) { 
+            if (pattern != null) {
                 pattern.Collapse();
             }
         }
@@ -627,7 +627,7 @@ namespace UnitTests
 
             this.WaitForIdle(1000);
             Sleep(1000);
-            // BUFBUG: This blocks on .NET 4.8 but works fine on .NET 4.7.2
+            // BUGBUG: This blocks on .NET 4.8 but works fine on .NET 4.7.2
             // See https://github.com/dotnet/winforms/issues/10244.
             item.Invoke();
             this.WaitForIdle(1000);
