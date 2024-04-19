@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
-  <Bundle Name="XML Notepad" Version="2.9.0.8" Manufacturer="Lovett Software" UpgradeCode="b39cd92c-6bf2-4f4c-9e2c-fb402781a316">
+  <Bundle Name="XML Notepad" Version="2.9.0.9" Manufacturer="Lovett Software" UpgradeCode="b39cd92c-6bf2-4f4c-9e2c-fb402781a316">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication LicenseFile="..\Application\license.rtf" ShowVersion="yes" />
     </BootstrapperApplicationRef>

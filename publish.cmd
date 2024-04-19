@@ -14,7 +14,7 @@ set WINGET=1
 set GITRELEASE=1
 set UPLOAD=1
 set PUBLISH=%ROOT%\src\Application\bin\Release\app.publish
-set WIXBIN=%ProgramFiles% (x86)\WiX Toolset v3.11\bin
+set WIXBIN=%ProgramFiles% (x86)\WiX Toolset v3.14\bin
 
 :parse
 if "%1"=="/nowinget" set WINGET=0
@@ -31,6 +31,7 @@ if ERRORLEVEL 1 goto :nosed
 if EXIST "%ROOT%\publish" rd /s /q "%ROOT%\publish"
 if EXIST "%PUBLISH%" rd /s /q "%PUBLISH%"
 
+git clean -dfx
 nuget restore src\xmlnotepad.sln
 if ERRORLEVEL 1 goto :eof
 
@@ -49,25 +50,17 @@ if not EXIST %PUBLISH%\XmlNotepad.application goto :nobits
 
 move "%PUBLISH%" "%ROOT%\publish"
 
+if not EXIST "%WIXBIN%\WixUtilExtension.dll" goto :nowix
+
+echo Building XmlNotepadSetup.msi...
+msbuild src\xmlnotepadsetup.sln /p:Configuration=Release /target:XmlNotepadSetup /p:OutDir=bin\Release\
+if ERRORLEVEL 1 goto :err_setup
+if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
+
+echo Building XmlNotepadPackage and Bundle...
 msbuild /target:build src\xmlnotepadsetup.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :noappx
 
-if not EXIST "%WIXBIN%\WixUtilExtension.dll" goto :nowix
-
-pushd src\XmlNotepadSetup
-echo echo Building XmlNotepadSetup.msi... > build.cmd
-echo candle.exe -d"DevEnvDir=%DevEnvDir%\" -dSolutionDir=%ROOT%\src\ -dSolutionExt=.sln -dSolutionFileName=xmlnotepadsetup.sln -dSolutionName=xmlnotepadsetup -dSolutionPath=%ROOT%\src\xmlnotepadsetup.sln -dConfiguration=Release -dOutDir=bin\Release\ -dPlatform=AnyCPU -dProjectDir=%ROOT%\src\XmlNotepadSetup\ -dProjectExt=.wixproj -dProjectFileName=XmlNotepadSetup.wixproj -dProjectName=XmlNotepadSetup -dProjectPath=%ROOT%\src\XmlNotepadSetup\XmlNotepadSetup.wixproj -dTargetDir=%ROOT%\src\XmlNotepadSetup\bin\Release\ -dTargetExt=.msi -dTargetFileName=XmlNotepadSetup.msi -dTargetName=XmlNotepadSetup -dTargetPath=%ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi -dApplication.Configuration=Release -d"Application.FullConfiguration=Release|AnyCPU" -dApplication.Platform=AnyCPU -dApplication.ProjectDir=%ROOT%\src\Application\ -dApplication.ProjectExt=.csproj -dApplication.ProjectFileName=Application.csproj -dApplication.ProjectName=Application -dApplication.ProjectPath=%ROOT%\src\Application\Application.csproj -dApplication.TargetDir=%ROOT%\src\Application\bin\Release\ -dApplication.TargetExt=.exe -dApplication.TargetFileName=XmlNotepad.exe -dApplication.TargetName=XmlNotepad -dApplication.TargetPath=%ROOT%\src\Application\bin\Release\XmlNotepad.exe -out obj\Release\ -ext "%WIXBIN%\WixUtilExtension.dll" -ext "%WIXBIN%\WixUIExtension.dll" -ext "%WIXBIN%\WixNetFxExtension.dll" -ext "%WIXBIN%\\WixBalExtension.dll"  Product.wxs	>> build.cmd
-echo light.exe -sw1105 -out %ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi -pdbout %ROOT%\src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.wixpdb -cultures:null -ext "%WIXBIN%\\WixUtilExtension.dll" -ext "%WIXBIN%\WixUIExtension.dll" -ext "%WIXBIN%\WixNetFxExtension.dll"  -ext "%WIXBIN%\\WixBalExtension.dll" -contentsfile obj\Release\XmlNotepadSetup.wixproj.BindContentsFileListnull.txt -outputsfile obj\Release\XmlNotepadSetup.wixproj.BindOutputsFileListnull.txt -builtoutputsfile obj\Release\XmlNotepadSetup.wixproj.BindBuiltOutputsFileListnull.txt -wixprojectfile %ROOT%\src\XmlNotepadSetup\XmlNotepadSetup.wixproj obj\Release\Product.wixobj >> build.cmd
-
-call build.cmd
-if ERRORLEVEL 1 goto :err_setup
-
-call %ROOT%\src\XmlNotepadSetup\sign.cmd
-if ERRORLEVEL 1 goto :err_sign
-
-popd
-
-if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
 if EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip del src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.zip
 if "%LOVETTSOFTWARE_STORAGE_CONNECTION_STRING%" == "" goto :nokey
 
@@ -210,13 +203,9 @@ exit /b 1
 
 :err_setup
 popd
-echo src\XmlNotepadSetup\build.cmd failed, try building inside XmlNotepadSetup.sln and ensure candle.exe command line matches this script
+echo src\XmlNotepadSetup build failed, try building inside XmlNotepadSetup.sln and ensure candle.exe command line matches this script
 exit /b 1
 
-:err_sign
-popd
-echo Signing failed, try building inside XmlNotepadSetup.sln
-exit /b 1
 
 :skipwinget
 echo Skipping winget setup
