@@ -984,7 +984,8 @@ namespace XmlNotepad
                         this._recentFiles.RemoveRecentFile(uri);
                     }
                 }
-                else if (MessageBox.Show(this,
+                
+                if (prompt && MessageBox.Show(this,
                     string.Format(SR.LoadErrorPrompt, filename, e.Message),
                     SR.LoadErrorCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {

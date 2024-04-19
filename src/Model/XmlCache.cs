@@ -211,9 +211,10 @@ namespace XmlNotepad
             this._fileName = uri.IsFile ? uri.LocalPath : fileName;
             this._lastModified = this.LastModTime;
             this._dirty = false;
-            StartFileWatch();
 
             this.Document = _loader.Load(reader);
+
+            StartFileWatch();
             this.XsltFileName = this._loader.XsltFileName;
             this.XsltDefaultOutput = this._loader.XsltDefaultOutput;
 
