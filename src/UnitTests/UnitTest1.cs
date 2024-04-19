@@ -1616,6 +1616,7 @@ Prefix 'user' is not defined. ");
             xw.EnterXmlOutputFilename(outputFilename);
 
             xw.InvokeTransformButton();
+            Sleep(2000);
 
             var output = File.ReadAllText(tempOutput);
             Assert.IsTrue(output.Contains("Microsoft XML Notepad - Change History"));
@@ -1637,12 +1638,20 @@ Prefix 'user' is not defined. ");
             xw.LoadXmlAddress(url, null);
 
             var findDialog = OpenFindDialog();
-            findDialog.Window.SendKeystrokes("XML Notepad is a Windows program{ENTER}");
+            findDialog.Window.SendKeystrokes("XML Schema aware Intellisense{ENTER}");
             Sleep(500);
+
+            // dismiss the long line dialog
+            var popup = w.TryWaitForMessageBox("Very Long Lines");
+            if (popup != null) { 
+                popup.DismissPopUp("{ENTER}");
+                Sleep(200);
+                findDialog.FindNext();
+            }
 
             findDialog.Window.DismissPopUp("{ESC}");
             w.SendKeystrokes("^c{ESC}");
-            CheckClipboard("XML Notepad is a Windows program");
+            CheckClipboard("XML Schema aware Intellisense");
             Sleep(200);
         }
 

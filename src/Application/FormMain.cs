@@ -5,10 +5,12 @@ using Microsoft.XmlDiffPatch;
 using Newtonsoft.Json;
 using Sgml;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -50,6 +52,7 @@ namespace XmlNotepad
         private readonly DelayedActions _delayedActions;
         private readonly HelpService _helpService = new HelpService();
         private XmlDiffWrapper _diffWrapper = new XmlDiffWrapper();
+        private readonly IDictionary<Uri, bool> _trusted = new Dictionary<Uri, bool>();
 
         private XmlCache _model;
         private SettingsLocation _loc;
@@ -877,6 +880,10 @@ namespace XmlNotepad
             {
                 return this._delayedActions;
             }
+            else if (service == typeof(ITrustService))
+            {
+                return this as ITrustService;
+            }
             return base.GetService(service);
         }
 
@@ -942,13 +949,13 @@ namespace XmlNotepad
                 switch (entity.MimeType)
                 {
                     case "text/csv":
-                        ImportCsv(entity);
+                        await ImportCsv(entity);
                         break;
                     case "application/json":
                         await ImportJson(entity);
                         break;
                     case "text/html":
-                        ImportHtml(entity);
+                        await ImportHtml(entity);
                         break;
                     default:
                         InternalOpen(entity);
@@ -992,15 +999,15 @@ namespace XmlNotepad
             }
         }
 
-        private void ImportHtml(FileEntity entity)
+        private async System.Threading.Tasks.Task ImportHtml(FileEntity entity)
         {
-            entity.Close();
+            var html = await entity.ReadText();
             DateTime start = DateTime.Now;
             using (var reader = new SgmlReader())
             {
                 reader.DocType = "HTML";
                 reader.CaseFolding = CaseFolding.ToLower;
-                reader.InputStream = new StreamReader(entity.Stream, entity.Encoding);
+                reader.InputStream = new StringReader(html);
                 reader.WhitespaceHandling = WhitespaceHandling.Significant;
                 this._model.Load(reader, entity.Uri.OriginalString);
                 FinishLoad(entity, start);
@@ -1019,15 +1026,16 @@ namespace XmlNotepad
             FinishLoad(entity, start);
         }
 
-        private void ImportCsv(FileEntity entity)
+        private async System.Threading.Tasks.Task ImportCsv(FileEntity entity)
         {
-            entity.Close();
+            var csvText = await entity.ReadText();
+
             FormCsvImport importForm = new XmlNotepad.FormCsvImport();
             importForm.File = entity;
             if (importForm.ShowDialog() == DialogResult.OK)
             {
                 // then import it for real...
-                using (StreamReader reader = new StreamReader(entity.Stream, entity.Encoding))
+                using (StringReader reader = new StringReader(csvText))
                 {
                     string xmlFile = Path.Combine(Path.GetDirectoryName(entity.LocalPath),
                         Path.GetFileNameWithoutExtension(entity.LocalPath) + ".xml");
@@ -2986,17 +2994,28 @@ namespace XmlNotepad
             yPos.Text = e.Y.ToString();
         }
 
-        public async System.Threading.Tasks.Task<bool> CanTrustUrl(Uri location)
+        public async System.Threading.Tasks.Task<bool> PromptUser(Uri location)
         {
             bool result = false;
+            
             this.Invoke(new Action(() =>
             {
                 result = MessageBox.Show(this, SR.XslScriptCodePrompt, SR.XslScriptCodeCaption,
                            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes;
+                _trusted[location] = result;                 
             }
             ));
             await System.Threading.Tasks.Task.CompletedTask;
             return result;
+        }
+
+        public bool? CanTrustUrl(Uri location)
+        {
+            if (_trusted.ContainsKey(location))
+            {
+                return _trusted[location];
+            }
+            return null;
         }
         #endregion
 

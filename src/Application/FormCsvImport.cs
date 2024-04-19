@@ -43,7 +43,7 @@ namespace XmlNotepad
 
         public bool FirstRowIsHeader { get; set; }
 
-        void SniffHeaders()
+        async void SniffHeaders()
         {
             flowLayoutPanel1.Controls.Clear();
 
@@ -78,7 +78,10 @@ namespace XmlNotepad
                 return;
             }
 
-            using (StreamReader reader = new StreamReader(this._file.Stream, this._file.Encoding, false, 64000, true))
+            this._file.Close();
+            var text = await this._file.ReadText();
+
+            using (var reader = new StringReader(text))
             {
                 CsvReader csvReader = new CsvReader(reader, 8192);
                 if (userText == null)
@@ -112,8 +115,6 @@ namespace XmlNotepad
                     ShowStatus("No rows found in that file.");
                 }
             }
-
-            this._file.Stream.Seek(0, SeekOrigin.Begin);
         }
 
 

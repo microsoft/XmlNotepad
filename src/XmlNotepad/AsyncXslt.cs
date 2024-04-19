@@ -186,13 +186,13 @@ namespace XmlNotepad
         private bool _usingDefaultXslt;
         private Settings _settings;
         AsyncXsltContext _context;
-        private readonly IDictionary<Uri, bool> _trusted = new Dictionary<Uri, bool>();
         private ITrustService _trustService;
 
-        public AsyncXslt(ISite site)
+        public AsyncXslt(ITrustService service)
         {
             _settings = Settings.Instance;
-            _trustService = (ITrustService)site.GetService(typeof(ITrustService));
+            _trustService = service;
+            Debug.Assert(_trustService != null);
         }
 
         public void Close()
@@ -225,166 +225,140 @@ namespace XmlNotepad
 
         async System.Threading.Tasks.Task RunTransform()
         {
+            await SysTask.CompletedTask;
             Uri resolved = null;
             string outpath = this._context.outpath;
             XmlDocument context = this._context.document;
             this._context.running = true;
-            bool trustRetry = true;
-            while (trustRetry)
+
+            XslCompiledTransform transform;
+            if (string.IsNullOrEmpty(this._context.xsltfilename))
             {
-                trustRetry = false;
-                try
+                transform = GetDefaultStylesheet();
+                this._usingDefaultXslt = true;
+                if (this._settings.GetBoolean("DisableDefaultXslt"))
                 {
-                    XslCompiledTransform transform;
-                    if (string.IsNullOrEmpty(this._context.xsltfilename))
-                    {
-                        transform = GetDefaultStylesheet();
-                        this._usingDefaultXslt = true;
-                        if (this._settings.GetBoolean("DisableDefaultXslt"))
-                        {
-                            context = new XmlDocument();
-                            context.LoadXml("<Note>Default styling of your XML documents is disabled in your Options</Note>");
-                        }
-                    }
-                    else
-                    {
-                        resolved = new Uri(_context.baseUri, this._context.xsltfilename);
-                        if (resolved != this._xsltUri || IsModified())
-                        {
-                            _xslt = new XslCompiledTransform();
-                            this._loaded = DateTime.Now;
-                            var settings = new XsltSettings(true, this._context.enableScripts);
-                            settings.EnableScript = (_trusted.ContainsKey(resolved));
-                            var rs = new XmlReaderSettings();
-                            rs.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                            rs.XmlResolver = this._context.resolver;
-                            using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
-                            {
-                                _xslt.Load(r, settings, this._context.resolver);
-                            }
-
-                            // the XSLT DOM is also handy to have around for GetOutputMethod
-                            this._xsltdoc = new XmlDocument();
-                            this._xsltdoc.Load(resolved.AbsoluteUri);
-                        }
-                        transform = _xslt;
-                        this._usingDefaultXslt = false;
-                    }
-
-                    if (string.IsNullOrEmpty(outpath))
-                    {
-                        if (!_context.disableOutputFile)
-                        {
-                            if (!string.IsNullOrEmpty(this._context.xsltfilename))
-                            {
-                                outpath = this.GetXsltOutputFileName(this._context.xsltfilename);
-                            }
-                            else
-                            {
-                                // default stylesheet produces html
-                                this._tempFile = outpath = GetWritableFileName("DefaultXsltOutput.htm");
-                            }
-                        }
-                    }
-                    else if (!_context.userSpecifiedOutput)
-                    {
-                        var ext = GetDefaultOutputExtension();
-                        var basePath = Path.Combine(Path.GetDirectoryName(outpath), Path.GetFileNameWithoutExtension(outpath));
-                        outpath = basePath + ext;
-                        outpath = GetWritableFileName(outpath);
-                    }
-                    else
-                    {
-                        outpath = GetWritableFileName(outpath);
-                    }
-
-                    if (null != transform)
-                    {
-                        var dir = Path.GetDirectoryName(outpath);
-                        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                        {
-                            Directory.CreateDirectory(dir);
-                        }
-
-                        var settings = new XmlReaderSettings();
-                        settings.XmlResolver = this._context.resolver;
-                        settings.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                        var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, _context.baseUri.AbsoluteUri);
-                        this._context.reader = xmlReader;
-                        if (string.IsNullOrEmpty(outpath))
-                        {
-                            using (StringWriter writer = new StringWriter())
-                            {
-                                transform.Transform(xmlReader, null, writer);
-                                this._xsltUri = resolved;
-                                this._context.output = writer.ToString();
-                            }
-                        }
-                        else
-                        {
-                            bool noBom = false;
-                            Settings appSettings = this._settings;
-                            if (appSettings != null)
-                            {
-                                noBom = (bool)appSettings["NoByteOrderMark"];
-                            }
-                            if (noBom)
-                            {
-                                // cache to an inmemory stream so we can strip the BOM.
-                                using (MemoryStream ms = new MemoryStream())
-                                {
-                                    transform.Transform(xmlReader, null, ms);
-                                    ms.Seek(0, SeekOrigin.Begin);
-                                    EncodingHelpers.WriteFileWithoutBOM(ms, outpath);
-                                }
-                            }
-                            else
-                            {
-                                if (this._context.estimatedOutputSize == 0)
-                                {
-                                    this._context.estimatedOutputSize = xmlReader.Size * 4;
-                                }
-                                using (FileStream writer = new FileStream(outpath, FileMode.OpenOrCreate, FileAccess.Write))
-                                {
-                                    var wrapper = new ProgressiveStream(writer, this._context.estimatedOutputSize);
-                                    this._context.writer = wrapper;
-                                    Stopwatch watch = new Stopwatch();
-                                    watch.Start();
-                                    transform.Transform(xmlReader, null, wrapper);
-                                    watch.Stop();
-                                    this._context.info = new PerformanceInfo();
-                                    this._context.info.XsltMilliseconds = watch.ElapsedMilliseconds;
-                                    Debug.WriteLine("Transform in {0} milliseconds", watch.ElapsedMilliseconds);
-                                    this._xsltUri = resolved;
-                                    writer.Flush();
-                                }
-                                this._context.estimatedOutputSize = new FileInfo(outpath).Length;
-                            }
-                        }
-                    }
-                }
-                catch (System.Xml.Xsl.XsltException x)
-                {
-                    if (x.Message.Contains("XsltSettings"))
-                    {
-                        if (!_trusted.ContainsKey(resolved))
-                        {
-                            if (await this._trustService.CanTrustUrl(resolved))
-                            {
-                                _trusted[resolved] = true;
-                                trustRetry = true;
-                                continue;
-                            }
-                        }
-                    }
-                    WriteError(x);
-                }
-                catch (Exception x)
-                {
-                    WriteError(x);
+                    context = new XmlDocument();
+                    context.LoadXml("<Note>Default styling of your XML documents is disabled in your Options</Note>");
                 }
             }
+            else
+            {
+                resolved = new Uri(_context.baseUri, this._context.xsltfilename);
+                if (resolved != this._xsltUri || IsModified())
+                {
+                    _xslt = new XslCompiledTransform();
+                    this._loaded = DateTime.Now;
+                    var settings = new XsltSettings(true, this._context.enableScripts);
+                    settings.EnableScript = _trustService.CanTrustUrl(resolved) == true;
+                    var rs = new XmlReaderSettings();
+                    rs.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                    rs.XmlResolver = this._context.resolver;
+                    using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
+                    {
+                        _xslt.Load(r, settings, this._context.resolver);
+                    }
 
+                    // the XSLT DOM is also handy to have around for GetOutputMethod
+                    this._xsltdoc = new XmlDocument();
+                    this._xsltdoc.Load(resolved.AbsoluteUri);
+                }
+                transform = _xslt;
+                this._usingDefaultXslt = false;
+            }
+
+            if (string.IsNullOrEmpty(outpath))
+            {
+                if (!_context.disableOutputFile)
+                {
+                    if (!string.IsNullOrEmpty(this._context.xsltfilename))
+                    {
+                        outpath = this.GetXsltOutputFileName(this._context.xsltfilename);
+                    }
+                    else
+                    {
+                        // default stylesheet produces html
+                        this._tempFile = outpath = GetWritableFileName("DefaultXsltOutput.htm");
+                    }
+                }
+            }
+            else if (!_context.userSpecifiedOutput)
+            {
+                var ext = GetDefaultOutputExtension();
+                var basePath = Path.Combine(Path.GetDirectoryName(outpath), Path.GetFileNameWithoutExtension(outpath));
+                outpath = basePath + ext;
+                outpath = GetWritableFileName(outpath);
+            }
+            else
+            {
+                outpath = GetWritableFileName(outpath);
+            }
+
+            if (null != transform)
+            {
+                var dir = Path.GetDirectoryName(outpath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                var settings = new XmlReaderSettings();
+                settings.XmlResolver = this._context.resolver;
+                settings.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, _context.baseUri.AbsoluteUri);
+                this._context.reader = xmlReader;
+                if (string.IsNullOrEmpty(outpath))
+                {
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        transform.Transform(xmlReader, null, writer);
+                        this._xsltUri = resolved;
+                        this._context.output = writer.ToString();
+                    }
+                }
+                else
+                {
+                    bool noBom = false;
+                    Settings appSettings = this._settings;
+                    if (appSettings != null)
+                    {
+                        noBom = (bool)appSettings["NoByteOrderMark"];
+                    }
+                    if (noBom)
+                    {
+                        // cache to an inmemory stream so we can strip the BOM.
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            transform.Transform(xmlReader, null, ms);
+                            ms.Seek(0, SeekOrigin.Begin);
+                            EncodingHelpers.WriteFileWithoutBOM(ms, outpath);
+                        }
+                    }
+                    else
+                    {
+                        if (this._context.estimatedOutputSize == 0)
+                        {
+                            this._context.estimatedOutputSize = xmlReader.Size * 4;
+                        }
+                        using (FileStream writer = new FileStream(outpath, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            var wrapper = new ProgressiveStream(writer, this._context.estimatedOutputSize);
+                            this._context.writer = wrapper;
+                            Stopwatch watch = new Stopwatch();
+                            watch.Start();
+                            transform.Transform(xmlReader, null, wrapper);
+                            watch.Stop();
+                            this._context.info = new PerformanceInfo();
+                            this._context.info.XsltMilliseconds = watch.ElapsedMilliseconds;
+                            Debug.WriteLine("Transform in {0} milliseconds", watch.ElapsedMilliseconds);
+                            this._xsltUri = resolved;
+                            writer.Flush();
+                        }
+                        this._context.estimatedOutputSize = new FileInfo(outpath).Length;
+                    }
+                }
+            }
+                
             this._context.outpath = outpath;
             this._context.running = false;
         }
@@ -493,7 +467,7 @@ namespace XmlNotepad
             return method;
         }
 
-        private void WriteError(Exception e)
+        public void WriteError(Exception e)
         {
             using (StringWriter writer = new StringWriter())
             {

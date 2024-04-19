@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -11,6 +12,20 @@ using WindowsInput;
 
 namespace UnitTests
 {
+    static class AutomationExtensions
+    {
+        public static IEnumerable<AutomationElement> ToList(this AutomationElementCollection collection)
+        {
+            foreach (var item in collection)
+            {
+                if (item is AutomationElement e)
+                {
+                    yield return e;
+                }
+            }
+        }
+    }
+
     public class Window : IDisposable
     {
         private readonly Process _process;
@@ -157,6 +172,60 @@ namespace UnitTests
         public Window WaitForPopup()
         {
             return WaitForPopup(IntPtr.Zero);
+        }
+
+        public Window TryWaitForMessageBox(string name, int timeout = 50, int retries = 5)
+        {
+            Sleep(100);
+            Window found = null;
+            IntPtr h = this.Handle;
+            for (int retry = 0; retry < retries; retry++)
+            {
+                try
+                {
+                    IntPtr popup = GetLastActivePopup(h);
+                    if (popup != h && popup != IntPtr.Zero)
+                    {
+                        found = new Window(this, popup, sim);
+                    }
+                    else
+                    {
+                        IntPtr hwnd = GetForegroundWindow();
+                        if (hwnd != h && hwnd != this.Handle)
+                        {
+                            found = new Window(this, hwnd, sim);
+                        }
+                    }
+                    if (found != null)
+                    {
+                        Sleep(100);
+                        var bounds = found.GetWindowBounds();
+                        if (bounds.Width == 0 && bounds.Height == 0)
+                        {
+                            // can't be it!
+                            found = null;
+                        }
+                        else if (found.GetWindowText() != name)
+                        {
+                            found = null;
+                        }
+                    }
+                }
+                catch
+                {
+                    // unrecognized window, perhaps a temp window...
+                }
+                if (found == null)
+                {
+                    Sleep(timeout);
+                }
+            }
+            if (found != null)
+            {
+                found.WaitForInteractive();
+                return found;
+            }
+            return null;
         }
 
         public Window WaitForPopup(IntPtr excludingThisWindow)
@@ -322,18 +391,22 @@ namespace UnitTests
 
         void LoadMenuItems(AutomationElement menuItem, List<string> names)
         {
-            if (menuItem.TryGetCurrentPattern(ExpandCollapsePattern.Pattern, out object patternObject)
-                && patternObject is ExpandCollapsePattern pattern)
+            // On .NET 4.8 menus have to be expanded before you can find their children.
+            ExpandCollapsePattern pattern = null;
+            if (menuItem.TryGetCurrentPattern(ExpandCollapsePattern.Pattern, out object patternObject))
             {
+                pattern = (ExpandCollapsePattern)patternObject;
                 pattern.Expand();
-                foreach (AutomationElement subMenuItem in menuItem.FindAll(TreeScope.Descendants,
-                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
-                {
-                    var childId = subMenuItem.Current.Name;
-                    names.Add(childId);
-                    _menuItems[childId] = new AutomationWrapper(subMenuItem);
-                    LoadMenuItems(subMenuItem, names);
-                }
+            }
+            foreach (AutomationElement subMenuItem in menuItem.FindAll(TreeScope.Descendants,
+                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
+            {
+                var childId = subMenuItem.Current.Name;
+                names.Add(childId);
+                _menuItems[childId] = new AutomationWrapper(subMenuItem);
+                LoadMenuItems(subMenuItem, names);
+            }
+            if (pattern != null) { 
                 pattern.Collapse();
             }
         }
@@ -354,11 +427,11 @@ namespace UnitTests
                 var menuStrip = this._acc.AutomationElement.FindFirst(TreeScope.Children,
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuBar));
 
-                // enumerate the menu bar and start filling out the _menuHeirarchy.
+                // enumerate the menu bar start filling out the _menuHeirarchy.
                 // Note: starting in .NET 4.8 one has to literally expand the menu on screen to
                 // find the menu items inside!
                 foreach (AutomationElement menuItem in menuStrip.FindAll(TreeScope.Children,
-                        new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
+                       new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
                 {
                     var id = menuItem.Current.Name;
                     if (!_menuHeirarchy.ContainsKey(id))
@@ -371,6 +444,25 @@ namespace UnitTests
                             // found it!
                             break;
                         }
+                    }
+                }
+
+                var toolStrip = this._acc.AutomationElement.FindFirst(TreeScope.Children,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ToolBar));
+
+                // enumerate the toolbar bar and fill out the _menuHeirarchy.
+                // Note: starting in .NET 4.8 one has to literally expand the menu on screen to
+                // find the menu items inside!
+                if (toolStrip != null && !_menuHeirarchy.ContainsKey(toolStrip.Current.Name))
+                {
+                    List<string> names = new List<string>();
+                    _menuHeirarchy[toolStrip.Current.Name] = names;
+                    foreach (AutomationElement menuItem in toolStrip.FindAll(TreeScope.Children,
+                            new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button)))
+                    {
+                        var childId = menuItem.Current.Name;
+                        names.Add(childId);
+                        _menuItems[childId] = new AutomationWrapper(menuItem);
                     }
                 }
             }
@@ -535,6 +627,8 @@ namespace UnitTests
 
             this.WaitForIdle(1000);
             Sleep(1000);
+            // BUFBUG: This blocks on .NET 4.8 but works fine on .NET 4.7.2
+            // See https://github.com/dotnet/winforms/issues/10244.
             item.Invoke();
             this.WaitForIdle(1000);
         }
@@ -783,18 +877,28 @@ namespace UnitTests
 
         internal AutomationWrapper FindPopup(string name)
         {
+            var w = TryFindPopup(name, 200, 5);
+            if (w == null)
+            {
+                throw new Exception(string.Format("Popup '{0}' not found", name));
+            }
+            return w;
+        }
+
+        internal AutomationWrapper TryFindPopup(string name, int timeout = 200, int retries = 2)
+        {
             AutomationElement desktop = AutomationElement.FromHandle(GetDesktopWindow());
-            int retries = 5;
-            while (retries-- > 0)
+            for (int r = 0; r < retries; r++)
             {
                 AutomationElement e = desktop.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, name, PropertyConditionFlags.IgnoreCase));
                 if (e != null)
                 {
                     return new AutomationWrapper(e);
                 }
-                Sleep(200);
+                Sleep(timeout);
             }
-            throw new Exception(string.Format("Popup '{0}' not found", name));
+
+            return null;
         }
     }
 }

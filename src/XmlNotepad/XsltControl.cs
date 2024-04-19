@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -18,7 +19,9 @@ namespace XmlNotepad
 
     public interface ITrustService
     {
-        Task<bool> CanTrustUrl(Uri location);
+        bool? CanTrustUrl(Uri location);
+
+        Task<bool> PromptUser(Uri location);
     }
 
     public partial class XsltControl : UserControl
@@ -36,6 +39,7 @@ namespace XmlNotepad
         private bool _webView2Supported;
         private AsyncXslt _asyncXslt;
         private FormTransformProgress _progress;
+        private ITrustService _trustService;
 
         public event EventHandler<Exception> WebBrowserException;
 
@@ -373,7 +377,8 @@ namespace XmlNotepad
         {
             this._site = site;
 
-            _asyncXslt = new AsyncXslt(site);
+            _trustService = (ITrustService)site.GetService(typeof(ITrustService));
+            _asyncXslt = new AsyncXslt(_trustService);
 
             IServiceProvider sp = (IServiceProvider)site;
             this._resolver = new XmlProxyResolver(sp);
@@ -434,6 +439,7 @@ namespace XmlNotepad
         }
 
         AsyncXsltContext _previousTransform;
+        bool _promptingUser = false;
 
         /// <summary>
         /// Run an XSLT transform and show the results.
@@ -455,7 +461,7 @@ namespace XmlNotepad
                 _previousTransform.Cancel();
             }
 
-            if (HasXsltOutput.HasValue) 
+            if (HasXsltOutput.HasValue)
             {
                 hasDefaultXsltOutput = HasXsltOutput.Value;
             }
@@ -474,8 +480,8 @@ namespace XmlNotepad
                 enableScripts = this.EnableScripts,
                 disableOutputFile = this.DisableOutputFile,
                 resolver = this._resolver,
-                
             };
+
             if (_previousTransform != null && _previousTransform.xsltfilename == xsltfilename)
             {
                 context.estimatedOutputSize = _previousTransform.estimatedOutputSize;
@@ -485,7 +491,44 @@ namespace XmlNotepad
             this._settings.DelayedActions.StartDelayedAction("SlowTransformProgress",
                 OnSlowTransform, TimeSpan.FromSeconds(1));
 
-            var path = await this._asyncXslt.TransformDocumentAsync(_previousTransform);
+            bool tryAgain = false;
+            string path = null;
+            do 
+            {
+                tryAgain = false;
+                try
+                {
+                    path = await this._asyncXslt.TransformDocumentAsync(_previousTransform);
+                }
+                catch (System.Xml.Xsl.XsltException x)
+                {
+                    StopAsyncTransform();
+                    if (x.Message.Contains("XsltSettings"))
+                    {
+                        var resolved = new Uri(context.baseUri, context.xsltfilename);
+                        if (_trustService.CanTrustUrl(resolved) == null)
+                        {
+                            _promptingUser = true;
+                            if (await this._trustService.PromptUser(resolved))
+                            {
+                                // try again
+                                tryAgain = true;
+                                context.output = null;
+                                context.outpath = null;
+                            }
+                            _promptingUser = false;
+                        }
+                    }
+                    if (!tryAgain)
+                    {
+                        this._asyncXslt.WriteError(x);
+                    }
+                }
+                catch (Exception x)
+                {
+                    this._asyncXslt.WriteError(x);
+                }
+            } while (tryAgain);
 
             StopAsyncTransform();
 
@@ -526,7 +569,7 @@ namespace XmlNotepad
 
         private void OnSlowTransform()
         {
-            if (_previousTransform != null && _previousTransform.running)
+            if (_previousTransform != null && _previousTransform.running && !_promptingUser)
             {
                 this._progress = new FormTransformProgress();
                 this._progress.SetProgress(0, (int)this._previousTransform.Size, (int)this._previousTransform.Position);

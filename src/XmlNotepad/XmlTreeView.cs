@@ -371,16 +371,36 @@ namespace XmlNotepad
                                 inode.XmlNode = inode.CreateNode(context, e.Label, e.Namespace);
                                 // Cause selection event to be triggered so that menu state
                                 // is recalculated.
+                                XmlElement scope = inode.XmlNode as XmlElement;
+                                if (scope == null)
+                                {
+                                    scope = context as XmlElement;
+                                }
+                                XmlDocument doc = context is XmlDocument ? (XmlDocument)context : context.OwnerDocument;
                                 this._myTreeView.SelectedNode = null;
                                 this.OnNodeInserted(inode.NewNode);
-                                if (!string.IsNullOrEmpty(e.Namespace) && !XmlHelpers.IsNamespaceInScope(context, e.Namespace))
+                                var prefix = inode.XmlNode.Prefix;
+                                if (!string.IsNullOrEmpty(prefix))
                                 {
-                                    XmlDocument doc = context is XmlDocument ? (XmlDocument)context : context.OwnerDocument;
-                                    XmlAttribute attr = doc.CreateAttribute("", "xmlns", XmlHelpers.XmlnsUri);
-                                    attr.Value = e.Namespace;
-                                    inode.XmlNode.Attributes.Append(attr);
-                                    xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
-                                    xn.Expand();
+                                    if (prefix != "xmlns" && !XmlHelpers.IsPrefixInScope(context, prefix))
+                                    {
+                                        XmlAttribute attr = doc.CreateAttribute("xmlns", inode.XmlNode.Prefix, XmlHelpers.XmlnsUri);
+                                        attr.Value = inode.XmlNode.NamespaceURI;
+                                        scope.Attributes.Append(attr);
+                                        xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
+                                        xn.Expand();
+                                    }
+                                }   
+                                else if (!string.IsNullOrEmpty(e.Namespace))
+                                {
+                                    if (!XmlHelpers.IsDefaultNamespaceInScope(context, e.Namespace))
+                                    {
+                                        XmlAttribute attr = doc.CreateAttribute("", "xmlns", XmlHelpers.XmlnsUri);
+                                        attr.Value = e.Namespace;
+                                        scope.Attributes.Append(attr);
+                                        xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
+                                        xn.Expand();
+                                    }
                                 }
                             }
                         }
