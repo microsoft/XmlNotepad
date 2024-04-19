@@ -9,11 +9,18 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.9">
+    <feature>Issue 382: Add progress bar on long XSLT transform operations.</feature>
+    <feature>Issue 379: Add Preserve Whitespace option so your XSLT transforms can output the whitespace correctly.</feature>
+    <bug>Bug 383: Reload of a "not loaded" file</bug>
+    <bug>Bug 381: Multiple instances resets the settings</bug>
+    <bug>Bug 380: Opening bad XML file keeps watching the file</bug>
+  </version>
   <version number="2.9.0.8">
     <feature>
       Add ability to load .json files.
     </feature>
-	<feature>Add #367 preserve Options Dialog box relative location and size</feature>
+	  <feature>Add #367 preserve Options Dialog box relative location and size</feature>
     <bug>Bug 370: Error Message after SEARCHING and drag &amp; drop of a new file</bug>
     <bug>Bug 371: Unhandled exception loading XML file with the http://www.crossref.org/schema/deposit/crossref4.4.2.xsd schemas.</bug>
   </version>
