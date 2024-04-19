@@ -69,6 +69,7 @@ namespace XmlNotepad
             this._nodeTextView.KeyDown += new KeyEventHandler(nodeTextView_KeyDown);
             this._nodeTextView.MouseWheel += new MouseEventHandler(HandleMouseWheel);
             this._nodeTextView.AfterSelect += new EventHandler<TreeViewEventArgs>(nodeTextView_AfterSelect);
+            this._nodeTextView.AfterEdit += nodeTextView_AfterEdit;
             this._nodeTextView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
 
             this.Disposed += new EventHandler(OnDisposed);
@@ -500,6 +501,28 @@ namespace XmlNotepad
             if (this._myTreeView != null)
             {
                 this._myTreeView.SelectedNode = e.Node;
+            }
+        }
+
+        private void nodeTextView_AfterEdit(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node is XmlTreeNode xnode)
+            {
+                if (xnode.NodeType == XmlNodeType.Attribute && xnode.Node is XmlAttribute a && 
+                    a.NamespaceURI == XmlHelpers.XmlnsUri)
+                {
+                    // ooo, we just changed the value of a namespace attribute, this
+                    // can have a big impact on the XML DOM...
+                    var value = a.Value;
+                    var prefix = a.Prefix;
+                    XmlElement parent = a.OwnerElement;
+                    if (parent.Prefix == prefix)
+                    {
+                        // we are changing the namespace of the parent element, and this
+                        // would be a problem for the XmlWriter, which is why we have the
+                        // DomWriter.
+                    }
+                }
             }
         }
 

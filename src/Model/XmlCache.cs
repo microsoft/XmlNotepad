@@ -390,7 +390,8 @@ namespace XmlNotepad
                     MemoryStream ms = new MemoryStream();
                     using (XmlWriter w = XmlWriter.Create(ms, s))
                     {
-                        _doc.Save(w);
+                        DomWriter dw = new DomWriter(w);
+                        dw.Write(_doc);
                     }
                     ms.Seek(0, SeekOrigin.Begin);
 
@@ -401,7 +402,8 @@ namespace XmlNotepad
                 {
                     using (XmlWriter w = XmlWriter.Create(filename, s))
                     {
-                        _doc.Save(w);
+                        DomWriter dw = new DomWriter(w);
+                        dw.Write(_doc);
                     }
                 }
             }

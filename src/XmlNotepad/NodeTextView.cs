@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using SR = XmlNotepad.StringResources;
@@ -28,6 +29,7 @@ namespace XmlNotepad
         private string _originalText;
 
         public event EventHandler<TreeViewEventArgs> AfterSelect;
+        public event EventHandler<TreeViewEventArgs> AfterEdit;
 
         /// <summary> 
         /// Required designer variable.
@@ -695,9 +697,14 @@ namespace XmlNotepad
             return sb.ToString();
         }
 
-        static void SetNodeText(TreeNode n, string value)
+        void SetNodeText(TreeNode n, string value)
         {
             n.Text = value;
+            var callback = this.AfterEdit;
+            if (callback != null)
+            {
+                callback(this, new TreeViewEventArgs(n, TreeViewAction.None));
+            }   
         }
 
         public void Invalidate(TreeNode n)

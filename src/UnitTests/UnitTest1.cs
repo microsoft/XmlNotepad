@@ -2936,6 +2936,7 @@ Prefix 'user' is not defined. ");
 
             // <DisableDefaultXslt>False</DisableDefaultXslt>
             w.SendKeystrokes("^IDis");
+            Sleep(500);
             w.InvokeMenuItem("toolStripButtonCopy");
             CheckClipboard(new Regex(".*DisableDefaultXslt.*"));
         }
