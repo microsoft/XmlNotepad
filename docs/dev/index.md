@@ -29,11 +29,27 @@ First clone the repo:
 ```
 git clone https://github.com/microsoft/XmlNotepad.git
 ```
-Then:
+
+From the command line initialize your ApiKey.cs file:
+```shell
+echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey="%XMLNOTEPAD_ANALYTICSKEY%"; } } > src\model\ApiKey.cs
+```
+
+Then restore all the nuget packages
+```
+nuget  restore xmlnotepad.sln
+```
+
+Then you can build it:
+```
+msbuild xmlnotepad.sln
+```
+
+Using Visual Studio:
 
 - Load `src/XmlNotepad.sln` into Visual Studio.
 - Select Debug or Release and target "Any CPU".
-- Run Build Solution.
+- Run Rebuild Solution (rebuild also installs any missing nuget packages)
 
 ### Debug the app
 
@@ -53,6 +69,10 @@ screen lock until this test is completed.  Total test run time is about 12 minut
 The tests all pass on Windows 10, but currently some tests fail on Windows 11, there seems to be
 some breaking changes in the Windows Automation layer that XML notepad tests are using.  This is
 being investigated.
+
+Note: [bug 10244](https://github.com/dotnet/winforms/issues/10244) is still open
+in in .net 4.8 System.Windows.Automation of menu items that blocks the tests, so
+checkout the branch `clovett/net472` to run the unit tests.
 
 ### UpdateVersions
 
