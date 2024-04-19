@@ -395,8 +395,6 @@ namespace XmlNotepad
             this._updater.Title = this.Caption;
             this._updater.UpdateAvailable += new EventHandler<UpdateStatus>(OnUpdateAvailable);
 
-            this.xmlTreeView1.OnLoaded();
-            EnsureWindowBounds();
             base.OnLoad(e);
         }
 
@@ -1341,6 +1339,10 @@ namespace XmlNotepad
                 {
                     this._settings["UpdateLocation"] = XmlNotepad.Settings.DefaultUpdateLocation;
                 }
+
+                // apply newly loaded settings to our window layout.
+                this.xmlTreeView1.OnLoaded();
+                EnsureWindowBounds();
             }
             finally
             {
@@ -1510,10 +1512,12 @@ namespace XmlNotepad
                     {
                         try
                         {
+                            // _settinsReloadLock makes sure that when you close one xmlnotepad window
+                            // this window does not get resized.
                             _settinsReloadLock = true;
                             this.LoadConfig();
                         }
-                        finally
+                        catch
                         {
                             _settinsReloadLock = false;
                         }
@@ -2433,7 +2437,7 @@ namespace XmlNotepad
         {
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = exeFileName;
-            info.Arguments = "/offset " + args;
+            info.Arguments = args;
             Process p = new Process();
             p.StartInfo = info;
             if (!p.Start())

@@ -115,11 +115,7 @@ namespace XmlNotepad
 
                 if (File.Exists(fileName))
                 {
-                    if (fileName != settings.FileName)
-                    {
-                        settings.Load(fileName);
-                    }
-                    // use this path
+                    settings.Load(fileName);
                 }
                 else if (File.Exists(PortableTemplateFile))
                 {
