@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:XmlNotepad"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
-        Title="XML Notepad - {0}" Height="800" Width="1280">
+        Title="XML Notepad" Height="800" Width="1280" Icon="/Resources/xmlnote.ico">
     <Window.CommandBindings>
         <CommandBinding Command="local:Commands.Exit" Executed="OnExit"/>
     </Window.CommandBindings>

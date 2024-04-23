@@ -169,8 +169,6 @@ namespace XmlNotepad
             this._settings["XmlDiffIgnoreXmlDecl"] = false;
             this._settings["XmlDiffIgnoreDtd"] = false;
 
-            this._settings["SchemaCache"] = new SchemaCache();
-
             bool allowAnalytics = (Environment.GetEnvironmentVariable("XML_NOTEPAD_DISABLE_ANALYTICS") != "1");
             this._settings["AllowAnalytics"] = allowAnalytics;
             this._settings["AnalyticsClientId"] = "";

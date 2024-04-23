@@ -31,6 +31,8 @@ namespace XmlNotepad
         {
             this.Visibility = Visibility.Hidden;
             this.settings = Settings.Instance;
+
+            this.settings["SchemaCache"] = new SchemaCache(this);
             this.settings.StartupPath = System.IO.Path.GetDirectoryName(Application.Current.StartupUri.LocalPath);
             this.settings.ExecutablePath = Application.Current.StartupUri.LocalPath;
 
