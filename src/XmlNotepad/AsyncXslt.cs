@@ -348,7 +348,6 @@ namespace XmlNotepad
                             watch.Start();
                             transform.Transform(xmlReader, null, wrapper);
                             watch.Stop();
-                            this._context.info = new PerformanceInfo();
                             this._context.info.XsltMilliseconds = watch.ElapsedMilliseconds;
                             Debug.WriteLine("Transform in {0} milliseconds", watch.ElapsedMilliseconds);
                             this._xsltUri = resolved;

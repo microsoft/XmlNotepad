@@ -40,6 +40,8 @@ namespace XmlNotepad
         private AsyncXslt _asyncXslt;
         private FormTransformProgress _progress;
         private ITrustService _trustService;
+        private CoreWebView2Environment _environment;
+        private DelayedActions _delayedActions;
 
         public event EventHandler<Exception> WebBrowserException;
 
@@ -49,6 +51,7 @@ namespace XmlNotepad
         {
             InitializeComponent();
             _resolver = new XmlUrlResolver();
+            _delayedActions = new DelayedActions();
         }
 
         /// <summary>
@@ -72,13 +75,22 @@ namespace XmlNotepad
             try
             {
                 await this.webBrowser2.EnsureCoreWebView2Async(environment);
-
-                this._settings.DelayedActions.StartDelayedAction("CompleteCoreWebView2", CompleteCoreWebView2, TimeSpan.FromMilliseconds(1));
+                this._delayedActions.StartDelayedAction("CompleteCoreWebView2", CompleteCoreWebView2, TimeSpan.FromMilliseconds(1));
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                HandleWebView2Exception(ex);
             }
+        }
+
+        private void HandleWebView2Exception(Exception ex)
+        {
+            // fall back on old web browser control
+            RaiseBrowserException(new WebView2Exception(ex.Message));
+            this.BrowserVersion = "WebBrowser";
+            WebBrowserFallback();
+            this._settings["BrowserVersion"] = "WebBrowser";
+            this._settings["WebView2Exception"] = ex.Message;
         }
 
         private void CompleteCoreWebView2()
@@ -103,6 +115,7 @@ namespace XmlNotepad
 
         private async void InitializeBrowser(string version)
         {
+            this._webInitialized = false;
             try
             {
                 this.BrowserVersion = version;
@@ -112,13 +125,21 @@ namespace XmlNotepad
                     {
                         this.webBrowser2.CoreWebView2InitializationCompleted -= OnCoreWebView2InitializationCompleted;
                         this.webBrowser2.CoreWebView2InitializationCompleted += OnCoreWebView2InitializationCompleted;
-                        CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
+                        if (this._environment == null)
                         {
-                            AllowSingleSignOnUsingOSPrimaryAccount = true               
-                        };
+                            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions()
+                            {
+                                AllowSingleSignOnUsingOSPrimaryAccount = true
+                            };
 
-                        CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
-                        this._settings.DelayedActions.StartDelayedAction("EnsureCoreWebView2", () => EnsureCoreWebView2(environment), TimeSpan.FromMilliseconds(1));                                               
+                            this._environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WebViewUserCache, options: options);
+                            this._delayedActions.StartDelayedAction("EnsureCoreWebView2", () => EnsureCoreWebView2(this._environment), TimeSpan.FromMilliseconds(1));
+                        }
+                    }
+                    else
+                    {
+                        // we already know webView2 is supported.
+                        this._webInitialized = true;
                     }
                 }
                 else
@@ -131,12 +152,7 @@ namespace XmlNotepad
             }
             catch (Exception ex)
             {
-                // fall back on old web browser control
-                RaiseBrowserException(new WebView2Exception(ex.Message));
-                this.BrowserVersion = "WebBrowser";
-                this._settings["BrowserVersion"] = "WebBrowser";
-                WebBrowserFallback();
-                this._settings["WebView2Exception"] = ex.Message;
+                HandleWebView2Exception(ex);
             }
         }
 
@@ -179,13 +195,13 @@ namespace XmlNotepad
                 if (e.InitializationException != null)
                 {
                     // save this error someplace so we can show it to the user later when they try and enable WebView2.
-                    RaiseBrowserException(new WebView2Exception(e.InitializationException.Message));
+                    RaiseBrowserException(new WebView2Exception(e.InitializationException.Message));                    
                 }
             }
             else
             {
                 this._webView2Initialized = true;
-                _webInitialized = true;
+                this._webInitialized = true;
             }
         }
 
@@ -240,10 +256,11 @@ namespace XmlNotepad
             _urlWatch.Reset();
             _urlWatch.Start();
 
-            this.webBrowser2.Visible = UseWebView2();
-            this.webBrowser1.Visible = !UseWebView2();
+            bool useWebView2 = UseWebView2();
+            this.webBrowser2.Visible = useWebView2;
+            this.webBrowser1.Visible = !useWebView2;
 
-            if (UseWebView2())
+            if (useWebView2)
             {
                 var uri = new Uri(filename);
                 try
@@ -304,15 +321,17 @@ namespace XmlNotepad
                 _urlWatch.Reset();
                 _urlWatch.Start();
 
-                this.webBrowser2.Visible = UseWebView2();
-                this.webBrowser1.Visible = !UseWebView2();
+                bool useWebView2 = UseWebView2();
+                this.webBrowser2.Visible = useWebView2;
+                this.webBrowser1.Visible = !useWebView2;
 
-                if (UseWebView2())
+                if (useWebView2)
                 {
                     try
                     {
                         if (content.Length > 1000000)
                         {
+                            // NavigateToString is unfortunately limited to 1 mb.
                             content = content.Substring(0, 1000000) + "<h1>content truncated...";
                         }
                         // this has a 1mb limit for some unknown reason.
@@ -466,6 +485,7 @@ namespace XmlNotepad
                 hasDefaultXsltOutput = HasXsltOutput.Value;
             }
 
+            this._info = new PerformanceInfo();
 
             var context = new AsyncXsltContext()
             {
@@ -480,6 +500,7 @@ namespace XmlNotepad
                 enableScripts = this.EnableScripts,
                 disableOutputFile = this.DisableOutputFile,
                 resolver = this._resolver,
+                info = this._info,
             };
 
             if (_previousTransform != null && _previousTransform.xsltfilename == xsltfilename)
@@ -488,7 +509,7 @@ namespace XmlNotepad
             }
             _previousTransform = context;
 
-            this._settings.DelayedActions.StartDelayedAction("SlowTransformProgress",
+            this._delayedActions.StartDelayedAction("SlowTransformProgress",
                 OnSlowTransform, TimeSpan.FromSeconds(1));
 
             bool tryAgain = false;
@@ -558,7 +579,7 @@ namespace XmlNotepad
 
         private void StopAsyncTransform()
         {
-            this._settings.DelayedActions.CancelDelayedAction("SlowTransformProgress");
+            this._delayedActions.CancelDelayedAction("SlowTransformProgress");
             if (this._progress != null)
             {
                 this._progress.Close();
@@ -573,7 +594,7 @@ namespace XmlNotepad
             {
                 this._progress = new FormTransformProgress();
                 this._progress.SetProgress(0, (int)this._previousTransform.Size, (int)this._previousTransform.Position);
-                this._settings.DelayedActions.StartDelayedAction("UpdateTransformProgress", UpdateTransformProgress, TimeSpan.FromMilliseconds(30));
+                this._delayedActions.StartDelayedAction("UpdateTransformProgress", UpdateTransformProgress, TimeSpan.FromMilliseconds(30));
                 if (this._progress.ShowDialog() == DialogResult.Cancel)
                 {
                     this._previousTransform.Cancel();
@@ -586,7 +607,7 @@ namespace XmlNotepad
             if (this._progress != null)
             {
                 this._progress.SetProgress(0, (int)this._previousTransform.Size, (int)this._previousTransform.Position);
-                this._settings.DelayedActions.StartDelayedAction("UpdateTransformProgress", UpdateTransformProgress, TimeSpan.FromMilliseconds(30));
+                this._delayedActions.StartDelayedAction("UpdateTransformProgress", UpdateTransformProgress, TimeSpan.FromMilliseconds(30));
             }
         }
 
