@@ -2,7 +2,7 @@
 
 When you have an associated [XSD schema](schemas.md), the `xsd:documentation` associated with the current node is displayed in a tooltip popup and in the Dynamic Help Tab.
 
-For example, the `Employee.xsd` schema contains the following annotation on the defintion of the Employee Id attribute:
+For example, the `Employee.xsd` schema contains the following annotation on the definition of the Employee Id attribute:
 
 ```xml
   <xs:simpleType name="EmployeeID">
@@ -16,8 +16,7 @@ For example, the `Employee.xsd` schema contains the following annotation on the 
   </xs:simpleType>
 ```
 
-Now if you open Employee.xml and select the Employee Id attribute
-you will see this annotation listed in the Dynamic Help tab as follows:
+Now, if you open Employee.xml and select the Employee Id attribute, you will see this annotation listed in the Dynamic Help tab as shown in the image below:
 
 ![annotations](../assets/images/annotations.png)
 
