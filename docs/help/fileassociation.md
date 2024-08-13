@@ -20,21 +20,17 @@ Copy this path to the clipboard.
 
 Now use the start menu to find the "Default apps" settings dialog.
 
-Enter the file type at the top (e.g. type in ".xsd" or ".xslt"),
-then click the button labelled `+ Choose a default`.
+Enter the file type at the top (e.g. type in ".xsd" or ".xslt"), then click the button labelled `+ Choose a default`.
 
 Scroll to the bottom of this dialog and click `Choose an app on your PC`
 
-And paste in the path you coped to the clipboard earlier.
-Click `Open` then click `Set Default`.
+And paste in the path you coped to the clipboard earlier. Click `Open` then click `Set Default`.
 
-As soon as you do this the icon on the file type you associated  should change
-in Windows Explorer showing the XML Notepad icon and when you double click the
-file it will automatically open XML Notepad.
+As soon as you do this the icon on the file type you associated  should change in Windows Explorer showing the XML
+Notepad icon and when you double click the file it will automatically open XML Notepad.
 
-Note that when you have done one extension, all the other extensions are much
-easier because XML Notepad will now show up in the list of possible apps to
-choose.
+Note that when you have done one extension, all the other extensions are much easier because XML Notepad will now show
+up in the list of possible apps to choose.
 
-The path you have registered here is version specific so you may have to repeat
-this process when you install new versions of XML Notepad.
+The path you have registered here is version specific so you may have to repeat this process when you install new
+versions of XML Notepad.
