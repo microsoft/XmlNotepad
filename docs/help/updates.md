@@ -31,6 +31,7 @@ This section contains the following information:
 - **frequency** - how often to ping the updates.xml page for updates. The default is no more than once per day.
 
 You can configure the auto-update mechanism using the following settings in the [Options Dialog](options.md):
+
 - **Enable Updates** - if this is false XML Notepad will not ping to see if there are any updates available and the menu
 item `Check for udpates...` under the Help menu will be hidden.
 - **Update location** - which endpoint to use to look for updated `updates.xml` files.
