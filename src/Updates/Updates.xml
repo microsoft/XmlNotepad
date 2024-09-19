@@ -9,6 +9,10 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.11">
+    <feature>Issue 413: Suggestion: please limit "Check for Update" #413: Makes Update Frequency an Option in the options dialog.</feature>
+    <bug>Merged lots of doc fixes from Jvr2022.</bug>
+  </version>
   <version number="2.9.0.9">
     <feature>Issue 382: Add progress bar on long XSLT transform operations.</feature>
     <feature>Issue 379: Add Preserve Whitespace option so your XSLT transforms can output the whitespace correctly.</feature>
