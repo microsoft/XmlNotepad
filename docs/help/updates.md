@@ -25,7 +25,7 @@ This section contains the following information:
 - **title** - the title of the application being updated.
 - **location** - this field allows the remote administrator to move where XML Notepad is looking for updates. When XML
   Notepad discovers a new value here it automatically updates the setting displayed in the options dialog.
-- **installer** - this field contains the web page location that lists the different XML notepad installers that can be
+- **installer** - this field contains the web page location that lists the different XML Notepad installers that can be
   used to update the app.
 - **history** - the list that describes all the changes in each version.
 - **frequency** - how often to ping the updates.xml page for updates. The default is no more than once per day.
@@ -34,6 +34,7 @@ You can configure the auto-update mechanism using the following settings in the 
 - **Enable Updates** - if this is false XML Notepad will not ping to see if there are any updates available and the menu
 item `Check for udpates...` under the Help menu will be hidden.
 - **Update location** - which endpoint to use to look for updated `updates.xml` files.
+- **Update frequency** - you can edit this field to increase the frequency if you want a larger time span than is specified in the update.xml file.
 
 You can add the `DisableUpdateUI` setting the `XmlNotepad.settings` file so that users will never see any options
 regarding auto-updates or the `Check for updates...` menu item as follows:

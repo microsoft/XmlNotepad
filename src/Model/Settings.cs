@@ -729,6 +729,32 @@ namespace XmlNotepad
             return defaultValue;
         }
 
+        public DateTime GetDateTime(string settingName, DateTime defaultValue)
+        {
+            object settingValue = this[settingName];
+            if (settingValue is DateTime ts)
+            {
+                return ts;
+            }
+            else if (settingName is string && DateTime.TryParse(settingName, out DateTime ts2)) {
+                return ts2;
+            }
+            return defaultValue;
+        }
+
+        public TimeSpan GetTimeSpan(string settingName, TimeSpan defaultValue)
+        {
+            object settingValue = this[settingName];
+            if (settingValue is TimeSpan ts)
+            {
+                return ts;
+            }
+            else if (settingName is string && TimeSpan.TryParse(settingName, out TimeSpan ts2)) {
+                return ts2;
+            }
+            return defaultValue;
+        }
+
         public string GetString(string settingName, string defaultValue = "")
         {
             object settingValue = this[settingName];

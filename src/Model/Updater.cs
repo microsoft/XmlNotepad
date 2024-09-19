@@ -75,16 +75,16 @@ namespace XmlNotepad
             switch (name)
             {
                 case "LastUpdateCheck":
-                    this._lastCheck = (DateTime)_settings["LastUpdateCheck"];
+                    this._lastCheck = _settings.GetDateTime("LastUpdateCheck", DateTime.MinValue);
                     break;
                 case "UpdateFrequency":
-                    SetUpdateFrequency((TimeSpan)_settings["UpdateFrequency"]);
+                    SetUpdateFrequency(this._settings.GetTimeSpan("UpdateFrequency", TimeSpan.FromDays(1)));
                     break;
                 case "UpdateLocation":
-                    SetUpdateLocation((string)_settings["UpdateLocation"]);
+                    SetUpdateLocation(_settings.GetString("UpdateLocation"));
                     break;
                 case "UpdateEnabled":
-                    SetEnabled((bool)_settings["UpdateEnabled"]);
+                    SetEnabled(_settings.GetBoolean("UpdateEnabled"));
                     break;
             }
         }
@@ -112,8 +112,8 @@ namespace XmlNotepad
                 ts = _minimumUpdateFrequency;
             }
             this._updateFrequency = ts;
-            TimeSpan f = (TimeSpan)_settings["UpdateFrequency"];
-            if (f != ts)
+            TimeSpan f = _settings.GetTimeSpan("UpdateFrequency", TimeSpan.FromDays(1));
+            if (f < ts)
             {
                 _settings["UpdateFrequency"] = ts;
             }

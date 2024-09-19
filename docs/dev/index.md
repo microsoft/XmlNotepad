@@ -69,7 +69,7 @@ This is a GUI test, so do not move your mouse or type on your keyboard or let yo
 completed. Total test run time is about 12 minutes.
 
 The tests all pass on Windows 10, but currently some tests fail on Windows 11, there seems to be some breaking changes
-in the Windows Automation layer that XML notepad tests are using. This is being investigated.
+in the Windows Automation layer that XML Notepad tests are using. This is being investigated.
 
 Note: [bug 10244](https://github.com/dotnet/winforms/issues/10244) is still open in in .net 4.8
 System.Windows.Automation of menu items that blocks the tests, so checkout the branch `clovett/net472` to run the unit
@@ -142,4 +142,4 @@ See [XML Notepad Design ](design.md) for more detailed information about how thi
 
 Feedback and suggestions are welcome, just use the [GitHub  issues
 list](https://github.com/microsoft/XmlNotepad/issues). Pull requests are also welcome, in fact, a number of good pull
-requests have already been merged. Thanks to all who are helping to make XML notepad a great tool!
+requests have already been merged. Thanks to all who are helping to make XML Notepad a great tool!

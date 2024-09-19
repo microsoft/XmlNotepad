@@ -6,9 +6,9 @@ Cut/Copy/Paste and [Drag/drop](dragdrop.md) are based on the same XML clipboard 
 out of XML Notepad and into any editor that supports a text clipboard format and its the same as doing a Cut & Paste
 operation.
 
-The clipboard format is the XML serialization of the selected node plus any namespace declarations needed to make that
-fragment well formed.
+The clipboard format is the XML serialization of the selected node, along with any necessary any namespace declarations
+needed to ensure the fragment well formed.
 
-When XML is pasted from the clipboard (or dropped) onto the [tree view](overview.md) the namespace declarations are
-matched with what is in the target document already and normalized accordingly. This ensures your document doesn't
-sprout lots of redundant namespace declarations as a side effect of these editing operations.
+When XML is pasted from the clipboard (or dropped) onto the [tree view](overview.md), the namespace declarations are
+matched those already present in the target document and normalized accordingly. This prevents your document from
+accumulating redundant namespace declarations as a side effect of these editing operations.

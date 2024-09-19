@@ -208,6 +208,7 @@ namespace XmlNotepad
             private string _updateLocation;
             private SettingsLocation _settingsLocation;
             private bool _enableUpdate;
+            private TimeSpan _updateFrequency;
             private bool _noByteOrderMark;
             private bool _disableDefaultXslt;
             private bool _autoFormatOnSave;
@@ -246,6 +247,7 @@ namespace XmlNotepad
                 LoadColors();
                 _updateLocation = this._settings.GetString("UpdateLocation");
                 _enableUpdate = this._settings.GetBoolean("UpdateEnabled");
+                _updateFrequency = this._settings.GetTimeSpan("UpdateFrequency", TimeSpan.FromDays(1));
                 _disableDefaultXslt = this._settings.GetBoolean("DisableDefaultXslt");
                 _autoFormatOnSave = this._settings.GetBoolean("AutoFormatOnSave");
                 _treeIndent = this._settings.GetInteger("TreeIndent");
@@ -343,6 +345,7 @@ namespace XmlNotepad
 
                 this._settings["UpdateEnabled"] = this._enableUpdate;
                 this._settings["UpdateLocation"] = this._updateLocation;
+                this._settings["UpdateFrequency"] = this._updateFrequency;
 
                 this._settings["DisableDefaultXslt"] = _disableDefaultXslt;
                 this._settings["AutoFormatOnSave"] = _autoFormatOnSave;
@@ -392,6 +395,7 @@ namespace XmlNotepad
                 this.LoadColors();
                 _updateLocation = Settings.DefaultUpdateLocation;
                 _enableUpdate = true;
+                _updateFrequency = TimeSpan.FromDays(1);
                 _autoFormatOnSave = true;
                 _disableDefaultXslt = false;
                 _noByteOrderMark = false;
@@ -659,6 +663,36 @@ namespace XmlNotepad
                 set
                 {
                     this._enableUpdate = value;
+                }
+            }
+
+            [SRCategory("UpdateCategory")]
+            [LocDisplayName("UpdateFrequency")]
+            [SRDescription("UpdateFrequencyDescription")]
+            public string UpdateFrequency
+            {
+                get
+                {
+                    return this._updateFrequency.ToString();
+                }
+                set
+                {
+                    try
+                    {
+                        var newFrequency = TimeSpan.Parse(value);
+                        if (newFrequency < TimeSpan.FromMinutes(30))
+                        {
+                            throw new Exception(StringResources.UpdateFrequencyMinError);
+                        }
+                        else
+                        {
+                            this._updateFrequency = newFrequency;
+                        }
+                    } 
+                    catch (FormatException)
+                    {
+                        throw new Exception(StringResources.UpdateFrequencyFormatError);
+                    }
                 }
             }
 

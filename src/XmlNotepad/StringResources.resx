@@ -574,6 +574,22 @@ Do you want to enable execution of this script code?</value>
     <value>Whether to check for updates periodically</value>
     <comment>Property Grid description</comment>
   </data>
+	<data name="UpdateFrequency" xml:space="preserve">
+    <value>Update Frequency</value>
+    <comment>Property Grid property name</comment>
+  </data>
+	<data name="UpdateFrequencyDescription" xml:space="preserve">
+    <value>How often to check for updates in dd:hh:mm:ss format</value>
+    <comment>Property Grid description</comment>
+  </data>
+	<data name="UpdateFrequencyMinError" xml:space="preserve">
+    <value>Update Frequency cannot be less than 30 minutes</value>
+    <comment>Property Grid validation error</comment>
+  </data>
+	<data name="UpdateFrequencyFormatError" xml:space="preserve">
+    <value>Update Frequency timespan invalid format, it must be dd:hh:mm:ss.</value>
+    <comment>Property Grid validation error</comment>
+  </data>
   <data name="AnalyticsCategory" xml:space="preserve">
     <value>Analytics</value>
     <comment>Property Grid category</comment>

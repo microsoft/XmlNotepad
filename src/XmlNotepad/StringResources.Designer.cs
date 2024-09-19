@@ -1653,6 +1653,42 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Frequency.
+        /// </summary>
+        public static string UpdateFrequency {
+            get {
+                return ResourceManager.GetString("UpdateFrequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How often to check for updates in dd:hh:mm:ss format.
+        /// </summary>
+        public static string UpdateFrequencyDescription {
+            get {
+                return ResourceManager.GetString("UpdateFrequencyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Frequency timespan invalid format, it must be dd:hh:mm:ss..
+        /// </summary>
+        public static string UpdateFrequencyFormatError {
+            get {
+                return ResourceManager.GetString("UpdateFrequencyFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Frequency cannot be less than 30 minutes.
+        /// </summary>
+        public static string UpdateFrequencyMinError {
+            get {
+                return ResourceManager.GetString("UpdateFrequencyMinError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update location.
         /// </summary>
         public static string UpdateLocation {

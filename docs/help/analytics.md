@@ -1,16 +1,16 @@
 
 ## Analytics
 
-In order to understand which features are important XML Notepad records anonymous usage like:
+To understand which features are important, XML Notepad records anonymous usage data, like:
 
-1. how many times the app is used
-2. how many times each feature is used (options, xslt, search, etc)
+1. The number of times the app is used.
+2. The number of times each feature is used (options, xslt, search, etc)
 
-The data is collected using Google Analytics and shared only with members of the XML Notepad development team. The data
-is used to prioritize future work to improve the features that are most popular.
+The data is collected using Google Analytics and shared solely with members of the XML Notepad development team.
+It's used to prioritize future enhancements.
 
-As a teaser, here is a map of countries where XML Notepad was used in July 2022. That's super cool to see a healthy
-community of users and this motivates the team to keep XML notepad in tip-top shape.
+As a sneak peek, here is a map illustrating the countries where XML Notepad was used in July 2022. This vibrant user
+community is a strong motivator for the team to continually refine XML Notepad.
 
 ![map](../assets/images/map.png)
 
@@ -30,19 +30,19 @@ The first time you install XML Notepad on your computer you will be prompted wit
 ![popup](../assets/images/analytics.png)
 
 
-Thanks to those who have allowed analytics to be collected, it really helps to understand usage patterns and prioritize
-what to improve. But, if you really need to click `No` then the choice will be written to the XML Notepad settings file
-and it will not be prompted again. Analytics can be enabled or disabled any time using the `Allow analytics` option in
-the [Options dialog](options.md).
+We appreciate those who allow analytics to be collected; significantly aids in understanding usage patterns and
+prioritizing improvements. However, if you prefer not to participate, click `No` then your preference will be written to
+the XML Notepad settings file, and the prompt will not reappear. You can enable or disable analytics at any time using the
+`Allow analytics` option in the [Options dialog](options.md).
 
-If you want to disable analytics before installing XML Notepad (perhaps in an enterprise wide distribution) then you can
-set this environment system wide on the end user's machine:
+For enterprise-wide distributions or pre-installation customization, you can set the following environment variable
+system-wide on the end user's machine:
 
 ```
 set XML_NOTEPAD_DISABLE_ANALYTICS=1
 ```
 
-You can also disable the Analytics UI option from appearing in the [Options dialog](options.md) by setting the
+Additionally, you can disable the Analytics UI option from appearing in the [Options dialog](options.md) by setting the
 `AnalyticsClientId` to disabled in the default [XmlNotepad.settings](settings.md) file as follows:
 ```xml
 <Settings>
@@ -51,4 +51,4 @@ You can also disable the Analytics UI option from appearing in the [Options dial
 </Settings>
 ```
 
-This ensures the user cannot enable analytics after starting XML notepad.
+This ensures that users cannot enable analytics after starting XML Notepad.
