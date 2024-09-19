@@ -249,5 +249,4 @@ _site/
 /src/Application/Samples/rsspretty_output.htm
 /publish_appx
 /src/Application/Samples/rss.htm
-src/XmlNotepadSetup/build.cmd
 /src/Model/ApiKey.cs
