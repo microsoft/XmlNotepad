@@ -280,6 +280,10 @@ namespace XmlNotepad
         {
             try
             {
+                if (set.Contains(nsuri))
+                {
+                    return false;
+                }
                 Uri baseUri = this._baseUri;
                 if (!string.IsNullOrEmpty(ctx.BaseURI))
                 {

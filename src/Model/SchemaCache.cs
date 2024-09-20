@@ -772,6 +772,7 @@ namespace XmlNotepad
             {
                 globalElementCache = new List<XmlSchemaElement>();
                 XmlSchemaSet set = new XmlSchemaSet();
+                HashSet<string> knownTargetNamespaces = new HashSet<string>();
                 foreach (var entry in this.GetSchemas())
                 {
                     if (entry.Schema == null)
@@ -781,8 +782,16 @@ namespace XmlNotepad
                             entry.Schema = this.LoadSchema(entry.Location);
                         }
                     }
-                    if (entry.Schema != null && !set.Contains(entry.TargetNamespace))
+                    if (entry.Schema != null && !knownTargetNamespaces.Contains(entry.TargetNamespace))
                     {
+                        knownTargetNamespaces.Add(entry.TargetNamespace);
+                        foreach(var o in entry.Schema.Items)
+                        {
+                            if (o is XmlSchemaImport import && !string.IsNullOrEmpty(import.Namespace))
+                            {
+                                knownTargetNamespaces.Add(import.Namespace);
+                            }
+                        }
                         set.Add(entry.Schema);
                     }
                 }
