@@ -44,6 +44,6 @@ jobs:
     - name: Build the application
       run: |
         echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey=""; } }  >> .\src\Model\ApiKey.cs
-        msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration /verbosity:minimal
+        msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration "/p:Platform=Any CPU" /verbosity:minimal
       env:
         Configuration: ${{ matrix.configuration }}

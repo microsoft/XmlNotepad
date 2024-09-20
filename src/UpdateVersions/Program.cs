@@ -77,24 +77,18 @@ namespace UpdateVersions
         {
             var dir = Path.GetDirectoryName(this.ApplicationProjectFile);
             var xmlnotepadProject = Path.Combine(dir, "..", "XmlNotepad", "XmlNotepad.csproj");
-            var doc = XDocument.Load(xmlnotepadProject);
-            var ns = doc.Root.Name.Namespace;
-            var prefix = "Microsoft.Web.WebView2.Core";
-            string version = null;
-            foreach (var e in doc.Descendants(ns + "Reference"))
-            {
-                string include = (string)e.Attribute("Include");
-                if (include.StartsWith(prefix))
-                {
-                    var name = new AssemblyName(include);
-                    version = name.Version.ToString();
-                    break;
-                }
-            }
+            string version = GetWebView2Version(xmlnotepadProject);
             if (!string.IsNullOrEmpty(version))
             {
+                var appVersion = GetWebView2Version(this.ApplicationProjectFile);
+                if (appVersion != null && appVersion != version)
+                {
+                    throw new Exception("WebView2 version is inconsistent in " + this.ApplicationProjectFile +
+                        $". XmlNotepad has {version} while application has {appVersion}");
+                }
+
                 WebView2Version = version;
-                ns = props.Root.Name.Namespace;
+                var ns = props.Root.Name.Namespace;
                 var wve = props.Root.Descendants(ns + "WebView2Version").FirstOrDefault();
                 if (wve != null)
                 {
@@ -115,6 +109,23 @@ namespace UpdateVersions
 
             Log.LogError("Could not find Microsoft.Web.WebView2.Core version in XmlNotepad.csproj");
             return false;
+        }
+
+        private string GetWebView2Version(string projectFile)
+        {
+            var doc = XDocument.Load(projectFile);
+            var ns = doc.Root.Name.Namespace;
+            var prefix = "Microsoft.Web.WebView2.Core";
+            foreach (var e in doc.Descendants(ns + "Reference"))
+            {
+                string include = (string)e.Attribute("Include");
+                if (include.StartsWith(prefix))
+                {
+                    var name = new AssemblyName(include);
+                    return name.Version.ToString();
+                }
+            }
+            return null;
         }
 
         private bool UpdateCSharpVersion(Version v)
@@ -618,8 +629,16 @@ namespace UpdateVersions
             sync.AppManifestFile = Path.Combine(solutionPath, "XmlNotepadPackage", "Package.appxmanifest");
             sync.DropDir = Path.Combine(solutionPath, "drop");
             sync.UpdatesFile = Path.Combine(solutionPath, "Updates", "Updates.xml");
-            bool rc = sync.Execute();
-            return rc ? 0 : 1;
+            try
+            {
+                bool rc = sync.Execute();
+                return rc ? 0 : 1;
+            } 
+            catch (Exception ex)
+            {
+                sync.Log.LogError(ex.Message);
+                return 2;
+            }
         }
     }
 }

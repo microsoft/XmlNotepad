@@ -131,9 +131,6 @@
       <Component Id="Employee.htm" Guid="6da8da4a-e901-46cb-aea3-00526cd90e34">
         <File Id="Employee.htm" KeyPath="yes" />
       </Component>
-      <Component Id="rss.htm" Guid="891507ec-1d32-445d-bd70-856b980cfa96">
-        <File Id="rss.htm" KeyPath="yes" />
-      </Component>
     </DirectoryRef>
     <!-- shortcut in start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -174,7 +171,6 @@
       <ComponentRef Id="rsspretty.xsl" />
       <ComponentRef Id="willy.xsl" />
       <ComponentRef Id="Employee.htm" />
-      <ComponentRef Id="rss.htm" />
       <ComponentRef Id="ApplicationShortcut" />
     </Feature>
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />
