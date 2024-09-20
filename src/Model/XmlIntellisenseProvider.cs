@@ -164,8 +164,8 @@ namespace XmlNotepad
                 string tns = ce.Schema.TargetNamespace;
                 list.Add(tns, null, null);
             }
-            list.Add("http://www.w3.org/2001/XMLSchema-instance", null, null);
-            list.Add("http://www.w3.org/2001/XMLSchema", null, null);
+            list.Add(XmlStandardUris.XsiUri, null, null);
+            list.Add(XmlStandardUris.XsdUri, null, null);
             list.Sort();
 
             return list;

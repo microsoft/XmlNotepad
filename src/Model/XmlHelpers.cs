@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xml;
+using System.Collections.Generic;
 using System.Xml;
 
 namespace XmlNotepad
@@ -223,4 +224,101 @@ namespace XmlNotepad
                 (node.LocalName == "type" && node.NamespaceURI == "http://www.w3.org/2001/XMLSchema-instance");
         }
     }
+
+
+    public class MyXmlNamespaceResolver : System.Xml.IXmlNamespaceResolver
+    {
+        private System.Xml.XmlNameTable _nameTable;
+        private XmlNode _context;
+        private string _emptyAtom;
+
+        public MyXmlNamespaceResolver(System.Xml.XmlNameTable nameTable)
+        {
+            this._nameTable = nameTable;
+            this._emptyAtom = nameTable.Add(string.Empty);
+        }
+
+        public XmlNode Context
+        {
+            get
+            {
+                return this._context;
+            }
+            set
+            {
+                this._context = value;
+            }
+        }
+
+        public System.Xml.XmlNameTable NameTable
+        {
+            get
+            {
+                return this._nameTable;
+            }
+        }
+
+        private string Atomized(string s)
+        {
+            if (s == null) return null;
+            if (s.Length == 0) return this._emptyAtom;
+            return this._nameTable.Add(s);
+        }
+
+        public string LookupPrefix(string namespaceName, bool atomizedName)
+        {
+            string result = null;
+            if (_context != null)
+            {
+                result = _context.GetPrefixOfNamespace(namespaceName);
+            }
+            return Atomized(result);
+        }
+
+        public string LookupPrefix(string namespaceName)
+        {
+            string result = null;
+            if (_context != null)
+            {
+                result = _context.GetPrefixOfNamespace(namespaceName);
+            }
+            return Atomized(result);
+        }
+
+        public string LookupNamespace(string prefix, bool atomizedName)
+        {
+            return LookupNamespace(prefix);
+        }
+
+        public string LookupNamespace(string prefix)
+        {
+            string result = null;
+            if (_context != null)
+            {
+                result = _context.GetNamespaceOfPrefix(prefix);
+            }
+            return Atomized(result);
+        }
+
+        public IDictionary<string, string> GetNamespacesInScope(System.Xml.XmlNamespaceScope scope)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            if (this._context != null)
+            {
+                foreach (XmlAttribute a in this._context.SelectNodes("namespace::*"))
+                {
+                    string nspace = a.InnerText;
+                    string prefix = a.Prefix;
+                    if (prefix == "xmlns")
+                    {
+                        prefix = "";
+                    }
+                    dict[prefix] = nspace;
+                }
+            }
+            return dict;
+        }
+
+    }
+
 }

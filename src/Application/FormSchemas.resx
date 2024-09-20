@@ -199,7 +199,7 @@
     <value>clearToolStripMenuItem</value>
   </data>
   <data name="clearToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
+    <value>204, 22</value>
   </data>
   <data name="clearToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Clear</value>
@@ -208,10 +208,16 @@
     <value>addSchemasToolStripMenuItem</value>
   </data>
   <data name="addSchemasToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
+    <value>204, 22</value>
   </data>
   <data name="addSchemasToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Add schemas...</value>
+  </data>
+  <data name="generateXMLInstanceToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 22</value>
+  </data>
+  <data name="generateXMLInstanceToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Generate XML instance...</value>
   </data>
   <data name="fileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>37, 20</value>
@@ -226,7 +232,7 @@
     <value>Ctrl+Z</value>
   </data>
   <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="undoToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Undo</value>
@@ -238,13 +244,13 @@
     <value>Ctrl+Y</value>
   </data>
   <data name="redoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="redoToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Redo</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="cutToolStripMenuItem.AccessibleName" xml:space="preserve">
     <value>cutToolStripMenuItem</value>
@@ -253,7 +259,7 @@
     <value>Control+X</value>
   </data>
   <data name="cutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="cutToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Cut</value>
@@ -265,7 +271,7 @@
     <value>Control+C</value>
   </data>
   <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="copyToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Copy</value>
@@ -277,7 +283,7 @@
     <value>Control+V</value>
   </data>
   <data name="pasteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Paste</value>
@@ -289,7 +295,7 @@
     <value>Delete</value>
   </data>
   <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>165, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Delete</value>
@@ -496,6 +502,12 @@
     <value>deleteToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;deleteToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;generateXMLInstanceToolStripMenuItem.Name" xml:space="preserve">
+    <value>generateXMLInstanceToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;generateXMLInstanceToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

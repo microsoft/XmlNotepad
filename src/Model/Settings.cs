@@ -988,6 +988,7 @@ namespace XmlNotepad
             // analytics question has been answered...
             this["AllowAnalytics"] = false;
             this["AnalyticsClientId"] = "";
+            this["PromptOnReload"] = true;
 
             // default text editor
             string sysdir = Environment.SystemDirectory;

@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type='text/xsl' href='rsspretty.xsl' version='1.0'?>
 <?xsl-output default="rss.htm"?>
 <rss xmlns:mscomdomain="http://msdn.microsoft.com/aboutmsdn/rss/domains" xmlns:mscom="http://msdn.microsoft.com/aboutmsdn/rss/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
   <channel>
@@ -8,11 +7,11 @@
     <description>Keep current with all the new technical articles, columns, specifications, and resources published on the Microsoft Developer Network (MSDN).</description>
     <language>en-us</language>
     <pubDate>Thu, 22 Jun 2006 13:02:23 GMT</pubDate>
-    <lastBuildDate>Thu, 22 Jun 2006 13:02:23 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 22 Jun 2006 13:02:23 GMT</lastBuildDate> 
     <generator>MSDN and TechNet RSS Service 1.1.0.0</generator>
     <ttl>1440</ttl>
     <item>
-      <title>That's Totally Disco</title>
+      <title> That is Totally Disco!!!!!!</title>
       <description>Clint Rutkas describes his months-long quest to create a party dance floor for him and his friends to enjoy by combining his MacGyver-like talents with hardware and Visual C#.</description>
       <link>http://msdn.microsoft.com/coding4fun/coolapplications/disco/default.aspx</link>
       <dc:creator>Clint Rutkas</dc:creator>

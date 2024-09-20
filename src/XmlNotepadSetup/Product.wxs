@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.9.0.11" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
+  <Product Id="*" Name="XmlNotepad" Language="1033" Version="2.9.0.12" Manufacturer="Lovett Software" UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallFinalize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
     <MediaTemplate />
@@ -128,6 +128,12 @@
       <Component Id="willy.xsl" Guid="bece5b74-a8f2-4bfb-a146-6647170f014a">
         <File Id="willy.xsl" KeyPath="yes" />
       </Component>
+      <Component Id="Employee.htm" Guid="6da8da4a-e901-46cb-aea3-00526cd90e34">
+        <File Id="Employee.htm" KeyPath="yes" />
+      </Component>
+      <Component Id="rss.htm" Guid="891507ec-1d32-445d-bd70-856b980cfa96">
+        <File Id="rss.htm" KeyPath="yes" />
+      </Component>
     </DirectoryRef>
     <!-- shortcut in start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -167,6 +173,8 @@
       <ComponentRef Id="rss.xml" />
       <ComponentRef Id="rsspretty.xsl" />
       <ComponentRef Id="willy.xsl" />
+      <ComponentRef Id="Employee.htm" />
+      <ComponentRef Id="rss.htm" />
       <ComponentRef Id="ApplicationShortcut" />
     </Feature>
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />

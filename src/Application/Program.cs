@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Diagnostics;
 using System.Windows.Forms;
+using SR = XmlNotepad.StringResources;
 
 namespace XmlNotepad
 {
@@ -61,6 +63,36 @@ namespace XmlNotepad
             }
             Application.Run(form);
         }
+
+        public static void Launch(string args)
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = ApplicationPath;
+            info.Arguments = $"\"{args}\"";
+            Process p = new Process();
+            p.StartInfo = info;
+            if (!p.Start())
+            {
+                MessageBox.Show(string.Format(SR.ErrorCreatingProcessPrompt, info.FileName), SR.LaunchErrorPrompt, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public static string ApplicationPath
+        {
+            get
+            {
+                string path = Application.ExecutablePath;
+                if (path.EndsWith("vstesthost.exe", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    // must be running UnitTests
+                    Uri baseUri = new Uri(typeof(Program).Assembly.Location);
+                    Uri resolved = new Uri(baseUri, @"..\..\..\Application\bin\debug\XmlNotepad.exe");
+                    path = resolved.LocalPath;
+                }
+                return path;
+            }
+        }
+
     }
 
 }

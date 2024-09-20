@@ -387,6 +387,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file you are editing has been changed on disk but you also have unsaved edits. Would you like to discard your edits and reload this file?.
+        /// </summary>
+        public static string DirtyWhileFileChangedOnDiskPrompt {
+            get {
+                return ResourceManager.GetString("DirtyWhileFileChangedOnDiskPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable default XSLT.
         /// </summary>
         public static string DisableDefaultXslt {
@@ -1147,6 +1156,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prompt before reload.
+        /// </summary>
+        public static string PromptOnReload {
+            get {
+                return ResourceManager.GetString("PromptOnReload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether to prompt before auto-reloading file changed on disk.
+        /// </summary>
+        public static string PromptOnReloadDescription {
+            get {
+                return ResourceManager.GetString("PromptOnReloadDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The target file is read only, would you like to overwrite &apos;{0}&apos;?.
         /// </summary>
         public static string ReadOnly {
@@ -1559,6 +1586,42 @@ namespace XmlNotepad {
         public static string TimeFormat {
             get {
                 return ResourceManager.GetString("TimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to and {0} {1}.
+        /// </summary>
+        public static string TooltipFacetJoiner {
+            get {
+                return ResourceManager.GetString("TooltipFacetJoiner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The length of the value must be {0} {1}.
+        /// </summary>
+        public static string TooltipFacetLength {
+            get {
+                return ResourceManager.GetString("TooltipFacetLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The total number of digits must not exceed {0}..
+        /// </summary>
+        public static string TooltipFacetTotalDigits {
+            get {
+                return ResourceManager.GetString("TooltipFacetTotalDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be {0} {1}.
+        /// </summary>
+        public static string TooltipFacetValue {
+            get {
+                return ResourceManager.GetString("TooltipFacetValue", resourceCulture);
             }
         }
         

@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="XmlTreeViewFindTarget.cs">
     </Compile>
+    <Compile Include="XsdInstanceGenerator.cs" />
     <Compile Include="XsltControl.cs" />
     <Compile Include="XsltControl.Designer.cs">
       <DependentUpon>XsltControl.cs</DependentUpon>

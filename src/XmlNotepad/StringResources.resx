@@ -179,6 +179,10 @@ Reason:
     <value>File Changed</value>
     <comment>Message box caption</comment>
   </data>
+	<data name="DirtyWhileFileChangedOnDiskPrompt" xml:space="preserve">
+    <value>The file you are editing has been changed on disk but you also have unsaved edits. Would you like to discard your edits and reload this file?</value>
+    <comment>Message box prompt</comment>
+  </data>
   <data name="FileChangedOnDiskPrompt" xml:space="preserve">
     <value>The file you are editing has been changed on disk.  Would you like to reload this file?</value>
     <comment>Message box prompt</comment>
@@ -909,6 +913,16 @@ Do you want to enable execution of this script code?</value>
     <value>Default text editor</value>
     <comment>Property grid name</comment>
   </data>
+
+	<data name="PromptOnReloadDescription" xml:space="preserve">
+    <value>Whether to prompt before auto-reloading file changed on disk</value>
+    <comment>Property grid description</comment>
+  </data>
+	<data name="PromptOnReload" xml:space="preserve">
+    <value>Prompt before reload</value>
+    <comment>Property grid name</comment>
+  </data>
+	
   <data name="ConfigureDefaultApps" xml:space="preserve">
     <value>Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.</value>
   </data>
@@ -985,5 +999,30 @@ Error: {0}</value>
   <data name="PreserveWhitespaceDescription" xml:space="preserve">
     <value>Preserve all whitespace in XML document so you can see the Whitespace nodes in the tree.</value>
     <comment>Property Grid description</comment>
+  </data>
+
+	<data name="TooltipFacetLength" xml:space="preserve">
+    <value>The length of the value must be {0} {1}</value>
+    <comment>
+      This must not end with a period as TooltipFacetJoiner can be appended to it
+      Argument {0} will be the math expression '&lt;' or '&lt;='.
+    </comment>
+  </data>
+	<data name="TooltipFacetJoiner" xml:space="preserve">
+    <value>and {0} {1}</value>
+    <comment>
+      This is used to add another range to TooltipFacetLength or TooltipFacetValue.
+      {0} will be the math expression '&lt;' or '&lt;='.
+    </comment>
+  </data>
+	<data name="TooltipFacetValue" xml:space="preserve">
+    <value>Value must be {0} {1}</value>
+    <comment>
+      This must not end with a period as TooltipFacetJoiner can be appended to it.
+      Argument {0} will be the math expression '&lt;' or '&lt;='.
+    </comment>
+  </data>
+	<data name="TooltipFacetTotalDigits" xml:space="preserve">
+    <value>The total number of digits must not exceed {0}.</value>
   </data>
 </root>

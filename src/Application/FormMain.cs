@@ -1,7 +1,6 @@
 //#define WHIDBEY_MENUS
 
 using Microsoft.Xml;
-using Microsoft.XmlDiffPatch;
 using Newtonsoft.Json;
 using Sgml;
 using System;
@@ -10,11 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using SR = XmlNotepad.StringResources;
@@ -940,7 +935,35 @@ namespace XmlNotepad
             this.toolStripStatusLabel1.Text = "";
         }
 
-        public virtual async System.Threading.Tasks.Task Open(string filename, bool recentFile = false)
+        public virtual async System.Threading.Tasks.Task Reload(string filename)
+        {
+            // save current selection position
+            XmlTreeNode selection = (XmlTreeNode)this.xmlTreeView1.SelectedNode;
+            XmlNamespaceManager nsmgr = null;
+            string xpath = null;
+            if (selection != null && selection.Node != null)
+            {
+                var xnode = selection.Node;
+                nsmgr = XmlHelpers.GetNamespaceScope(xnode);
+                xpath = XmlHelpers.GetXPathLocation(xnode, nsmgr);
+            }
+
+            this.Model.Clear(); // in case the updated file is invalid!
+            await this.Open(filename, false, true);
+
+            if (this._model.Document != null && !string.IsNullOrEmpty(xpath))
+            {
+                var matchingNode = this._model.Document.SelectSingleNode(xpath, nsmgr);
+                if (matchingNode != null)
+                {
+                    var treeNode = this.xmlTreeView1.FindNode(matchingNode);
+                    TreeView.EnsureVisible(treeNode);
+                    this.xmlTreeView1.SelectedNode = treeNode;
+                }
+            }
+        }
+
+        public virtual async System.Threading.Tasks.Task Open(string filename, bool recentFile = false, bool reloading = false)
         {
             try
             {
@@ -949,16 +972,16 @@ namespace XmlNotepad
                 switch (entity.MimeType)
                 {
                     case "text/csv":
-                        await ImportCsv(entity);
+                        await ImportCsv(entity, reloading);
                         break;
                     case "application/json":
-                        await ImportJson(entity);
+                        await ImportJson(entity, reloading);
                         break;
                     case "text/html":
-                        await ImportHtml(entity);
+                        await ImportHtml(entity, reloading);
                         break;
                     default:
-                        InternalOpen(entity);
+                        InternalOpen(entity, reloading);
                         break;
                 }
             }
@@ -999,7 +1022,7 @@ namespace XmlNotepad
             }
         }
 
-        private async System.Threading.Tasks.Task ImportHtml(FileEntity entity)
+        private async System.Threading.Tasks.Task ImportHtml(FileEntity entity, bool reloading)
         {
             var html = await entity.ReadText();
             DateTime start = DateTime.Now;
@@ -1010,11 +1033,11 @@ namespace XmlNotepad
                 reader.InputStream = new StringReader(html);
                 reader.WhitespaceHandling = WhitespaceHandling.Significant;
                 this._model.Load(reader, entity.Uri.OriginalString);
-                FinishLoad(entity, start);
+                FinishLoad(entity, start, reloading);
             }            
         }
 
-        private async System.Threading.Tasks.Task ImportJson(FileEntity entity)
+        private async System.Threading.Tasks.Task ImportJson(FileEntity entity, bool reloading)
         {
             DateTime start = DateTime.Now;
 
@@ -1023,10 +1046,10 @@ namespace XmlNotepad
 
             this._model.Load(new XmlNodeReader(doc), entity.LocalPath);
 
-            FinishLoad(entity, start);
+            FinishLoad(entity, start, reloading);
         }
 
-        private async System.Threading.Tasks.Task ImportCsv(FileEntity entity)
+        private async System.Threading.Tasks.Task ImportCsv(FileEntity entity, bool reloading)
         {
             var csvText = await entity.ReadText();
 
@@ -1047,14 +1070,14 @@ namespace XmlNotepad
                     DateTime start = DateTime.Now;
                     this._model.Load(csv, xmlFile);
 
-                    FinishLoad(entity, start);
+                    FinishLoad(entity, start, reloading);
                 }
 
                 this._analytics.RecordCsvImport();
             }
         }
 
-        private void FinishLoad(FileEntity entity, DateTime startLoadTime)
+        private void FinishLoad(FileEntity entity, DateTime startLoadTime, bool reloading)
         {
             DateTime finish = DateTime.Now;
             TimeSpan diff = finish - startLoadTime;
@@ -1065,15 +1088,18 @@ namespace XmlNotepad
             ShowStatus(string.Format(SR.LoadedTimeStatus, s));
             EnableFileMenu();
             this._recentFiles.AddRecentFile(entity.Uri);
-            SelectTreeView();
+            if (!reloading)
+            {
+                SelectTreeView();
+            }
         }
 
-        private void InternalOpen(FileEntity entity)
+        private void InternalOpen(FileEntity entity, bool reloading)
         {
             entity.Close();
             DateTime start = DateTime.Now;
             this._model.Load(entity.Uri.OriginalString);
-            FinishLoad(entity, start);
+            FinishLoad(entity, start, reloading);
         }
 
         bool CheckXIncludes()
@@ -1267,7 +1293,7 @@ namespace XmlNotepad
                 {
                     this.WindowState = FormWindowState.Normal;
                 }
-                SelectTreeView();
+                this.xmlTreeView1.Commit();
                 if (!string.IsNullOrEmpty(this._model.NewName))
                 {
                     if (MessageBox.Show(this, SR.FileRenamedDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -1278,11 +1304,19 @@ namespace XmlNotepad
 
                     }
                 }
-                else if (MessageBox.Show(this, SR.FileChangedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                else if (this._model.Dirty)
+                {
+                    if (MessageBox.Show(this, SR.DirtyWhileFileChangedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        string location = this._model.Location.LocalPath;
+                        await this.Reload(location);
+                    }
+                }
+                else if (!this._settings.GetBoolean("PromptOnReload") ||
+                    MessageBox.Show(this, SR.FileChangedOnDiskPrompt, SR.FileChagedOnDiskCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     string location = this._model.Location.LocalPath;
-                    this._model.Clear();
-                    await this.Open(location);
+                    await this.Reload(location);
                 }
             }
             finally
@@ -1650,7 +1684,7 @@ namespace XmlNotepad
             // display documentation
             if (null == xmlTreeView1.SelectedNode)
             {
-                this._dynamicHelpViewer.DisplayXsltResults(new XmlDocument(), null);
+                _ = this._dynamicHelpViewer.DisplayXsltResults(new XmlDocument(), null);
                 return;
             }
             XmlDocument xmlDoc = xmlTreeView1.SelectedNode.GetDocumentation();
@@ -1668,7 +1702,7 @@ namespace XmlNotepad
                         xmlDoc.AppendChild(xmlDoc.CreateElement("nothing"));
                     }
                 }
-                this._dynamicHelpViewer.DisplayXsltResults(xmlDoc, null);
+                _ = this._dynamicHelpViewer.DisplayXsltResults(xmlDoc, null);
             }
             else if (_helpAvailableHint && xmlDoc != null)
             {
@@ -1684,7 +1718,6 @@ namespace XmlNotepad
 
         protected virtual void UpdateMenuState()
         {
-
             XmlTreeNode node = this.xmlTreeView1.SelectedNode as XmlTreeNode;
             XmlNode xnode = (node != null) ? node.Node : null;
             bool hasSelection = node != null;
@@ -2441,19 +2474,6 @@ namespace XmlNotepad
                 this.xmlTreeView1.InsertNode(InsertPosition.Child, XmlNodeType.ProcessingInstruction);
         }
 
-        void Launch(string exeFileName, string args)
-        {
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.FileName = exeFileName;
-            info.Arguments = args;
-            Process p = new Process();
-            p.StartInfo = info;
-            if (!p.Start())
-            {
-                MessageBox.Show(this, string.Format(SR.ErrorCreatingProcessPrompt, exeFileName), SR.LaunchErrorPrompt, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void newWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.SaveIfDirty(true);
@@ -2522,22 +2542,6 @@ namespace XmlNotepad
             this._diffWrapper.DoCompare(this, this._model, otherXmlFile, options, omitIdentical);
         }
 
-        string ApplicationPath
-        {
-            get
-            {
-                string path = Application.ExecutablePath;
-                if (path.EndsWith("vstesthost.exe", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    // must be running UnitTests
-                    Uri baseUri = new Uri(this.GetType().Assembly.Location);
-                    Uri resolved = new Uri(baseUri, @"..\..\..\Application\bin\debug\XmlNotepad.exe");
-                    path = resolved.LocalPath;
-                }
-                return path;
-            }
-        }
-
         public virtual void OpenNewWindow(string path)
         {
             if (!string.IsNullOrEmpty(path))
@@ -2572,7 +2576,7 @@ namespace XmlNotepad
                     }
                 }
             }
-            Launch(this.ApplicationPath, "\"" + path + "\"");
+            Program.Launch(path);
         }
 
         private void GotoDefinition()

@@ -18,7 +18,6 @@ namespace XmlNotepad
         private XmlDocument _doc;
         private XmlReader _reader;
         private IServiceProvider _site;
-        private const string xsiUri = "http://www.w3.org/2001/XMLSchema-instance";
         private SchemaCache _sc;
 
         public DomLoader(IServiceProvider site, SchemaCache cache)
@@ -424,7 +423,7 @@ namespace XmlNotepad
                 Debug.Assert(node != null);
                 parent.AppendChild(node);
             }
-            if (attr.NamespaceURI == xsiUri)
+            if (attr.NamespaceURI == XmlStandardUris.XsiUri)
             {
                 HandleXsiAttribute(attr);
             }

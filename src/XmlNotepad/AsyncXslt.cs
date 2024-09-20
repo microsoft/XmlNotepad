@@ -225,6 +225,18 @@ namespace XmlNotepad
 
         async System.Threading.Tasks.Task RunTransform()
         {
+            try
+            {
+                await InternalRunTransform();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Caught unhandled exception in RunTransform: " + ex.ToString());
+            }
+        }
+
+        async System.Threading.Tasks.Task InternalRunTransform()
+        { 
             await SysTask.CompletedTask;
             Uri resolved = null;
             string outpath = this._context.outpath;

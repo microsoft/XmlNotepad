@@ -236,6 +236,7 @@ namespace XmlNotepad
             private string _textEditor;
             private bool _schemaAwareText;
             private string _schemaAwareNames;
+            private bool _promptOnReload;
 
             public UserSettings(Settings s)
             {
@@ -278,6 +279,7 @@ namespace XmlNotepad
                 this._xmlDiffIgnoreDtd = this._settings.GetBoolean("XmlDiffIgnoreDtd");
                 this._allowAnalytics = this._settings.GetBoolean("AllowAnalytics");
                 this._textEditor = this._settings.GetString("TextEditor");
+                this._promptOnReload = this._settings.GetBoolean("PromptOnReload");
             }
 
             private void LoadColors()
@@ -380,6 +382,7 @@ namespace XmlNotepad
 
                 this._settings["AllowAnalytics"] = this._allowAnalytics;
                 this._settings["TextEditor"] = this._textEditor;
+                this._settings["PromptOnReload"] = this._promptOnReload;
 
                 this._settings.OnChanged("Colors");
 
@@ -407,6 +410,7 @@ namespace XmlNotepad
                 this._maximumValueLength = short.MaxValue;
                 _ignoreDTD = false;
                 this._allowAnalytics = false;
+                this._promptOnReload = true;
             }
 
             [SRCategory("ThemeCategory")]
@@ -1035,6 +1039,22 @@ namespace XmlNotepad
                     {
                         this._textEditor = value;
                     }
+                }
+            }
+
+
+            [SRCategory("EditingCategory")]
+            [LocDisplayName("PromptOnReload")]
+            [SRDescription("PromptOnReloadDescription")]
+            public bool PromptOnReload
+            {
+                get
+                {
+                    return this._promptOnReload;
+                }
+                set
+                {
+                    this._promptOnReload = value;
                 }
             }
 

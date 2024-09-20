@@ -685,6 +685,17 @@ namespace XmlNotepad
             this._nodeTextView.ScrollPosition = new Point(0, 0);
             this._myTreeView.ScrollPosition = new Point(0, 0);
 
+            // try and preserve the selection and expanded state to the selection.
+            XmlTreeNode selection = (XmlTreeNode)this.SelectedNode;
+            XmlNamespaceManager nsmgr = null;
+            string xpath = null;
+            if (selection != null && selection.Node != null)
+            {
+                var xnode = selection.Node;
+                nsmgr = XmlHelpers.GetNamespaceScope(xnode);
+                xpath = XmlHelpers.GetXPathLocation(xnode, nsmgr);
+            }
+
             this.SuspendLayout();
             this._myTreeView.BeginUpdate();
             try
@@ -702,10 +713,24 @@ namespace XmlNotepad
             {
                 this._myTreeView.EndUpdate();
             }
+
+            bool foundSelection = false;
+            if (this._model.Document != null && !string.IsNullOrEmpty(xpath))
+            {
+                var matchingNode = this._model.Document.SelectSingleNode(xpath, nsmgr);
+                if (matchingNode != null)
+                {
+                    var treeNode = this.FindNode(matchingNode);
+                    TreeView.EnsureVisible(treeNode);
+                    this.SelectedNode = treeNode;
+                    foundSelection = true;
+                }
+            }
+
             this.ResumeLayout();
             this._myTreeView.Invalidate();
             this._myTreeView.Focus();
-            if (this._myTreeView.Nodes.Count > 0)
+            if (!foundSelection && this._myTreeView.Nodes.Count > 0)
             {
                 this.SelectedNode = (XmlTreeNode)this._myTreeView.Nodes[0];
             }
@@ -843,18 +868,25 @@ namespace XmlNotepad
 
         public void CopyXPath()
         {
+            var xpath = this.GetSelectedXPath();
+            if (!string.IsNullOrEmpty(xpath))
+            {
+                Clipboard.SetText(xpath);
+                OnClipboardChanged();
+            }
+        }
+
+        public string GetSelectedXPath()
+        {
             XmlTreeNode selection = (XmlTreeNode)this._myTreeView.SelectedNode;
             if (selection != null && selection.Node != null)
             {
                 var xnode = selection.Node;
                 var nsmgr = XmlHelpers.GetNamespaceScope(xnode);
                 string path = XmlHelpers.GetXPathLocation(xnode, nsmgr);
-                if (!string.IsNullOrEmpty(path))
-                {
-                    Clipboard.SetText(path);
-                    OnClipboardChanged();
-                }
+                return path;
             }
+            return string.Empty;
         }
 
         public void Paste(InsertPosition position)

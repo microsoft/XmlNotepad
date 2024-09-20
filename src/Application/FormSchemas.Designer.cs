@@ -44,6 +44,7 @@ namespace XmlNotepad {
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.generateXMLInstanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -107,7 +108,8 @@ namespace XmlNotepad {
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearToolStripMenuItem,
-            this.addSchemasToolStripMenuItem});
+            this.addSchemasToolStripMenuItem,
+            this.generateXMLInstanceToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             resources.ApplyResources(this.fileToolStripMenuItem, "fileToolStripMenuItem");
             // 
@@ -191,6 +193,12 @@ namespace XmlNotepad {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
+            // generateXMLInstanceToolStripMenuItem
+            // 
+            this.generateXMLInstanceToolStripMenuItem.Name = "generateXMLInstanceToolStripMenuItem";
+            resources.ApplyResources(this.generateXMLInstanceToolStripMenuItem, "generateXMLInstanceToolStripMenuItem");
+            this.generateXMLInstanceToolStripMenuItem.Click += new System.EventHandler(this.generateXMLInstanceToolStripMenuItem_Click);
+            // 
             // FormSchemas
             // 
             resources.ApplyResources(this, "$this");
@@ -234,5 +242,6 @@ namespace XmlNotepad {
         private System.Windows.Forms.DataGridViewTextBoxColumn columnNamespace;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnFileName;
         private System.Windows.Forms.DataGridViewButtonColumn columnBrowse;
+        private System.Windows.Forms.ToolStripMenuItem generateXMLInstanceToolStripMenuItem;
     }
 }

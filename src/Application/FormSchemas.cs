@@ -8,6 +8,7 @@ using System.Xml;
 using System.Diagnostics;
 using SR = XmlNotepad.StringResources;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace XmlNotepad
 {
@@ -1084,6 +1085,103 @@ namespace XmlNotepad
             }
         }
 
+        private void generateXMLInstanceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.dataGridView1.SelectedRows.Count == 0)
+            {
+                if (this.dataGridView1.SelectedCells.Count > 0)
+                {
+                    var row = this.dataGridView1.SelectedCells[0].OwningRow;
+                    if (row != null)
+                    {
+                        GenerateXmlFrom(row.Tag as SchemaItem);
+                    }
+                    return;
+                }
+            }
+            else if (this.dataGridView1.SelectedRows.Count == 1)
+            {
+                var row = this.dataGridView1.SelectedRows[0];
+                GenerateXmlFrom(row.Tag as SchemaItem);
+                return;
+            }
+            
+            MessageBox.Show(this, "Please select the top level schema you want to generate an instance from.", "Generate XML error", MessageBoxButtons.OK, MessageBoxIcon.Error);            
+        }
+
+        private void GenerateXmlFrom(SchemaItem item)
+        {
+            if (!this.Commit())
+            {
+                return;
+            }
+            try
+            {
+                List<XmlSchemaElement> names = new List<XmlSchemaElement>();
+                foreach (var e in this._cache.GetPossibleTopLevelElements())
+                {
+                    if (e.QualifiedName.Namespace == item.TargetNamespace)
+                    {
+                        names.Add(e);
+                    }
+                }
+
+                XmlSchemaElement selected = names.FirstOrDefault();
+
+                if (names.Count == 0)
+                {
+                    MessageBox.Show(this, "Could not find any top level Element definitions in your schemas.", "Generate XML error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else if (names.Count > 1)
+                {
+                    ContextMenu menu = new ContextMenu();
+                    foreach (var e in names)
+                    {
+                        var menuItem = new MenuItem(e.Name);
+                        menuItem.Tag = e;
+                        menuItem.Click += OnSelectElement;
+                        menu.MenuItems.Add(menuItem);
+                    }
+                    this.ContextMenu = menu;                    
+                    menu.Show(this, new System.Drawing.Point(100, 100));
+                    return;
+                }
+                GenerateXmlInstance(selected);
+                return;
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Schema Compile Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void GenerateXmlInstance(XmlSchemaElement e)
+        {
+            XmlSchema s = XsdInstanceGenerator.GetSchema(e);
+            var temp = new XmlDocument();
+            IXmlNamespaceResolver resolver = new MyXmlNamespaceResolver(temp.NameTable);
+            XsdInstanceGenerator generator = new XsdInstanceGenerator(s, resolver);
+            var doc = generator.Generate(e);
+            if (doc != null)
+            {
+                var path = System.IO.Path.GetTempFileName();
+                path = System.IO.Path.GetFileNameWithoutExtension(path) + ".xml";
+                doc.Save(path);
+                Program.Launch(path);
+            }
+            else
+            {
+                MessageBox.Show($"Could not generate instance from element {e.QualifiedName}", "Generate XML error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OnSelectElement(object sender, EventArgs args)
+        {
+            MenuItem item = (MenuItem)sender;
+            XmlSchemaElement e = (XmlSchemaElement)item.Tag;
+            GenerateXmlInstance(e);
+        }
     }
 
 }

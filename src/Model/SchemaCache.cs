@@ -766,11 +766,12 @@ namespace XmlNotepad
             }
         }
 
-        internal IEnumerable<XmlSchemaElement> GetPossibleTopLevelElements()
+        public IEnumerable<XmlSchemaElement> GetPossibleTopLevelElements()
         {
             if (globalElementCache == null)
             {
                 globalElementCache = new List<XmlSchemaElement>();
+                XmlSchemaSet set = new XmlSchemaSet();
                 foreach (var entry in this.GetSchemas())
                 {
                     if (entry.Schema == null)
@@ -782,28 +783,25 @@ namespace XmlNotepad
                     }
                     if (entry.Schema != null)
                     {
-                        XmlSchemaSet set = new XmlSchemaSet();
                         set.Add(entry.Schema);
-
-                        try
-                        {
-                            set.Compile();
-                            foreach (var o in set.GlobalElements.Values)
-                            {
-                                if (o is XmlSchemaElement e)
-                                {
-                                    globalElementCache.Add(e);
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
-                        }
+                    }
+                }
+                set.Compile();
+                foreach (var o in set.GlobalElements.Values)
+                {
+                    if (o is XmlSchemaElement e)
+                    {
+                        globalElementCache.Add(e);
                     }
                 }
             }
 
             return globalElementCache;
+        }
+
+        public XmlSchema FindSchema(string targetNamespace, string filename)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -837,7 +835,7 @@ namespace XmlNotepad
                 XmlReaderSettings settings = new XmlReaderSettings();
                 settings.ValidationEventHandler += handler;
                 settings.XmlResolver = this;
-                settings.DtdProcessing = DtdProcessing.Ignore;
+                settings.DtdProcessing = DtdProcessing.Parse;
                 XmlReader r = XmlReader.Create(absoluteUri.AbsoluteUri, settings);
                 if (r != null)
                 {

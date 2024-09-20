@@ -16,6 +16,7 @@ namespace XmlNotepad
         private bool _userSpecifiedOutput;
         private RecentFiles _xsltFiles;
         private RecentFilesComboBox _recentFilesCombo;
+        private DelayedActions delayedActions = new DelayedActions();
 
         public XsltViewer()
         {
@@ -208,7 +209,14 @@ namespace XmlNotepad
                         _userSpecifiedOutput = false;
                     }
                 }
-                this.SourceFileName.Text = _model.XsltFileName;
+                if (!string.IsNullOrEmpty(_model.XsltFileName))
+                {
+                    this.SourceFileName.Text = _model.XsltFileName;
+                }
+                if (e.ModelChangeType == ModelChangeType.Reloaded)
+                {
+                    this.delayedActions.StartDelayedAction("UpdateXslt", DisplayXsltResults, TimeSpan.FromSeconds(0.5));
+                }
             }
             catch (Exception ex)
             {

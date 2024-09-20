@@ -16,6 +16,8 @@ color palettes. You can also customize the font used in the XML Notepad tree vie
 
 ### Editor
 The editor to use if the XML file is invalid and cannot be opened by XML Notepad.
+You can also disable the "prompt before reload" so that if your XML file is changed on disk, it
+will automatically reload that file (unless you have pending unsaved edits).
 
 ### Formatting
 You can also configure the formatting options used when you save an XML file, or turn off formatting
