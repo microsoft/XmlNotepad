@@ -54,7 +54,7 @@ jobs:
     - name: Build the application
       run: |
         echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey=""; } }  >> .\src\Model\ApiKey.cs
-        msbuild ./src/XmlNotepad.sln /p:Configuration=Release /verbosity:minimal /p:UseSharedCompilation=False
+        msbuild ./src/XmlNotepad.sln /p:Configuration=Release "/p:Platform=Any CPU" /verbosity:minimal /p:UseSharedCompilation=False
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
