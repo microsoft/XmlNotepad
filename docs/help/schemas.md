@@ -21,3 +21,4 @@ correct namespace so that intellisense continues from there.
 You can also select a row in this dialog and choose `File/Generate XML Instance` to get a new document that contains
 a template containing all required elements from the associated schema.  If there is more than one top level element
 in the schema a menu will appear from which you can select the element you would like to start with.
+See [demo video](ttps://youtu.be/5I_q1oXz02I).
