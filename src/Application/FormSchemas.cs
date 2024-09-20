@@ -1135,6 +1135,11 @@ namespace XmlNotepad
                 }
                 else if (names.Count > 1)
                 {
+                    names.Sort(new Comparison<XmlSchemaElement>((a, b) =>
+                    {
+                        return a.Name.CompareTo(b.Name);
+                    }));
+
                     ContextMenu menu = new ContextMenu();
                     foreach (var e in names)
                     {
@@ -1143,7 +1148,8 @@ namespace XmlNotepad
                         menuItem.Click += OnSelectElement;
                         menu.MenuItems.Add(menuItem);
                     }
-                    this.ContextMenu = menu;                    
+                    this.ContextMenu = menu;
+                    menu.Collapse += OnMenuClose;
                     menu.Show(this, new System.Drawing.Point(100, 100));
                     return;
                 }
@@ -1154,6 +1160,11 @@ namespace XmlNotepad
             {
                 MessageBox.Show(ex.Message, "Schema Compile Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void OnMenuClose(object sender, EventArgs e)
+        {
+            this.ContextMenu = null;
         }
 
         private void GenerateXmlInstance(XmlSchemaElement e)

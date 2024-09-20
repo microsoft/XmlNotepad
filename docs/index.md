@@ -42,6 +42,7 @@ There have been over 6 million downloads since then - thanks to everyone who tri
 - Handy "XML statistics" tool to summarize info about your XML documents.
 - [Dynamic help](help/dynamic.md) from XSD annotations.
 - Goto definition to navigate includes and XSD schema information.
+- Generate XML document from [XSD Schema](help/schemas.md).
 - Vibrant community with many [updates and bug fixes](help/updates.md).
 
 Go to the [installer page](install.md).

@@ -1,107 +1,19 @@
-﻿<HTML xmlns:dt="http://www.w3.org/2001/XMLSchema-instance" xmlns:d2="urn:schemas-microsoft-com:datatypes">
-  <HEAD>
+﻿<html>
+  <head>
     <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <STYLE>
-          
-    body {font-family:Courier New;font-size:10pt;margin-right:1.5em;background:AliceBlue}
-    .c{ }
-    .m{color:#505050}                   /* markup */
-    .b{color:red;font-weight:bold;text-decoration:none}  /* non breaking space */
-    .e{margin-left:1em;text-indent:-1em;margin-right:1em}  /* expandable */
-    .k{margin-left:1em;text-indent:-1em;margin-right:1em}  /* outer comment (non-expandable)? */
-    .at{color:Maroon}          /* attribute name */
-    .av {color:Black;}       /* attribute value */
-    .t {color:#004080}                 /* element name */
-    .tx{color:Black}   /* text content */
-    .pi{color:Purple}                      /* pi name and content */
-    .ci{color:Green}                 /* comment value */    
-    .side{background-color:#FFFACD}   /* intro div */    
-    .outputtip { display:none }
-    a { color:#004080 }
-    a:visited { color:Purple }
-    a:hover { color:Purple }
-    pre {margin:0px;display:inline}
-        </STYLE>
-  </HEAD>
-  <BODY class="st">
-    <div style="padding:5px;" class="side tx">
-          
-            Your XML document contains no xml-stylesheet processing instruction. To provide
-            an <a href="https://www.tutorialspoint.com/xslt/index.htm" target="_new">XSLT transform</a>, add the following to the top of your file and edit the href
-            attribute accordingly:
-
-            <pre><span class="m">&lt;?</span><span class="pi">xml-stylesheet</span> <span class="at">type</span><span class="m">="</span><span class="av">text/xsl</span><span class="m">" </span><span class="at">href</span><span class="m">="</span><span class="av">stylesheet.xsl</span><span class="m">" ?&gt;</span></pre>
+    <title>
+    </title>
+    <style>
+          body, td, th { font-family:Verdana, Arial, helvetica, sans-serif; font-size:x-small; }
+        </style>
+  </head>
+  <body STYLE=" background-color:#EEEEEE">
+    <center>
+      <h1>
+      </h1>
       <p>
-            You can also enter the XSLT file name using the above "XSLT Location:" text box, but this will not
-            persist with your XML document.
-          </p>
-      <div class="outputtip">
-            You can specify a default output file name using the following in your XML documents:
-            <pre><span class="m">&lt;?</span><span class="pi">xsl-output</span> <span class="at">default</span><span class="m">="</span><span class="av">xslt_output</span><span class="m">" ?&gt;</span></pre>
-      </div>
-    </div>
-    <div class="e"><span class="m">&lt;?</span><span class="pi">xsl-output 
-        default="Employee.htm"</span><span class="m">?&gt;</span></div>
-    <div class="e">
-      <div class="c" STYLE="margin-left:1em;text-indent:-2em"><A href="#" onclick="return false" onfocus="h()" class="b"></A><span class="m">&lt;</span><span class="t">Employees</span> 
-    <span class="at">xsi:schemaLocation</span><span class="m">="</span><span class="av">http://Employees Employee.xsd</span><span class="m">"</span>
-  <span class="m">&gt;</span></div>
-      <div>
-        <div class="e">
-          <div class="c" STYLE="margin-left:1em;text-indent:-2em"><A href="#" onclick="return false" onfocus="h()" class="b"></A><span class="m">&lt;</span><span class="t">Employee</span> 
-    <span class="at">id</span><span class="m">="</span><span class="av">12615</span><span class="m">"</span>
-   
-    <span class="at">title</span><span class="m">="</span><span class="av">Architect</span><span class="m">"</span>
-  <span class="m">&gt;</span></div>
-          <div>
-            <div class="k"><span><span class="m">&lt;!--</span></span><span id="clean" class="ci"><pre>This is a comment</pre></span><span class="b">&nbsp;</span><span class="m">--&gt;</span></div>
-            <div class="e">
-              <div class="c" STYLE="margin-left:1em;text-indent:-2em"><A href="#" onclick="return false" onfocus="h()" class="b"></A><span class="m">&lt;</span><span class="t">Name</span><span class="m">&gt;</span></div>
-              <div>
-                <div class="e">
-                  <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">First</span><span class="m">&gt;</span><span class="tx">Nancy</span><span class="m">&lt;/</span><span class="t">First</span><span class="m">&gt;</span></div>
-                </div>
-                <div class="e">
-                  <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Middle</span><span class="m">&gt;</span><span class="tx">J.</span><span class="m">&lt;/</span><span class="t">Middle</span><span class="m">&gt;</span></div>
-                </div>
-                <div class="e">
-                  <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Last</span><span class="m">&gt;</span><span class="tx">Davolio</span><span class="m">&lt;/</span><span class="t">Last</span><span class="m">&gt;</span></div>
-                </div>
-                <div><span class="b">&nbsp;</span><span class="m">&lt;/</span><span class="t">Name</span><span class="m">&gt;</span></div>
-              </div>
-            </div>
-            <div class="e">
-              <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Street</span><span class="m">&gt;</span><span class="tx">507 - 20th Ave. E. Apt. 2A</span><span class="m">&lt;/</span><span class="t">Street</span><span class="m">&gt;</span></div>
-            </div>
-            <div class="e">
-              <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">City</span><span class="m">&gt;</span><span class="tx">Seattle</span><span class="m">&lt;/</span><span class="t">City</span><span class="m">&gt;</span></div>
-            </div>
-            <div class="e">
-              <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Zip</span><span class="m">&gt;</span><span class="tx">98122</span><span class="m">&lt;/</span><span class="t">Zip</span><span class="m">&gt;</span></div>
-            </div>
-            <div class="e">
-              <div class="c" STYLE="margin-left:1em;text-indent:-2em"><A href="#" onclick="return false" onfocus="h()" class="b"></A><span class="m">&lt;</span><span class="t">Country</span><span class="m">&gt;</span></div>
-              <div>
-                <div class="e">
-                  <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Name</span><span class="m">&gt;</span><span class="tx">U.S.A.</span><span class="m">&lt;/</span><span class="t">Name</span><span class="m">&gt;</span></div>
-                </div>
-                <div><span class="b">&nbsp;</span><span class="m">&lt;/</span><span class="t">Country</span><span class="m">&gt;</span></div>
-              </div>
-            </div>
-            <div class="e">
-              <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Office</span><span class="m">&gt;</span><span class="tx">5/7682</span><span class="m">&lt;/</span><span class="t">Office</span><span class="m">&gt;</span></div>
-            </div>
-            <div class="e">
-              <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Phone</span><span class="m">&gt;</span><span class="tx">(206) 555-9857</span><span class="m">&lt;/</span><span class="t">Phone</span><span class="m">&gt;</span></div>
-            </div>
-            <div class="e">
-              <div STYLE="margin-left:1em;text-indent:-2em"><span class="b">&nbsp;</span><span class="m">&lt;</span><span class="t">Photo</span><span class="m">&gt;</span><span class="tx">Photo.jpg</span><span class="m">&lt;/</span><span class="t">Photo</span><span class="m">&gt;</span></div>
-            </div>
-            <div><span class="b">&nbsp;</span><span class="m">&lt;/</span><span class="t">Employee</span><span class="m">&gt;</span></div>
-          </div>
-        </div>
-        <div><span class="b">&nbsp;</span><span class="m">&lt;/</span><span class="t">Employees</span><span class="m">&gt;</span></div>
-      </div>
-    </div>
-  </BODY>
-</HTML>
+        <h2>William Shakespeare</h2>
+      </p>
+    </center>
+  </body>
+</html>
