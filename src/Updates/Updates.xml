@@ -13,6 +13,7 @@
 		<feature>Issue 324: Generate xml from schema, see ttps://youtu.be/5I_q1oXz02I.</feature>
 		<feature>Issue 385:: "XML Reload" removes loaded XSLT. You can now get auto-reload when xml file changes on disk
 		and you can turn off the prompt in options dialog and it will reapply the XSLT automatically.</feature>
+		<feature>update to WebView2 version 1.0.2739.15</feature>
 		<bug>Also preserve the selection in the XML tree view across file reloads.</bug>
 	</version>
   <version number="2.9.0.11">
