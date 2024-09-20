@@ -86,6 +86,7 @@ namespace XmlNotepad
             this._info = new XmlSchemaInfo();
             this._nsResolver = new MyXmlNamespaceResolver(doc.NameTable);
             XmlSchemaSet set = new XmlSchemaSet();
+            set.XmlResolver = resolver;
             // Make sure the SchemaCache is up to date with document.
             SchemaCache sc = xcache.SchemaCache;
             foreach (XmlSchema s in doc.Schemas.Schemas())
@@ -173,19 +174,10 @@ namespace XmlNotepad
             {
                 // Give Xsi schemas highest priority.
                 bool result = LoadXsiSchemas(doc, set, resolver);
-
                 SchemaCache sc = this._cache.SchemaCache;
-                foreach (XmlAttribute a in root.Attributes)
+                foreach (string nsuri in this._cache.AllNamespaces)
                 {
-                    if (a.NamespaceURI == "http://www.w3.org/2000/xmlns/")
-                    {
-                        string nsuri = a.Value;
-                        result |= LoadSchemasForNamespace(set, resolver, sc, nsuri, a);
-                    }
-                }
-                if (string.IsNullOrEmpty(root.NamespaceURI))
-                {
-                    result |= LoadSchemasForNamespace(set, resolver, sc, "", root);
+                    result |= LoadSchemasForNamespace(set, resolver, sc, nsuri, root);
                 }
             }
             // Make sure all the required includes or imports are there. 

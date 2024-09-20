@@ -1171,8 +1171,9 @@ namespace XmlNotepad
         {
             XmlSchema s = XsdInstanceGenerator.GetSchema(e);
             var temp = new XmlDocument();
+            var xmlCache = (XmlCache)GetService(typeof(XmlCache));
             IXmlNamespaceResolver resolver = new MyXmlNamespaceResolver(temp.NameTable);
-            XsdInstanceGenerator generator = new XsdInstanceGenerator(s, resolver);
+            XsdInstanceGenerator generator = new XsdInstanceGenerator(s, resolver, xmlCache.SchemaResolver);
             var doc = generator.Generate(e);
             if (doc != null)
             {

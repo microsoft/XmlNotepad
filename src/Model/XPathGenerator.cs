@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 using System.Xml;
+using XmlNotepad;
 
 namespace Microsoft.Xml
 {
@@ -139,7 +140,7 @@ namespace Microsoft.Xml
             XmlNodeType nt = node.NodeType;
             if (nt == XmlNodeType.Attribute)
             {
-                if (node.NamespaceURI == "http://www.w3.org/2000/xmlns/")
+                if (node.NamespaceURI == XmlStandardUris.XmlnsUri)
                 {
                     if (string.IsNullOrEmpty(node.Prefix) &&
                         node.LocalName == "xmlns")

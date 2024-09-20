@@ -33,8 +33,6 @@ namespace XmlNotepad
     {
         private XmlHelpers() { }
 
-        public const string XmlnsUri = "http://www.w3.org/2000/xmlns/";
-        public const string XmlUri = "http://www.w3.org/XML/1998/namespace";
 
         public static XmlName ParseName(XmlNode context, string name, XmlNodeType nt)
         {
@@ -47,11 +45,11 @@ namespace XmlNotepad
                 result.LocalName = name.Substring(i + 1);
                 if (prefix == "xml")
                 {
-                    result.NamespaceUri = XmlUri;
+                    result.NamespaceUri = XmlStandardUris.XmlUri;
                 }
                 else if (prefix == "xmlns")
                 {
-                    result.NamespaceUri = XmlnsUri;
+                    result.NamespaceUri = XmlStandardUris.XmlnsUri;
                 }
                 else
                 {
@@ -64,7 +62,7 @@ namespace XmlNotepad
                 result.LocalName = name;
                 if (name == "xmlns")
                 {
-                    result.NamespaceUri = XmlnsUri;
+                    result.NamespaceUri = XmlStandardUris.XmlnsUri;
                 }
                 else if (nt == XmlNodeType.Attribute)
                 {
@@ -89,11 +87,11 @@ namespace XmlNotepad
                 result.LocalName = name.Substring(i + 1);
                 if (prefix == "xml")
                 {
-                    result.NamespaceUri = XmlUri;
+                    result.NamespaceUri = XmlStandardUris.XmlUri;
                 }
                 else if (prefix == "xmlns")
                 {
-                    result.NamespaceUri = XmlnsUri;
+                    result.NamespaceUri = XmlStandardUris.XmlnsUri;
                 }
                 else
                 {
@@ -105,7 +103,7 @@ namespace XmlNotepad
                 result.LocalName = name;
                 if (name == "xmlns")
                 {
-                    result.NamespaceUri = XmlnsUri;
+                    result.NamespaceUri = XmlStandardUris.XmlnsUri;
                 }
                 else if (nt == XmlNodeType.Attribute)
                 {
@@ -154,7 +152,7 @@ namespace XmlNotepad
                     {
                         foreach (XmlAttribute a in parent.Attributes)
                         {
-                            if (a.NamespaceURI == XmlnsUri)
+                            if (a.NamespaceURI == XmlStandardUris.XmlnsUri)
                             {
                                 string prefix = nt.Add(a.LocalName);
                                 if (prefix == "xmlns") prefix = "";
@@ -198,7 +196,7 @@ namespace XmlNotepad
                 count++;
             }
             name.NamespaceUri = "uri:" + count;
-            XmlAttribute xmlns = context.OwnerDocument.CreateAttribute("xmlns", name.Prefix, XmlHelpers.XmlnsUri);
+            XmlAttribute xmlns = context.OwnerDocument.CreateAttribute("xmlns", name.Prefix, XmlStandardUris.XmlnsUri);
             if (context.HasAttribute(xmlns.Name))
             {
                 // already have an attribute with this name! This is a tricky case where

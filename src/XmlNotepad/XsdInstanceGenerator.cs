@@ -34,7 +34,7 @@ namespace XmlNotepad
         // XSD uses CultureInfo.InvariantCulture by definition because you want the XML
         // to be interoperable across platforms and users.
 
-        public XsdInstanceGenerator(XmlSchema schema, IXmlNamespaceResolver mgr)
+        public XsdInstanceGenerator(XmlSchema schema, IXmlNamespaceResolver mgr, XmlResolver xmlResolver)
         {
             if (schema == null)
             {
@@ -44,6 +44,7 @@ namespace XmlNotepad
             {
                 throw new ArgumentNullException("mgr", "mgr cannot be null.");
             }
+            this.xmlResolver = xmlResolver;
             this.schemaSet = new XmlSchemaSet();
             this.schemaSet.Add(schema);
             Init(mgr);
@@ -52,8 +53,7 @@ namespace XmlNotepad
         private void Init(IXmlNamespaceResolver mgr)
         {
             this.schemaSet.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
-            this.xmlResolver = new XmlUrlResolver();
-            this.schemaSet.XmlResolver = xmlResolver;
+            this.schemaSet.XmlResolver = this.xmlResolver;
             this.map = new NamespacePrefixGenerator(mgr);
         }
 

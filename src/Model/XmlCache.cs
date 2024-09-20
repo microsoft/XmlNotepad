@@ -80,6 +80,8 @@ namespace XmlNotepad
         /// </summary>
         public string XsltDefaultOutput { get; set; }
 
+        public IEnumerable<string> AllNamespaces => this._loader.AllNamespaces;
+
         public bool Dirty => this._dirty;
 
         public Settings Settings => this._settings;

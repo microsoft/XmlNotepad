@@ -384,7 +384,7 @@ namespace XmlNotepad
                                 {
                                     if (prefix != "xmlns" && !XmlHelpers.IsPrefixInScope(context, prefix))
                                     {
-                                        XmlAttribute attr = doc.CreateAttribute("xmlns", inode.XmlNode.Prefix, XmlHelpers.XmlnsUri);
+                                        XmlAttribute attr = doc.CreateAttribute("xmlns", inode.XmlNode.Prefix, XmlStandardUris.XmlnsUri);
                                         attr.Value = inode.XmlNode.NamespaceURI;
                                         scope.Attributes.Append(attr);
                                         xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
@@ -395,7 +395,7 @@ namespace XmlNotepad
                                 {
                                     if (!XmlHelpers.IsDefaultNamespaceInScope(context, e.Namespace))
                                     {
-                                        XmlAttribute attr = doc.CreateAttribute("", "xmlns", XmlHelpers.XmlnsUri);
+                                        XmlAttribute attr = doc.CreateAttribute("", "xmlns", XmlStandardUris.XmlnsUri);
                                         attr.Value = e.Namespace;
                                         scope.Attributes.Append(attr);
                                         xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
@@ -2187,7 +2187,7 @@ namespace XmlNotepad
                 {
                     XmlAttribute a = acol[i];
                     string value = a.Value;
-                    if (a.NamespaceURI == XmlHelpers.XmlnsUri)
+                    if (a.NamespaceURI == XmlStandardUris.XmlnsUri)
                     {
                         if (!hasXmlNs)
                         {

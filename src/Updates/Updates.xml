@@ -9,8 +9,11 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+	<version number="2.9.0.13">
+		<feature>Issue 409: Not able to validate XML against multiple not referenced Schemas</feature>
+	</version>
 	<version number="2.9.0.12">
-		<feature>Issue 324: Generate xml from schema, see ttps://youtu.be/5I_q1oXz02I.</feature>
+		<feature>Issue 324: Generate xml from schema, see https://youtu.be/5I_q1oXz02I.</feature>
 		<feature>Issue 385:: "XML Reload" removes loaded XSLT. You can now get auto-reload when xml file changes on disk
 		and you can turn off the prompt in options dialog and it will reapply the XSLT automatically.</feature>
 		<feature>update to WebView2 version 1.0.2739.15</feature>

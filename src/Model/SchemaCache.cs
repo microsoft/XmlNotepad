@@ -768,7 +768,7 @@ namespace XmlNotepad
 
         public IEnumerable<XmlSchemaElement> GetPossibleTopLevelElements()
         {
-            if (globalElementCache == null)
+            if (globalElementCache == null || globalElementCache.Count == 0)
             {
                 globalElementCache = new List<XmlSchemaElement>();
                 XmlSchemaSet set = new XmlSchemaSet();
@@ -781,7 +781,7 @@ namespace XmlNotepad
                             entry.Schema = this.LoadSchema(entry.Location);
                         }
                     }
-                    if (entry.Schema != null)
+                    if (entry.Schema != null && !set.Contains(entry.TargetNamespace))
                     {
                         set.Add(entry.Schema);
                     }
@@ -795,7 +795,6 @@ namespace XmlNotepad
                     }
                 }
             }
-
             return globalElementCache;
         }
 

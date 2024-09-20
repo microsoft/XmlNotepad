@@ -140,7 +140,7 @@ namespace XmlNotepad
             if (_node != null && _node.Node != null)
             {
                 XmlNode xn = _node.Node;
-                if (xn.NodeType == XmlNodeType.Attribute && xn.NamespaceURI == "http://www.w3.org/2000/xmlns/")
+                if (xn.NodeType == XmlNodeType.Attribute && xn.NamespaceURI == XmlStandardUris.XmlnsUri)
                 {
                     XmlNode parent = _node.ParentNode.Node;
                     return GetNamespaceList(parent);
