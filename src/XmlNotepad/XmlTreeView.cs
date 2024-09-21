@@ -1810,6 +1810,7 @@ namespace XmlNotepad
         private string _editLabel;
         private string _schemaAwareText;
         private Color _schemaAwareColor;
+        private TreeNodeCollection _lazyChildren;
 
         public XmlTreeNode(XmlTreeView view)
         {
@@ -2062,7 +2063,11 @@ namespace XmlNotepad
         {
             get
             {
-                return new XmlTreeNodeCollection(this);
+                if (this._lazyChildren  == null)
+                {
+                    this._lazyChildren = new XmlTreeNodeCollection(this);
+                }
+                return _lazyChildren;
             }
         }
 

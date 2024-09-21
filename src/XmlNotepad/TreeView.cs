@@ -1685,9 +1685,10 @@ namespace XmlNotepad
 
         internal static TreeNodeCollection GetChildren(TreeNode n)
         {
-            if (n.Children.Count > 0)
+            var children = n.Children;
+            if (children.Count > 0)
             {
-                return n.Children;
+                return children;
             }
             return null;
         }

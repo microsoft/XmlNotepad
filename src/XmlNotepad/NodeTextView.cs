@@ -1127,6 +1127,7 @@ namespace XmlNotepad
         private TreeNode _node;
         private NodeTextView _view;
         private AccessibleNodeTextView _acc;
+        private int _childCount = -1;
 
         public AccessibleNodeTextViewNode(AccessibleNodeTextView acc, TreeNode node)
         {
@@ -1159,11 +1160,17 @@ namespace XmlNotepad
         }
         public override void DoDefaultAction()
         {
+            _childCount = -1;
             _node.Toggle();
         }
         public override int GetChildCount()
         {
-            return _node.Children.Count;
+            if (_childCount == -1)
+            {
+                // This can be VERY slow as it populates the children right here!
+                _childCount = _node.Children.Count;
+            }
+            return _childCount;
         }
         public override AccessibleObject GetChild(int index)
         {

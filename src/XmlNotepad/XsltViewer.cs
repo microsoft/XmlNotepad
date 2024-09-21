@@ -213,7 +213,7 @@ namespace XmlNotepad
                 {
                     this.SourceFileName.Text = _model.XsltFileName;
                 }
-                if (e.ModelChangeType == ModelChangeType.Reloaded)
+                if (e.ModelChangeType == ModelChangeType.Reloaded && this.Visible)
                 {
                     this.delayedActions.StartDelayedAction("UpdateXslt", DisplayXsltResults, TimeSpan.FromSeconds(0.5));
                 }

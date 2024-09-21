@@ -169,6 +169,7 @@ namespace XmlNotepad
             this.ContextMenuStrip = this.contextMenu1;
             New();
 
+            this.xsltViewer.Visible = false;
             if (!testing)
             {
                 _ = AsyncSetup();
@@ -736,11 +737,13 @@ namespace XmlNotepad
             {
                 this.helpProvider1.HelpNamespace = this._helpService.XsltHelp;
                 this.CheckWebViewVersion();
+                this.xsltViewer.Visible = true;
                 this.DisplayXsltResults();
             }
             else
             {
                 this.helpProvider1.HelpNamespace = this._helpService.DefaultHelp;
+                this.xsltViewer.Visible = false;
                 this.xsltViewer.OnClosed(); // good time to cleanup temp files.
             }
         }
