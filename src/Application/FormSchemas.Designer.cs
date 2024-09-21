@@ -34,6 +34,7 @@ namespace XmlNotepad {
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSchemasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateXMLInstanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,7 +45,6 @@ namespace XmlNotepad {
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.generateXMLInstanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -125,6 +125,12 @@ namespace XmlNotepad {
             this.addSchemasToolStripMenuItem.Name = "addSchemasToolStripMenuItem";
             this.addSchemasToolStripMenuItem.Click += new System.EventHandler(this.addSchemasToolStripMenuItem_Click);
             // 
+            // generateXMLInstanceToolStripMenuItem
+            // 
+            resources.ApplyResources(this.generateXMLInstanceToolStripMenuItem, "generateXMLInstanceToolStripMenuItem");
+            this.generateXMLInstanceToolStripMenuItem.Name = "generateXMLInstanceToolStripMenuItem";
+            this.generateXMLInstanceToolStripMenuItem.Click += new System.EventHandler(this.generateXMLInstanceToolStripMenuItem_Click);
+            // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -192,12 +198,6 @@ namespace XmlNotepad {
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            // 
-            // generateXMLInstanceToolStripMenuItem
-            // 
-            this.generateXMLInstanceToolStripMenuItem.Name = "generateXMLInstanceToolStripMenuItem";
-            resources.ApplyResources(this.generateXMLInstanceToolStripMenuItem, "generateXMLInstanceToolStripMenuItem");
-            this.generateXMLInstanceToolStripMenuItem.Click += new System.EventHandler(this.generateXMLInstanceToolStripMenuItem_Click);
             // 
             // FormSchemas
             // 

@@ -46,6 +46,7 @@ namespace UnitTests
             this._parent = parent;
             this._handle = handle;
             this.sim = sim;
+            sim.Mouse.TargetWindow = handle;
             this._acc = AutomationWrapper.AccessibleObjectForWindow(handle);
         }
 
@@ -89,6 +90,7 @@ namespace UnitTests
                 }
 
                 this._handle = this._acc.Hwnd;
+                sim.Mouse.TargetWindow = this._handle;
             }
         }
 
@@ -424,13 +426,12 @@ namespace UnitTests
 
             if (_menuItems.Count == 0 || !_menuItems.ContainsKey(name))
             {
-                var menuStrip = this._acc.AutomationElement.FindFirst(TreeScope.Children,
-                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuBar));
+                var form = this._acc.AutomationElement;
 
-                // enumerate the menu bar start filling out the _menuHeirarchy.
-                // Note: starting in .NET 4.8 one has to literally expand the menu on screen to
-                // find the menu items inside!
-                foreach (AutomationElement menuItem in menuStrip.FindAll(TreeScope.Children,
+                // Note: starting in .NET 4.8 menu item Invoke blocks on any model dialogs, so 
+                // we have created special hidden menu items instead to avoid all this
+                // and these live as children of the form instead of children of the menuStrip control.
+                foreach (AutomationElement menuItem in form.FindAll(TreeScope.Children,
                        new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)))
                 {
                     var id = menuItem.Current.Name;
@@ -439,11 +440,6 @@ namespace UnitTests
                         List<string> names = new List<string>();
                         LoadMenuItems(menuItem, names);
                         _menuHeirarchy[id] = names;
-                        if (names.Contains(name))
-                        {
-                            // found it!
-                            break;
-                        }
                     }
                 }
 
@@ -600,7 +596,7 @@ namespace UnitTests
         {
             this.ReloadMenuItems(menuItemName);
             Sleep(30);
-            this.WaitForIdle(2000);
+            this.WaitForIdle(1000);
             if (!this._menuItems.TryGetValue(menuItemName, out AutomationWrapper item))
             {
                 throw new Exception(string.Format("Menu item '{0}' not found", menuItemName));
@@ -622,13 +618,8 @@ namespace UnitTests
             }
             Trace.WriteLine("InvokeAsyncMenuItem(" + menuItemName + ")");
 
-            // this is NOT async with things like SaveAs where a dialog pops up!
-            //item.DoDefaultAction();
-
             this.WaitForIdle(1000);
             Sleep(1000);
-            // BUGBUG: This blocks on .NET 4.8 but works fine on .NET 4.7.2
-            // See https://github.com/dotnet/winforms/issues/10244.
             item.Invoke();
             this.WaitForIdle(1000);
         }

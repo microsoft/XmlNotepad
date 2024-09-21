@@ -9,10 +9,9 @@ namespace WindowsInput
     public interface IMouseSimulator
     {
         /// <summary>
-        /// Provide calibration data for mouse positions
+        /// Set the target window so we can find the monitor and dpi settings.
         /// </summary>
-        /// <param name="points"></param>
-        void Calibrate(List<MouseCalibration> points);
+        IntPtr TargetWindow { get; set; }
 
         /// <summary>
         /// Gets the <see cref="IKeyboardSimulator"/> instance for simulating Keyboard input.

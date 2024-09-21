@@ -117,6 +117,10 @@
     <Compile Include="FormTransformProgress.Designer.cs">
       <DependentUpon>FormTransformProgress.cs</DependentUpon>
     </Compile>
+    <Compile Include="HiddenMenuItems.cs" />
+    <Compile Include="HiddenMenuItems.Designer.cs">
+      <DependentUpon>HiddenMenuItems.cs</DependentUpon>
+    </Compile>
     <Compile Include="HLSColor.cs" />
     <Compile Include="IntelliTip.cs" />
     <Compile Include="localizableattributes.cs" />

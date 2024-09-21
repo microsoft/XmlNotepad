@@ -40,6 +40,8 @@
     <PublisherName>Chris Lovett</PublisherName>
     <WebPage>readme.htm</WebPage>
     <DisallowUrlActivation>true</DisallowUrlActivation>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.9.0.13</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -226,6 +228,7 @@
     </None>
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="license.rtf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

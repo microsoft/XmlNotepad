@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace WindowsInput.Native
 {
@@ -106,5 +108,36 @@ namespace WindowsInput.Native
         /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern UInt32 MapVirtualKey(UInt32 uCode, UInt32 uMapType);
+
+        public const int SM_CXSCREEN = 0;
+        public const int SM_CYSCREEN = 1;
+
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
+
+        [DllImport("User32.dll")]
+        private static extern IntPtr GetDC(HandleRef hWnd);
+
+        [DllImport("User32.dll")]
+        private static extern int ReleaseDC(HandleRef hWnd, HandleRef hDC);
+
+        const int LOGPIXELSX = 88;    /* Logical pixels/inch in X                 */
+        const int LOGPIXELSY = 90;    /* Logical pixels/inch in Y                 */
+
+        [DllImport("GDI32.dll")]
+        private static extern int GetDeviceCaps(HandleRef hDC, int nIndex);
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806")]
+        public static Point GetDpi(IntPtr hwnd)
+        {
+            HandleRef desktopHwnd = new HandleRef(null, IntPtr.Zero);
+            HandleRef windowDC = new HandleRef(null, GetDC(new HandleRef(null, hwnd)));
+            var dpix = GetDeviceCaps(windowDC, LOGPIXELSX );
+            var dpiy = GetDeviceCaps(windowDC, LOGPIXELSY );
+            ReleaseDC(desktopHwnd, windowDC);
+            return new Point(dpix, dpiy);
+        }
+
+
     }
 }

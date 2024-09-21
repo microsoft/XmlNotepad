@@ -28,8 +28,6 @@ namespace UnitTests
     {
         const int TestMethodTimeout = 300000; // 5 minutes
         private readonly string _testDir;
-        private bool calibrated;
-        private List<MouseCalibration> calibration;
         private Settings testSettings;
 
         public UnitTest1()
@@ -77,40 +75,9 @@ namespace UnitTests
             // Find the test settings we care about.
             var screen = Screen.PrimaryScreen.WorkingArea;
             Size s = (Size)testSettings["PrimaryScreenSize"];
-            var points = (Point[])testSettings["MouseCalibration"];
-            if (points.Length > 10 && s == screen.Size)
-            {
-                var calibration = new List<MouseCalibration>();
-                for (int i = 0; i + 1 < points.Length; i += 2)
-                {
-                    Point expected = points[i];
-                    Point actual = points[i + 1];
-                    calibration.Add(new MouseCalibration() { Expected = expected, Actual = actual });
-                }
-                this.calibration = calibration;
-                sim.Mouse.Calibrate(calibration);
-                this.calibrated = true;
-            }
-
             // reset the test settings before each test.
             testSettings.SetDefaults();
-
-            // Now calibrate the mouse once
-            if (!this.calibrated)
-            {
-                TestCalibrateMouse();
-            }
-
-            // Always restore the updated calibration settings.
-            points = new Point[this.calibration.Count * 2];
-            int pos = 0;
-            foreach (var c in this.calibration)
-            {
-                points[pos++] = c.Expected;
-                points[pos++] = c.Actual;
-            }
             testSettings["PrimaryScreenSize"] = screen.Size;
-            testSettings["MouseCalibration"] = points;
 
             // Save the reset settings so next LaunchNotepad picks them up
             testSettings.Save(testSettings.FileName);
@@ -195,118 +162,6 @@ namespace UnitTests
                 }
                 return cset;
             }
-        }
-
-        [TestMethod]
-        [Timeout(TestMethodTimeout)]
-        public void TestCalibrateMouse()
-        {
-            List<MouseCalibration> calibration = new List<MouseCalibration>();
-            var screen = Screen.PrimaryScreen.WorkingArea;
-
-            Rectangle bounds = Rectangle.Empty;
-            var window = LaunchNotepad(debugMouse: true);
-            window.WaitForInteractive();
-            window.SetWindowPosition(screen.Left, screen.Top);
-            window.SetWindowSize(screen.Width, screen.Height);
-            window.WaitForInteractive();
-            Sleep(1000);
-
-            var xPosLabel = window.FindDescendant("XPosition");
-            var yPosLabel = window.FindDescendant("YPosition");
-            var statusBox = window.FindDescendant("Status");
-            ValuePattern xPattern = null;
-            ValuePattern yPattern = null;
-            ValuePattern sPattern = null;
-            if (xPosLabel.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object o))
-            {
-                xPattern = (ValuePattern)o;
-            }
-            else
-            {
-                Assert.Fail("xPosition TextBox has no ValuePattern?");
-            }
-            if (yPosLabel.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object yo))
-            {
-                yPattern = (ValuePattern)yo;
-            }
-            else
-            {
-                Assert.Fail("yPosition TextBox has no ValuePattern?");
-            }
-            if (statusBox.AutomationElement.TryGetCurrentPattern(ValuePattern.Pattern, out object so))
-            {
-                sPattern = (ValuePattern)so;
-            }
-            else
-            {
-                Assert.Fail("yPosition TextBox has no ValuePattern?");
-            }
-
-            bounds = window.GetClientBounds();
-            var center = xPosLabel.Bounds.Center();
-            var b2 = statusBox.Bounds;
-            // visual check if calibration is needed
-            sim.Mouse.MoveMouseTo(center.X, center.Y);
-            sim.Mouse.MoveMouseTo(bounds.Left, bounds.Bottom);
-            sim.Mouse.MoveMouseTo(b2.Left, b2.Bottom);
-
-            Rectangle inner = bounds;
-            inner.Inflate(-20, -20);
-            int steps = 60;
-            int previousX = 0;
-            int previousY = 0;
-            for (int i = 0; i < steps; i++)
-            {
-                int x = (int)(inner.Left + ((double)i * inner.Width) / steps);
-                int y = (int)(inner.Top + ((double)i * inner.Height) / steps);
-                sim.Mouse.MoveMouseTo(x, y);
-                while (string.IsNullOrEmpty(xPattern.Current.Value) || string.IsNullOrEmpty(yPattern.Current.Value))
-                {
-                    sim.Mouse.MoveMouseTo(x, y);
-                    Thread.Sleep(30);
-                }
-                int ax = previousX;
-                int ay = previousY;
-                // wait for fields to update
-                int retries = 10;
-                while ((ax == previousX || ay == previousY) && retries > 0)
-                {
-                    Thread.Sleep(30);
-                    // winforms mouse move is relative to content not including window frame
-                    ax = int.Parse(xPattern.Current.Value) + bounds.Left;
-                    ay = int.Parse(yPattern.Current.Value) + bounds.Top;
-                    retries--;
-                }
-
-                if (ax > inner.Right || ay > inner.Bottom || retries == 0)
-                {
-                    // we already stepped outside our box, so we're done!
-                    break;
-                }
-
-                previousX = ax;
-                previousY = ay;
-
-                Debug.WriteLine("{0}, {1}  => {2}, {3}  => {4}, {5}", x, y, ax, ay, x - ax, y - ay);
-                calibration.Add(new MouseCalibration()
-                {
-                    Expected = new Point(x, y),
-                    Actual = new Point(ax, ay)
-                });
-            }
-
-            this.calibration = calibration;
-            this.sim.Mouse.Calibrate(calibration);
-
-            // visual check if calibration is worked
-            sim.Mouse.MoveMouseTo(center.X, center.Y);
-            sim.Mouse.MoveMouseTo(bounds.Left, bounds.Bottom);
-            sim.Mouse.MoveMouseTo(b2.Left, b2.Bottom);
-
-            this.calibrated = true;
-            // close the form
-            window.Close();
         }
 
         [TestMethod]
@@ -447,6 +302,7 @@ namespace UnitTests
                         case XmlNodeType.ProcessingInstruction:
                             children = true;
                             w.InvokeMenuItem(openElement ? "PIChildToolStripMenuItem" : "PIAfterToolStripMenuItem");
+                            Sleep(50);
                             commands++;
                             w.SendKeystrokes(reader.Name + "{TAB}");
                             w.SendKeystrokes(reader.Value);
@@ -1063,8 +919,8 @@ namespace UnitTests
             ScrollAutomationWrapper scrollbar = table.FindScroller();
             scrollbar.Simulator = this.sim;
 
-            Trace.WriteLine("Font");
-            AutomationWrapper font = table.FindChild("Font"); // this is the group heading
+            AutomationWrapper fonts = table.FindChild("Fonts"); // this is the group heading
+            AutomationWrapper font = fonts.FindChild("Font");
             scrollbar.ScrollIntoView(font, table);
 
             Rectangle r = font.Bounds;
@@ -1094,13 +950,14 @@ namespace UnitTests
                   "64, 0, 128", "Lime", "128, 0, 64", "0, 64, 64"};
 
 
+            AutomationWrapper colors = table.FindChild("Colors"); // this is the group heading
             for (int i = 0, n = names.Length; i < n; i++)
             {
                 string name = names[i];
 
                 Trace.WriteLine("Click " + name);
 
-                AutomationWrapper child = table.FindChild(name);
+                AutomationWrapper child = colors.FindChild(name);
                 scrollbar.ScrollIntoView(child, table);
 
                 r = child.Bounds;
@@ -1121,11 +978,11 @@ namespace UnitTests
 
             // verify persisted colors.
             this.testSettings = LoadTestSettings();
-            ThemeColors colors = (ThemeColors)this.testSettings["LightColors"];
+            ThemeColors theme = (ThemeColors)this.testSettings["LightColors"];
 
             Color[] found = new Color[]
             {
-                colors.Element, colors.Attribute, colors.Text, colors.Background, colors.Comment, colors.PI, colors.CDATA
+                theme.Element, theme.Attribute, theme.Text, theme.Background, theme.Comment, theme.PI, theme.CDATA
             };
             TypeConverter tc = TypeDescriptor.GetConverter(typeof(Color));
 
@@ -1354,7 +1211,7 @@ namespace UnitTests
 
             Trace.WriteLine("Add schema via file dialog");
             var button = schemaDialog.FindDescendant("Browse Row 0");
-            button.Invoke(); // bring up file open dialog
+            schemaDialog.InvokeAsyncMenuItem("addSchemasToolStripMenuItem");
             Sleep(1000);
 
             Window fileDialog = schemaDialog.WaitForPopup();
@@ -1796,6 +1653,7 @@ Prefix 'user' is not defined. ");
             findDialog.Window.SendKeystrokes("item{TAB}xxxxxxx%a");
             findDialog.Window.DismissPopUp("{ESC}");
 
+            this.TreeView.SetFocus();
             w.SendKeystrokes("{ESC}{HOME}");
             CheckOuterXml(original.Replace("item", "xxxxxxx"));
 
@@ -1810,6 +1668,7 @@ Prefix 'user' is not defined. ");
             findDialog.Window.SendKeystrokes("item{TAB}YY%a");
             findDialog.Window.DismissPopUp("{ESC}");
 
+            this.TreeView.SetFocus();
             w.SendKeystrokes("{ESC}{HOME}");
             CheckOuterXml(original.Replace("item", "YY"));
 
@@ -1877,9 +1736,8 @@ Prefix 'user' is not defined. ");
             popup.DismissPopUp("{ENTER}");
             findDialog.Window.DismissPopUp("{ESC}");
 
-            // hack: weird windows 11 bug causes a focus problem after editing a node
-            // the Escape key fixes it.
-            window.SendKeystrokes("{ESC}");
+            // hack: weird windows 11 bug causes a focus problem
+            this.TreeView.SetFocus();
             CheckOuterXml(@"
     The XXXXX markup in this version is Copyright © 1999 Jon Bosak.
     This work may freely be distributed on condition that it not be
@@ -1922,9 +1780,7 @@ Prefix 'user' is not defined. ");
             popup.DismissPopUp("{ENTER}");
             findDialog.Window.DismissPopUp("{ESC}");
 
-            // hack: weird windows 11 bug causes a focus problem after editing a node
-            // the Escape key fixes it.
-            window.SendKeystrokes("{ESC}");
+            this.TreeView.SetFocus();
             CheckOuterXml(@"XXXXX version by Jon Bosak, 1996-1999.");
 
             Undo();
@@ -1959,7 +1815,9 @@ Prefix 'user' is not defined. ");
             var w = LaunchNotepad(testFile);
 
             Trace.WriteLine("Test toopstrip 'new' button");
-            w.InvokeAsyncMenuItem("toolStripButtonNew");
+            // This button blocks on the modal dialog, so we have to use the menu item instead.
+            // w.InvokeAsyncMenuItem("toolStripButtonNew");
+            w.InvokeAsyncMenuItem("newToolStripMenuItem");
 
             Trace.WriteLine("test recent files menu");
             w.SendKeystrokes("%f");
@@ -1970,7 +1828,10 @@ Prefix 'user' is not defined. ");
 
             Sleep(1000);
             Trace.WriteLine("Test toolstrip button open");
-            w.InvokeAsyncMenuItem("toolStripButtonOpen");
+
+            // This button blocks on the modal dialog, so we have to use the menu item instead.
+            // w.InvokeAsyncMenuItem("toolStripButtonOpen");
+            w.InvokeAsyncMenuItem("openToolStripMenuItem");
             Window openDialog = w.WaitForPopup();
             openDialog.DismissPopUp(testFile + "{ENTER}");
             Sleep(500);

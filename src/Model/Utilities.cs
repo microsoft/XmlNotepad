@@ -186,6 +186,28 @@ namespace XmlNotepad
 
     public class EncodingHelpers
     {
+        public static void InitializeWriterSettings(XmlTextWriter writer, IServiceProvider sp)
+        {
+            if (sp != null)
+            {
+                Settings s = (Settings)sp.GetService(typeof(Settings));
+                if (s != null)
+                {
+                    if (s.GetBoolean("AutoFormatOnSave"))
+                    {
+                        writer.Formatting = Formatting.Indented;
+                        writer.Indentation = s.GetInteger("IndentLevel", 2);
+                        IndentChar indentChar = (IndentChar)s["IndentChar"];
+                        writer.IndentChar = (indentChar == IndentChar.Space) ? ' ' : '\t';
+                    }
+                    else
+                    {
+                        writer.Formatting = Formatting.None;
+                    }
+                }
+            }
+        }
+
         public static void InitializeWriterSettings(XmlWriterSettings settings, IServiceProvider sp)
         {
             settings.CheckCharacters = false;

@@ -29,6 +29,9 @@ namespace XmlNotepad
         public FormSchemas()
         {
             InitializeComponent();
+#if DEBUG
+            AddHiddenMenuItems();
+#endif
             DataGridViewBrowseCell template = new DataGridViewBrowseCell();
             template.UndoManager = this._undoManager;
             template.OpenFileDialog = this.openFileDialog1;
@@ -37,6 +40,20 @@ namespace XmlNotepad
             this._undoManager.StateChanged += new EventHandler(undoManager_StateChanged);
         }
 
+        private void AddHiddenMenuItems()
+        {
+            var hidden = new HiddenMenuItems();
+            hidden.Add(clearToolStripMenuItem);
+            hidden.Add(cutToolStripMenuItem);
+            hidden.Add(copyToolStripMenuItem);
+            hidden.Add(pasteToolStripMenuItem);
+            hidden.Add(deleteToolStripMenuItem);
+            hidden.Add(undoToolStripMenuItem);
+            hidden.Add(redoToolStripMenuItem);
+            hidden.Add(addSchemasToolStripMenuItem);
+            hidden.Add(generateXMLInstanceToolStripMenuItem);
+            this.Controls.Add(hidden);
+        }
         void undoManager_StateChanged(object sender, EventArgs e)
         {
             this.UpdateMenuState();

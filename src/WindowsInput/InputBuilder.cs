@@ -17,17 +17,11 @@ namespace WindowsInput
         private readonly List<INPUT> _inputList;
 
         /// <summary>
-        /// The optional calibration data.
-        /// </summary>
-        private readonly List<MouseCalibration> _calibration;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="InputBuilder"/> class.
         /// </summary>
-        public InputBuilder(List<MouseCalibration> calibration = null)
+        public InputBuilder()
         {
             _inputList = new List<INPUT>();
-            _calibration = calibration;
         }
 
         /// <summary>
@@ -321,33 +315,12 @@ namespace WindowsInput
         {
             var movement = new INPUT { Type = (UInt32)InputType.Mouse };
             var flags = (UInt32)(MouseFlag.Move | MouseFlag.Absolute) | GetMouseButtonDownFlag(button);
-            var bounds = Screen.PrimaryScreen.WorkingArea;
 
-            if (this._calibration != null)
-            {
-                MouseCalibration previous = null;
-                int dx = 0, dy = 0;
-                foreach (var c in this._calibration)
-                {
-                    if (previous != null)
-                    {
-                        if (previous.Expected.X <= absoluteX && c.Expected.X >= absoluteX)
-                        {
-                            dx = c.Expected.X - c.Actual.X;
-                        }
-                        if (previous.Expected.Y <= absoluteY && c.Expected.Y >= absoluteY)
-                        {
-                            dy = c.Expected.Y - c.Actual.Y;
-                        }
-                    }
-                    previous = c;
-                }
-                absoluteX += dx;
-                absoluteY += dy;
-            }
+            var cx_screen = NativeMethods.GetSystemMetrics(NativeMethods.SM_CXSCREEN);
+            var cy_screen = NativeMethods.GetSystemMetrics(NativeMethods.SM_CYSCREEN);
 
-            var vx = (int)((double)absoluteX * 65535.0 / (double)bounds.Width);
-            var vy = (int)((double)absoluteY * 65535.0 / (double)bounds.Height);
+            var vx = (int)((double)absoluteX * 65535.0 / (double)cx_screen);
+            var vy = (int)((double)absoluteY * 65535.0 / (double)cy_screen);
 
             movement.Data.Mouse.Flags = flags;
             movement.Data.Mouse.X = vx;

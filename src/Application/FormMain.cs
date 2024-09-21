@@ -89,6 +89,9 @@ namespace XmlNotepad
             //
             InitializeComponent();
 
+#if DEBUG
+            AddHiddenMenuItems();
+#endif
             // Separated out so we can have virtual CreateTreeView without causing WinForms designer to barf.
             InitializeTreeView();
 
@@ -296,6 +299,76 @@ namespace XmlNotepad
             this.tabPageTreeView.Controls.Add(this.xmlTreeView1);
             this.tabPageTreeView.Controls.SetChildIndex(this.xmlTreeView1, 0);
 
+        }
+
+        private void AddHiddenMenuItems()
+        {
+            var hidden = new HiddenMenuItems();
+            hidden.Add(newToolStripMenuItem, true);
+            hidden.Add(openToolStripMenuItem, true);
+            hidden.Add(openSettingsToolStripMenuItem, true);
+            hidden.Add(reloadToolStripMenuItem, true);
+            hidden.Add(saveToolStripMenuItem, true);
+            hidden.Add(saveAsToolStripMenuItem, true);
+            hidden.Add(exitToolStripMenuItem, true);
+            hidden.Add(undoToolStripMenuItem);
+            hidden.Add(redoToolStripMenuItem);
+            hidden.Add(cutToolStripMenuItem);
+            hidden.Add(copyToolStripMenuItem);
+            hidden.Add(pasteToolStripMenuItem);
+            hidden.Add(deleteToolStripMenuItem);
+            hidden.Add(repeatToolStripMenuItem);
+            hidden.Add(insertToolStripMenuItem);
+            hidden.Add(duplicateToolStripMenuItem);
+            hidden.Add(upToolStripMenuItem);
+            hidden.Add(downToolStripMenuItem);
+            hidden.Add(leftToolStripMenuItem);
+            hidden.Add(rightToolStripMenuItem);
+            hidden.Add(findToolStripMenuItem, true);
+            hidden.Add(expandAllToolStripMenuItem);
+            hidden.Add(collapseAllToolStripMenuItem);
+            hidden.Add(statusBarToolStripMenuItem);
+            hidden.Add(sourceToolStripMenuItem);
+            hidden.Add(optionsToolStripMenuItem);
+            hidden.Add(commentToolStripMenuItem);
+            hidden.Add(contentsToolStripMenuItem);
+            hidden.Add(aboutXMLNotepadToolStripMenuItem, true);
+            hidden.Add(elementAfterToolStripMenuItem);
+            hidden.Add(elementBeforeToolStripMenuItem);
+            hidden.Add(elementChildToolStripMenuItem);
+            hidden.Add(attributeBeforeToolStripMenuItem);
+            hidden.Add(attributeAfterToolStripMenuItem);
+            hidden.Add(attributeChildToolStripMenuItem);
+            hidden.Add(textBeforeToolStripMenuItem);
+            hidden.Add(textAfterToolStripMenuItem);
+            hidden.Add(textChildToolStripMenuItem);
+            hidden.Add(commentBeforeToolStripMenuItem);
+            hidden.Add(commentAfterToolStripMenuItem);
+            hidden.Add(commentChildToolStripMenuItem);
+            hidden.Add(cdataBeforeToolStripMenuItem);
+            hidden.Add(cdataAfterToolStripMenuItem);
+            hidden.Add(cdataChildToolStripMenuItem);
+            hidden.Add(PIBeforeToolStripMenuItem);
+            hidden.Add(PIAfterToolStripMenuItem);
+            hidden.Add(PIChildToolStripMenuItem);
+            hidden.Add(newWindowToolStripMenuItem);
+            hidden.Add(schemasToolStripMenuItem, true);
+            hidden.Add(nextErrorToolStripMenuItem);
+            hidden.Add(compareXMLFilesToolStripMenuItem);
+            hidden.Add(gotoDefinitionToolStripMenuItem);
+            hidden.Add(expandXIncludesToolStripMenuItem);
+            hidden.Add(exportErrorsToolStripMenuItem);
+            hidden.Add(toolStripMenuItemUpdate);
+            hidden.Add(changeToElementToolStripMenuItem1);
+            hidden.Add(changeToAttributeToolStripMenuItem1);
+            hidden.Add(changeToTextToolStripMenuItem1);
+            hidden.Add(changeToCDATAToolStripMenuItem1);
+            hidden.Add(changeToCommentToolStripMenuItem1);
+            hidden.Add(changeToProcessingInstructionToolStripMenuItem);
+            hidden.Add(incrementalSearchToolStripMenuItem);
+            hidden.Add(renameToolStripMenuItem1);
+            hidden.Add(replaceToolStripMenuItem);
+            this.Controls.Add(hidden);
         }
 
         protected virtual void InitializeHelp(HelpProvider hp)
