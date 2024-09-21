@@ -489,6 +489,7 @@ namespace XmlNotepad
 
         void myTreeView_AfterBatchUpdate(object sender, EventArgs e)
         {
+            this.SyncScrollbars();
             if (this.SelectedNode != null)
             {
                 ScrollIntoView(this.SelectedNode);
@@ -754,13 +755,12 @@ namespace XmlNotepad
 
         internal void SyncScrollbars()
         {
-
             if (this.hScrollBar1.Visible)
             {
                 int x = this.resizer.Left;
                 int w = this._myTreeView.VirtualWidth + 10;
                 this._myTreeView.Height = this.Height - this.hScrollBar1.Height;
-                int hScrollMax = 10 + ((w - x) / HScrollIncrement);
+                int hScrollMax = Math.Max(0, 10 + ((w - x) / HScrollIncrement));
                 this.hScrollBar1.Minimum = 0;
                 this.hScrollBar1.Maximum = hScrollMax;
                 this.hScrollBar1.Value = Math.Min(this.hScrollBar1.Value, hScrollMax);
@@ -1946,7 +1946,10 @@ namespace XmlNotepad
         {
             base.Invalidate();
             Init();
-            this.XmlTreeView.SyncScrollbars();
+            if (!this.XmlTreeView.TreeView.InBatchUpdate)
+            {
+                this.XmlTreeView.SyncScrollbars();
+            }
         }
 
         public Settings Settings { get { return this._settings; } }
