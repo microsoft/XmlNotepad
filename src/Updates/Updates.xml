@@ -11,6 +11,7 @@
   </application>
 	<version number="2.9.0.13">
 		<feature>Issue 409: Not able to validate XML against multiple not referenced Schemas</feature>
+    <bug>Fix unit tests so they run on Windows 11, including a work around for https://github.com/dotnet/winforms/issues/10244.</bug>
 	</version>
 	<version number="2.9.0.12">
 		<feature>Issue 324: Generate xml from schema, see https://youtu.be/5I_q1oXz02I.</feature>
