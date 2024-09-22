@@ -596,6 +596,7 @@ namespace UnitTests
 
             Trace.WriteLine("Add Test FontBuilder");
             w.SendKeystrokes("{ENTER}");
+            Sleep(100);
             popup = ClickXmlBuilder();
             popup.DismissPopUp("{ENTER}");
 
