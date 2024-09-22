@@ -1194,10 +1194,17 @@ namespace XmlNotepad
             var doc = generator.Generate(e);
             if (doc != null)
             {
-                var path = System.IO.Path.GetTempFileName();
-                path = System.IO.Path.GetFileNameWithoutExtension(path) + ".xml";
-                doc.Save(path);
-                Program.Launch(path);
+                if (xmlCache.IsEmpty())
+                {
+                    xmlCache.Load(doc);
+                }
+                else
+                {
+                    var path = System.IO.Path.GetTempFileName();
+                    path = System.IO.Path.GetFileNameWithoutExtension(path) + ".xml";
+                    doc.Save(path);
+                    Program.Launch(path);
+                }
             }
             else
             {

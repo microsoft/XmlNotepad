@@ -1265,9 +1265,16 @@ namespace XmlNotepad
                         _n.Children.Add(text);
                     }
                 }
-                else if (_xn is XmlProcessingInstruction)
+                else if (_xn is XmlAttribute attr)
                 {
-                    XmlProcessingInstruction pi = ((XmlProcessingInstruction)_xn);
+                    attr.Value = value;
+                    if (attr.LocalName == "xmlns")
+                    {
+
+                    }
+                }
+                else if (_xn is XmlProcessingInstruction pi)
+                {
                     pi.Data = value;
                 }
                 else if (_xn != null)

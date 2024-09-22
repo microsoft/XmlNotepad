@@ -1318,6 +1318,47 @@ namespace UnitTests
             schemaDialog.SendKeystrokes("%O"); // hot key for OK button.
 
         }
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestSchemaGeneration()
+        {
+            Trace.WriteLine("TestSchemaGeneration==========================================================");
+            var w = LaunchNotepad();
+
+            Sleep(1000);
+            Trace.WriteLine("Open Schema Dialog");
+            Window schemaDialog = w.OpenDialog("schemasToolStripMenuItem", "FormSchemas");
+            schemaDialog.InvokeMenuItem("clearToolStripMenuItem");
+
+            Trace.WriteLine("Add schema via file dialog");
+            var button = schemaDialog.FindDescendant("Browse Row 0");
+            schemaDialog.InvokeAsyncMenuItem("addSchemasToolStripMenuItem");
+            Sleep(1000);
+
+            Window fileDialog = schemaDialog.WaitForPopup();
+            FileDialogWrapper fd = new FileDialogWrapper(fileDialog);
+            string schema = _testDir + "UnitTests\\emp.xsd";
+            fd.DismissPopUp(schema + "{ENTER}");
+
+            schemaDialog.SendKeystrokes("^{HOME}+ "); // select first row
+            Sleep(300); // just so we can watch it happen
+
+            schemaDialog.InvokeAsyncMenuItem("generateXMLInstanceToolStripMenuItem");
+            schemaDialog.SendKeystrokes("{DOWN}{DOWN}{ENTER}");
+            Sleep(300); // just so we can watch it happen
+
+            schemaDialog.SendKeystrokes("%O"); // hot key for OK button.
+
+            this.TreeView.SetFocus();
+            w.SendKeystrokes("{HOME}");
+
+            CheckOuterXml("<Employees xmlns=\"http://Employees\"><Employee id=\"\"><Name><First>string</First><Last>string</Last></Name><Street>string</Street>" +
+                "<City>string</City><Zip>positiveInteger</Zip><Country><Name>U.S.A.</Name></Country><Office>string</Office><Photo>anyURI</Photo></Employee></Employees>");
+
+            Save("out.xml");
+        }
+
         public FindDialog OpenFindDialog()
         {
             this.window.Activate();
@@ -1501,7 +1542,8 @@ Prefix 'user' is not defined. ");
 
             // dismiss the long line dialog
             var popup = w.TryWaitForMessageBox("Very Long Lines");
-            if (popup != null) { 
+            if (popup != null)
+            {
                 popup.DismissPopUp("{ENTER}");
                 Sleep(200);
                 findDialog.FindNext();
@@ -1626,7 +1668,7 @@ Prefix 'user' is not defined. ");
                 w.WaitForInteractive();
                 var node = this.NodeTextView.GetSelectedChild();
                 var value = node.SimpleValue;
-                if (!string.IsNullOrEmpty(value)) 
+                if (!string.IsNullOrEmpty(value))
                     found.Add(value);
             }
 
@@ -2161,7 +2203,7 @@ Prefix 'user' is not defined. ");
         {
             Trace.WriteLine("TestAccessibility==========================================================");
             string testFile = _testDir + "UnitTests\\test1.xml";
-            Window w = this.LaunchNotepad(testFile, testTemplate:true);
+            Window w = this.LaunchNotepad(testFile, testTemplate: true);
             Sleep(1000);
             // Get AutomationWrapper to selected node in the tree.
             AutomationWrapper tree = this.TreeView;
@@ -2992,6 +3034,8 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("Now file should be identical to original");
             this.SaveAndCompare("out.xml", "test8.xml");
         }
+
+
 
         //==================================================================================
         private void SaveAndCompare(string outname, string compareWith)

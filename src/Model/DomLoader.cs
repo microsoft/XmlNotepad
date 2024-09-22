@@ -28,7 +28,7 @@ namespace XmlNotepad
             this._sc = cache;
         }
 
-        public IEnumerable<string> AllNamespaces => _allNamespaces;
+        public HashSet<string> AllNamespaces => _allNamespaces;
 
         void AddToTable(XmlNode node)
         {

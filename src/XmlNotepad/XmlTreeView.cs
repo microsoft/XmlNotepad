@@ -386,6 +386,7 @@ namespace XmlNotepad
                                     {
                                         XmlAttribute attr = doc.CreateAttribute("xmlns", inode.XmlNode.Prefix, XmlStandardUris.XmlnsUri);
                                         attr.Value = inode.XmlNode.NamespaceURI;
+                                        this._model.AllNamespaces.Add(inode.XmlNode.NamespaceURI);
                                         scope.Attributes.Append(attr);
                                         xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
                                         xn.Expand();
@@ -397,6 +398,7 @@ namespace XmlNotepad
                                     {
                                         XmlAttribute attr = doc.CreateAttribute("", "xmlns", XmlStandardUris.XmlnsUri);
                                         attr.Value = e.Namespace;
+                                        this._model.AllNamespaces.Add(e.Namespace);
                                         scope.Attributes.Append(attr);
                                         xn.Children.Add(new XmlTreeNode(this, (XmlTreeNode)e.Node, attr));
                                         xn.Expand();

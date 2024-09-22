@@ -80,7 +80,7 @@ namespace XmlNotepad
         /// </summary>
         public string XsltDefaultOutput { get; set; }
 
-        public IEnumerable<string> AllNamespaces => this._loader.AllNamespaces;
+        public HashSet<string> AllNamespaces => this._loader.AllNamespaces;
 
         public bool Dirty => this._dirty;
 
@@ -170,6 +170,16 @@ namespace XmlNotepad
         {
             get { return this._schemaCache; }
             set { this._schemaCache = value; }
+        }
+
+        /// <summary>
+        /// Load the cache from an existing document instance.
+        /// </summary>
+        /// <param name="doc"></param>
+        public void Load(XmlDocument doc)
+        {
+            this.Document = doc;
+            FireModelChanged(ModelChangeType.Reloaded, doc);
         }
 
         /// <summary>
@@ -291,6 +301,11 @@ namespace XmlNotepad
             string filename = this._fileName;
             Clear();
             Load(filename);
+        }
+
+        public bool IsEmpty()
+        {
+            return this.Document.ChildNodes.Count == 0;
         }
 
         public void Clear()
