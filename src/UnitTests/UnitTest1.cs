@@ -119,6 +119,7 @@ namespace UnitTests
                 args = "-debugMouse " + args;
             }
             this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", args, "FormMain");
+            this.DisableCapsLock();
             return window;
         }
 
@@ -155,13 +156,20 @@ namespace UnitTests
         {
             get
             {
-                AutomationWrapper cset = this.window.FindPopup("CompletionSet");
-                if (!cset.IsVisible)
+                // Sometimes the intellisense dropdown can take a while to appears, especially
+                // in the case where it is listing all fonts on the system!
+                AutomationWrapper cset = this.TryFindNodeTextViewCompletionPopup();
+                if (cset == null)
                 {
-                    throw new Exception("CompletionSet is not visible");
+                    throw new Exception("CompletionSet is not visible after 10 seconds");
                 }
                 return cset;
             }
+        }
+
+        AutomationWrapper TryFindNodeTextViewCompletionPopup(int timeout = 100, int retries = 10)
+        {
+            return this.window.TryFindPopup("CompletionSet", timeout, retries);
         }
 
         [TestMethod]
@@ -594,9 +602,19 @@ namespace UnitTests
             w.SendKeystrokes("fo{TAB}ar{ENTER}");
             Sleep(500);//just so I can see it
 
-            Trace.WriteLine("Add Test FontBuilder");
-            w.SendKeystrokes("{ENTER}");
-            Sleep(100);
+            Trace.WriteLine("Test FontBuilder");
+
+            // for some unknown reason this fails to popup sometimes only during full test.
+            for (int i = 0; i < 5; i++)
+            {
+                w.SendKeystrokes("{ENTER}");
+                var completion = TryFindNodeTextViewCompletionPopup();
+                if (completion != null)
+                {
+                    break;
+                }
+                Trace.WriteLine("Retring to open the FontBuilder completionset...");
+            }
             popup = ClickXmlBuilder();
             popup.DismissPopUp("{ENTER}");
 

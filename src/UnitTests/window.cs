@@ -348,6 +348,7 @@ namespace UnitTests
                 }
                 Sleep(200);
             }
+            
             throw new ApplicationException("Popup is not dismissing!");
         }
 

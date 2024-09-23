@@ -46,6 +46,24 @@ namespace WindowsInput
         }
 
         /// <summary>
+        /// Return true if the caps lock key is down.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsCapsLockEnabled()
+        {
+            return _inputDeviceState.IsTogglingKeyInEffect(Native.VirtualKeyCode.CAPITAL);
+        }
+
+        /// <summary>
+        /// Send capslock key press to toggle the state.
+        /// </summary>
+        public void ToggleCapsLock()
+        {
+            _keyboardSimulator.KeyDown(Native.VirtualKeyCode.CAPITAL);
+            _keyboardSimulator.KeyUp(Native.VirtualKeyCode.CAPITAL);
+        }
+
+        /// <summary>
         /// Gets the <see cref="IKeyboardSimulator"/> instance for simulating Keyboard input.
         /// </summary>
         /// <value>The <see cref="IKeyboardSimulator"/> instance.</value>

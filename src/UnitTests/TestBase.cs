@@ -104,6 +104,14 @@ namespace UnitTests
             return w;
         }
 
+        public void DisableCapsLock()
+        {
+            if (this.sim.IsCapsLockEnabled())
+            {
+                this.sim.ToggleCapsLock();
+            }
+        }
+
         protected Window window;
 
         public void CloseApp()
