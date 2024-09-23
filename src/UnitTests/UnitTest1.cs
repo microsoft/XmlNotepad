@@ -2837,6 +2837,7 @@ Prefix 'user' is not defined. ");
             // now we should be able to open the settings.
             w = this.LaunchNotepad(testFile, false);
             w.InvokeAsyncMenuItem("openSettingsToolStripMenuItem");
+            Sleep(200);
 
             // <DisableDefaultXslt>False</DisableDefaultXslt>
             w.SendKeystrokes("^IDis");
