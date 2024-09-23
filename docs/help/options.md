@@ -46,7 +46,9 @@ version of XML Notepad is available. You can set the update frequency, but only 
 frequency defined in the updates.xml file. See [Updates](updates.md) for more information on how this works.
 
 ### Validation
-You can turn off DTD validation.
+You can turn off DTD validation and you can modify the size of the node line/col index.
+This limit exists because it takes a lot of extra memory to index the location of every node in a
+large document and can make editing very large XML files slower.
 
 ### XmlDiff
 Options that control how the XmlDiff works when you compare XML documents.

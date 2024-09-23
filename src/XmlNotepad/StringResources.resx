@@ -773,6 +773,15 @@ Do you want to enable execution of this script code?</value>
     <value>Maximum Value Length</value>
     <comment>Property Grid property name</comment>
   </data>
+  <data name="MaximumLineIndexDescription" xml:space="preserve">
+    <value>Maximum number of nodes that have indexed line and column information so validation errors can be linked to those lines.
+    This is limited because it takes a lot of extra memory and can make editing very large XML files slower.</value>
+    <comment>Property Grid description</comment>
+  </data>
+  <data name="MaximumLineIndexProperty" xml:space="preserve">
+    <value>Maximum nodes for validation</value>
+    <comment>Property Grid property name</comment>
+  </data>
   <data name="NoByteOrderMark" xml:space="preserve">
     <value>No byte order mark on save</value>
     <comment>Property grid property name</comment>

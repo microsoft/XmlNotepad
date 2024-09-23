@@ -11,6 +11,8 @@
   </application>
 	<version number="2.9.0.13">
 		<feature>Issue 409: Not able to validate XML against multiple not referenced Schemas</feature>
+    <feature>Issue 329: Incomplete schema validation of large XML files ( > ~20 MB).</feature>
+    <bug>Report invalid characters undex 0x20.</bug>
     <bug>Fix unit tests so they run on Windows 11, including a work around for https://github.com/dotnet/winforms/issues/10244.</bug>
 	</version>
 	<version number="2.9.0.12">

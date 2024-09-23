@@ -717,6 +717,14 @@ namespace XmlNotepad
             return settingValue is int value ? value : defaultValue;
         }
 
+        public long GetLong(string settingName, long defaultValue = 10000000)
+        {
+            object settingValue = this[settingName];
+            if (settingValue is int i)
+                return i;
+            return settingValue is long value ? value : defaultValue;
+        }
+
         public double GetDouble(string settingName, double defaultValue = 0)
         {
             object settingValue = this[settingName];
@@ -966,7 +974,9 @@ namespace XmlNotepad
             this["MaximumLineLength"] = 10000;
             this["MaximumValueLength"] = (int)short.MaxValue;
             this["AutoFormatLongLines"] = false;
+
             this["IgnoreDTD"] = false;
+            this["MaximumLineIndex"] = 1000000;
 
             // XSLT options
             this["BrowserVersion"] = "";

@@ -487,7 +487,7 @@ namespace XmlNotepad
             for (int i = 0, n = text.Length; i < n; i++)
             {
                 char ch = text[i];
-                if ((ch < 20 && ch != 0x9 && ch != 0xa && ch != 0xd) || ch > 0xfffe)
+                if ((ch < 0x20 && ch != 0x9 && ch != 0xa && ch != 0xd) || ch > 0xfffe)
                 {
                     ReportError(Severity.Error, string.Format(Strings.InvalidCharacter, ((int)ch).ToString(), i), ctx);
                 }

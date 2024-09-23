@@ -219,6 +219,7 @@ namespace XmlNotepad
             private string _language;
             private int _maximumLineLength;
             private int _maximumValueLength;
+            private long _maximumLineIndex;
             private bool _autoFormatLongLines;
             private bool _ignoreDTD;
             private bool _enableXsltScripts;
@@ -263,6 +264,7 @@ namespace XmlNotepad
                 _schemaAwareNames = this._settings.GetString("SchemaAwareNames");
                 _maximumLineLength = this._settings.GetInteger("MaximumLineLength");
                 _autoFormatLongLines = this._settings.GetBoolean("AutoFormatLongLines");
+                _maximumLineIndex = this._settings.GetLong("MaximumLineIndex");
                 _ignoreDTD = this._settings.GetBoolean("IgnoreDTD");
                 _enableXsltScripts = this._settings.GetBoolean("EnableXsltScripts");
                 _webBrowser = (this._settings.GetString("BrowserVersion") == "WebBrowser") ? WebBrowserVersion.WinformsWebBrowser : WebBrowserVersion.WebView2;
@@ -365,6 +367,7 @@ namespace XmlNotepad
                 this._settings["MaximumLineLength"] = this._maximumLineLength;
                 this._settings["MaximumValueLength"] = this._maximumValueLength;
                 this._settings["AutoFormatLongLines"] = this._autoFormatLongLines;
+                this._settings["MaximumLineIndex"]  = this._maximumLineIndex;
                 this._settings["IgnoreDTD"] = this._ignoreDTD;
 
                 this._settings["EnableXsltScripts"] = this._enableXsltScripts;
@@ -408,6 +411,7 @@ namespace XmlNotepad
                 _language = "";
                 this._maximumLineLength = 10000;
                 this._maximumValueLength = short.MaxValue;
+                this._maximumLineIndex = 1000000;
                 _ignoreDTD = false;
                 this._allowAnalytics = false;
                 this._promptOnReload = true;
@@ -896,6 +900,20 @@ namespace XmlNotepad
                 }
             }
 
+            [SRCategory("Validation")]
+            [LocDisplayName("MaximumLineIndexProperty")]
+            [SRDescription("MaximumLineIndexDescription")]
+            public long MaximumLineIndex
+            {
+                get
+                {
+                    return this._maximumLineIndex;
+                }
+                set
+                {
+                    this._maximumLineIndex = value;
+                }
+            }
 
             [SRCategory("XsltCategory")]
             [LocDisplayName("EnableXsltScriptsPropertyName")]

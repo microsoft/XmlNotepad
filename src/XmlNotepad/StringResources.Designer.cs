@@ -940,6 +940,25 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum number of nodes that have indexed line and column information so validation errors can be linked to those lines.
+        ///    This is limited because it takes a lot of extra memory and can make editing very large XML files slower..
+        /// </summary>
+        public static string MaximumLineIndexDescription {
+            get {
+                return ResourceManager.GetString("MaximumLineIndexDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum nodes for validation.
+        /// </summary>
+        public static string MaximumLineIndexProperty {
+            get {
+                return ResourceManager.GetString("MaximumLineIndexProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What is the maximum line length before prompting for reformatting?.
         /// </summary>
         public static string MaximumLineLengthDescription {
