@@ -1744,7 +1744,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How often to check for updates in dd:hh:mm:ss format.
+        ///   Looks up a localized string similar to How often to check for updates in dd.hh:mm:ss format.
         /// </summary>
         public static string UpdateFrequencyDescription {
             get {
@@ -1753,7 +1753,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Frequency timespan invalid format, it must be dd:hh:mm:ss..
+        ///   Looks up a localized string similar to Update Frequency timespan invalid format, it must be dd.hh:mm:ss..
         /// </summary>
         public static string UpdateFrequencyFormatError {
             get {

@@ -2,7 +2,7 @@
 
 XML Notepad stores your user settings in a file located in this folder, by default:
 
-```cmd
+```powershell
 %APPDATA%\Microsoft\Xml Notepad\XmlNotepad.settings
 ```
 
