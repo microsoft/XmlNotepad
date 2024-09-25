@@ -256,7 +256,7 @@ namespace XmlNotepad
         private readonly Hashtable _map = new Hashtable();
         private DelayedActions _delayedActions = null;
         private PersistentFileNames _pfn;
-
+        private bool _isDirty;
         public static string DefaultUpdateLocation = "https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/Updates.xml";
 
         /// <summary>
@@ -277,6 +277,10 @@ namespace XmlNotepad
         {
             _instance = this;
         }
+
+        public bool IsDirty => this._isDirty;
+
+        public bool DiscardChanges { get; set; } = false;
 
         public ValueMatchHandler Comparer
         {
@@ -373,6 +377,10 @@ namespace XmlNotepad
                 if (!this.SettingValueMatches(this._map[name], value))
                 {
                     this._map[name] = value;
+                    if (!(value is SchemaCache) && name != "SettingsLocation")
+                    {
+                        this._isDirty = true;
+                    }
                     OnChanged(name);
                 }
             }
@@ -445,6 +453,7 @@ namespace XmlNotepad
                 Debug.WriteLine("Load settings failed: " + ex.Message);
             }
 
+            this._isDirty = false;
             this.FileName = filename;
         }
 
@@ -525,52 +534,45 @@ namespace XmlNotepad
         {
             // make sure directory exists!
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
-            try
+            using (var w = new XmlTextWriter(filename, System.Text.Encoding.UTF8))
             {
-                using (var w = new XmlTextWriter(filename, System.Text.Encoding.UTF8))
+                w.Formatting = Formatting.Indented;
+                w.WriteStartElement("Settings");
+                // create save stability.
+                List<string> keys = new List<string>();
+                foreach (string key in _map.Keys)
                 {
-                    w.Formatting = Formatting.Indented;
-                    w.WriteStartElement("Settings");
-                    // create save stability.
-                    List<string> keys = new List<string>();
-                    foreach (string key in _map.Keys)
+                    keys.Add(key);
+                }
+                keys.Sort();
+                foreach (string key in keys)
+                {
+                    object value = _map[key];
+                    if (value != null)
                     {
-                        keys.Add(key);
-                    }
-                    keys.Sort();
-                    foreach (string key in keys)
-                    {
-                        object value = _map[key];
-                        if (value != null)
+                        if (value is Hashtable ht)
                         {
-                            if (value is Hashtable ht)
-                            {
-                                w.WriteStartElement(key); // container element      
-                                WriteHashTable(w, ht);
-                                w.WriteEndElement();
-                            }
-                            else if (value is Array va)
-                            {
-                                WriteArray(w, key, va);
-                            }
-                            else if (value is IXmlSerializable xs)
-                            {
-                                w.WriteStartElement(key); // container element   
-                                xs.WriteXml(w);
-                                w.WriteEndElement();
-                            }
-                            else
-                            {
-                                string s = ConvertToString(value);
-                                if (s != null) w.WriteElementString(key, s);
-                            }
+                            w.WriteStartElement(key); // container element      
+                            WriteHashTable(w, ht);
+                            w.WriteEndElement();
+                        }
+                        else if (value is Array va)
+                        {
+                            WriteArray(w, key, va);
+                        }
+                        else if (value is IXmlSerializable xs)
+                        {
+                            w.WriteStartElement(key); // container element   
+                            xs.WriteXml(w);
+                            w.WriteEndElement();
+                        }
+                        else
+                        {
+                            string s = ConvertToString(value);
+                            if (s != null) w.WriteElementString(key, s);
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
             }
         }
 
@@ -674,6 +676,9 @@ namespace XmlNotepad
             {
                 // make sure file is not still locked by the writer.
                 string text = File.ReadAllText(this._filename);
+
+                // The "File" property is a special signal to the listener that the entire
+                // settings need to be reloaded.
                 OnChanged("File");
             }
             catch (Exception)
@@ -1005,6 +1010,8 @@ namespace XmlNotepad
             this["TextEditor"] = Path.Combine(sysdir, "notepad.exe");
             this["MouseCalibration"] = new Point[0];
             this["PrimaryScreenSize"] = new Size();
+
+            this._isDirty = false;
         }
     }
 

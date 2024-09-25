@@ -9,6 +9,9 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+  <version number="2.9.0.14">
+    <bug>Fix issue #418: check setttings-file for "read-only".</bug>
+  </version>
 	<version number="2.9.0.13">
 		<feature>Issue 409: Not able to validate XML against multiple not referenced Schemas</feature>
     <feature>Issue 329: Incomplete schema validation of large XML files ( > ~20 MB).</feature>

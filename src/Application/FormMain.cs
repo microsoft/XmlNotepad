@@ -12,6 +12,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using XmlNotepad.Properties;
 using SR = XmlNotepad.StringResources;
 using SystemTask = System.Threading.Tasks.Task;
 
@@ -577,8 +578,39 @@ namespace XmlNotepad
             }
             this.closing = true;
             this._delayedActions.Close();
-            SaveConfig();
+
+            SaveSettings(e);
+            
             base.OnClosing(e);
+        }
+
+        private void SaveSettings(CancelEventArgs e)
+        {
+            try
+            {
+                SaveConfig();
+            }
+            catch (Exception ex)
+            {
+                if (this._settings.DiscardChanges)
+                {
+                    // prompt the user only once per process.
+                }
+                else
+                {
+                    var rc = MessageBox.Show(this, "Error saving " + this._settings.FileName + "\r\n\r\n" + 
+                        ex.Message + "\r\n\r\nWould you like to discard your changes to the settings?",
+                        "Error saving settings", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (rc == DialogResult.No)
+                    {
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        this._settings.DiscardChanges = true;
+                    }
+                }
+            }
         }
 
         protected override void OnClosed(EventArgs e)
@@ -1539,8 +1571,12 @@ namespace XmlNotepad
             this._settings["TreeViewSize"] = this.xmlTreeView1.ResizerPosition;
             this._settings["RecentFiles"] = this._recentFiles.ToArray();
             this._settings["RecentXsltFiles"] = this._recentXsltFiles.ToArray();
-            var path = this._settings.FileName;
-            this._settings.Save(path);
+            if (this.Settings.IsDirty)
+            {
+                var path = this._settings.FileName;
+                Debug.WriteLine("Saving settings: " + path);
+                this._settings.Save(path);
+            }
         }
 
         #region  ISite implementation
@@ -1624,7 +1660,7 @@ namespace XmlNotepad
             switch (name)
             {
                 case "File":
-                    // load the new settiongs but don't move the window or anything if another instances of xmlnotepad.exe changed
+                    // load the new settings but don't move the window or anything if another instances of xmlnotepad.exe changed
                     // the settings.xml file.
                     if (!this._loading)
                     {
@@ -1718,6 +1754,10 @@ namespace XmlNotepad
                     }
                     break;
             }
+
+            this._delayedActions.StartDelayedAction("DelaySaveSettings", 
+                () => SaveSettings(new CancelEventArgs()), 
+                TimeSpan.FromSeconds(1));
         }
 
         public void SaveErrors(string filename)
