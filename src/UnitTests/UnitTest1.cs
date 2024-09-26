@@ -123,6 +123,15 @@ namespace UnitTests
             return window;
         }
 
+        AutomationWrapper ErrorList
+        {
+            get
+            {
+                AutomationWrapper grid = this.window.FindDescendant("DataGridView");
+                return grid;
+            }
+        }
+
 
         AutomationWrapper XmlTreeView
         {
@@ -690,7 +699,7 @@ namespace UnitTests
 
         private void NavigateErrorWithMouse()
         {
-            AutomationWrapper grid = this.window.FindDescendant("DataGridView");
+            AutomationWrapper grid = this.ErrorList;
             AutomationWrapper row = grid.FirstChild;
             row = row.NextSibling;
             Point pt = row.Bounds.Center();
@@ -1335,6 +1344,42 @@ namespace UnitTests
             // Make sure we commit with the duplicate tns.
             schemaDialog.SendKeystrokes("%O"); // hot key for OK button.
 
+        }
+
+
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestXsiAttributes()
+        {
+            Trace.WriteLine("TestXsiAttributes==========================================================");
+            string testFile = _testDir + "UnitTests\\test13.xml";
+            var w = LaunchNotepad(testFile);
+
+            AutomationWrapper grid = this.ErrorList;
+            AutomationWrapper description = grid.FirstChild.NextSibling.FirstChild.NextSibling;
+            var text = description.SimpleValue;
+            if (!text.Contains("The 'last_changed' element is invalid"))
+            {
+                throw new Exception("Missing validation error");
+            }
+
+            // correct the value of the xsi:nil attribute
+            w.SendKeystrokes("{END}{RIGHT}{DOWN}{TAB}{ENTER}true{ENTER}");
+            Sleep(500);
+
+            try
+            {
+                description = grid.FirstChild.NextSibling.FirstChild.NextSibling;
+                text = description.SimpleValue;
+                throw new Exception($"Error list should now be empty, but found: {text}");
+            } 
+            catch (Exception ex)
+            {
+                if (!ex.Message.Contains("There is no next sibling"))
+                {
+                    throw new Exception($"Unexpected error: {ex.Message}");
+                }
+            }
         }
 
         [TestMethod]

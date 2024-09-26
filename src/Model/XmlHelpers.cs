@@ -219,7 +219,7 @@ namespace XmlNotepad
         {
             if (node == null) return false;
             return node.NodeType == XmlNodeType.Attribute &&
-                (node.LocalName == "type" && node.NamespaceURI == "http://www.w3.org/2001/XMLSchema-instance");
+                node.NamespaceURI == "http://www.w3.org/2001/XMLSchema-instance";
         }
     }
 

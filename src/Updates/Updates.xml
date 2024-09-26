@@ -11,6 +11,7 @@
   </application>
   <version number="2.9.0.14">
     <bug>Fix issue #418: check setttings-file for "read-only".</bug>
+    <bug>Fix issue #398: XmlNotepad detects xml-errors at empty nillable xsd:date Elements, but xml is correct</bug>
   </version>
 	<version number="2.9.0.13">
 		<feature>Issue 409: Not able to validate XML against multiple not referenced Schemas</feature>

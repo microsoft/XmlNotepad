@@ -179,6 +179,7 @@ namespace XmlNotepad
                 {
                     result |= LoadSchemasForNamespace(set, resolver, sc, nsuri, root);
                 }
+                result |= LoadSchemasForNamespace(set, resolver, sc, doc.DocumentElement.NamespaceURI, root);
             }
             // Make sure all the required includes or imports are there. 
             // This is making up for a possible bug in XmlSchemaSet where it
