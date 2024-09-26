@@ -252,21 +252,32 @@ namespace XmlNotepad
                 resolved = new Uri(_context.baseUri, this._context.xsltfilename);
                 if (resolved != this._xsltUri || IsModified())
                 {
-                    _xslt = new XslCompiledTransform();
-                    this._loaded = DateTime.Now;
-                    var settings = new XsltSettings(true, this._context.enableScripts);
-                    settings.EnableScript = _trustService.CanTrustUrl(resolved) == true;
-                    var rs = new XmlReaderSettings();
-                    rs.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                    rs.XmlResolver = this._context.resolver;
-                    using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
+                    try
                     {
-                        _xslt.Load(r, settings, this._context.resolver);
-                    }
+                        _xslt = new XslCompiledTransform();
+                        this._loaded = DateTime.Now;
+                        var settings = new XsltSettings(true, this._context.enableScripts);
+                        settings.EnableScript = _trustService.CanTrustUrl(resolved) == true;
+                        var rs = new XmlReaderSettings();
+                        rs.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                        rs.XmlResolver = this._context.resolver;
+                        using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
+                        {
+                            _xslt.Load(r, settings, this._context.resolver);
+                        }
 
-                    // the XSLT DOM is also handy to have around for GetOutputMethod
-                    this._xsltdoc = new XmlDocument();
-                    this._xsltdoc.Load(resolved.AbsoluteUri);
+                        // the XSLT DOM is also handy to have around for GetOutputMethod
+                        this._xsltdoc = new XmlDocument();
+                        this._xsltdoc.Load(resolved.AbsoluteUri);
+                    } 
+                    catch (Exception) 
+                    {
+                        // remember that this xslt is broken.
+                        this._xslt = null;
+                        this._xsltUri = null;
+                        this._xsltdoc = null;
+                        throw;
+                    }
                 }
                 transform = _xslt;
                 this._usingDefaultXslt = false;
