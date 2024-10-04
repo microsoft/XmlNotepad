@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- XSL designed to provide HTML output from Jon Bosak's Shakespeare XML collection -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:template match="/">
@@ -112,5 +113,13 @@
   <xsl:template match="SCNDESCR">
   </xsl:template>
   <xsl:template match="PLAYSUBT">
+  </xsl:template>
+  <xsl:template match="P">
+    <xsl:value-of select="text()" />
+    <!--add a special non-breaking space between paragraphs is it cannot be ignored whitespace. -->
+    <span>&#xA0;</span>
+  </xsl:template>
+  <xsl:template match="TITLE">
+    <!--do nothing - we don't want a duplicate title-->
   </xsl:template>
 </xsl:stylesheet>
