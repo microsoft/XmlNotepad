@@ -1753,11 +1753,35 @@ namespace XmlNotepad
                         this._analytics.SetEnabled(this._settings.GetBoolean("AllowAnalytics", false));
                     }
                     break;
+                case "Theme":
+                    OnThemeChanged();
+                    break;
             }
 
             this._delayedActions.StartDelayedAction("DelaySaveSettings", 
                 () => SaveSettings(new CancelEventArgs()), 
                 TimeSpan.FromSeconds(1));
+        }
+
+        private void OnThemeChanged()
+        {
+            if ((ColorTheme)this._settings["Theme"] == ColorTheme.Light)
+            {
+                ThemeAllControls(this, false);
+            }
+            else
+            {
+                ThemeAllControls(this, true);
+            }
+        }
+
+        private void ThemeAllControls(Control parent, bool darkMode)
+        {
+            Win32Helpers.UseImmersiveDarkMode(this.Handle, darkMode);
+            foreach (Control control in parent.Controls)
+            {
+                ThemeAllControls(control, darkMode);
+            }
         }
 
         public void SaveErrors(string filename)

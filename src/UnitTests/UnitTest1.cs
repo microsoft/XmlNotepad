@@ -3099,9 +3099,48 @@ Prefix 'user' is not defined. ");
             this.SaveAndCompare("out.xml", "test8.xml");
         }
 
+        [TestMethod]
+        [Timeout(TestMethodTimeout)]
+        public void TestNoByteOrderMark()
+        {
+            SetNoByteOrderMark(true);
+            Trace.WriteLine("TestNoByteOrderMark==========================================================");
+            string testFile = _testDir + "UnitTests\\test8.xml";
+            var w = this.LaunchNotepad(testFile);
+            Sleep(1000);
+            string outFile = Save("out.xml");
 
+            AssertUtf8Bom(testFile, true);
+            AssertUtf8Bom(outFile, false);
+
+            // test we can load it
+            XmlDocument doc = new XmlDocument();
+            doc.Load(outFile);
+        }
 
         //==================================================================================
+
+        void SetNoByteOrderMark(bool value)
+        {
+            this.testSettings["NoByteOrderMark"] = value;
+            this.testSettings.Save(this.testSettings.FileName);
+        }
+
+        private void AssertUtf8Bom(string filename, bool expected)
+        {
+            var data = File.ReadAllBytes(filename);
+            bool isUtf8 = data.Length > 3 && data[0] == 0xef && data[1] == 0xBB && data[2] == 0xBF;
+            if (isUtf8 && !expected)
+            {
+                throw new ApplicationException("Byte order mark is present in {filename} but should not be");
+            }
+            else if (!isUtf8 && expected)
+            {
+                throw new ApplicationException("Byte order mark is not present in {filename} but should be");
+            }
+        }
+
+
         private void SaveAndCompare(string outname, string compareWith)
         {
             string outFile = Save(outname);

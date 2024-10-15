@@ -393,7 +393,7 @@ namespace XmlNotepad
                     Settings settings = (Settings)this._site.GetService(typeof(Settings));
                     if (settings != null)
                     {
-                        noBom = (bool)settings["NoByteOrderMark"];
+                        noBom = settings.GetBoolean("NoByteOrderMark", false);
                         if (noBom)
                         {
                             // then we must have an XML declaration with an encoding attribute.
@@ -414,10 +414,11 @@ namespace XmlNotepad
                         EncodingHelpers.InitializeWriterSettings(w, this._site);
                         _doc.Save(w);
                     }
-                    ms.Seek(0, SeekOrigin.Begin);
 
-                    EncodingHelpers.WriteFileWithoutBOM(ms, filename);
-
+                    using (var stm = new MemoryStream(ms.ToArray()))
+                    {
+                        EncodingHelpers.WriteFileWithoutBOM(stm, filename);
+                    }
                 }
                 else
                 {
