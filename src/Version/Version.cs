@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// This is the Master version number from which UpdateVersions will propagate to
-// Package.appxmanifest, Product.wxs, Bundle.wxs and Application.csproj.
-[assembly: AssemblyVersion("2.9.0.14")]
-[assembly: AssemblyFileVersion("2.9.0.14")]
+// Version.props is the Master version number from which UpdateVersions will propagate to
+// this file, Package.appxmanifest, Product.wxs, Bundle.wxs and Application.csproj.
+[assembly: AssemblyVersion("2.9.0.15")]
+[assembly: AssemblyFileVersion("2.9.0.15")]

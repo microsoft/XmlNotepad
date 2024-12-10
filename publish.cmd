@@ -95,6 +95,7 @@ echo ============ Done publishing ClickOnce installer to XmlNotepad ============
 
 where wingetcreate > nul 2>&1
 if ERRORLEVEL 1 winget install wingetcreate
+winget upgrade wingetcreate
 
 if "%WINGET%"=="0" goto :skipwinget
 if not exist %WINGET_SRC% goto :nowinget
