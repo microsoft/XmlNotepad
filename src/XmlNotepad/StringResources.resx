@@ -757,6 +757,14 @@ Do you want to enable execution of this script code?</value>
     <value>Long Lines</value>
     <comment>Property Grid Category</comment>
   </data>
+	<data name="AttributesOnNewLineProperty" xml:space="preserve">
+    <value>Attributes on a new line</value>
+    <comment>Property Grid Category</comment>
+  </data>
+	<data name="AttributesOnNewLineDescription" xml:space="preserve">
+    <value>Format each attribute on a new line with matching indentation.</value>
+    <comment>Property Grid description</comment>
+  </data>
   <data name="MaximumLineLengthDescription" xml:space="preserve">
     <value>What is the maximum line length before prompting for reformatting?</value>
     <comment>Property Grid description</comment>

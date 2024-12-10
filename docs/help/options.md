@@ -21,9 +21,9 @@ will automatically reload that file (unless you have pending unsaved edits).
 
 ### Formatting
 You can also configure the formatting options used when you save an XML file, or turn off formatting
-altogether. Preserve Whitepsace also controls how the file is opened; when true, you will see all the whitespace nodes in
+altogether. Preserve Whitespace controls how the file is opened; when true, you will see all the whitespace nodes in
 the document, which are used also when the file is saved. You can also configure the TreeView indentation level in
-pixels.
+pixels. You can also format attributes so they each have a separate line.
 
 ### Language
 Specify which language annotations to pick from associated XSD schemas.

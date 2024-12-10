@@ -9,6 +9,10 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+	<version number="2.9.0.16">
+		<bug>Fix issue #430: Autoformat on Save with empty XML-Elements.</bug>
+		<feature>Formatting Options has new setting to format Xml attributes each on a separate line.</feature>
+	</version>
 	<version number="2.9.0.15">
 		<bug>Fix issue #425: "No byte order mark on save" option throws stream closed exception add unit test.</bug>
 		<bug>Apply dark mode to window titlebar.</bug>

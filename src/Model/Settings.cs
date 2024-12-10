@@ -974,6 +974,7 @@ namespace XmlNotepad
             this["PreserveWhitespace"] = false;
             this["Language"] = "";
             this["NoByteOrderMark"] = false;
+            this["AttributesOnNewLine"] = false;
 
             this["AppRegistered"] = false;
             this["MaximumLineLength"] = 10000;

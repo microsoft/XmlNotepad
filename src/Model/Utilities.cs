@@ -227,6 +227,7 @@ namespace XmlNotepad
                     char ch = (indentChar == IndentChar.Space) ? ' ' : '\t';
                     settings.IndentChars = new string(ch, indentLevel);
                     settings.NewLineChars = Settings.UnescapeNewLines(s.GetString("NewLineChars", "\r\n"));
+                    settings.NewLineOnAttributes = s.GetBoolean("AttributesOnNewLine");
                 }
             }
         }

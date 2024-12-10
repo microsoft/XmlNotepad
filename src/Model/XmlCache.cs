@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.XPath;
 
@@ -387,9 +388,13 @@ namespace XmlNotepad
 
                 var encoding = GetEncoding();
                 s.Encoding = encoding;
+
                 bool noBom = false;
+                bool useNewWriter = true;
                 if (this._site != null)
                 {
+                    EncodingHelpers.InitializeWriterSettings(s, this._site);
+
                     Settings settings = (Settings)this._site.GetService(typeof(Settings));
                     if (settings != null)
                     {
@@ -401,20 +406,26 @@ namespace XmlNotepad
                         }
                     }
                 }
-                if (noBom)
+
+                MemoryStream ms = new MemoryStream();
+                if (useNewWriter)
                 {
-                    MemoryStream ms = new MemoryStream();
-                    // The new XmlWriter.Create method returns a writer that is too strict and does not
-                    // allow xmlns attributes that override the parent element NamespaceURI.  Using that
-                    // writer would require very complex (and very slow) recreation of XML Element nodes 
-                    // in the tree (and therefore all their children also) every time and xmlns attribute
-                    // is modified.
+                    using (var writer = XmlWriter.Create(ms, s))
+                    {
+                        this.WriteTo(writer);
+                    }
+                }
+                else
+                {
                     using (XmlTextWriter w = new XmlTextWriter(ms, encoding))
                     {
                         EncodingHelpers.InitializeWriterSettings(w, this._site);
-                        _doc.Save(w);
+                        this.WriteTo(w);
                     }
+                }
 
+                if (noBom)
+                {
                     using (var stm = new MemoryStream(ms.ToArray()))
                     {
                         EncodingHelpers.WriteFileWithoutBOM(stm, filename);
@@ -422,16 +433,156 @@ namespace XmlNotepad
                 }
                 else
                 {
-                    using (XmlTextWriter w = new XmlTextWriter(filename, encoding))
-                    {
-                        EncodingHelpers.InitializeWriterSettings(w, this._site);
-                        _doc.Save(w);
-                    }
-                }
+                    // doing the write this way ensures that an XML exception doesn't result in 
+                    // wiping the previous state of the file on disk.
+                    File.WriteAllBytes(filename, ms.ToArray());
+                }            
             }
             finally
             {
                 StartFileWatch();
+            }
+        }
+
+        private void WriteTo(XmlWriter w)
+        {
+            // The new XmlWriter.Create method returns a writer that is strict and does not
+            // allow xmlns attributes that override the parent element NamespaceURI.  Fixing that
+            // in the XmlElement tree would require very complex (and very slow) recreation of
+            // XML Element nodes in the tree (and therefore all their children also) every time an
+            // xmlns attribute is modified.  So we deal with that here instead during save by calling
+            // the XmlWriter ourselves with the correct namespaces on the WriteStartElement call.
+            XmlNode xmlNode = _doc.FirstChild;
+            if (xmlNode == null)
+            {
+                return;
+            }
+            if (w.WriteState == WriteState.Start)
+            {
+                if (xmlNode is XmlDeclaration)
+                {
+                    if (Standalone.Length == 0)
+                    {
+                        w.WriteStartDocument();
+                    }
+                    else if (Standalone == "yes")
+                    {
+                        w.WriteStartDocument(standalone: true);
+                    }
+                    else if (Standalone == "no")
+                    {
+                        w.WriteStartDocument(standalone: false);
+                    }
+                    xmlNode = xmlNode.NextSibling;
+                }
+                else
+                {
+                    w.WriteStartDocument();
+                }
+            }
+            var scope = new XmlNamespaceManager(_doc.NameTable);
+            while (xmlNode != null)
+            {
+                WriteNode(xmlNode, w, scope);
+                xmlNode = xmlNode.NextSibling;
+            }
+            w.Flush();
+        }
+
+        internal void WriteNode(XmlNode node, XmlWriter w, XmlNamespaceManager scope)
+        {
+            if (node is XmlElement e)
+            {
+                WriteElementTo(w, e, scope);
+            }
+            else
+            {
+                node.WriteTo(w);
+            }
+        }
+
+        private void WriteElementTo(XmlWriter writer, XmlElement e, XmlNamespaceManager scope)
+        {
+            XmlNode xmlNode = e;
+            XmlNode xmlNode2 = e;
+            while (true)
+            {
+                e = xmlNode2 as XmlElement;
+                if (e != null)
+                {
+                    scope.PushScope();
+                    for (int i = 0; i < e.Attributes.Count; i++)
+                    {
+                        XmlAttribute xmlAttribute = e.Attributes[i];
+                        if (xmlAttribute.NamespaceURI == XmlStandardUris.XmlnsUri)
+                        {
+                            var prefix = xmlAttribute.Prefix == "xmlns" ? xmlAttribute.LocalName : "";
+                            scope.AddNamespace(prefix, xmlAttribute.Value);
+                        }
+                    }
+
+                    WriteStartElement(writer, e, scope);
+                    if (e.IsEmpty)
+                    {
+                        writer.WriteEndElement();
+                        scope.PopScope();
+                    }
+                    else
+                    {
+                        if (e.LastChild != null)
+                        {
+                            xmlNode2 = e.FirstChild;
+                            continue;
+                        }
+                        writer.WriteFullEndElement();
+                        scope.PopScope();
+                    }
+                }
+                else
+                {
+                    WriteNode(xmlNode2, writer, scope);
+                }
+                while (xmlNode2 != xmlNode && xmlNode2 == xmlNode2.ParentNode.LastChild)
+                {
+                    xmlNode2 = xmlNode2.ParentNode;
+                    writer.WriteFullEndElement();
+                    scope.PopScope();
+                }
+                if (xmlNode2 != xmlNode)
+                {
+                    xmlNode2 = xmlNode2.NextSibling;
+                    continue;
+                }
+                break;
+            }
+        }
+
+        private void WriteStartElement(XmlWriter w, XmlElement e, XmlNamespaceManager scope)
+        {
+            // Fix up the element namespace so that the XmlWriter doesn't complain!
+            var ns = scope.LookupNamespace(e.Prefix);
+            w.WriteStartElement(e.Prefix, e.LocalName, ns);
+            if (e.HasAttributes)
+            {
+                XmlAttributeCollection xmlAttributeCollection = e.Attributes;
+                for (int i = 0; i < xmlAttributeCollection.Count; i++)
+                {
+                    XmlAttribute xmlAttribute = xmlAttributeCollection[i];
+                    xmlAttribute.WriteTo(w);
+                }
+            }
+        }
+
+
+        public string Standalone
+        {
+            get
+            {
+                if (this._doc.FirstChild is XmlDeclaration x)
+                {
+                    return x.Standalone;
+                }
+                return "";
             }
         }
 

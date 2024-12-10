@@ -153,6 +153,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Format each attribute on a new line with matching indentation..
+        /// </summary>
+        public static string AttributesOnNewLineDescription {
+            get {
+                return ResourceManager.GetString("AttributesOnNewLineDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attributes on a new line.
+        /// </summary>
+        public static string AttributesOnNewLineProperty {
+            get {
+                return ResourceManager.GetString("AttributesOnNewLineProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autoformat long lines instead of prompting.
         /// </summary>
         public static string AutoFormatLongLinesDescriptions {

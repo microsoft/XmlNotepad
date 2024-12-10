@@ -238,6 +238,7 @@ namespace XmlNotepad
             private bool _schemaAwareText;
             private string _schemaAwareNames;
             private bool _promptOnReload;
+            private bool _attributesOnNewLine;
 
             public UserSettings(Settings s)
             {
@@ -256,6 +257,7 @@ namespace XmlNotepad
                 _noByteOrderMark = this._settings.GetBoolean("NoByteOrderMark");
                 _indentLevel = this._settings.GetInteger("IndentLevel");
                 _indentChar = (IndentChar)this._settings["IndentChar"];
+                _attributesOnNewLine = this._settings.GetBoolean("AttributesOnNewLine");
                 _newLineChars = this._settings.GetString("NewLineChars");
                 _preserveWhitespace = this._settings.GetBoolean("PreserveWhitespace");
                 _language = this._settings.GetString("Language");
@@ -359,6 +361,7 @@ namespace XmlNotepad
                 this._settings["NewLineChars"] = _newLineChars;
                 this._settings["PreserveWhitespace"] = _preserveWhitespace;
                 this._settings["NoByteOrderMark"] = _noByteOrderMark;
+                this._settings["AttributesOnNewLine"] = _attributesOnNewLine;
                 this._settings.SetLocation(_settingsLocation);
 
                 this._settings["Language"] = ("" + this._language).Trim();
@@ -406,6 +409,7 @@ namespace XmlNotepad
                 _disableDefaultXslt = false;
                 _noByteOrderMark = false;
                 _indentLevel = 2;
+                _attributesOnNewLine = false;
                 _indentChar = IndentChar.Space;
                 _newLineChars = Settings.EscapeNewLines("\r\n");
                 _language = "";
@@ -837,6 +841,21 @@ namespace XmlNotepad
                 set
                 {
                     this._noByteOrderMark = value;
+                }
+            }
+
+            [SRCategory("FormatCategory")]
+            [LocDisplayName("AttributesOnNewLineProperty")]
+            [SRDescription("AttributesOnNewLineDescription")]
+            public bool AttributesOnNewLine
+            {
+                get
+                {
+                    return this._attributesOnNewLine;
+                }
+                set
+                {
+                    this._attributesOnNewLine = value;
                 }
             }
 
