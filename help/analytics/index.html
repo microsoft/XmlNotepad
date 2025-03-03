@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <link rel="canonical" href="https://microsoft.github.io/XmlNotepad/help/analytics/">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Analytics - XmlNotepad</title>
+    <link href="../../css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="../../css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/highlight.css">
+    <link href="../../css/main.css" rel="stylesheet">
+    <link href="../../css/syntax.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../../js/jquery-3.2.1.min.js"></script>
+    <script src="../../js/bootstrap-3.3.7.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '../..';
+      var is_top_frame = false;
+        
+        var pageToc = [
+          {title: "Analytics", url: "#_top", children: [
+          ]},
+        ];
+
+    </script>
+    <script src="../../js/base.js"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=UA-89203408-1"></script>
+      <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
+      <script src="../../assets/js/cookies.js"></script>
+      <script src="../../assets/js/main.js"></script> 
+</head>
+
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
+
+<div id="cookie-banner"></div>
+
+
+<div class="wrapper wm-page-content">
+  <div class="container-fluid">
+    <a name="_top"></a>
+      
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="../settings/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="../settings/" class="btn btn-xs btn-link">
+        Settings
+      </a>
+    </div>
+    
+    <div class="wm-article-nav">
+      <a href="../updates/" class="btn btn-xs btn-default pull-left">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Previous</a><a href="../updates/" class="btn btn-xs btn-link">
+        Updates
+      </a>
+    </div>
+    
+  </div>
+
+      
+
+      <h2 id="analytics">Analytics<a class="headerlink" href="#analytics" title="Permanent link">#</a></h2>
+<p>To understand which features are important, XML Notepad records anonymous usage data, like:</p>
+<ol>
+<li>The number of times the app is used.</li>
+<li>The number of times each feature is used (options, xslt, search, etc)</li>
+</ol>
+<p>The data is collected using Google Analytics and shared solely with members of the XML Notepad development team.
+It's used to prioritize future enhancements.</p>
+<p>As a sneak peek, here is a map illustrating the countries where XML Notepad was used in July 2022. This vibrant user
+community is a strong motivator for the team to continually refine XML Notepad.</p>
+<p><img alt="map" src="../../assets/images/map.png" /></p>
+<p>Here's some raw data from August 2022 to August 2021:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Counts</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/App/Launch</td>
+<td>1,082,553</td>
+<td>Times app was launched</td>
+</tr>
+<tr>
+<td>/App/XsltView</td>
+<td>140,703</td>
+<td>Times XSLT view was used</td>
+</tr>
+<tr>
+<td>/App/FormSearch</td>
+<td>83,020</td>
+<td>Times the Search dialog was used</td>
+</tr>
+<tr>
+<td>/App/FormOptions</td>
+<td>4,448</td>
+<td>Times the Options dialog was used</td>
+</tr>
+<tr>
+<td>/XmlNotepad/</td>
+<td>208,520</td>
+<td>Visits to the web home page</td>
+</tr>
+<tr>
+<td>/XmlNotepad/install/</td>
+<td>78,812</td>
+<td>Visits to the install page</td>
+</tr>
+</tbody>
+</table>
+<p>The first time you install XML Notepad on your computer you will be prompted with the following dialog:</p>
+<p><img alt="popup" src="../../assets/images/analytics.png" /></p>
+<p>We appreciate those who allow analytics to be collected; significantly aids in understanding usage patterns and
+prioritizing improvements. However, if you prefer not to participate, click <code>No</code> then your preference will be written to
+the XML Notepad settings file, and the prompt will not reappear. You can enable or disable analytics at any time using the
+<code>Allow analytics</code> option in the <a href="../options/">Options dialog</a>.</p>
+<p>For enterprise-wide distributions or pre-installation customization, you can set the following environment variable
+system-wide on the end user's machine:</p>
+<pre><code>set XML_NOTEPAD_DISABLE_ANALYTICS=1
+</code></pre>
+<p>Additionally, you can disable the Analytics UI option from appearing in the <a href="../options/">Options dialog</a> by setting the
+<code>AnalyticsClientId</code> to disabled in the default <a href="../settings/">XmlNotepad.settings</a> file as follows:</p>
+<pre><code class="language-xml">&lt;Settings&gt;
+  &lt;AnalyticsClientId&gt;disabled&lt;/AnalyticsClientId&gt;
+  &lt;AllowAnalytics&gt;False&lt;/AllowAnalytics&gt;
+&lt;/Settings&gt;
+</code></pre>
+<p>This ensures that users cannot enable analytics after starting XML Notepad.</p>
+
+    <br>
+      
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="../settings/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="../settings/" class="btn btn-xs btn-link">
+        Settings
+      </a>
+    </div>
+    
+    <div class="wm-article-nav">
+      <a href="../updates/" class="btn btn-xs btn-default pull-left">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Previous</a><a href="../updates/" class="btn btn-xs btn-link">
+        Updates
+      </a>
+    </div>
+    
+  </div>
+
+      <br>
+  </div>
+</div>
+
+<footer class="wm-page-content">
+
+  
+<div class='footer-content'>
+  <div class="container-fluid">
+    <div class="col-sm-8 text-left footnote-copy">
+       XML Notepad
+    </div>
+    <div class="col-sm-4 text-right footnote-copy">
+      <ul class="list-unstyled list-inline">
+        <li><a href="https://www.microsoft.com/" target="_blank"><img class="img-responsive" width="140" src="http://microsoft.github.io/XmlNotepad/assets/images/microsoft.svg" alt="Microsoft"> </a></li>
+      </ul>
+    </div>
+  </div>
+  <li><span id="copyright"></span></li>
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/noraj/mkdocs-windmill-dark">Windmill Dark</a> theme by noraj.</p>
+</div>
+
+</footer>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      $('table').each(function () {
+        $(this).addClass("table");
+        $(this).addClass("table-bordered");
+        $(this).addClass("table-striped");
+        $(this).addClass("table-condensed");
+      });
+
+    });
+</script>
+
+</body>
+</html>
