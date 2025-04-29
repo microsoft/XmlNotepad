@@ -14,7 +14,7 @@ community is a strong motivator for the team to continually refine XML Notepad.
 
 ![map](../assets/images/map.png)
 
-Here's some raw data from August 2022 to August 2021:
+Here's some raw data from August 2022 to August 2023:
 
 Action        | Counts      | Description
 ------        | ------      | ------
