@@ -796,22 +796,36 @@ namespace XmlNotepad
             public XmlSchema LoadSchema(string filename)
             {
                 if (string.IsNullOrEmpty(filename)) return null;
-                using (var r = new XmlTextReader(filename, new NameTable()))
+                try 
                 {
-                    return XmlSchema.Read(r, (sender, args) =>
+                    using (var r = new XmlTextReader(filename, new NameTable()))
                     {
-                        if (args.Exception is XmlSchemaException se)
+                        return XmlSchema.Read(r, (sender, args) =>
                         {
-                            LogError($"{args.Message} See line {se.LineNumber} pos {se.LinePosition} of {se.SourceUri}");
-                        }
-                        else
-                        {
-                            LogError(args.Message);
-                        }
-                    });
+                            if (args.Exception is XmlSchemaException se)
+                            {
+                                this.LogError($"{args.Message} See line {se.LineNumber} pos {se.LinePosition} of {se.SourceUri}");
+                            }
+                            else
+                            {
+                                this.LogError(args.Message);
+                            }
+                        });
+                    }
+                }
+                catch (XmlException xe)
+                {
+                    // The files that do not meet the basic XML structure,
+                    // such as empty files or files with unclosed tags
+                    this.LogError($"{xe.Message} See line {xe.LineNumber} pos {xe.LinePosition} of {xe.SourceUri}");
+                    return null;
+                }
+                catch (Exception e)
+                {
+                    this.LogError(e.Message);
+                    return null;
                 }
             }
-
         }
 
         class SchemaDialogNewRow : SchemaDialogCommand
