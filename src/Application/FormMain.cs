@@ -1266,8 +1266,12 @@ namespace XmlNotepad
                     this.xmlTreeView1.BeginSave();
                     if (CheckReadOnly(fname))
                     {
+                        var start = DateTime.Now;
                         _model.Save();
-                        ShowStatus(SR.SavedStatus);
+                        var finish = DateTime.Now;
+                        var diff = finish - start;
+                        var s = diff.ToString();
+                        ShowStatus(string.Format(SR.SavedStatus, s));
                     }
                 }
                 catch (Exception e)

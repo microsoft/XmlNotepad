@@ -1364,7 +1364,7 @@ namespace XmlNotepad {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saved.
+        ///   Looks up a localized string similar to Saved in {0}.
         /// </summary>
         public static string SavedStatus {
             get {

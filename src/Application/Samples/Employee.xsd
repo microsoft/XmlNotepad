@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://Employees" xmlns="http://Employees">
   <xs:complexType name="Country">
-    <xs:sequence>
-      <xs:element name="Name" type="xs:string" default="U.S.A."/>
-    </xs:sequence>
+	<xs:attribute name="name" type="xs:string" default="U.S.A."/>
     <xs:attribute name="code" type="xs:language">
       <xs:annotation>
         <xs:documentation>The registered IANA country code of the format xx-xx.  For example: en-us.</xs:documentation>

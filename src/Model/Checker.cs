@@ -391,7 +391,7 @@ namespace XmlNotepad
         {
             XmlSchemaInfo i = this._info;
             XmlSchemaInfo copy = new XmlSchemaInfo();
-            copy.ContentType = i.ContentType;
+            copy.ContentType = i.ContentType;            
             copy.IsDefault = i.IsDefault;
             copy.IsNil = i.IsNil;
             copy.MemberType = i.MemberType;

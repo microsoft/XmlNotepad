@@ -179,7 +179,7 @@ Reason:
     <value>File Changed</value>
     <comment>Message box caption</comment>
   </data>
-	<data name="DirtyWhileFileChangedOnDiskPrompt" xml:space="preserve">
+  <data name="DirtyWhileFileChangedOnDiskPrompt" xml:space="preserve">
     <value>The file you are editing has been changed on disk but you also have unsaved edits. Would you like to discard your edits and reload this file?</value>
     <comment>Message box prompt</comment>
   </data>
@@ -487,7 +487,7 @@ Do you want to enable execution of this script code?</value>
     <comment>Tab caption</comment>
   </data>
   <data name="SavedStatus" xml:space="preserve">
-    <value>Saved</value>
+    <value>Saved in {0}</value>
     <comment>Status bar message</comment>
   </data>
   <data name="UpdateAvailableCaption" xml:space="preserve">
@@ -578,19 +578,19 @@ Do you want to enable execution of this script code?</value>
     <value>Whether to check for updates periodically</value>
     <comment>Property Grid description</comment>
   </data>
-	<data name="UpdateFrequency" xml:space="preserve">
+  <data name="UpdateFrequency" xml:space="preserve">
     <value>Update Frequency</value>
     <comment>Property Grid property name</comment>
   </data>
-	<data name="UpdateFrequencyDescription" xml:space="preserve">
+  <data name="UpdateFrequencyDescription" xml:space="preserve">
     <value>How often to check for updates in dd.hh:mm:ss format</value>
     <comment>Property Grid description</comment>
   </data>
-	<data name="UpdateFrequencyMinError" xml:space="preserve">
+  <data name="UpdateFrequencyMinError" xml:space="preserve">
     <value>Update Frequency cannot be less than 30 minutes</value>
     <comment>Property Grid validation error</comment>
   </data>
-	<data name="UpdateFrequencyFormatError" xml:space="preserve">
+  <data name="UpdateFrequencyFormatError" xml:space="preserve">
     <value>Update Frequency timespan invalid format, it must be dd.hh:mm:ss.</value>
     <comment>Property Grid validation error</comment>
   </data>
@@ -757,11 +757,11 @@ Do you want to enable execution of this script code?</value>
     <value>Long Lines</value>
     <comment>Property Grid Category</comment>
   </data>
-	<data name="AttributesOnNewLineProperty" xml:space="preserve">
+  <data name="AttributesOnNewLineProperty" xml:space="preserve">
     <value>Attributes on a new line</value>
     <comment>Property Grid Category</comment>
   </data>
-	<data name="AttributesOnNewLineDescription" xml:space="preserve">
+  <data name="AttributesOnNewLineDescription" xml:space="preserve">
     <value>Format each attribute on a new line with matching indentation.</value>
     <comment>Property Grid description</comment>
   </data>
@@ -930,16 +930,14 @@ Do you want to enable execution of this script code?</value>
     <value>Default text editor</value>
     <comment>Property grid name</comment>
   </data>
-
-	<data name="PromptOnReloadDescription" xml:space="preserve">
+  <data name="PromptOnReloadDescription" xml:space="preserve">
     <value>Whether to prompt before auto-reloading file changed on disk</value>
     <comment>Property grid description</comment>
   </data>
-	<data name="PromptOnReload" xml:space="preserve">
+  <data name="PromptOnReload" xml:space="preserve">
     <value>Prompt before reload</value>
     <comment>Property grid name</comment>
   </data>
-	
   <data name="ConfigureDefaultApps" xml:space="preserve">
     <value>Please go to Windows Settings for 'Default Apps' and select 'Choose default apps by file type' add XML Notepad for each file type you want associated with it.</value>
   </data>
@@ -1017,29 +1015,28 @@ Error: {0}</value>
     <value>Preserve all whitespace in XML document so you can see the Whitespace nodes in the tree.</value>
     <comment>Property Grid description</comment>
   </data>
-
-	<data name="TooltipFacetLength" xml:space="preserve">
+  <data name="TooltipFacetLength" xml:space="preserve">
     <value>The length of the value must be {0} {1}</value>
     <comment>
       This must not end with a period as TooltipFacetJoiner can be appended to it
       Argument {0} will be the math expression '&lt;' or '&lt;='.
     </comment>
   </data>
-	<data name="TooltipFacetJoiner" xml:space="preserve">
+  <data name="TooltipFacetJoiner" xml:space="preserve">
     <value>and {0} {1}</value>
     <comment>
       This is used to add another range to TooltipFacetLength or TooltipFacetValue.
       {0} will be the math expression '&lt;' or '&lt;='.
     </comment>
   </data>
-	<data name="TooltipFacetValue" xml:space="preserve">
+  <data name="TooltipFacetValue" xml:space="preserve">
     <value>Value must be {0} {1}</value>
     <comment>
       This must not end with a period as TooltipFacetJoiner can be appended to it.
       Argument {0} will be the math expression '&lt;' or '&lt;='.
     </comment>
   </data>
-	<data name="TooltipFacetTotalDigits" xml:space="preserve">
+  <data name="TooltipFacetTotalDigits" xml:space="preserve">
     <value>The total number of digits must not exceed {0}.</value>
   </data>
 </root>

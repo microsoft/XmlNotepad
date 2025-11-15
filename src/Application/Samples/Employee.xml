@@ -11,9 +11,7 @@
     <Street>507 - 20th Ave. E. Apt. 2A</Street>
     <City>Seattle</City>
     <Zip>98122</Zip>
-    <Country>
-      <Name>U.S.A.</Name>
-    </Country>
+    <Country name="U.S.A."><!--This is a country--></Country>
     <Office>5/7682</Office>
     <Phone>(206) 555-9857</Phone>
     <Photo>Photo.jpg</Photo>

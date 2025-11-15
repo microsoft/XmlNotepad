@@ -353,6 +353,15 @@ namespace XmlNotepad
             return result;
         }
 
+        bool HasXmlDeclaration
+        {
+            get
+            {
+                XmlDeclaration xmldecl = _doc.FirstChild as XmlDeclaration;
+                return xmldecl != null;
+            }
+        }
+
         public void AddXmlDeclarationWithEncoding()
         {
             XmlDeclaration xmldecl = _doc.FirstChild as XmlDeclaration;
@@ -394,6 +403,10 @@ namespace XmlNotepad
                 if (this._site != null)
                 {
                     EncodingHelpers.InitializeWriterSettings(s, this._site);
+                    if (!this.HasXmlDeclaration)
+                    {
+                        s.OmitXmlDeclaration = true;
+                    }
 
                     Settings settings = (Settings)this._site.GetService(typeof(Settings));
                     if (settings != null)
@@ -569,6 +582,22 @@ namespace XmlNotepad
                 {
                     XmlAttribute xmlAttribute = xmlAttributeCollection[i];
                     xmlAttribute.WriteTo(w);
+                }
+            }
+            var info = this.GetTypeInfo(e);
+            if (info != null)
+            {
+                // Figure out if the content type is mixed, simple or empty (attributes only).
+                bool mixed = true;
+                if (info.ContentType == XmlSchemaContentType.Empty || info.ContentType == XmlSchemaContentType.TextOnly)
+                {
+                    // no child elements or text allowed.
+                    mixed = false;
+                }
+                if (!mixed)
+                {
+                    // this hack tricks the inner Utf8RawTextWriter to not write indentation
+                    w.WriteString("");
                 }
             }
         }

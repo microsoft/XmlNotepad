@@ -9,6 +9,10 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+	<version number="2.9.0.17">
+		<feature>Fix issue #463: Don't add a missing XML declaration on save.</feature>
+		<feature>Fix issue #460: Remove formatting for XML elements that are not allowed to contain whitespace (XSD Schema content model is Empty, Mixed, or TextOnly).</feature>
+	</version>
 	<version number="2.9.0.16">
 		<bug>Fix issue #430: Autoformat on Save with empty XML-Elements.</bug>
 		<feature>Formatting Options has new setting to format Xml attributes each on a separate line.</feature>
