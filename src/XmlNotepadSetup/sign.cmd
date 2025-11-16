@@ -15,6 +15,5 @@ REM and post to ftp://www.lovettsoftware.com/LovettSoftware/Downloads/XmlNotepad
 REM
 set signtool=signtool.exe
 set dll=%~dp0bin\Release\XmlNotepadSetup.msi
-set PATH=%PATH%;c:\tools
 echo %signtool% sign /v /debug /i "Sectigo Public Code Signing CA R36"  /t http://timestamp.sectigo.com /fd sha256 %dll%
 %signtool% sign /v /debug /i "Sectigo Public Code Signing CA R36"  /t http://timestamp.sectigo.com /fd sha256 %dll%
