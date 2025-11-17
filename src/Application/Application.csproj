@@ -13,17 +13,13 @@
     <AssemblyName>XmlNotepad</AssemblyName>
     <ApplicationIcon>Resources\XmlNote.ico</ApplicationIcon>
     <StartupObject>XmlNotepad.Program</StartupObject>
-    <AssemblyOriginatorKeyFile>$(MyKeyFile)</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags></FileUpgradeFlags>
-    <UpgradeBackupLocation></UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>..\..\publish\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Background</UpdateMode>
     <UpdateInterval>1</UpdateInterval>
@@ -31,6 +27,7 @@
     <UpdatePeriodically>true</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/</InstallUrl>
     <UpdateUrl>https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/</UpdateUrl>
     <SupportUrl>https://github.com/Microsoft/XmlNotepad</SupportUrl>
     <ProductName>XML Notepad</ProductName>
@@ -60,15 +57,15 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(AssemblyOriginatorKeyFile)' != '' ">
+  <PropertyGroup Condition=" '$(SIGNMANIFESTS)' == 'true' ">
     <SignAssembly>true</SignAssembly>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>50D58171E20BB6188B199ACA7C20A26DA0DFBF35</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F0DEC4CF1C07CB9E44E29D98389072C8579D5E79</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestTimestampUrl></ManifestTimestampUrl>
+    <ManifestTimestampUrl>http://timestamp.sectigo.com</ManifestTimestampUrl>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>

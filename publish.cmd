@@ -13,13 +13,16 @@ echo ### Publishing version %VERSION%...
 set WINGET=1
 set GITRELEASE=1
 set UPLOAD=1
+set CLEAN=1
 set PUBLISH=%ROOT%\src\Application\bin\Release\app.publish
 set WIXBIN=%ProgramFiles% (x86)\WiX Toolset v3.14\bin
+set zipfile=publish\XmlNotepadSetup.zip
 
 :parse
 if "%1"=="/nowinget" set WINGET=0
 if "%1"=="/norelease" set GITRELEASE=0
 if "%1"=="/noupload" set UPLOAD=0
+if "%1"=="/noclean" set CLEAN=0
 if "%1"=="" goto :done
 shift
 goto :parse
@@ -31,8 +34,10 @@ if ERRORLEVEL 1 goto :nosed
 if EXIST "%ROOT%\publish" rd /s /q "%ROOT%\publish"
 if EXIST "%PUBLISH%" rd /s /q "%PUBLISH%"
 
+if "%CLEAN%" == "0" goto :build
 git clean -dfx
 
+:build
 call .\build.cmd
 
 msbuild /target:publish src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
@@ -44,10 +49,14 @@ move "%PUBLISH%" "%ROOT%\publish"
 if not EXIST "%WIXBIN%\WixUtilExtension.dll" goto :nowix
 
 echo Building XmlNotepadSetup.msi...
+pause load src\xmlnotepadsetup.sln and right click XmlNotepadSetup to build the .msi
+goto :bundle
+
 msbuild src\xmlnotepadsetup.sln /p:Configuration=Release /target:XmlNotepadSetup /p:OutDir=bin\Release\
 if ERRORLEVEL 1 goto :err_setup
 if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
 
+:bundle
 echo Building XmlNotepadPackage and Bundle...
 msbuild /target:build src\xmlnotepadsetup.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :noappx
@@ -67,12 +76,11 @@ copy /y src\Updates\Updates.xslt src\XmlNotepadSetup\bin\Release\
 if ERRORLEVEL 1 goto :eof
 copy /y src\Updates\Updates.xsd src\XmlNotepadSetup\bin\Release\
 if ERRORLEVEL 1 goto :eof
-if exist publish\XmlNotepadSetup.zip del publish\XmlNotepadSetup.zip
-pwsh -command "Compress-Archive -Path src\XmlNotepadSetup\bin\Release\* -DestinationPath publish\XmlNotepadSetup.zip"
+if exist %zipfile% del %zipfile%
+pwsh -command "Compress-Archive -Path src\XmlNotepadSetup\bin\Release\* -DestinationPath %zipfile%"
 
 set bundle=%ROOT%\src\XmlNotepadPackage\AppPackages\%VERSION%\XmlNotepadPackage_%VERSION%_Test\XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
 if not EXIST %bundle% goto :noappx
-set zipfile=publish\XmlNotepadSetup.zip
 
 if "%GITRELEASE%" == "0" goto :upload
 
