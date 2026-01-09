@@ -1,0 +1,4 @@
+
+Fix issue #463: Don't add a missing XML declaration on save.
+Fix issue #460: Remove formatting for XML elements that are not allowed to contain whitespace (XSD Schema content model is Empty, Mixed, or TextOnly).
+
