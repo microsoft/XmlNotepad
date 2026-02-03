@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <link rel="canonical" href="https://microsoft.github.io/XmlNotepad/dev/">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Overview - XmlNotepad</title>
+    <link href="../css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="../css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="../css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/syntax.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/bootstrap-3.3.7.min.js"></script>
+    <script src="../js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '..';
+      var is_top_frame = false;
+        
+        var pageToc = [
+          {title: "XmlNotepad Development", url: "#_top", children: [
+              {title: "Coding Guidelines", url: "#coding-guidelines" },
+              {title: "Build the code", url: "#build-the-code" },
+              {title: "Debug the app", url: "#debug-the-app" },
+              {title: "Test the app", url: "#test-the-app" },
+              {title: "UpdateVersions", url: "#updateversions" },
+              {title: "Publish the app and all setups", url: "#publish-the-app-and-all-setups" },
+              {title: "Build the setup .msi installer", url: "#build-the-setup-msi-installer" },
+              {title: "Build the winget setup package", url: "#build-the-winget-setup-package" },
+              {title: "Publishing the bits to Azure Blob Store", url: "#publishing-the-bits-to-azure-blob-store" },
+              {title: "Design", url: "#design" },
+              {title: "Issues", url: "#issues" },
+          ]},
+        ];
+
+    </script>
+    <script src="../js/base.js"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=UA-89203408-1"></script>
+      <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
+      <script src="../assets/js/cookies.js"></script>
+      <script src="../assets/js/main.js"></script> 
+</head>
+
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
+
+<div id="cookie-banner"></div>
+
+
+<div class="wrapper wm-page-content">
+  <div class="container-fluid">
+    <a name="_top"></a>
+      
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="design/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="design/" class="btn btn-xs btn-link">
+        Design
+      </a>
+    </div>
+    
+    <div class="wm-article-nav">
+      <a href="../help/settings/" class="btn btn-xs btn-default pull-left">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Previous</a><a href="../help/settings/" class="btn btn-xs btn-link">
+        Settings
+      </a>
+    </div>
+    
+  </div>
+
+      
+
+      <h2 id="xmlnotepad-development">XmlNotepad Development<a class="headerlink" href="#xmlnotepad-development" title="Permanent link">#</a></h2>
+<p>You can build and test XML Notepad using <a href="https://visualstudio.microsoft.com/downloads/">Visual Studio 2022</a>. It uses
+.NET frameworks, so be sure to install the ".NET desktop development" feature when using the Visual Studio Installer.
+XML Notepad targets <a href="https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48">.NET Framework version 4.8</a>.</p>
+<h3 id="coding-guidelines">Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permanent link">#</a></h3>
+<p>XmlNotepad follows the standard <a href="https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions">C# Coding
+Guidelines</a> with the
+default C# formatting settings that ship with VS 2022.</p>
+<p>The following additional conventions are also followed:</p>
+<ol>
+<li>All if/else statements use curly brackets.</li>
+<li>Add private/internal/public access explicitly on all members.</li>
+<li>Do not use "s_" prefix on statics, instead use Class name qualification.</li>
+<li>All private fields prefixed with <code>_</code> except for WinForms generated code.</li>
+<li>Accessing fields with <code>this.</code> is ok, do not strip <code>this.</code> prefix if used.</li>
+<li>Constants are PascalCased even if they are private to a class.</li>
+<li>Try and collect all private fields at the top of the class.</li>
+<li>Public fields are PascalCased like public properties and methods.</li>
+<li>Generally one class per file, unless there is a super natural family of classes, like Commands.cs, that would cause
+   an unnecessary explosion in number of files.</li>
+<li>Nice to have blank line between methods.</li>
+<li>Use "Remove and Sort Usings" command in VS.</li>
+</ol>
+<h3 id="build-the-code">Build the code<a class="headerlink" href="#build-the-code" title="Permanent link">#</a></h3>
+<p>First clone the repo:</p>
+<pre><code>git clone https://github.com/microsoft/XmlNotepad.git
+</code></pre>
+<p>From the command line initialize your ApiKey.cs file:</p>
+<pre><code class="language-shell">echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey=&quot;%XMLNOTEPAD_ANALYTICSKEY%&quot;; } } &gt; src\model\ApiKey.cs
+</code></pre>
+<p>Then restore all the nuget packages</p>
+<pre><code>nuget  restore xmlnotepad.sln
+</code></pre>
+<p>Then you can build it:</p>
+<pre><code>msbuild xmlnotepad.sln
+</code></pre>
+<p>Using Visual Studio:</p>
+<ul>
+<li>Load <code>src/XmlNotepad.sln</code> into Visual Studio.</li>
+<li>Select Debug or Release and target "Any CPU".</li>
+<li>Run Rebuild Solution (rebuild also installs any missing nuget packages)</li>
+</ul>
+<h3 id="debug-the-app">Debug the app<a class="headerlink" href="#debug-the-app" title="Permanent link">#</a></h3>
+<ul>
+<li>Right click the <code>Application</code> project and select <code>Set as Startup Project</code>.</li>
+<li>Select Debug configuration.</li>
+<li>Press F5 to start debugging.</li>
+</ul>
+<h3 id="test-the-app">Test the app<a class="headerlink" href="#test-the-app" title="Permanent link">#</a></h3>
+<p>After building the app:</p>
+<ul>
+<li>Right click the <code>UnitTests</code> project and select <code>Run tests</code>.</li>
+</ul>
+<p>This is a GUI test, so do not move your mouse or type on your keyboard or let your screen lock until this test is
+completed. Total test run time is about 12 minutes.</p>
+<p>The tests all pass on Windows 10, but currently some tests fail on Windows 11, there seems to be some breaking changes
+in the Windows Automation layer that XML Notepad tests are using. This is being investigated.</p>
+<p>Note: <a href="https://github.com/dotnet/winforms/issues/10244">bug 10244</a> is still open in in .net 4.8
+System.Windows.Automation of menu items that blocks the tests, so checkout the branch <code>clovett/net472</code> to run the unit
+tests.</p>
+<h3 id="updateversions">UpdateVersions<a class="headerlink" href="#updateversions" title="Permanent link">#</a></h3>
+<p>The <code>UpdateVersions</code> project synchronizes the <code>Version.props</code> information across multiple places so you can edit the
+version number in <code>Version.props</code> and this tool will replicate that across the following:</p>
+<ol>
+<li>The <code>Version.cs</code> file which sets the assembly version for all projects in the solution.</li>
+<li>The WIX based setup file <code>Product.wxs</code>.</li>
+<li>The windows package manifest file <code>Package.appxmanifest</code>.</li>
+<li>The updates.xml file.</li>
+<li>The readme.htm file.</li>
+</ol>
+<p>You will also have to restart Visual Studio so that the new versions are picked up by the ClickOnce deployment
+information in  <code>Application.csproj</code>.</p>
+<h3 id="publish-the-app-and-all-setups">Publish the app and all setups<a class="headerlink" href="#publish-the-app-and-all-setups" title="Permanent link">#</a></h3>
+<p>The <code>publish.cmd</code> script runs UpdateVersions, builds Release bits, builds the ClickOnce installer and the winget.msix
+installer from <code>XmlNotepadPackage</code>, and the standalone .msi installer from <code>XmlNotepadSetup</code>, it zips these files so
+they can be available on the Github Release page then it creates the new github release for the current version. It also
+signs the assemblies and installers using the signing certificate specified by the environment variable <code>MYKEYFILE</code>.</p>
+<p>The ClickOnce installed is uploaded to
+<a href="https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application">lovettsoftware</a> using
+the environment variable LOVETTSOFTWARE_STORAGE_CONNECTION_STRING. Click once is convenient because it provides
+auto-updating whenever a new version is published.</p>
+<h3 id="build-the-setup-msi-installer">Build the setup .msi installer<a class="headerlink" href="#build-the-setup-msi-installer" title="Permanent link">#</a></h3>
+<p>After building the <code>Release</code> configuration of <code>XmlNotepad.sln</code> load the <code>XmlNotepadSetup.sln</code>. This solution uses the
+<a href="https://wixtoolset.org/">WIX Toolset</a> to build a standalone windows .msi installer. To build that setup you will need
+to install the WIX toolset then the <a href="https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2022Extension">Wix Toolset Visual Studio 2022
+Extension</a>.</p>
+<p>Then right click the <code>XmlNotepadSetup</code> project and select "build". This will produce an .msi installer in the
+XmlNotepadSetup\bin\release folder. There is also a <code>sign.cmd</code> script invoked by this build that will try and sign the
+resulting .msi using the certificate installed by the author. This step will only work for the author who owns the
+certificate.</p>
+<p>This <code>msi</code> installer gives folks the option to install XML Notepad on machines that are isolated from the internet and
+there are quite a few customers who have requested this, which is why it exists.</p>
+<h3 id="build-the-winget-setup-package">Build the winget setup package<a class="headerlink" href="#build-the-winget-setup-package" title="Permanent link">#</a></h3>
+<p>The <code>winget</code> setup package is built by the <code>XmlNotepadPackage</code> project in the <code>XmlNotepadSetup.sln</code> solution. Right
+click this project in the Solution Explorer and select <code>Publish</code> and <code>Create App Packages</code>. Choose Sideloading, and the
+package files will be written to the XmlNotepadPackage\AppPackages folder. These can then be uploaded to the server
+hosting these packages and you can then update the manifest in
+<a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/XMLNotepad">winget-pkgs</a>.</p>
+<p>This package provides the <code>winget install xmlnotepad</code> setup option.</p>
+<h3 id="publishing-the-bits-to-azure-blob-store">Publishing the bits to Azure Blob Store<a class="headerlink" href="#publishing-the-bits-to-azure-blob-store" title="Permanent link">#</a></h3>
+<p>The <code>publish.cmd</code> script uses the
+<a href="https://github.com/clovett/tools/tree/master/AzurePublishClickOnce">AzurePublishClickOnce</a> tool which uses the
+environment variable named <code>LOVETTSOFTWARE_STORAGE_CONNECTION_STRING</code> to access the Azure storage account where it
+uploads the new clickonce installer, and removes the older versions so that the storage account does not keep growing
+and growing.</p>
+<h3 id="design">Design<a class="headerlink" href="#design" title="Permanent link">#</a></h3>
+<p>See <a href="design/">XML Notepad Design </a> for more detailed information about how this application is designed.</p>
+<h3 id="issues">Issues<a class="headerlink" href="#issues" title="Permanent link">#</a></h3>
+<p>Feedback and suggestions are welcome, just use the <a href="https://github.com/microsoft/XmlNotepad/issues">GitHub  issues
+list</a>. Pull requests are also welcome, in fact, a number of good pull
+requests have already been merged. Thanks to all who are helping to make XML Notepad a great tool!</p>
+
+    <br>
+      
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="design/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="design/" class="btn btn-xs btn-link">
+        Design
+      </a>
+    </div>
+    
+    <div class="wm-article-nav">
+      <a href="../help/settings/" class="btn btn-xs btn-default pull-left">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Previous</a><a href="../help/settings/" class="btn btn-xs btn-link">
+        Settings
+      </a>
+    </div>
+    
+  </div>
+
+      <br>
+  </div>
+</div>
+
+<footer class="wm-page-content">
+
+  
+<div class='footer-content'>
+  <div class="container-fluid">
+    <div class="col-sm-8 text-left footnote-copy">
+       XML Notepad
+    </div>
+    <div class="col-sm-4 text-right footnote-copy">
+      <ul class="list-unstyled list-inline">
+        <li><a href="https://www.microsoft.com/" target="_blank"><img class="img-responsive" width="140" src="http://microsoft.github.io/XmlNotepad/assets/images/microsoft.svg" alt="Microsoft"> </a></li>
+      </ul>
+    </div>
+  </div>
+  <li><span id="copyright"></span></li>
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/noraj/mkdocs-windmill-dark">Windmill Dark</a> theme by noraj.</p>
+</div>
+
+</footer>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      $('table').each(function () {
+        $(this).addClass("table");
+        $(this).addClass("table-bordered");
+        $(this).addClass("table-striped");
+        $(this).addClass("table-condensed");
+      });
+
+    });
+</script>
+
+</body>
+</html>
