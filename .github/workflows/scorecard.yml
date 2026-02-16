@@ -68,6 +68,6 @@ jobs:
       # Upload the results to GitHub's code scanning dashboard (optional).
       # Commenting out will disable upload of results to your repo's Code Scanning dashboard
       - name: "Upload to code-scanning"
-        uses: github/codeql-action/upload-sarif@ab5b0e3aabf4de044f07a63754c2110d3ef2df38 # v3.30.8
+        uses: github/codeql-action/upload-sarif@aee29a19d72cf73e8b6171f9510db1771d49325b # v3.30.8
         with:
           sarif_file: results.sarif
