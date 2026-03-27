@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -982,6 +982,7 @@ namespace XmlNotepad
             this["AutoFormatLongLines"] = false;
 
             this["IgnoreDTD"] = true;
+            this["DisableIgnoreDtdPrompt"] = false;
             this["MaximumLineIndex"] = 1000000;
 
             // XSLT options

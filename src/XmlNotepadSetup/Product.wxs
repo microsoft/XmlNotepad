@@ -131,6 +131,15 @@
       <Component Id="Employee.htm" Guid="3b3cc3ef-3ec0-42f1-a7a5-a23fad0886e3">
         <File Id="Employee.htm" KeyPath="yes" />
       </Component>
+      <Component Id="DtdEntityExplosion.xml" Guid="edf58e5e-fe27-45e7-99da-98719bc7f643">
+        <File Id="DtdEntityExplosion.xml" KeyPath="yes" />
+      </Component>
+      <Component Id="DtdEntityLeakage.xml" Guid="99c7e5d6-82bc-4c42-bec3-cd8b546da124">
+        <File Id="DtdEntityLeakage.xml" KeyPath="yes" />
+      </Component>
+      <Component Id="MaliciousDtd.dtd" Guid="bf188c6c-87f3-4d9f-8d4a-cfd0a9e09c94">
+        <File Id="MaliciousDtd.dtd" KeyPath="yes" />
+      </Component>
     </DirectoryRef>
     <!-- shortcut in start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -171,6 +180,9 @@
       <ComponentRef Id="rsspretty.xsl" />
       <ComponentRef Id="willy.xsl" />
       <ComponentRef Id="Employee.htm" />
+      <ComponentRef Id="DtdEntityExplosion.xml" />
+      <ComponentRef Id="DtdEntityLeakage.xml" />
+      <ComponentRef Id="MaliciousDtd.dtd" />
       <ComponentRef Id="ApplicationShortcut" />
     </Feature>
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Application.TargetDir)\license.rtf" />

