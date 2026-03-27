@@ -50,6 +50,9 @@ You can turn off DTD validation and you can modify the size of the node line/col
 This limit exists because it takes a lot of extra memory to index the location of every node in a
 large document and can make editing very large XML files slower.
 
+The `Ignore DTD` option is important, is True by default. See [validation](validation.md) for
+details on the security implications of this setting.
+
 ### XmlDiff
 Options that control how the XmlDiff works when you compare XML documents.
 

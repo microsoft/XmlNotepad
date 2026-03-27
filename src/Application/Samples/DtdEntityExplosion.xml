@@ -1,0 +1,11 @@
+<!DOCTYPE root [
+<!-- This XML Document demonstrates a DTD entity explosion risk.  Please make sure you
+know and trust the DTD's you process before you enable DTD processing in XML Notepad. -->
+<!ELEMENT root (#PCDATA)>
+<!ENTITY e0 "This is some long text that we will replicate exponentially">
+<!ENTITY e1 "&e0;&e0;&e0;&e0;&e0;&e0;&e0;&e0;&e0;&e0;">
+<!ENTITY e2 "&e1;&e1;&e1;&e1;&e1;&e1;&e1;&e1;&e1;&e1;">
+<!ENTITY e3 "&e2;&e2;&e2;&e2;&e2;&e2;&e2;&e2;&e2;&e2;">
+<!ENTITY e4 "&e3;&e3;&e3;&e3;&e3;&e3;&e3;&e3;&e3;&e3;">
+]>
+<root>&e4;</root>

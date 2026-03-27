@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xml;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -233,6 +234,13 @@ namespace XmlNotepad
             if (resolver != null)
             {
                 rs.XmlResolver = resolver;
+            } 
+            else if (!ignoreDtd)
+            {
+                rs.XmlResolver = new XmlUrlResolver
+                {
+                    Credentials = CredentialCache.DefaultCredentials
+                };
             }
             if (handler != null)
             {

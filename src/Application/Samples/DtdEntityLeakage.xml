@@ -1,0 +1,12 @@
+﻿<!-- This XML Document demonstrates a DTD entity data leakage.  Please make sure you
+know and trust the DTD's you process before you enable DTD processing in XML Notepad. -->
+
+<!DOCTYPE root SYSTEM "MaliciousDtd.dtd" [
+<!ELEMENT root (#PCDATA)>
+]>
+
+<!-- This entity shows that a call was made to https://httpbin.org/get passing a parameter
+named "hello" with the value "testing".  If you replace "testing" with "%hosts;" in the 
+definition of parameter entity "leak" it will send your hosts file to httpbin.org!! 
+Clearly not something you want to do by accident. -->
+<root>&proof;</root> 

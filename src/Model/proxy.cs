@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Net;
@@ -167,7 +167,7 @@ namespace XmlNotepad
                         // This avoids multiple web calls. Note that state is transitioned to DefaultCredentials
                         // instead of CachedCredentials. This ensures that web calls be tried with the
                         // cached credentials if the currently attached credentials don't result in successful web call.
-                        if ((proxy.Credentials == null))
+                        if (proxy.Credentials == null)
                         {
                             proxy.Credentials = CredentialCache.DefaultCredentials;
                         }

