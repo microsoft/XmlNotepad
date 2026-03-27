@@ -1,8 +1,9 @@
-# Created using YamlCreate.ps1
-# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.0.0.schema.json
+﻿# Created using wingetcreate 1.12.8.0
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.12.0.schema.json
 
 PackageIdentifier: Microsoft.XMLNotepad
-PackageVersion: 2.8.0.40
+PackageVersion: 2.9.0.19
 DefaultLocale: en-US
 ManifestType: version
-ManifestVersion: 1.0.0
+ManifestVersion: 1.12.0
+

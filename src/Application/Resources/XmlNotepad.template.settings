@@ -20,7 +20,6 @@
   <FontSize>10</FontSize>
   <FontStyle>Normal</FontStyle>
   <FontWeight>Normal</FontWeight>
-  <IgnoreDTD>False</IgnoreDTD>
   <IndentChar>Space</IndentChar>
   <IndentLevel>2</IndentLevel>
   <LightColors>
@@ -52,7 +51,6 @@
   <WindowBounds>0, 0, 0, 0</WindowBounds>
   <XmlDiffIgnoreChildOrder>False</XmlDiffIgnoreChildOrder>
   <XmlDiffIgnoreComments>False</XmlDiffIgnoreComments>
-  <XmlDiffIgnoreDtd>False</XmlDiffIgnoreDtd>
   <XmlDiffIgnoreNamespaces>False</XmlDiffIgnoreNamespaces>
   <XmlDiffIgnorePI>False</XmlDiffIgnorePI>
   <XmlDiffIgnorePrefixes>False</XmlDiffIgnorePrefixes>
