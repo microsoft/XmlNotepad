@@ -2103,6 +2103,8 @@ namespace XmlNotepad
                     }
                     using (r)
                     {
+                        var ignoreDtd = Settings.Instance.GetBoolean("IgnoreDTD");
+                        r.DtdProcessing = ignoreDtd ? DtdProcessing.Ignore : DtdProcessing.Parse;
                         r.WhitespaceHandling = WhitespaceHandling.Significant;
 
                         // TODO: add multi-select support, so we can insert multiple nodes also.

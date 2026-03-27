@@ -840,26 +840,24 @@ namespace XmlNotepad
 
             if (ofObjectToReturn == typeof(XmlSchema))
             {
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.ValidationEventHandler += handler;
-                settings.XmlResolver = this;
-                settings.DtdProcessing = DtdProcessing.Parse;
-                XmlReader r = XmlReader.Create(absoluteUri.AbsoluteUri, settings);
-                if (r != null)
+                using (XmlReader r = XmlHelpers.ReadXml(absoluteUri.AbsoluteUri, this, handler))
                 {
-                    s = XmlSchema.Read(r, handler);
-                    if (s != null)
+                    if (r != null)
                     {
-                        s.SourceUri = absoluteUri.AbsoluteUri;
-                        if (ce != null)
+                        s = XmlSchema.Read(r, handler);
+                        if (s != null)
                         {
-                            ce.Schema = s;
+                            s.SourceUri = absoluteUri.AbsoluteUri;
+                            if (ce != null)
+                            {
+                                ce.Schema = s;
+                            }
+                            else
+                            {
+                                cache.Add(s);
+                            }
+                            return s;
                         }
-                        else
-                        {
-                            cache.Add(s);
-                        }
-                        return s;
                     }
                 }
             }

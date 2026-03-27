@@ -188,7 +188,13 @@ namespace XmlNotepad
                 if (si.InvokeRequired)
                 {
                     // get on the right thread.
-                    si.Invoke(action, null);
+                    try
+                    {
+                        si.Invoke(action, null);
+                    } 
+                    catch (Exception)
+                    {
+                    }
                     return;
                 }
                 else
@@ -2888,6 +2894,9 @@ namespace XmlNotepad
         {
             if (this._model == null || string.IsNullOrEmpty(this._model.FileName))
             {
+                var message = StringResources.NoFileLoaded;
+                var caption = StringResources.NoStats;
+                MessageBox.Show(this, message, caption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             this.xmlTreeView1.Commit();

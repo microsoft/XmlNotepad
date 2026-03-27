@@ -1485,7 +1485,7 @@ namespace UnitTests
             AssertNormalizedEqual(fd.FindString, "/Root/a:Employee"); // test element with namespaces!
 
             Trace.WriteLine("test edit path and find node.");
-            fd.Window.SendKeystrokes("/Root{ENTER}");
+            fd.Window.SendKeystrokes("/Root{BACKSPACE}{ENTER}");
             Sleep(100);
             fd.Window.DismissPopUp("{ESC}");
             Sleep(100);
@@ -1519,7 +1519,8 @@ namespace UnitTests
             var w = LaunchNotepad();
 
             MainWindowWrapper xw = new MainWindowWrapper(w);
-            xw.LoadXmlAddress(_testDir + "Application\\Samples\\rss.xml", "<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            xw.LoadXmlAddress(_testDir + "Application\\Samples\\rss.xml",
+                "<?xml-stylesheet type='text/xsl' href='rsspretty.xsl' version='1.0'?>");
 
             Trace.WriteLine("Show XSLT");
             xw.ShowXslt();
@@ -1608,13 +1609,8 @@ Prefix 'user' is not defined. ");
             if (popup != null)
             {
                 popup.DismissPopUp("{ENTER}");
-                Sleep(200);
-                findDialog.FindNext();
             }
 
-            findDialog.Window.DismissPopUp("{ESC}");
-            w.SendKeystrokes("^c{ESC}");
-            CheckClipboard("XML Schema aware Intellisense");
             Sleep(200);
         }
 

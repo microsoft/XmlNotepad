@@ -224,6 +224,8 @@ namespace Microsoft.Xml
         {
             using (XmlTextReader r = new XmlTextReader(input))
             {
+                r.WhitespaceHandling = this._whiteSpace;
+                r.DtdProcessing = DtdProcessing.Ignore;
                 this.Process(r);
             }
         }
@@ -243,6 +245,8 @@ namespace Microsoft.Xml
             {
                 using (XmlTextReader r = new XmlTextReader(path))
                 {
+                    r.WhitespaceHandling = this._whiteSpace;
+                    r.DtdProcessing = DtdProcessing.Ignore;
                     this.Process(r);
                 }
             }
@@ -256,14 +260,12 @@ namespace Microsoft.Xml
         /// <summary>
         /// Add stats from the given xml reader to the current XmlStats.
         /// </summary>
-        public void Process(XmlTextReader r)
+        public void Process(XmlReader r)
         {
             if (r == null)
             {
                 return;
             }
-
-            r.WhitespaceHandling = this._whiteSpace;
 
             Stack elementStack = new Stack();
             NodeStats currentElement = null;

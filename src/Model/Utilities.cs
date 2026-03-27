@@ -242,7 +242,7 @@ namespace XmlNotepad
             {
                 try
                 {
-                    using (var reader = XmlReader.Create(stm))
+                    using (var reader = XmlHelpers.ReadXml(stm))
                     {
                         if (reader.Read() && reader.NodeType == XmlNodeType.XmlDeclaration)
                         {

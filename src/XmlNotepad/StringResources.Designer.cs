@@ -1103,6 +1103,24 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No file is loaded into XML Notepad.
+        /// </summary>
+        public static string NoFileLoaded {
+            get {
+                return ResourceManager.GetString("NoFileLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Stats.
+        /// </summary>
+        public static string NoStats {
+            get {
+                return ResourceManager.GetString("NoStats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal Error: node is not a child.
         /// </summary>
         public static string NotAChild {

@@ -199,9 +199,8 @@ namespace XmlNotepad
                 uri = resolved;
             }
 
-            XmlReaderSettings settings = GetReaderSettings();
-            settings.ValidationEventHandler += new ValidationEventHandler(OnValidationEvent);
-            using (XmlReader reader = XmlReader.Create(file, settings))
+            var handler = new ValidationEventHandler(OnValidationEvent);
+            using (XmlReader reader = XmlHelpers.ReadXml(file, null, handler))
             {
                 this.Load(reader, file);
             }
@@ -237,10 +236,8 @@ namespace XmlNotepad
 
         public XmlReaderSettings GetReaderSettings()
         {
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.DtdProcessing = this._settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
+            XmlReaderSettings settings = XmlHelpers.CreateXmlSettings(Settings.Instance.Resolver);
             settings.CheckCharacters = false;
-            settings.XmlResolver = Settings.Instance.Resolver;
             settings.IgnoreWhitespace = false;
             return settings;
         }
@@ -250,9 +247,7 @@ namespace XmlNotepad
             if (this.Document != null)
             {
                 this._dirty = true;
-                XmlReaderSettings s = new XmlReaderSettings();
-                s.DtdProcessing = this._settings.GetBoolean("IgnoreDTD") ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                s.XmlResolver = Settings.Instance.Resolver;
+                XmlReaderSettings s = XmlHelpers.CreateXmlSettings(Settings.Instance.Resolver);
                 using (XmlReader r = XmlIncludeReader.CreateIncludeReader(this.Document, s, this.FileName))
                 {
                     this.Document = _loader.Load(r);

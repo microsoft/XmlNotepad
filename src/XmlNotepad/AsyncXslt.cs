@@ -29,7 +29,6 @@ namespace XmlNotepad
         public bool userSpecifiedOutput;
         // whether DOM has <?xsl-output instruction.
         public bool hasDefaultXsltOutput;
-        public bool ignoreDTD;
         public bool enableScripts;
         public bool disableOutputFile;
         public XmlUrlResolver resolver;
@@ -258,10 +257,7 @@ namespace XmlNotepad
                         this._loaded = DateTime.Now;
                         var settings = new XsltSettings(true, this._context.enableScripts);
                         settings.EnableScript = _trustService.CanTrustUrl(resolved) == true;
-                        var rs = new XmlReaderSettings();
-                        rs.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
-                        rs.XmlResolver = this._context.resolver;
-                        using (XmlReader r = XmlReader.Create(resolved.AbsoluteUri, rs))
+                        using (XmlReader r = XmlHelpers.ReadXml(resolved.AbsoluteUri, this._context.resolver))
                         {
                             _xslt.Load(r, settings, this._context.resolver);
                         }
@@ -318,9 +314,7 @@ namespace XmlNotepad
                     Directory.CreateDirectory(dir);
                 }
 
-                var settings = new XmlReaderSettings();
-                settings.XmlResolver = this._context.resolver;
-                settings.DtdProcessing = this._context.ignoreDTD ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                var settings = XmlHelpers.CreateXmlSettings(this._context.resolver);
                 var xmlReader = XmlIncludeReader.CreateIncludeReader(context, settings, _context.baseUri.AbsoluteUri);
                 this._context.reader = xmlReader;
                 if (string.IsNullOrEmpty(outpath))
@@ -580,7 +574,7 @@ namespace XmlNotepad
                         string html = null;
                         html = GetDefaultStyles(sr.ReadToEnd());
 
-                        using (XmlReader reader = XmlReader.Create(new StringReader(html)))
+                        using (XmlReader reader = XmlHelpers.ReadXml(new StringReader(html)))
                         {
                             XslCompiledTransform t = new XslCompiledTransform();
                             t.Load(reader);

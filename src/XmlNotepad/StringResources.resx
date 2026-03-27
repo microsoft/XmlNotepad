@@ -1039,4 +1039,10 @@ Error: {0}</value>
   <data name="TooltipFacetTotalDigits" xml:space="preserve">
     <value>The total number of digits must not exceed {0}.</value>
   </data>
+  <data name="NoFileLoaded" xml:space="preserve">
+    <value>No file is loaded into XML Notepad</value>
+  </data>
+  <data name="NoStats" xml:space="preserve">
+    <value>No Stats</value>
+  </data>
 </root>

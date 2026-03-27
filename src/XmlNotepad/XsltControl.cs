@@ -375,8 +375,6 @@ namespace XmlNotepad
             }
         }
 
-        public bool IgnoreDTD { get; set; }
-
         public bool EnableScripts { get; set; }
 
         public string BrowserVersion { get; set; }
@@ -406,18 +404,13 @@ namespace XmlNotepad
             this._settings.Changed += OnSettingsChanged;
 
             // initial settings.
-            this.IgnoreDTD = this._settings.GetBoolean("IgnoreDTD");
             this.EnableScripts = this._settings.GetBoolean("EnableXsltScripts");
             this.InitializeBrowser(this._settings.GetString("BrowserVersion"));
         }
 
         private void OnSettingsChanged(object sender, string name)
         {
-            if (name == "IgnoreDTD")
-            {
-                this.IgnoreDTD = this._settings.GetBoolean("IgnoreDTD");
-            }
-            else if (name == "EnableXsltScripts")
+            if (name == "EnableXsltScripts")
             {
                 this.EnableScripts = this._settings.GetBoolean("EnableXsltScripts");
             }
@@ -495,8 +488,7 @@ namespace XmlNotepad
                 userSpecifiedOutput = userSpecifiedOutput,
                 hasDefaultXsltOutput = hasDefaultXsltOutput,
                 defaultSSResource = this._defaultSSResource,
-                baseUri = this.GetBaseUri(),
-                ignoreDTD = this.IgnoreDTD,
+                baseUri = this.GetBaseUri(),                
                 enableScripts = this.EnableScripts,
                 disableOutputFile = this.DisableOutputFile,
                 resolver = this._resolver,

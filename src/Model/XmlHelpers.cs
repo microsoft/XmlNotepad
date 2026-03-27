@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xml;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
+using System.Xml.Schema;
 
 namespace XmlNotepad
 {
@@ -220,6 +222,41 @@ namespace XmlNotepad
             if (node == null) return false;
             return node.NodeType == XmlNodeType.Attribute &&
                 node.NamespaceURI == "http://www.w3.org/2001/XMLSchema-instance";
+        }
+
+        public static XmlReaderSettings CreateXmlSettings(XmlResolver resolver = null, ValidationEventHandler handler = null)
+        {
+            var rs = new XmlReaderSettings();
+            var ignoreDtd = Settings.Instance.GetBoolean("IgnoreDTD");
+            rs.DtdProcessing = ignoreDtd ? DtdProcessing.Ignore : DtdProcessing.Parse;
+            rs.NameTable = new NameTable();
+            if (resolver != null)
+            {
+                rs.XmlResolver = resolver;
+            }
+            if (handler != null)
+            {
+                rs.ValidationEventHandler += handler;
+            }
+            return rs;
+        }
+
+        public static XmlReader ReadXml(string path, XmlResolver resolver = null, ValidationEventHandler handler = null)
+        {
+            var rs = CreateXmlSettings(resolver, handler);
+            return XmlReader.Create(path, rs);
+        }
+
+        public static XmlReader ReadXml(Stream stm, XmlResolver resolver = null, ValidationEventHandler handler = null)
+        {
+            var rs = CreateXmlSettings(resolver, handler);
+            return XmlReader.Create(stm, rs);
+        }
+
+        public static XmlReader ReadXml(TextReader reader, XmlResolver resolver = null, ValidationEventHandler handler = null)
+        {
+            var rs = CreateXmlSettings(resolver, handler);
+            return XmlReader.Create(reader, rs);
         }
     }
 

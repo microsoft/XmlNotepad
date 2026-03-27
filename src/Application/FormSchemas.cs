@@ -798,7 +798,7 @@ namespace XmlNotepad
                 if (string.IsNullOrEmpty(filename)) return null;
                 try 
                 {
-                    using (var r = new XmlTextReader(filename, new NameTable()))
+                    using (var r = XmlHelpers.ReadXml(filename))
                     {
                         return XmlSchema.Read(r, (sender, args) =>
                         {

@@ -406,7 +406,7 @@ namespace XmlNotepad
             // we don't use the serializer because it's too slow to fire up.
             try
             {
-                using (var r = new XmlTextReader(filename))
+                using (var r = XmlHelpers.ReadXml(filename))
                 {
                     if (r.IsStartElement("Settings"))
                     {
@@ -981,7 +981,7 @@ namespace XmlNotepad
             this["MaximumValueLength"] = (int)short.MaxValue;
             this["AutoFormatLongLines"] = false;
 
-            this["IgnoreDTD"] = false;
+            this["IgnoreDTD"] = true;
             this["MaximumLineIndex"] = 1000000;
 
             // XSLT options
@@ -998,7 +998,7 @@ namespace XmlNotepad
             this["XmlDiffIgnoreNamespaces"] = false;
             this["XmlDiffIgnorePrefixes"] = false;
             this["XmlDiffIgnoreXmlDecl"] = false;
-            this["XmlDiffIgnoreDtd"] = false;
+            this["XmlDiffIgnoreDtd"] = true;
             this["XmlDiffHideIdentical"] = false;
 
             // analytics question has been answered...

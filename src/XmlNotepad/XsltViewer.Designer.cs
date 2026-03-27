@@ -123,7 +123,6 @@ namespace XmlNotepad {
             this.xsltControl.DisableOutputFile = false;
             resources.ApplyResources(this.xsltControl, "xsltControl");
             this.xsltControl.EnableScripts = false;
-            this.xsltControl.IgnoreDTD = false;
             this.xsltControl.Name = "xsltControl";
             // 
             // XsltViewer

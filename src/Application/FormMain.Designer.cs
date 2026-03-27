@@ -1577,7 +1577,6 @@ namespace XmlNotepad
             this._dynamicHelpViewer.DisableOutputFile = false;
             this._dynamicHelpViewer.EnableScripts = false;
             this._dynamicHelpViewer.HasXsltOutput = false;
-            this._dynamicHelpViewer.IgnoreDTD = false;
             this._dynamicHelpViewer.Name = "_dynamicHelpViewer";
             this.helpProvider1.SetShowHelp(this._dynamicHelpViewer, ((bool)(resources.GetObject("_dynamicHelpViewer.ShowHelp"))));
             // 

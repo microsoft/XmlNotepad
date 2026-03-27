@@ -113,6 +113,8 @@ namespace XmlNotepad
                 XmlDiffView diffView = new XmlDiffView();
                 using (var reader = new XmlTextReader(filename))
                 {
+                    var ignoreDtd = Settings.Instance.GetBoolean("IgnoreDTD");                    
+                    reader.DtdProcessing = ignoreDtd ? DtdProcessing.Ignore : DtdProcessing.Parse;
                     diffView.Load(reader, diffGram);
                     using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8))
                     {
