@@ -10,8 +10,8 @@ if "%TargetDir%"=="" (
 )
 
 echo SrcDir=%SrcDir%
-set "DropDir=%SrcDir%drop"
-set "SamplesDir=%SrcDir%drop\samples"
+set "DropDir=%TargetDir%drop"
+set "SamplesDir=%TargetDir%drop\samples"
 
 if exist "!DropDir!" (
     echo Removing existing drop directory...

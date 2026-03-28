@@ -49,12 +49,14 @@ move "%PUBLISH%" "%ROOT%\publish"
 if not EXIST "%WIXBIN%\WixUtilExtension.dll" goto :nowix
 
 echo Building XmlNotepadSetup.msi...
-pause load src\xmlnotepadsetup.sln and right click XmlNotepadSetup to build the .msi
-goto :bundle
-
-msbuild src\xmlnotepadsetup.sln /p:Configuration=Release /target:XmlNotepadSetup /p:OutDir=bin\Release\
+pushd src\XmlNotepadSetup
+msbuild /target:build XmlNotepadSetup.wixproj /p:Configuration=Release /p:OutDir=bin\Release\
 if ERRORLEVEL 1 goto :err_setup
-if not EXIST src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi goto :nomsi
+if not EXIST bin\Release\XmlNotepadSetup.msi goto :nomsi
+popd
+
+echo "Did the src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi get build?"
+pause 
 
 :bundle
 echo Building XmlNotepadPackage and Bundle...
@@ -174,7 +176,7 @@ echo '%PUBLISH%' folder not found, so the build failed, please manually run rele
 exit /b 1
 
 :nomsi
-echo 'XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi' not found, please use src\XmlNotepadSetup.sln to build the msi.
+echo 'src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi' not found, did the build fail?
 exit /b 1
 
 :nokey
