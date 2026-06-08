@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -45,12 +47,17 @@ namespace XmlNotepad
             _recentReplaceStrings = new MostRecentlyUsed();
             _recentReplaceCombo = new RecentlyUsedComboBox(_recentReplaceStrings, this.comboBoxReplace);
             _recentReplaceCombo.SelectFirstItemByDefault = false;
+            this.SizeChanged += FormSearch_SizeChanged;
+        }
+
+        private void FormSearch_SizeChanged(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Search box size changed to " + this.Size.ToString());
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            // this.AutoSizeMode = AutoSizeMode.GrowOnly;
         }
 
         protected override void OnDpiChanged(DpiChangedEventArgs e)
@@ -411,20 +418,6 @@ namespace XmlNotepad
                 SetFindModeControls(!this._findOnly);
             }
 
-            Size s = this.ClientSize;
-            object size = this._settings["SearchSize"];
-            if (size != null && (Size)size != Size.Empty)
-            {
-                // Bugbug: we cannot preserve find dialog size with only one setting, we need 
-                // a setting for CTRL+F and another for CTRL+H and 2 more depending on whether
-                // XPath setting is checked since all those have different dialog sizes
-
-                // Size cs = (Size)size;
-                // s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
-                // this.AutoSize = false;
-                // this.ClientSize = s;
-            }
-
             object location = this._settings["SearchWindowLocation"];
             if (location != null && (Point)location != Point.Empty)
             {
@@ -444,12 +437,57 @@ namespace XmlNotepad
             }
 
             this.ResumeLayout();
+
+            // After resume layout the form is now auto-sized,
+
+            Size s = this.ClientSize;
+            Size? size = GetSavedSize();
+            if (size != null && size.Value != Size.Empty)
+            {
+                Size cs = size.Value;
+                // don't shrink it below what auto-size would make it, since that would make some controls inaccessible.
+                s = new Size(Math.Max(s.Width, cs.Width), Math.Max(s.Height, cs.Height));
+                this.ClientSize = s;
+            }
+
+            // Which means we can turn off autosize to allower user to also resize it.
+            this.AutoSize = false;
+
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
             SaveSettings();
             base.OnClosing(e);
+        }
+
+        private string GetSizeName()
+        {
+            var name = this.ReplaceMode ? "ReplaceDialogSize" : "FindDialogSize";
+            if (this.checkBoxXPath.Checked)
+            {
+                name += "WithXPath";
+            }
+            return name;
+        }
+
+        private Size? GetSavedSize()
+        {
+            Hashtable sizes = this._settings["SearchSizes"] as Hashtable;
+            var name = GetSizeName();
+            if (sizes.Contains(name))
+            {
+                return (Size)sizes[name];
+            }
+            return null;
+        }
+
+        private Hashtable GetUpdatedSizes()
+        {
+            Hashtable sizes = this._settings["SearchSizes"] as Hashtable;
+            var name = GetSizeName();
+            sizes[name] = this.ClientSize;
+            return sizes;
         }
 
         public void SaveSettings()
@@ -465,7 +503,7 @@ namespace XmlNotepad
                 this._settings["SearchWindowLocation"] = location;
             }
             // save replace mode size, since we will shink the size next time findOnly is set.
-            this._settings["SearchSize"] = this.ClientSize;
+            this._settings["SearchSizes"] = GetUpdatedSizes();
             this._settings["FindMode"] = this._findOnly;
             this._settings["SearchXPath"] = this.checkBoxXPath.Checked;
             this._settings["SearchWholeWord"] = this.checkBoxWholeWord.Checked;

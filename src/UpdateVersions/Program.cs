@@ -36,6 +36,8 @@ namespace UpdateVersions
         public string DropDir { get; set; }
         public string UpdatesFile { get; set; }
         public string WebView2Version { get; set; }
+        public string AppPackageFile { get; set; }
+        public string XmlNotepadPackageFile { get; set; }
 
         public bool Execute()
         {
@@ -70,6 +72,8 @@ namespace UpdateVersions
             result &= UpdatePackageManifest(v);
             result &= UpdateApplicationProjectFile(v);
             result &= CheckUpdatesFile(v);
+            result &= UpdatePackageConfig(WebView2Version, AppPackageFile);
+            result &= UpdatePackageConfig(WebView2Version, XmlNotepadPackageFile);
             return result;
         }
 
@@ -306,6 +310,47 @@ namespace UpdateVersions
             catch (Exception ex)
             {
                 Log.LogError("file '" + this.AppManifestFile + "' edit failed: " + ex.Message);
+                return false;
+            }
+            // return that there is no error.
+            return true;
+        }
+
+        private bool UpdatePackageConfig(string webViewVersion, string filename)
+        {
+            if (!System.IO.File.Exists(filename))
+            {
+                Log.LogError("packages.config file not found: " + filename);
+                return false;
+            }
+
+            try
+            {
+                bool changed = false;
+                XDocument doc = XDocument.Load(filename);
+                foreach (var e in doc.Root.Elements("package"))
+                {
+                    var id = (string)e.Attribute("id");
+                    if (id == "Microsoft.Web.WebView2")
+                    {
+                        var current = (string)e.Attribute("version");
+                        if (current != null && current != webViewVersion)
+                        {
+                            changed = true;
+                            e.SetAttributeValue("version", webViewVersion);
+                        }
+                    }
+                }
+
+                if (changed)
+                {
+                    Log.LogMessage("SyncVersions updating " + filename);
+                    doc.Save(filename);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("file '" + filename + "' edit failed: " + ex.Message);
                 return false;
             }
             // return that there is no error.
@@ -629,6 +674,8 @@ namespace UpdateVersions
             sync.AppManifestFile = Path.Combine(solutionPath, "XmlNotepadPackage", "Package.appxmanifest");
             sync.DropDir = Path.Combine(solutionPath, "drop");
             sync.UpdatesFile = Path.Combine(solutionPath, "Updates", "Updates.xml");
+            sync.AppPackageFile = Path.Combine(solutionPath, "Application", "packages.config");
+            sync.XmlNotepadPackageFile = Path.Combine(solutionPath, "XmlNotepad", "packages.config");
             try
             {
                 bool rc = sync.Execute();

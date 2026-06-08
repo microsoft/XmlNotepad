@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -948,7 +949,9 @@ namespace XmlNotepad
             this["RecentFindStrings"] = new string[0];
             this["RecentReplaceStrings"] = new string[0];
             this["SearchWindowLocation"] = new Point(0, 0);
-            this["SearchSize"] = new Size(0, 0);
+            var sizes = new Hashtable();
+            sizes["Type"] = new Size(0, 0);
+            this["SearchSizes"] = sizes;
             this["OptionsWindowLocation"] = new Point(0, 0);
             this["OptionsWindowSize"] = new Size(0, 0);
             this["DynamicHelpVisible"] = false;
