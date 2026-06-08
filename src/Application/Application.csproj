@@ -77,14 +77,17 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.3595.46, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3595.46\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.3912.50, Culture=neutral, PublicKeyToken=2a8ab48044d2601e">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3912.50\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.3595.46, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3595.46\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.3912.50, Culture=neutral, PublicKeyToken=2a8ab48044d2601e">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3912.50\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.3595.46, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3595.46\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.3912.50, Culture=neutral, PublicKeyToken=2a8ab48044d2601e">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3912.50\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
@@ -171,7 +174,8 @@
     <Compile Include="FormSearch.Designer.cs">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs"></Compile>
+    <Compile Include="Program.cs">
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32Helpers.cs" />
     <Compile Include="XmlDiffWrapper.cs" />
@@ -315,88 +319,110 @@
   <ItemGroup>
     <PublishFile Include="Samples\basket.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\basket.xsd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\DtdEntityExplosion.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\DtdEntityLeakage.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Employee.xsd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\Hamlet.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\MaliciousDtd.dtd">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rss.xml">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\rsspretty.xsl">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Samples\willy.xsl">
       <Visible>False</Visible>
-      <Group></Group>
-      <TargetPath></TargetPath>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
@@ -436,11 +462,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets')" />
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3912.50\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3912.50\build\Microsoft.Web.WebView2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.3595.46\build\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.3912.50\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.3912.50\build\Microsoft.Web.WebView2.targets'))" />
   </Target>
 </Project>
