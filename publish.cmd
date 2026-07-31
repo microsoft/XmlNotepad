@@ -10,6 +10,7 @@ for /f "usebackq" %%i in (`%ROOT%\tools\xsl -e -s %ROOT%\src\Version\version.xsl
 if "%VERSION%" == "" goto :noversion
 
 echo ### Publishing version %VERSION%...
+set SIGNMANIFESTS=true
 set WINGET=1
 set GITRELEASE=1
 set UPLOAD=1

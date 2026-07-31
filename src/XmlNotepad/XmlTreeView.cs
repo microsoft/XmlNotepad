@@ -675,6 +675,7 @@ namespace XmlNotepad
 
         private void OnFileChanged(object sender, EventArgs e)
         {
+            if (_disposed) return;
             BindTree();
         }
 

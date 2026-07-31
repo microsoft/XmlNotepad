@@ -58,9 +58,21 @@ namespace XmlNotepad
             }
         }
 
+
+        public event EventHandler<Uri> FetchingUri;
+
+        private void OnLoadUri(Uri uri)
+        {
+            var handler = FetchingUri;
+            if (handler != null)
+            {
+                handler(this, uri);
+            }
+        }
+
         Stream GetResponse(Uri uri)
         {
-            Debug.WriteLine($"Loading Uri {uri}");
+            OnLoadUri(uri);
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromSeconds(60);

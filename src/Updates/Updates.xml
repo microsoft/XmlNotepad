@@ -9,6 +9,9 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+	<version number="2.9.0.23">
+		<bug>Fix #517 : Fix stack overflow when loading many schemas recursively.</bug>
+	</version>
 	<version number="2.9.0.22">
 		<feature>Update to WebView2 version 1.0.3967.48.</feature>
 		<bug>Fix #489 : Make FindDialog resizeable &amp; preserve user size.</bug>

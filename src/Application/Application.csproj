@@ -58,10 +58,6 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(SIGNMANIFESTS)' == 'true' ">
-    <SignAssembly>true</SignAssembly>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>F0DEC4CF1C07CB9E44E29D98389072C8579D5E79</ManifestCertificateThumbprint>
   </PropertyGroup>
@@ -74,7 +70,7 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(SIGNMANIFESTS)' == 'true' ">
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
