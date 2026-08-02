@@ -4,7 +4,7 @@ XML Notepad is a Windows program that provides a simple intuitive User Interface
 Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run `XmlNotepadSetup.msi`.
 3. [Windows MSIX installer](https://github.com/microsoft/XmlNotepad/releases) is included in each github
 release under the expandable "Assets" heading in case you need a trusted Windows installer.
-4. You can also use [WinGet](https://winget.run/pkg/Microsoft/XMLNotepad) as follows: `winget install XmlNotepad` - but this is a bit behind right now due to problems updating the winget repo.
+4. You can also use WinGet as follows: `winget install -e --id Microsoft.XMLNotepad`.
 
 [![image](docs/assets/images/help.png)](https://youtu.be/bmchxiu_oV0)
 
