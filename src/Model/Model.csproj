@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="ApiKey.cs" Condition="!Exists('$(MSBuildProjectDirectory)\ApiKey.cs')" />
     <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

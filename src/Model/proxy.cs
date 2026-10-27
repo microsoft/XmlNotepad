@@ -16,10 +16,16 @@ namespace XmlNotepad
     public class XmlProxyResolver : XmlUrlResolver
     {
         private readonly WebProxyService _ps;
+        private readonly XmlResolver _sourceResolver;
 
-        public XmlProxyResolver(IServiceProvider site)
+        public XmlProxyResolver(IServiceProvider site) : this(site, null)
+        {
+        }
+
+        protected XmlProxyResolver(IServiceProvider site, XmlResolver sourceResolver)
         {
             _ps = site.GetService(typeof(WebProxyService)) as WebProxyService;
+            _sourceResolver = sourceResolver;
             Proxy = HttpWebRequest.DefaultWebProxy;
         }
 
@@ -28,6 +34,10 @@ namespace XmlNotepad
             if (absoluteUri == null)
             {
                 throw new ArgumentNullException("absoluteUri");
+            }
+            if (_sourceResolver != null)
+            {
+                return _sourceResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
             if ((absoluteUri.Scheme == "http" || absoluteUri.Scheme == "https")
                 && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))

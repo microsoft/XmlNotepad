@@ -172,11 +172,15 @@ namespace XmlNotepad
         private XmlResolver resolver;
         private List<XmlSchemaElement> globalElementCache;
 
-        public SchemaCache(IServiceProvider site)
+        public SchemaCache(IServiceProvider site) : this(site, null)
+        {
+        }
+
+        public SchemaCache(IServiceProvider site, XmlResolver sourceResolver)
         {
             this.site = site;
             this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
-            this.resolver = new SchemaResolver(this.site, this);
+            this.resolver = new SchemaResolver(this.site, this, sourceResolver);
         }
 
         void FireOnChanged()
@@ -820,7 +824,12 @@ namespace XmlNotepad
         SchemaCache cache;
         ValidationEventHandler handler;
 
-        public SchemaResolver(IServiceProvider site, SchemaCache cache) : base(site)
+        public SchemaResolver(IServiceProvider site, SchemaCache cache) : this(site, cache, null)
+        {
+        }
+
+        internal SchemaResolver(IServiceProvider site, SchemaCache cache, XmlResolver sourceResolver)
+            : base(site, sourceResolver)
         {
             this.cache = cache;
         }
