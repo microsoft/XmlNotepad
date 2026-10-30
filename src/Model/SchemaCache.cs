@@ -38,10 +38,7 @@ namespace XmlNotepad
             {
                 _location = value;
                 _schema = null;
-                if (_location.IsFile)
-                {
-                    _fileName = _location.LocalPath;
-                }
+                _fileName = _location.IsFile ? _location.LocalPath : null;
             }
         }
 
@@ -52,6 +49,10 @@ namespace XmlNotepad
                 if (_schema == null) return false;
                 if (_fileName != null)
                 {
+                    if (XmlResourceResolver.IsRestrictedFileUri(_location))
+                    {
+                        return false;
+                    }
                     DateTime lastWriteTime = File.GetLastWriteTime(_fileName);
                     if (lastWriteTime > this._lastModified)
                     {
@@ -69,8 +70,12 @@ namespace XmlNotepad
             {
                 if (_schema != value)
                 {
+                    if (value != null && _fileName != null)
+                    {
+                        XmlResourceResolver.ValidateUri(_location);
+                    }
                     _schema = value;
-                    if (_fileName != null)
+                    if (value != null && _fileName != null)
                     {
                         this._lastModified = File.GetLastWriteTime(_fileName);
                     }
@@ -842,6 +847,7 @@ namespace XmlNotepad
 
         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
         {
+            XmlResourceResolver.ValidateUri(absoluteUri);
             CacheEntry ce = cache.FindSchemaByUri(absoluteUri);
             if (ce != null && ce.HasUpToDateSchema) return ce.Schema;
 

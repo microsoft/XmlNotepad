@@ -31,7 +31,7 @@ namespace XmlNotepad
         public bool hasDefaultXsltOutput;
         public bool enableScripts;
         public bool disableOutputFile;
-        public XmlUrlResolver resolver;
+        public XmlResolver resolver;
         public CancellationTokenSource token = new CancellationTokenSource();
         public string defaultSSResource;
         public bool running;
@@ -249,6 +249,7 @@ namespace XmlNotepad
             else
             {
                 resolved = new Uri(_context.baseUri, this._context.xsltfilename);
+                XmlResourceResolver.ValidateUri(resolved);
                 if (resolved != this._xsltUri || IsModified())
                 {
                     try
@@ -264,7 +265,10 @@ namespace XmlNotepad
 
                         // the XSLT DOM is also handy to have around for GetOutputMethod
                         this._xsltdoc = new XmlDocument();
-                        this._xsltdoc.Load(resolved.AbsoluteUri);
+                        using (XmlReader r = XmlHelpers.ReadXml(resolved.AbsoluteUri, this._context.resolver))
+                        {
+                            this._xsltdoc.Load(r);
+                        }
                     } 
                     catch (Exception) 
                     {
@@ -321,7 +325,10 @@ namespace XmlNotepad
                 {
                     using (StringWriter writer = new StringWriter())
                     {
-                        transform.Transform(xmlReader, null, writer);
+                        using (XmlWriter output = XmlWriter.Create(writer, transform.OutputSettings))
+                        {
+                            transform.Transform(xmlReader, null, output, this._context.resolver);
+                        }
                         this._xsltUri = resolved;
                         this._context.output = writer.ToString();
                     }
@@ -339,7 +346,10 @@ namespace XmlNotepad
                         // cache to an inmemory stream so we can strip the BOM.
                         using (MemoryStream ms = new MemoryStream())
                         {
-                            transform.Transform(xmlReader, null, ms);
+                            using (XmlWriter output = XmlWriter.Create(ms, transform.OutputSettings))
+                            {
+                                transform.Transform(xmlReader, null, output, this._context.resolver);
+                            }
                             ms.Seek(0, SeekOrigin.Begin);
                             EncodingHelpers.WriteFileWithoutBOM(ms, outpath);
                         }
@@ -356,7 +366,10 @@ namespace XmlNotepad
                             this._context.writer = wrapper;
                             Stopwatch watch = new Stopwatch();
                             watch.Start();
-                            transform.Transform(xmlReader, null, wrapper);
+                            using (XmlWriter output = XmlWriter.Create(wrapper, transform.OutputSettings))
+                            {
+                                transform.Transform(xmlReader, null, output, this._context.resolver);
+                            }
                             watch.Stop();
                             this._context.info.XsltMilliseconds = watch.ElapsedMilliseconds;
                             Debug.WriteLine("Transform in {0} milliseconds", watch.ElapsedMilliseconds);
@@ -577,7 +590,7 @@ namespace XmlNotepad
                         using (XmlReader reader = XmlHelpers.ReadXml(new StringReader(html)))
                         {
                             XslCompiledTransform t = new XslCompiledTransform();
-                            t.Load(reader);
+                            t.Load(reader, XsltSettings.Default, _context.resolver);
                             _defaultss = t;
                         }
                         // the XSLT DOM is also handy to have around for GetOutputMethod

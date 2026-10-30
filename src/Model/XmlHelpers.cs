@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xml;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -231,17 +230,7 @@ namespace XmlNotepad
             var ignoreDtd = Settings.Instance.GetBoolean("IgnoreDTD");
             rs.DtdProcessing = ignoreDtd ? DtdProcessing.Ignore : DtdProcessing.Parse;
             rs.NameTable = new NameTable();
-            if (resolver != null)
-            {
-                rs.XmlResolver = resolver;
-            } 
-            else if (!ignoreDtd)
-            {
-                rs.XmlResolver = new XmlUrlResolver
-                {
-                    Credentials = CredentialCache.DefaultCredentials
-                };
-            }
+            rs.XmlResolver = resolver == null ? new XmlResourceResolver() : new XmlResourceResolver(resolver);
             if (handler != null)
             {
                 rs.ValidationEventHandler += handler;

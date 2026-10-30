@@ -35,6 +35,7 @@ namespace XmlNotepad
             {
                 throw new ArgumentNullException("absoluteUri");
             }
+            XmlResourceResolver.ValidateUri(absoluteUri);
             if (_sourceResolver != null)
             {
                 return _sourceResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
@@ -66,6 +67,16 @@ namespace XmlNotepad
                 Debug.WriteLine($"Loading {absoluteUri}");
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
+        }
+
+        public override System.Threading.Tasks.Task<object> GetEntityAsync(Uri absoluteUri, string role, Type ofObjectToReturn)
+        {
+            XmlResourceResolver.ValidateUri(absoluteUri);
+            if (_sourceResolver != null)
+            {
+                return _sourceResolver.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
+            }
+            return base.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
         }
 
         Stream GetResponse(Uri uri)
