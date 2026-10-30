@@ -47,3 +47,8 @@ jobs:
         msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration "/p:Platform=Any CPU" /verbosity:minimal
       env:
         Configuration: ${{ matrix.configuration }}
+
+    - name: Run headless model regression tests
+      run: dotnet test .\src\Model.Tests\Model.Tests.csproj --configuration $env:Configuration --no-build --verbosity normal
+      env:
+        Configuration: ${{ matrix.configuration }}

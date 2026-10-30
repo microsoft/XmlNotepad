@@ -779,8 +779,9 @@ namespace XmlNotepad
         {
             if (globalElementCache == null || globalElementCache.Count == 0)
             {
-                globalElementCache = new List<XmlSchemaElement>();
+                var elements = new List<XmlSchemaElement>();
                 XmlSchemaSet set = new XmlSchemaSet();
+                set.XmlResolver = this.Resolver;
                 HashSet<string> knownTargetNamespaces = new HashSet<string>();
                 foreach (var entry in this.GetSchemas())
                 {
@@ -809,9 +810,10 @@ namespace XmlNotepad
                 {
                     if (o is XmlSchemaElement e)
                     {
-                        globalElementCache.Add(e);
+                        elements.Add(e);
                     }
                 }
+                globalElementCache = elements;
             }
             return globalElementCache;
         }

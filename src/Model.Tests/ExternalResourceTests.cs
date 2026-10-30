@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Xsl;
 using XmlNotepad;
 
@@ -25,6 +26,7 @@ namespace XmlNotepad.Model.Tests
         private MockSchemaSource _source = null!;
         private TestProxyResolver _resolver = null!;
         private Settings _settings = null!;
+        private SchemaCache _cache = null!;
         private XmlCache _model = null!;
         private string _documentFile = null!;
 
@@ -41,8 +43,8 @@ namespace XmlNotepad.Model.Tests
             _settings.SetDefaults();
             var actions = new DelayedActions(action => action());
             _settings.DelayedActions = actions;
-            var cache = new SchemaCache(this, _source);
-            _model = new XmlCache(this, cache, actions);
+            _cache = new SchemaCache(this, _source);
+            _model = new XmlCache(this, _cache, actions);
             _documentFile = Path.Combine(AppContext.BaseDirectory, Guid.NewGuid().ToString("N") + ".xml");
         }
 
@@ -299,6 +301,115 @@ namespace XmlNotepad.Model.Tests
         }
 
         [TestMethod]
+        public void RestrictedDriveIsClassifiedBeforeNormalizingShortNameTail()
+        {
+            var uri = new Uri(new Uri(_documentFile), "SHORT~1|invalid/schema.xsd");
+            var resolver = new ClassifiedDriveResolver(_source, DriveType.Network);
+
+            Assert.Throws<XmlException>(() => resolver.GetEntity(uri, null, typeof(Stream)));
+
+            Assert.HasCount(1, resolver.Roots);
+            Assert.AreEqual(Path.GetPathRoot(_documentFile), resolver.Roots[0]);
+            Assert.IsEmpty(_source.Requests);
+        }
+
+        [TestMethod]
+        public void RootSuggestionsResolveDeferredImportsThroughSchemaResolver()
+        {
+            var childUri = new Uri("mock://schemas/child.xsd");
+            const string parentSchema =
+                "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"urn:parent\" " +
+                "xmlns:child=\"urn:child\"><xs:import namespace=\"urn:child\" " +
+                "schemaLocation=\"mock://schemas/child.xsd\" />" +
+                "<xs:element name=\"root\" type=\"child:valueType\" /></xs:schema>";
+            XmlSchema parent;
+            using (var text = new StringReader(parentSchema))
+            using (var reader = XmlReader.Create(text, new XmlReaderSettings(),
+                "https://mock-schema.invalid/parent.xsd"))
+            {
+                parent = XmlSchema.Read(reader, null)!;
+            }
+            parent.SourceUri = "https://mock-schema.invalid/parent.xsd";
+            _cache.Add(parent);
+            _source.Documents.Add(childUri,
+                "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"urn:child\">" +
+                "<xs:simpleType name=\"valueType\"><xs:restriction base=\"xs:string\" />" +
+                "</xs:simpleType></xs:schema>");
+            _source.Requests.Clear();
+
+            var roots = new List<XmlSchemaElement>(_cache.GetPossibleTopLevelElements());
+
+            Assert.HasCount(1, roots);
+            Assert.AreEqual(new XmlQualifiedName("root", "urn:parent"), roots[0].QualifiedName);
+            Assert.HasCount(1, _source.Requests);
+            Assert.AreEqual(childUri, _source.Requests[0]);
+        }
+
+        [TestMethod]
+        public void LoadingResourceDocumentBlocksNetworkSource()
+        {
+            var uri = new Uri(NetworkFileUri);
+            _source.Documents.Add(uri, "<stylesheet />");
+
+            Assert.Throws<XmlException>(() => XmlHelpers.LoadXmlResource(uri, _resolver));
+
+            Assert.IsEmpty(_source.Requests);
+        }
+
+        [TestMethod]
+        [DataRow("stylesheet.xsl")]
+        [DataRow("https://mock-schema.invalid/stylesheet.xsl")]
+        public void LoadingResourceDocumentUsesAllowedMockSource(string location)
+        {
+            var uri = new Uri(new Uri(_documentFile), location);
+            _source.Documents.Add(uri, "<stylesheet method=\"html\" />");
+
+            var document = XmlHelpers.LoadXmlResource(uri, _resolver);
+
+            Assert.AreEqual("html", document.DocumentElement?.GetAttribute("method"));
+            Assert.HasCount(1, _source.Requests);
+        }
+
+        [TestMethod]
+        [DataRow(NetworkSchemaLocation)]
+        [DataRow(NetworkFileUri)]
+        public void ReadingExplicitlySelectedNetworkDocumentDoesNotResolveItsRoot(string filename)
+        {
+            Uri? opened = null;
+            var input = new MemoryStream(Encoding.UTF8.GetBytes("<root>selected</root>"));
+            using (var reader = XmlHelpers.ReadDocument(filename, _model.GetReaderSettings(), location =>
+            {
+                opened = location;
+                return input;
+            }))
+            {
+                var document = new XmlDocument();
+                document.Load(reader);
+                Assert.AreEqual("selected", document.InnerText);
+            }
+
+            Assert.AreEqual(new Uri(filename), opened);
+            Assert.IsFalse(input.CanRead);
+            Assert.IsEmpty(_source.Requests);
+        }
+
+        [TestMethod]
+        public void ReadingSelectedNetworkDocumentStillBlocksItsExternalEntities()
+        {
+            _settings["IgnoreDTD"] = false;
+            const string xml = "<!DOCTYPE root [<!ENTITY external SYSTEM " +
+                "\"file://other-source.invalid/entity.txt\">]><root>&external;</root>";
+            using (var reader = XmlHelpers.ReadDocument(NetworkFileUri, _model.GetReaderSettings(),
+                location => new MemoryStream(Encoding.UTF8.GetBytes(xml))))
+            {
+                var document = new XmlDocument();
+                Assert.Throws<XmlException>(() => document.Load(reader));
+            }
+
+            Assert.IsEmpty(_source.Requests);
+        }
+
+        [TestMethod]
         public async Task ResolvingMappedDriveAsyncDoesNotReachSource()
         {
             var uri = new Uri(_documentFile);
@@ -444,6 +555,7 @@ namespace XmlNotepad.Model.Tests
         private sealed class ClassifiedDriveResolver : XmlResourceResolver
         {
             private readonly DriveType _driveType;
+            public List<string> Roots { get; } = new List<string>();
 
             public ClassifiedDriveResolver(XmlResolver source, DriveType driveType) : base(source)
             {
@@ -452,6 +564,7 @@ namespace XmlNotepad.Model.Tests
 
             protected override DriveType GetDriveType(string root)
             {
+                Roots.Add(root);
                 return _driveType;
             }
         }

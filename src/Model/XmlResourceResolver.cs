@@ -87,14 +87,21 @@ namespace XmlNotepad
                 return true;
             }
 
-            string fullPath = Path.GetFullPath(path);
-            if (fullPath.StartsWith(@"\\", StringComparison.Ordinal) ||
-                fullPath.StartsWith("//", StringComparison.Ordinal))
+            string root = Path.DirectorySeparatorChar.ToString();
+            if (Path.DirectorySeparatorChar == '\\')
+            {
+                if (path.Length < 3 || path[1] != ':' || (path[2] != '\\' && path[2] != '/'))
+                {
+                    return true;
+                }
+                root = path.Substring(0, 2) + "\\";
+            }
+            else if (path.Length == 0 || path[0] != Path.DirectorySeparatorChar)
             {
                 return true;
             }
-            // A drive-letter URI can still refer to a mapped network share.
-            DriveType driveType = getDriveType(Path.GetPathRoot(fullPath));
+            // Framework path normalization can probe short names, so classify the lexical root first.
+            DriveType driveType = getDriveType(root);
             return driveType == DriveType.Network || driveType == DriveType.Unknown ||
                 driveType == DriveType.NoRootDirectory;
         }

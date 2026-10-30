@@ -200,22 +200,10 @@ namespace XmlNotepad
             }
 
             var handler = new ValidationEventHandler(OnValidationEvent);
-            if (uri.IsFile)
+            using (var reader = XmlHelpers.ReadDocument(file,
+                XmlHelpers.CreateXmlSettings(Settings.Instance.Resolver, handler)))
             {
-                // The document itself was explicitly selected; only its references use the guarded resolver.
-                using (var stream = File.OpenRead(uri.LocalPath))
-                using (var reader = XmlReader.Create(stream,
-                    XmlHelpers.CreateXmlSettings(Settings.Instance.Resolver, handler), uri.AbsoluteUri))
-                {
-                    this.Load(reader, file);
-                }
-            }
-            else
-            {
-                using (var reader = XmlHelpers.ReadXml(file, Settings.Instance.Resolver, handler))
-                {
-                    this.Load(reader, file);
-                }
+                this.Load(reader, file);
             }
         }
 

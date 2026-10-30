@@ -264,11 +264,7 @@ namespace XmlNotepad
                         }
 
                         // the XSLT DOM is also handy to have around for GetOutputMethod
-                        this._xsltdoc = new XmlDocument();
-                        using (XmlReader r = XmlHelpers.ReadXml(resolved.AbsoluteUri, this._context.resolver))
-                        {
-                            this._xsltdoc.Load(r);
-                        }
+                        this._xsltdoc = XmlHelpers.LoadXmlResource(resolved, this._context.resolver);
                     } 
                     catch (Exception) 
                     {
@@ -424,8 +420,7 @@ namespace XmlNotepad
                 {
                     string path = customFileName;
                     var resolved = new Uri(_context.baseUri, path);
-                    this._xsltdoc = new XmlDocument();
-                    this._xsltdoc.Load(resolved.AbsoluteUri);
+                    this._xsltdoc = XmlHelpers.LoadXmlResource(resolved, _context.resolver);
                 }
                 var method = GetOutputMethod(this._xsltdoc);
                 if (method.ToLower() == "html")
