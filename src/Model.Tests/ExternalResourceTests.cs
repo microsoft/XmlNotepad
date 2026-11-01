@@ -45,13 +45,18 @@ namespace XmlNotepad.Model.Tests
             _settings.DelayedActions = actions;
             _cache = new SchemaCache(this, _source);
             _model = new XmlCache(this, _cache, actions);
-            _documentFile = Path.Combine(AppContext.BaseDirectory, Path.GetRandomFileName());
+            _documentFile = Path.GetTempFileName();
+            File.Delete(_documentFile); // The in-memory input must not enable file watching.
         }
 
         [TestCleanup]
         public void Cleanup()
         {
             _model?.Dispose();
+            if (_documentFile != null)
+            {
+                File.Delete(_documentFile);
+            }
             _settings?.Dispose();
         }
 
