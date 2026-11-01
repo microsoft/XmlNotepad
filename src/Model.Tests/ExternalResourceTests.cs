@@ -45,7 +45,7 @@ namespace XmlNotepad.Model.Tests
             _settings.DelayedActions = actions;
             _cache = new SchemaCache(this, _source);
             _model = new XmlCache(this, _cache, actions);
-            _documentFile = Path.Combine(AppContext.BaseDirectory, Guid.NewGuid().ToString("N") + ".xml");
+            _documentFile = Path.Combine(AppContext.BaseDirectory, Path.GetRandomFileName());
         }
 
         [TestCleanup]
@@ -456,7 +456,7 @@ namespace XmlNotepad.Model.Tests
         public void LoadingSelectedLocalFilePreservesRelativeEntityBaseUri()
         {
             _settings["IgnoreDTD"] = false;
-            string filename = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".xml");
+            string filename = Path.GetTempFileName();
             var entityUri = new Uri(new Uri(filename), "entity.txt");
             _source.Documents.Add(entityUri, "allowed");
             try
