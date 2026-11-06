@@ -103,10 +103,15 @@ namespace XmlNotepad
             }
         }
 
-        private bool IsValidPath(string path)
+        private bool IsValidPath(string path, bool externalResource = false)
         {
             try
             {
+                if (externalResource)
+                {
+                    XmlResourceResolver.ValidateUri(this.xsltControl.ResolveRelativePath(path));
+                    return true;
+                }
                 Uri uri = new Uri(path, UriKind.RelativeOrAbsolute);
                 if (uri.IsAbsoluteUri && uri.Scheme == Uri.UriSchemeFile)
                 {
@@ -130,7 +135,7 @@ namespace XmlNotepad
             string xpath = this.SourceFileName.Text.Trim().Trim('"');
             if (!string.IsNullOrEmpty(xpath) && this._xsltFiles != null)
             {
-                if (!IsValidPath(xpath))
+                if (!IsValidPath(xpath, externalResource: true))
                 {
                     return;
                 }

@@ -16,10 +16,16 @@ namespace XmlNotepad
     public class XmlProxyResolver : XmlUrlResolver
     {
         private readonly WebProxyService _ps;
+        private readonly XmlResolver _sourceResolver;
 
-        public XmlProxyResolver(IServiceProvider site)
+        public XmlProxyResolver(IServiceProvider site) : this(site, null)
+        {
+        }
+
+        protected XmlProxyResolver(IServiceProvider site, XmlResolver sourceResolver)
         {
             _ps = site.GetService(typeof(WebProxyService)) as WebProxyService;
+            _sourceResolver = sourceResolver;
             Proxy = HttpWebRequest.DefaultWebProxy;
         }
 
@@ -28,6 +34,11 @@ namespace XmlNotepad
             if (absoluteUri == null)
             {
                 throw new ArgumentNullException("absoluteUri");
+            }
+            XmlResourceResolver.ValidateUri(absoluteUri);
+            if (_sourceResolver != null)
+            {
+                return _sourceResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
             if ((absoluteUri.Scheme == "http" || absoluteUri.Scheme == "https")
                 && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
@@ -56,6 +67,16 @@ namespace XmlNotepad
                 Debug.WriteLine($"Loading {absoluteUri}");
                 return base.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
+        }
+
+        public override System.Threading.Tasks.Task<object> GetEntityAsync(Uri absoluteUri, string role, Type ofObjectToReturn)
+        {
+            XmlResourceResolver.ValidateUri(absoluteUri);
+            if (_sourceResolver != null)
+            {
+                return _sourceResolver.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
+            }
+            return base.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
         }
 
         Stream GetResponse(Uri uri)
