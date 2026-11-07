@@ -38,10 +38,7 @@ namespace XmlNotepad
             {
                 _location = value;
                 _schema = null;
-                if (_location.IsFile)
-                {
-                    _fileName = _location.LocalPath;
-                }
+                _fileName = _location.IsFile ? _location.LocalPath : null;
             }
         }
 
@@ -52,6 +49,10 @@ namespace XmlNotepad
                 if (_schema == null) return false;
                 if (_fileName != null)
                 {
+                    if (XmlResourceResolver.IsRestrictedFileUri(_location))
+                    {
+                        return false;
+                    }
                     DateTime lastWriteTime = File.GetLastWriteTime(_fileName);
                     if (lastWriteTime > this._lastModified)
                     {
@@ -69,8 +70,12 @@ namespace XmlNotepad
             {
                 if (_schema != value)
                 {
+                    if (value != null && _fileName != null)
+                    {
+                        XmlResourceResolver.ValidateUri(_location);
+                    }
                     _schema = value;
-                    if (_fileName != null)
+                    if (value != null && _fileName != null)
                     {
                         this._lastModified = File.GetLastWriteTime(_fileName);
                     }
@@ -174,11 +179,15 @@ namespace XmlNotepad
         private SchemaResolver resolver;
         private List<XmlSchemaElement> globalElementCache;
 
-        public SchemaCache(IServiceProvider site)
+        public SchemaCache(IServiceProvider site) : this(site, null)
+        {
+        }
+
+        public SchemaCache(IServiceProvider site, XmlResolver sourceResolver)
         {
             this.site = site;
             this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
-            this.resolver = new SchemaResolver(this.site, this);
+            this.resolver = new SchemaResolver(this.site, this, sourceResolver);
         }
 
         public SchemaResolver GetResolver()
@@ -792,8 +801,9 @@ namespace XmlNotepad
         {
             if (globalElementCache == null || globalElementCache.Count == 0)
             {
-                globalElementCache = new List<XmlSchemaElement>();
+                var elements = new List<XmlSchemaElement>();
                 XmlSchemaSet set = new XmlSchemaSet();
+                set.XmlResolver = this.Resolver;
                 HashSet<string> knownTargetNamespaces = new HashSet<string>();
                 foreach (var entry in this.GetSchemas())
                 {
@@ -822,9 +832,10 @@ namespace XmlNotepad
                 {
                     if (o is XmlSchemaElement e)
                     {
-                        globalElementCache.Add(e);
+                        elements.Add(e);
                     }
                 }
+                globalElementCache = elements;
             }
             return globalElementCache;
         }
@@ -842,7 +853,12 @@ namespace XmlNotepad
         SchemaCache cache;
         ValidationEventHandler handler;
 
-        public SchemaResolver(IServiceProvider site, SchemaCache cache) : base(site)
+        public SchemaResolver(IServiceProvider site, SchemaCache cache) : this(site, cache, null)
+        {
+        }
+
+        internal SchemaResolver(IServiceProvider site, SchemaCache cache, XmlResolver sourceResolver)
+            : base(site, sourceResolver)
         {
             this.cache = cache;
         }
@@ -855,6 +871,7 @@ namespace XmlNotepad
 
         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
         {
+            XmlResourceResolver.ValidateUri(absoluteUri);
             CacheEntry ce = cache.FindSchemaByUri(absoluteUri);
             if (ce != null && ce.HasUpToDateSchema) return ce.Schema;
 

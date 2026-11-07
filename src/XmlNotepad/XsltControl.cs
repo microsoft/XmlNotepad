@@ -32,7 +32,7 @@ namespace XmlNotepad
         private Uri _baseUri;
         private PerformanceInfo _info = null;
         private ISite _site;
-        private XmlUrlResolver _resolver;
+        private XmlResolver _resolver;
         private Settings _settings;
         private bool _webInitialized;
         private bool _webView2Initialized;
@@ -50,7 +50,7 @@ namespace XmlNotepad
         public XsltControl()
         {
             InitializeComponent();
-            _resolver = new XmlUrlResolver();
+            _resolver = new XmlResourceResolver();
             _delayedActions = new DelayedActions();
         }
 

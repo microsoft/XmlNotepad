@@ -16,10 +16,16 @@ namespace XmlNotepad
     public class XmlProxyResolver : XmlUrlResolver
     {
         private readonly WebProxyService _ps;
+        private readonly XmlResolver _sourceResolver;
 
-        public XmlProxyResolver(IServiceProvider site)
+        public XmlProxyResolver(IServiceProvider site) : this(site, null)
+        {
+        }
+
+        protected XmlProxyResolver(IServiceProvider site, XmlResolver sourceResolver)
         {
             _ps = site.GetService(typeof(WebProxyService)) as WebProxyService;
+            _sourceResolver = sourceResolver;
             Proxy = HttpWebRequest.DefaultWebProxy;
         }
 
@@ -28,6 +34,11 @@ namespace XmlNotepad
             if (absoluteUri == null)
             {
                 throw new ArgumentNullException("absoluteUri");
+            }
+            XmlResourceResolver.ValidateUri(absoluteUri);
+            if (_sourceResolver != null)
+            {
+                return _sourceResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
             }
             if ((absoluteUri.Scheme == "http" || absoluteUri.Scheme == "https")
                 && (ofObjectToReturn == null || ofObjectToReturn == typeof(Stream)))
@@ -68,6 +79,16 @@ namespace XmlNotepad
             {
                 handler(this, uri);
             }
+        }
+
+        public override System.Threading.Tasks.Task<object> GetEntityAsync(Uri absoluteUri, string role, Type ofObjectToReturn)
+        {
+            XmlResourceResolver.ValidateUri(absoluteUri);
+            if (_sourceResolver != null)
+            {
+                return _sourceResolver.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
+            }
+            return base.GetEntityAsync(absoluteUri, role, ofObjectToReturn);
         }
 
         Stream GetResponse(Uri uri)
@@ -385,7 +406,7 @@ namespace XmlNotepad
             string titleFormat = Strings.CredentialDialog_TitleFormat;
             string descriptionFormat = Strings.CredentialDialog_DescriptionTextFormat;
 
-            // Create the CREDUI_INFO structure. 
+            // Create the CREDUI_INFO structure.
             ProxyNativeMethods.CREDUI_INFO info = new ProxyNativeMethods.CREDUI_INFO();
             info.pszCaptionText = string.Format(CultureInfo.CurrentUICulture, titleFormat, target);
             info.pszMessageText = string.Format(CultureInfo.CurrentUICulture, descriptionFormat, target);
@@ -400,7 +421,7 @@ namespace XmlNotepad
             // taget "bar.com", it will return username as "bar.com\foo". We trim out bar.com
             // while parsing the username. User can input "foo@bar.com" as workaround to provide
             // "bar.com\foo" as the username.
-            // We specify CRED_TYPE_SERVER_CREDENTIAL flag as the stored credentials appear in the 
+            // We specify CRED_TYPE_SERVER_CREDENTIAL flag as the stored credentials appear in the
             // "Control Panel->Stored Usernames and Password". It is how IE stores and retrieve
             // credentials. By using the CRED_TYPE_SERVER_CREDENTIAL flag allows IE and VS to
             // share credentials.
@@ -568,7 +589,7 @@ namespace XmlNotepad
                 domain = strDomain.ToString();
 
                 // Remove the domain part if domain is same as target. This is to workaround
-                // the COMPLETE_USERNAME flag which add the target to the user name as the 
+                // the COMPLETE_USERNAME flag which add the target to the user name as the
                 // domain component.
                 // Read comments in ShowOSCredentialDialog() for more details.
                 if (!string.IsNullOrEmpty(domain) &&
@@ -615,7 +636,7 @@ namespace XmlNotepad
                 {
                     readCredentials = false;
 
-                    // Query for the DOMAIN_PASSWORD credential type to retrieve the 
+                    // Query for the DOMAIN_PASSWORD credential type to retrieve the
                     // credentials. CredUPromptForCredentials will store credentials
                     // as DOMAIN_PASSWORD credential type if it is not able to resolve
                     // the target using CredGetTargetInfo() function.
@@ -644,7 +665,7 @@ namespace XmlNotepad
 
                     username = nativeCredential.userName;
 
-                    // If we retrieved the username using the credentials type as DOMAIN_PASSWORD, and 
+                    // If we retrieved the username using the credentials type as DOMAIN_PASSWORD, and
                     // we are not able to retrieve password, we query the GENERIC credentials to
                     // retrieve the password. Read comments in the ShowOSCredentialDialog() funtion
                     // for more details.

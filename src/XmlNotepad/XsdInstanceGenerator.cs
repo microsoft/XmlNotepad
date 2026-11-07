@@ -46,8 +46,8 @@ namespace XmlNotepad
             }
             this.xmlResolver = xmlResolver;
             this.schemaSet = new XmlSchemaSet();
-            this.schemaSet.Add(schema);
             Init(mgr);
+            this.schemaSet.Add(schema);
         }
 
         private void Init(IXmlNamespaceResolver mgr)

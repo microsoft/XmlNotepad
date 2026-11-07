@@ -200,7 +200,8 @@ namespace XmlNotepad
             }
 
             var handler = new ValidationEventHandler(OnValidationEvent);
-            using (XmlReader reader = XmlHelpers.ReadXml(file, null, handler))
+            using (var reader = XmlHelpers.ReadDocument(file,
+                XmlHelpers.CreateXmlSettings(Settings.Instance.Resolver, handler)))
             {
                 this.Load(reader, file);
             }
