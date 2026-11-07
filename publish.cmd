@@ -29,6 +29,12 @@ shift
 goto :parse
 
 :done
+
+gh auth status
+echo ----------------------------------------------------------------------
+echo Check that "gh auth status" above shows you are actively logged in as "lovettchris".
+pause
+
 where sed > nul 2>&1
 if ERRORLEVEL 1 goto :nosed
 
@@ -113,15 +119,10 @@ if not exist %WINGET_SRC% goto :nowinget
 
 echo Syncing winget master branch
 pushd %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad
+gh repo sync lovettchris/winget-pkgs --branch master
 git checkout master
 if ERRORLEVEL 1 goto :eof
 git pull
-if ERRORLEVEL 1 goto :eof
-git fetch upstream master
-if ERRORLEVEL 1 goto :eof
-git merge upstream/master
-if ERRORLEVEL 1 goto :eof
-git push
 if ERRORLEVEL 1 goto :eof
 
 set OLDEST=
