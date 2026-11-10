@@ -1822,10 +1822,8 @@ namespace XmlNotepad
             if (node != null && node.Node != null && _model != null)
             {
                 LineInfo info = _model.GetLineInfo(node.Node);
-                if (info != null)
-                {
-                    ShowStatus(string.Format("Line {0}, Column {1}", info.LineNumber, info.LinePosition));
-                }
+                string path = XmlHelpers.GetXPathLocation(node.Node, XmlHelpers.GetNamespaceScope(node.Node));
+                ShowStatus(string.Format("Line {0}, Column {1} - {2}", info?.LineNumber, info?.LinePosition, path));
             }
         }
 
