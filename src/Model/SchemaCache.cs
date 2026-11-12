@@ -176,7 +176,7 @@ namespace XmlNotepad
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
         PersistentFileNames pfn;
         IServiceProvider site;
-        private SchemaResolver resolver;
+        private readonly SchemaResolver resolver;
         private List<XmlSchemaElement> globalElementCache;
 
         public SchemaCache(IServiceProvider site) : this(site, null)
