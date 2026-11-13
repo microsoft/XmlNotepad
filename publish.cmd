@@ -47,7 +47,7 @@ git clean -dfx
 :build
 call .\build.cmd
 
-msbuild /target:publish src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
+msbuild /target:Application:publish src\XmlNotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :nobits
 if not EXIST %PUBLISH%\XmlNotepad.application goto :nobits
 
@@ -62,7 +62,7 @@ if ERRORLEVEL 1 goto :err_setup
 if not EXIST bin\Release\XmlNotepadSetup.msi goto :nomsi
 popd
 
-echo "Did the src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi get build?"
+echo "Did the src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi get built?"
 pause 
 
 :bundle
