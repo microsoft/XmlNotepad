@@ -222,6 +222,14 @@ namespace XmlNotepad
         {
             this._settings.SetDefaults();
             this._settings["SchemaCache"] = this._schemaCache = new SchemaCache(this);
+            this._schemaCache.GetResolver().FetchingUri += OnFetchingSchema;
+        }
+
+        private void OnFetchingSchema(object sender, Uri e)
+        {
+            var msg = $"Fetching schema from {e}";
+            Debug.WriteLine(msg);
+            this.ShowStatus(msg);
         }
 
         public static bool SettingValueMatches(object existing, object newValue)
@@ -1040,7 +1048,13 @@ namespace XmlNotepad
 
         public virtual void ShowStatus(string msg)
         {
-            this.toolStripStatusLabel1.Text = msg;
+            // make sure we are on the UI thread.
+            this._delayedActions.StartDelayedAction("SetStatus", () =>
+            {
+                this.toolStripStatusLabel1.Text = msg;
+            }, TimeSpan.FromMilliseconds(10));
+
+            // and clear this in 20 seconds.
             this._delayedActions.StartDelayedAction("ClearStatus", ClearStatus, TimeSpan.FromSeconds(20));
         }
 

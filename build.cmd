@@ -1,5 +1,7 @@
 @echo off
 
+set SIGNMANIFESTS=true
+
 nuget restore src\XmlNotepad.sln
 if ERRORLEVEL 1 goto :eof
 

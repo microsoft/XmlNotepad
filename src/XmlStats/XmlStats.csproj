@@ -10,11 +10,9 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <AssemblyKeyContainerName />
     <AssemblyName>XmlStats</AssemblyName>
-    <AssemblyOriginatorKeyFile />
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
-    <AssemblyOriginatorKeyFile>$(MYKEYFILE)</AssemblyOriginatorKeyFile>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.Xml</RootNamespace>
     <StartupObject />
@@ -44,10 +42,6 @@
     </NuGetPackageImportStamp>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(AssemblyOriginatorKeyFile)' != '' ">
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -86,10 +80,6 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(SIGNMANIFESTS)' == 'true' ">
-    <SignAssembly>true</SignAssembly>
-    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>F0DEC4CF1C07CB9E44E29D98389072C8579D5E79</ManifestCertificateThumbprint>

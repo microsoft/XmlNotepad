@@ -168,13 +168,15 @@ namespace XmlNotepad
         //MCorning 10.19.06 Added event so New Menu can populate submenu with nsuri values
         public event EventHandler Changed;
 
+        public static string AddInternalRole = "b41b9864-e1f8-4ba3-94c4-9d44e4acc95b";
+
         // targetNamespace -> CacheEntry
         Dictionary<string, CacheEntry> namespaceMap = new Dictionary<string, CacheEntry>();
         // sourceUri -> CacheEntry
         Dictionary<Uri, CacheEntry> uriMap = new Dictionary<Uri, CacheEntry>();
         PersistentFileNames pfn;
         IServiceProvider site;
-        private XmlResolver resolver;
+        private readonly SchemaResolver resolver;
         private List<XmlSchemaElement> globalElementCache;
 
         public SchemaCache(IServiceProvider site) : this(site, null)
@@ -186,6 +188,11 @@ namespace XmlNotepad
             this.site = site;
             this.pfn = new PersistentFileNames(Settings.Instance.StartupPath);
             this.resolver = new SchemaResolver(this.site, this, sourceResolver);
+        }
+
+        public SchemaResolver GetResolver()
+        {
+            return this.resolver;
         }
 
         void FireOnChanged()
@@ -266,7 +273,7 @@ namespace XmlNotepad
             return e;
         }
 
-        public CacheEntry Add(XmlSchema s)
+        internal CacheEntry InternalAdd(XmlSchema s)
         {
             if (s.SourceUri == null)
             {
@@ -278,7 +285,12 @@ namespace XmlNotepad
             {
                 e.Schema = s;
             }
+            return e;
+        }
 
+        public CacheEntry Add(XmlSchema s)
+        {
+            var e = this.InternalAdd(s);
             // There is a bug in the .NET core version of XmlSchema where some imports have
             // the .Schema property nulled out (like for http://www.w3.org/2000/09/xmldsig#)
             // So we fix that here and force loading of those schemas.
@@ -288,41 +300,51 @@ namespace XmlNotepad
 
         private void AddImports(XmlSchema parent)
         {
-            foreach (var o in parent.Includes)
+            List<XmlSchema> includes = new List<XmlSchema>();
+            includes.Add(parent);
+            HashSet<XmlSchema> visited = new HashSet<XmlSchema>();
+            while (includes.Count > 0)
             {
-                if (o is XmlSchemaInclude i)
+                XmlSchema toProcess = includes[0];
+                visited.Add(toProcess);
+                includes.RemoveAt(0);
+                foreach (var o in toProcess.Includes)
                 {
-                    XmlSchema s = i.Schema;
-                    if (s == null)
+                    if (o is XmlSchemaInclude i)
                     {
-                        s = LoadSchema(new Uri(new Uri(i.SourceUri), i.SchemaLocation));
+                        XmlSchema s = i.Schema;
+                        if (s == null)
+                        {
+                            s = LoadSchema(new Uri(new Uri(i.SourceUri), i.SchemaLocation), SchemaCache.AddInternalRole);
+                        }
+                        if (s != null && !visited.Contains(s))
+                        {
+                            includes.Add(s);
+                            this.InternalAdd(s); // non-recursive version!
+                        }
                     }
-                    if (s != null && !ContainsSchema(s))
+                    else if (o is XmlSchemaImport j)
                     {
-                        Add(s);
-                    }
-                }
-                else if (o is XmlSchemaImport j)
-                {
-                    XmlSchema s = j.Schema;
-                    if (s == null)
-                    {
-                        s = LoadSchema(new Uri(new Uri(j.SourceUri), j.SchemaLocation));
-                    }
-                    if (s != null && !ContainsSchema(s))
-                    {
-                        Add(s);
+                        XmlSchema s = j.Schema;
+                        if (s == null)
+                        {
+                            s = LoadSchema(new Uri(new Uri(j.SourceUri), j.SchemaLocation));
+                        }
+                        if (s != null && !visited.Contains(s))
+                        {
+                            includes.Add(s);
+                            this.InternalAdd(s); // non-recursive version!
+                        }
                     }
                 }
             }
-
         }
 
-        private XmlSchema LoadSchema(Uri uri)
+        private XmlSchema LoadSchema(Uri uri, string role = "")
         {
             try
             {
-                return (XmlSchema)this.Resolver.GetEntity(uri, "", typeof(XmlSchema));
+                return (XmlSchema)this.Resolver.GetEntity(uri, role, typeof(XmlSchema));
             }
             catch (Exception ex)
             {
@@ -869,8 +891,12 @@ namespace XmlNotepad
                             {
                                 ce.Schema = s;
                             }
-                            else
+                            else if (role == SchemaCache.AddInternalRole)
                             {
+                                cache.InternalAdd(s);
+                            }
+                            else 
+                            { 
                                 cache.Add(s);
                             }
                             return s;

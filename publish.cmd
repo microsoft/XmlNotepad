@@ -10,6 +10,7 @@ for /f "usebackq" %%i in (`%ROOT%\tools\xsl -e -s %ROOT%\src\Version\version.xsl
 if "%VERSION%" == "" goto :noversion
 
 echo ### Publishing version %VERSION%...
+set SIGNMANIFESTS=true
 set WINGET=1
 set GITRELEASE=1
 set UPLOAD=1
@@ -28,6 +29,12 @@ shift
 goto :parse
 
 :done
+
+gh auth status
+echo ----------------------------------------------------------------------
+echo Check that "gh auth status" above shows you are actively logged in as "lovettchris".
+pause
+
 where sed > nul 2>&1
 if ERRORLEVEL 1 goto :nosed
 
@@ -40,7 +47,7 @@ git clean -dfx
 :build
 call .\build.cmd
 
-msbuild /target:publish src\xmlnotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
+msbuild /target:Application:publish src\XmlNotepad.sln /p:Configuration=Release "/p:Platform=Any CPU"
 if ERRORLEVEL 1 goto :nobits
 if not EXIST %PUBLISH%\XmlNotepad.application goto :nobits
 
@@ -55,7 +62,7 @@ if ERRORLEVEL 1 goto :err_setup
 if not EXIST bin\Release\XmlNotepadSetup.msi goto :nomsi
 popd
 
-echo "Did the src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi get build?"
+echo "Did the src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi get built?"
 pause 
 
 :bundle
@@ -112,15 +119,10 @@ if not exist %WINGET_SRC% goto :nowinget
 
 echo Syncing winget master branch
 pushd %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad
+gh repo sync lovettchris/winget-pkgs --branch master
 git checkout master
 if ERRORLEVEL 1 goto :eof
 git pull
-if ERRORLEVEL 1 goto :eof
-git fetch upstream master
-if ERRORLEVEL 1 goto :eof
-git merge upstream/master
-if ERRORLEVEL 1 goto :eof
-git push
 if ERRORLEVEL 1 goto :eof
 
 set OLDEST=

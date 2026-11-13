@@ -1485,7 +1485,7 @@ namespace UnitTests
             AssertNormalizedEqual(fd.FindString, "/Root/a:Employee"); // test element with namespaces!
 
             Trace.WriteLine("test edit path and find node.");
-            fd.Window.SendKeystrokes("/Root{BACKSPACE}{ENTER}");
+            fd.Window.SendKeystrokes("/Root{ENTER}");
             Sleep(100);
             fd.Window.DismissPopUp("{ESC}");
             Sleep(100);
