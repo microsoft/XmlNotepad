@@ -106,6 +106,15 @@ namespace XmlNotepad {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External access to file location &apos;{0}&apos; is blocked. Use a local file or an HTTP(S) URL..
+        /// </summary>
+        internal static string ExternalFileResourceBlocked {
+            get {
+                return ResourceManager.GetString("ExternalFileResourceBlocked", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Error loading schema &apos;{0}&apos;
         ///{1}.
         /// </summary>

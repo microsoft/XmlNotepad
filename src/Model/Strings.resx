@@ -115,6 +115,10 @@
 {1}</value>
     <comment>Message box contents, arg0=filename, arg1=Exception.Message.</comment>
   </data>
+  <data name="ExternalFileResourceBlocked" xml:space="preserve">
+    <value>External access to file location '{0}' is blocked. Use a local file or an HTTP(S) URL.</value>
+    <comment>Exception message, arg0=resource URI.</comment>
+  </data>
   <data name="UnexpectedToken" xml:space="preserve">
     <value>Unexpected token '{0}' at line {1} column {2}</value>
     <comment>Message box, arg0=token, arg1=number, arg2=number</comment>

@@ -5,11 +5,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>XmlNotepad</RootNamespace>
     <AssemblyName>XmlNotepad.Model</AssemblyName>
-    <AssemblyOriginatorKeyFile>$(MyKeyFile)</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(AssemblyOriginatorKeyFile)' != '' ">
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="ApiKey.cs" Condition="!Exists('$(MSBuildProjectDirectory)\ApiKey.cs')" />
     <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

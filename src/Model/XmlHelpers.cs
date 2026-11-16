@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xml;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -231,17 +231,7 @@ namespace XmlNotepad
             var ignoreDtd = Settings.Instance.GetBoolean("IgnoreDTD");
             rs.DtdProcessing = ignoreDtd ? DtdProcessing.Ignore : DtdProcessing.Parse;
             rs.NameTable = new NameTable();
-            if (resolver != null)
-            {
-                rs.XmlResolver = resolver;
-            } 
-            else if (!ignoreDtd)
-            {
-                rs.XmlResolver = new XmlUrlResolver
-                {
-                    Credentials = CredentialCache.DefaultCredentials
-                };
-            }
+            rs.XmlResolver = resolver == null ? new XmlResourceResolver() : new XmlResourceResolver(resolver);
             if (handler != null)
             {
                 rs.ValidationEventHandler += handler;
@@ -253,6 +243,53 @@ namespace XmlNotepad
         {
             var rs = CreateXmlSettings(resolver, handler);
             return XmlReader.Create(path, rs);
+        }
+
+        public static XmlDocument LoadXmlResource(Uri location, XmlResolver resolver)
+        {
+            XmlResourceResolver.ValidateUri(location);
+            var document = new XmlDocument();
+            using (var reader = ReadXml(location.AbsoluteUri, resolver))
+            {
+                document.Load(reader);
+            }
+            return document;
+        }
+
+        public static XmlReader ReadDocument(string filename, XmlReaderSettings settings,
+            Func<Uri, Stream> openFile = null)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            var location = new Uri(filename, UriKind.RelativeOrAbsolute);
+            if (!location.IsAbsoluteUri)
+            {
+                location = new Uri(new Uri(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar), location);
+            }
+            if (!location.IsFile)
+            {
+                return XmlReader.Create(location.AbsoluteUri, settings);
+            }
+
+            // Only the explicitly selected input bypasses resource resolution, not its references.
+            Stream input = openFile == null ? File.OpenRead(location.LocalPath) : openFile(location);
+            if (input == null)
+            {
+                throw new InvalidOperationException("The selected document source did not return a stream.");
+            }
+            try
+            {
+                var readerSettings = settings.Clone();
+                readerSettings.CloseInput = true;
+                return XmlReader.Create(input, readerSettings, location.AbsoluteUri);
+            }
+            catch
+            {
+                input.Dispose();
+                throw;
+            }
         }
 
         public static XmlReader ReadXml(Stream stm, XmlResolver resolver = null, ValidationEventHandler handler = null)

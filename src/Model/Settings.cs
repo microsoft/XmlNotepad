@@ -1047,6 +1047,10 @@ namespace XmlNotepad
                 result = uri.OriginalString;
                 int len = 0;
                 string path = uri.AbsolutePath;
+                if (XmlResourceResolver.IsRestrictedFileUri(uri))
+                {
+                    return uri.OriginalString;
+                }
                 if (uri.IsFile && !File.Exists(uri.LocalPath)) // sanity check!
                     return null;
 

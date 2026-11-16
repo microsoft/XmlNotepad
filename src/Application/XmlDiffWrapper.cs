@@ -70,14 +70,14 @@ namespace XmlNotepad
             // diffView.Load call.
             XmlDocument original = new XmlDocument();
             XmlReaderSettings settings = model.GetReaderSettings();
-            using (XmlReader reader = XmlReader.Create(filename, settings))
+            using (XmlReader reader = XmlHelpers.ReadDocument(filename, settings))
             {
                 original.Load(reader);
             }
 
             XmlDocument doc = new XmlDocument();
             settings = model.GetReaderSettings();
-            using (XmlReader reader = XmlReader.Create(otherXmlFile, settings))
+            using (XmlReader reader = XmlHelpers.ReadDocument(otherXmlFile, settings))
             {
                 doc.Load(reader);
             }
@@ -111,10 +111,13 @@ namespace XmlNotepad
             using (XmlReader diffGram = XmlReader.Create(diffFile, settings))
             {
                 XmlDiffView diffView = new XmlDiffView();
-                using (var reader = new XmlTextReader(filename))
+                var location = new Uri(filename);
+                // XmlDiffView requires XmlTextReader; only the selected root uses the unguarded transport.
+                using (var input = (Stream)new XmlUrlResolver().GetEntity(location, null, typeof(Stream)))
+                using (var reader = new XmlTextReader(location.AbsoluteUri, input))
                 {
-                    var ignoreDtd = Settings.Instance.GetBoolean("IgnoreDTD");                    
-                    reader.DtdProcessing = ignoreDtd ? DtdProcessing.Ignore : DtdProcessing.Parse;
+                    reader.DtdProcessing = settings.DtdProcessing;
+                    reader.XmlResolver = new XmlResourceResolver(model.Settings.Resolver ?? new XmlUrlResolver());
                     diffView.Load(reader, diffGram);
                     using (TextWriter htmlWriter = new StreamWriter(tempFile, false, Encoding.UTF8))
                     {
