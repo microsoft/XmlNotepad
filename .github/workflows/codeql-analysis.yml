@@ -42,7 +42,7 @@ jobs:
       run: nuget restore ./src/XmlNotepad.sln
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a # v4.36.3
+      uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
       with:
         queries: security-and-quality
         languages: csharp
