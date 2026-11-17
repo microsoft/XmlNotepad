@@ -1822,13 +1822,17 @@ namespace XmlNotepad
         }
 
         private void treeView1_SelectionChanged(object sender, NodeSelectedEventArgs e)
-        {
-            UpdateMenuState();
-            DisplayHelp();
-            if (e != null)
+        {            
+            // make sure this is async so it doesn't slow down selection scrolling.
+            this._delayedActions.StartDelayedAction("DisplayLineInfo", () =>
             {
-                DisplayLineInfo(e.Node);
-            }
+                UpdateMenuState();
+                DisplayHelp();
+                if (e != null)
+                {
+                    DisplayLineInfo(e.Node);
+                }
+            }, TimeSpan.FromMilliseconds(50));
         }
 
         private void DisplayLineInfo(XmlTreeNode node)
@@ -1836,9 +1840,14 @@ namespace XmlNotepad
             if (node != null && node.Node != null && _model != null)
             {
                 LineInfo info = _model.GetLineInfo(node.Node);
+                string path = XmlHelpers.GetXPathLocation(node.Node, XmlHelpers.GetNamespaceScope(node.Node));                
                 if (info != null)
                 {
-                    ShowStatus(string.Format("Line {0}, Column {1}", info.LineNumber, info.LinePosition));
+                    ShowStatus(string.Format("Line {0}, Column {1}, XPath  {2}", info.LineNumber, info.LinePosition, path));
+                }
+                else
+                {
+                    ShowStatus(string.Format("XPath {0}", path));
                 }
             }
         }
