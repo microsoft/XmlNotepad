@@ -1033,11 +1033,11 @@ namespace XmlNotepad
         {
             if (this.TreeView.IsEditing)
             {
-                this.TreeView.EndEdit(true);
+                this.TreeView.EndEdit(false);
             }
             if (this._nodeTextView.IsEditing)
             {
-                this._nodeTextView.EndEdit(true);
+                this._nodeTextView.EndEdit(false);
             }
             this._myTreeView.ScrollPosition = new Point(-e.NewValue * HScrollIncrement, this._myTreeView.ScrollPosition.Y);
         }
@@ -1046,11 +1046,11 @@ namespace XmlNotepad
         {
             if (this.TreeView.IsEditing)
             {
-                this.TreeView.EndEdit(true);
+                this.TreeView.EndEdit(false);
             }
             if (this._nodeTextView.IsEditing)
             {
-                this._nodeTextView.EndEdit(true);
+                this._nodeTextView.EndEdit(false);
             }
             int y = -e.NewValue * this._myTreeView.ItemHeight;
             this._myTreeView.ScrollPosition = new Point(this._myTreeView.ScrollPosition.X, y);
@@ -1221,7 +1221,19 @@ namespace XmlNotepad
             }
             else if (!e.Handled)
             {
-                base.OnKeyDown(e);
+                if (e.KeyData == (Keys.Control | Keys.Back))
+                {
+                    if (this._myTreeView.IsEditing)
+                    {
+                        this._myTreeView.DeletePreviousWord();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    }
+                }
+                if (!e.Handled)
+                {
+                    base.OnKeyDown(e);
+                }
             }
 
         }
@@ -1284,6 +1296,18 @@ namespace XmlNotepad
                         }
                         break;
                 }
+            }
+            else
+            {
+                if (e.KeyData == (Keys.Control | Keys.Back))
+                {
+                    if (this._nodeTextView.IsEditing)
+                    {
+                        this._nodeTextView.DeletePreviousWord();
+                    }
+                    e.Handled = true;
+                }
+
             }
             if (!e.Handled)
             {

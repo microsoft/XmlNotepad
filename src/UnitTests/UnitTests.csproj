@@ -61,6 +61,7 @@
     <Content Include="bad.xml" />
     <Content Include="bad.xsl" />
     <Content Include="emp.xml" />
+    <Content Include="empout.xml" />
     <Content Include="errors.xml" />
     <Content Include="includes\defaultss.xslt" />
     <Content Include="includes\i1.xml" />

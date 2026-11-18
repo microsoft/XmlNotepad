@@ -963,6 +963,14 @@ namespace XmlNotepad
             if (this.acc == null) this.acc = new AccessibleNodeTextView(this);
             return this.acc;
         }
+
+        internal void DeletePreviousWord()
+        {
+            if (this._editor.IsEditing)
+            {
+                this._editor.DeletePreviousWord();
+            }
+        }
     }
 
     class AccessibleNodeTextView : Control.ControlAccessibleObject

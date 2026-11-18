@@ -1302,6 +1302,14 @@ namespace XmlNotepad
         {
             return base.GetAccessibilityObjectById(objectId);
         }
+
+        internal void DeletePreviousWord()
+        {
+            if (this._editor.IsEditing)
+            {
+                this._editor.DeletePreviousWord();
+            }
+        }
     }
 
     // MyTreeNode is an abstract wrapper on the tree data that keeps track of UI state.

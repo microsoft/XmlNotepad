@@ -381,7 +381,10 @@ namespace XmlNotepad
                         }
                         finally
                         {
-                            e.SuppressKeyPress = old;
+                            if (!e.Handled)
+                            {
+                                e.SuppressKeyPress = old;
+                            }
                         }
                     }
                     break;
@@ -552,6 +555,35 @@ namespace XmlNotepad
 
             DisposeEditor();
         }
+
+        internal void DeletePreviousWord()
+        {
+            if (this._textEditor != null)
+            {
+                TextBox tb = this._textEditor;
+
+                int pos = tb.SelectionStart;
+
+                if (pos == 0)
+                    return;
+
+                string text = tb.Text;
+
+                int start = pos;
+
+                // Skip whitespace before cursor
+                while (start > 0 && char.IsWhiteSpace(text[start - 1]))
+                    start--;
+
+                // Skip word characters
+                while (start > 0 && !char.IsWhiteSpace(text[start - 1]))
+                    start--;
+
+                tb.Text = text.Remove(start, pos - start);
+                tb.SelectionStart = start;
+            }
+        }
+
     }
 
     // This class is used to display a set of names and icons, track user edits
