@@ -63,7 +63,7 @@ if not EXIST bin\Release\XmlNotepadSetup.msi goto :nomsi
 popd
 
 echo "Did the src\XmlNotepadSetup\bin\Release\XmlNotepadSetup.msi get built?"
-pause 
+pause
 
 :bundle
 echo Building XmlNotepadPackage and Bundle...
@@ -110,62 +110,20 @@ if ERRORLEVEL 1 goto :uploadfailed
 echo ============ Done publishing ClickOnce installer to XmlNotepad ==============
 :winget
 
-where wingetcreate > nul 2>&1
-if ERRORLEVEL 1 winget install wingetcreate
-winget upgrade wingetcreate
-
 if "%WINGET%"=="0" goto :skipwinget
 if not exist %WINGET_SRC% goto :nowinget
 
-echo Syncing winget master branch
-pushd %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad
-gh repo sync lovettchris/winget-pkgs --branch master
-git checkout master
-if ERRORLEVEL 1 goto :eof
-git pull
-if ERRORLEVEL 1 goto :eof
+where wingetcreate > nul 2>&1
 
-set OLDEST=
-for /f "usebackq" %%i in (`dir /b`) do (
-  if "!OLDEST!" == "" set OLDEST=%%i
-)
+echo prune oldest version...
 
-if "!OLDEST!" == "" goto :prepare
-echo ======================== Replacing "!OLDEST!" version...
-
-git mv "!OLDEST!" %VERSION%
-if ERRORLEVEL 1 goto :gitError "git mv !OLDEST! %VERSION%"
-
-:prepare
-popd
-
-echo Preparing winget package
-set TARGET=%WINGET_SRC%\manifests\m\Microsoft\XMLNotepad\%VERSION%\
-if not exist %TARGET% mkdir %TARGET%
-copy /y tools\Microsoft.XMLNotepad*.yaml  %TARGET%
-winget update wingetcreate
-wingetcreate update Microsoft.XMLNotepad --version %VERSION% -o %WINGET_SRC% -u https://github.com/microsoft/XmlNotepad/releases/download/%VERSION%/XmlNotepadPackage_%VERSION%_AnyCPU.msixbundle
+WingetUpdate --target %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad --prune
 if ERRORLEVEL 1 goto :eof
 
-pushd %TARGET%
-winget validate .
-if ERRORLEVEL 1 goto :installfailed
-winget install -m .
-if ERRORLEVEL 1 goto :installfailed
+echo publish new VERSION
+WingetUpdate --target %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad --publish %VERSION%
+if ERRORLEVEL 1 goto :eof
 
-git checkout -b "clovett/xmlnotepad_%VERSION%"
-if ERRORLEVEL 1 call :gitError "git checkout -b clovett/xmlnotepad_%VERSION%"
-git add *
-if ERRORLEVEL 1 call :gitError "git add *"
-git commit -a -m "XML Notepad version %VERSION%"
-if ERRORLEVEL 1 call :gitError "git commit -a -m 'XML Notepad version %VERSION%'"
-git push -u origin "clovett/xmlnotepad_%VERSION%"
-if ERRORLEVEL 1 call :gitError "git push -u origin clovett/xmlnotepad_%VERSION%
-
-echo =============================================================================================================
-echo Please create Pull Request for the new "clovett/xmlnotepad_%VERSION%" branch.
-
-call gitweb
 :skipwinget
 goto :eof
 
