@@ -1977,9 +1977,13 @@ Prefix 'user' is not defined. ");
             Trace.WriteLine("Test nudge commands");
             Sleep(1000);
             w.InvokeMenuItem("toolStripButtonNudgeDown");
+            Sleep(50);
             w.InvokeMenuItem("toolStripButtonNudgeRight");
+            Sleep(50);
             w.InvokeMenuItem("toolStripButtonNudgeUp");
+            Sleep(50);
             w.InvokeMenuItem("toolStripButtonNudgeLeft");
+            Sleep(50);
 
             Sleep(1000);
             Trace.WriteLine("context menu item - insert comment before");
