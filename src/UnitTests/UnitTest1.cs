@@ -118,9 +118,16 @@ namespace UnitTests
             {
                 args = "-debugMouse " + args;
             }
-            this.window = LaunchApp(Directory.GetCurrentDirectory() + @"\..\..\..\drop\XmlNotepad.exe", args, "FormMain");
+            var exe = FindXmlNotepad();
+            this.window = LaunchApp(exe, args, "FormMain");
             this.DisableCapsLock();
             return window;
+        }
+
+        private string FindXmlNotepad()
+        {
+            var path = typeof(XmlNotepad.FormMain).Assembly.Location;
+            return path;
         }
 
         AutomationWrapper ErrorList
@@ -2468,6 +2475,11 @@ Prefix 'user' is not defined. ");
 
             Sleep(1000);
 
+            Trace.WriteLine("Test ctrl+bksp works in a comment field");
+            w.SendKeystrokes("{END}{RIGHT}^I#{TAB}{ENTER}{END}^{BACKSPACE}{ENTER}");
+            CheckNodeValue("This is a ");
+            w.SendKeystrokes("{HOME}{LEFT}");
+
             Trace.WriteLine("Test goto definition on schemaLocation");
             w.SendKeystrokes("^Ixsi{F12}");
             Window popup = w.ExpectingPopup("emp.xsd");
@@ -2562,7 +2574,7 @@ Prefix 'user' is not defined. ");
             w.SendKeystrokes("{LEFT}");
 
             Sleep(1000);
-            this.SaveAndCompare("out.xml", "emp.xml");
+            this.SaveAndCompare("out.xml", "empout.xml");
         }
 
 

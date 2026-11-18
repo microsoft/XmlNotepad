@@ -116,12 +116,11 @@ if not exist %WINGET_SRC% goto :nowinget
 where wingetcreate > nul 2>&1
 
 echo prune oldest version...
-
-WingetUpdate --target %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad --prune
+echo WingetUpdate --target %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad --prune
 if ERRORLEVEL 1 goto :eof
 
-echo publish new VERSION
-WingetUpdate --target %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad --publish %VERSION%
+echo publish new %VERSION%
+echo WingetUpdate --target %WINGET_SRC%\manifests\m\Microsoft\XMLNotepad --publish %VERSION%
 if ERRORLEVEL 1 goto :eof
 
 :skipwinget

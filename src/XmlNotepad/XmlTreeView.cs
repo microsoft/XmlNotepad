@@ -1221,7 +1221,19 @@ namespace XmlNotepad
             }
             else if (!e.Handled)
             {
-                base.OnKeyDown(e);
+                if (e.KeyData == (Keys.Control | Keys.Back))
+                {
+                    if (this._myTreeView.IsEditing)
+                    {
+                        this._myTreeView.DeletePreviousWord();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    }
+                }
+                if (!e.Handled)
+                {
+                    base.OnKeyDown(e);
+                }
             }
 
         }
@@ -1284,6 +1296,18 @@ namespace XmlNotepad
                         }
                         break;
                 }
+            }
+            else
+            {
+                if (e.KeyData == (Keys.Control | Keys.Back))
+                {
+                    if (this._nodeTextView.IsEditing)
+                    {
+                        this._nodeTextView.DeletePreviousWord();
+                    }
+                    e.Handled = true;
+                }
+
             }
             if (!e.Handled)
             {

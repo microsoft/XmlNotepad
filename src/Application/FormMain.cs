@@ -2755,7 +2755,6 @@ namespace XmlNotepad
         private void GotoDefinition()
         {
             SelectTreeView();
-            this.SaveIfDirty(true);
 
             XmlTreeNode node = xmlTreeView1.SelectedNode;
             if (node == null) return;
