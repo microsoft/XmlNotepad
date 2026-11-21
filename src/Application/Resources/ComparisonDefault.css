@@ -1,0 +1,20 @@
+:root { color-scheme: light dark; --divider: color-mix(in srgb, CanvasText 16%, Canvas); }
+body { margin: 0; color: CanvasText; background: Canvas; font: 14px "Segoe UI", sans-serif; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 10px 12px; }
+.legend span { border-radius: 4px; padding: 2px 8px; }
+table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+col.gutter { width: 4.2rem; }
+th, td { text-align: left; vertical-align: top; padding: 4px 8px; overflow-wrap: anywhere; }
+th { position: sticky; top: 0; background: Canvas; border-block: 1px solid var(--divider); }
+th small { display: block; color: GrayText; font-weight: normal; }
+tbody tr:nth-child(even) { background: color-mix(in srgb, CanvasText 3%, Canvas); }
+th + th, tbody td + td { border-inline-start: 1px solid var(--divider); }
+tbody td:first-child { text-align: right; color: GrayText; }
+tbody tr.current-change td { background: color-mix(in srgb, Highlight 16%, Canvas); }
+tbody tr.current-change td:first-child { box-shadow: inset 3px 0 Highlight; }
+.code { font: 13px/1.45 Consolas, monospace; }
+.ignore { color: GrayText; }
+.add { color: #102a13; background: #c9efd0; }
+.remove { color: #3d1010; background: #ffd1d1; }
+.change { color: #392600; background: #ffe8aa; }
+.movefrom, .moveto { color: #092a3d; background: #c4e8ff; }

@@ -1,0 +1,23 @@
+<ContentDialog
+    x:Class="XmlNotepad.StylesheetLocationDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Transform with XSLT"
+    CornerRadius="{ThemeResource OverlayCornerRadius}"
+    PrimaryButtonText="Transform"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary"
+    PrimaryButtonClick="Transform_Click">
+    <StackPanel Spacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <TextBox x:Name="LocationBox" Header="Stylesheet path or URL"
+                     TextChanged="Location_Changed" AutomationProperties.AutomationId="StylesheetLocation" />
+            <Button Grid.Column="1" Content="Browse…" VerticalAlignment="Bottom"
+                    Click="Browse_Click" AutomationProperties.AutomationId="BrowseStylesheet" />
+        </Grid>
+        <ComboBox x:Name="RecentStylesheetsBox" HorizontalAlignment="Stretch"
+                  PlaceholderText="Recent stylesheets" SelectionChanged="RecentStylesheets_SelectionChanged"
+                  AutomationProperties.Name="Recent stylesheets" AutomationProperties.AutomationId="RecentStylesheets" />
+        <InfoBar x:Name="LocationError" Severity="Error" IsOpen="False" />
+    </StackPanel>
+</ContentDialog>

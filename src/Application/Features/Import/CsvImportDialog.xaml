@@ -1,0 +1,20 @@
+<ContentDialog
+    x:Class="XmlNotepad.CsvImportDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Import CSV"
+    PrimaryButtonText="Import"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+    <StackPanel Spacing="12">
+        <ComboBox x:Name="DelimiterBox" Header="Delimiter" HorizontalAlignment="Stretch"
+                  SelectionChanged="Delimiter_Changed" />
+        <TextBox x:Name="CustomDelimiterBox" Header="Custom delimiter" MaxLength="1"
+                 Visibility="Collapsed" TextChanged="CustomDelimiter_Changed" />
+        <CheckBox x:Name="HeaderCheckBox" Content="Use the first row as column names" />
+        <TextBlock Text="First row preview" Style="{StaticResource BodyStrongTextBlockStyle}" />
+        <ListView x:Name="PreviewList" MaxHeight="160" SelectionMode="None"
+                  AutomationProperties.Name="First row preview" />
+        <TextBlock x:Name="PreviewStatus" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+    </StackPanel>
+</ContentDialog>

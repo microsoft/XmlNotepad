@@ -32,29 +32,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup NuGet.exe
-      uses: NuGet/setup-nuget@fd55a6f3b34392fa83fde1454582407d8c714123 # v4.0
-
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
-
-    - name: Restore the application
-      run: nuget restore ./src/XmlNotepad.sln
+    - name: Install .NET 11 SDK
+      uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+      with:
+        dotnet-version: 11.0.x
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+      uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
       with:
         queries: security-and-quality
         languages: csharp
 
-    # Restore the application again to avoid codeql messing things up
-    - name: Restore the application
-      run: nuget restore ./src/XmlNotepad.sln
-
     - name: Build the application
-      run: |
-        echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey=""; } }  >> .\src\Model\ApiKey.cs
-        msbuild ./src/XmlNotepad.sln /p:Configuration=Release "/p:Platform=Any CPU" /verbosity:minimal /p:UseSharedCompilation=False
+      run: dotnet build ./src/xmlnotepad.slnx --configuration Release -p:Platform=x64 -p:UseSharedCompilation=false --verbosity minimal
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+      uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4

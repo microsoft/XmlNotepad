@@ -1,0 +1,134 @@
+<ContentDialog
+    x:Class="XmlNotepad.EditorOptionsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Options"
+    PrimaryButtonClick="Options_PrimaryButtonClick"
+    SecondaryButtonClick="Options_SecondaryButtonClick"
+    CornerRadius="8"
+    PrimaryButtonText="Apply"
+    SecondaryButtonText="Reset options"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+    <ScrollViewer x:Name="OptionsScroll" MaxHeight="440" VerticalScrollBarVisibility="Auto">
+        <StackPanel MinWidth="360" Spacing="18">
+            <InfoBar x:Name="ResetNotice" IsOpen="False" IsClosable="False"
+                     Message="Defaults loaded. Select Apply to save." />
+            <StackPanel Spacing="4">
+                <ComboBox x:Name="SettingsLocationBox" Header="Settings location"
+                          AutomationProperties.AutomationId="SettingsLocation">
+                    <ComboBoxItem x:Name="PortableSettingsItem" Content="Portable (beside the app)" />
+                    <ComboBoxItem Content="Local (this device)" />
+                    <ComboBoxItem Content="Roaming (user profile)" />
+                </ComboBox>
+                <InfoBar x:Name="StorageError" IsOpen="False" Severity="Error" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Appearance" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <ComboBox x:Name="ThemeBox" Header="App theme">
+                    <ComboBoxItem Content="Use system setting" />
+                    <ComboBoxItem Content="Light" />
+                    <ComboBoxItem Content="Dark" />
+                </ComboBox>
+                <Grid ColumnDefinitions="*,126" ColumnSpacing="8">
+                    <TextBox x:Name="EditorFontFamilyBox" Header="Editor font family"
+                             PlaceholderText="Courier New" AutomationProperties.AutomationId="EditorFontFamily" />
+                    <NumberBox x:Name="EditorFontSizeBox" Grid.Column="1" Header="Font size (pt)"
+                               AutomationProperties.AutomationId="EditorFontSize" />
+                </Grid>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <CheckBox x:Name="EditorFontBoldBox" Content="Bold" />
+                    <CheckBox x:Name="EditorFontItalicBox" Content="Italic" />
+                </StackPanel>
+                <NumberBox x:Name="TreeIndentBox" Header="Tree indentation per level" Width="192"
+                           HorizontalAlignment="Left" AutomationProperties.AutomationId="TreeIndent" />
+                <Expander Header="XML colors" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                          AutomationProperties.AutomationId="EditorColors">
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <ComboBox x:Name="PaletteThemeBox" Header="Color theme" HorizontalAlignment="Stretch"
+                                      SelectionChanged="PaletteSelection_Changed" AutomationProperties.AutomationId="PaletteTheme">
+                                <ComboBoxItem Content="Light" />
+                                <ComboBoxItem Content="Dark" />
+                            </ComboBox>
+                            <ComboBox x:Name="ColorRoleBox" Grid.Column="1" Header="XML color" HorizontalAlignment="Stretch"
+                                      SelectionChanged="PaletteSelection_Changed" AutomationProperties.AutomationId="ColorRole" />
+                        </Grid>
+                        <ColorPicker x:Name="XmlColorPicker" ColorChanged="XmlColorPicker_ColorChanged"
+                                     IsColorChannelTextInputVisible="False" IsMoreButtonVisible="False"
+                                     AutomationProperties.Name="Selected XML color" AutomationProperties.AutomationId="XmlColorPicker" />
+                        <Button Content="Restore default color" Click="RestoreColor_Click" />
+                    </StackPanel>
+                </Expander>
+                <CheckBox x:Name="DiagnosticsPaneBox" Content="Show Error List and Dynamic Help" />
+                <CheckBox x:Name="IdentifyingTextBox" Content="Show identifying text next to element names"
+                          AutomationProperties.AutomationId="ShowIdentifyingText" />
+                <TextBox x:Name="IdentifyingNamesBox" Header="Identifying attribute or child names (comma-separated)"
+                         AutomationProperties.AutomationId="IdentifyingNames" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Opening files" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <CheckBox x:Name="PreserveWhitespaceBox" Content="Preserve whitespace when opening XML" />
+                <CheckBox x:Name="PromptBeforeReloadBox" Content="Ask before reloading files changed on disk" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Validation and navigation" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <CheckBox x:Name="ProcessDtdBox" Content="Process document type declarations (DTDs)"
+                          Checked="DtdProcessing_Changed" Unchecked="DtdProcessing_Changed"
+                          AutomationProperties.AutomationId="ProcessDtd" />
+                <InfoBar x:Name="DtdWarning" IsOpen="False" Severity="Warning" IsClosable="False"
+                         Message="DTDs can reference files or network resources. Enable this only for documents you trust." />
+                <TextBox x:Name="MaximumLineIndexBox" Header="Maximum nodes to index for line navigation"
+                         InputScope="Number" AutomationProperties.AutomationId="MaximumLineIndex" />
+                <TextBox x:Name="SchemaLanguageBox" Header="Dynamic Help language" PlaceholderText="For example, en or nl-NL"
+                         AutomationProperties.AutomationId="SchemaLanguage" />
+                <InfoBar x:Name="ValidationOptionsError" IsOpen="False" Severity="Error" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Editing values" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBox x:Name="LongLineThresholdBox" Header="Long line threshold" InputScope="Number"
+                         AutomationProperties.AutomationId="LongLineThreshold" />
+                <CheckBox x:Name="WrapLongLinesBox" Content="Wrap long lines automatically" />
+                <TextBox x:Name="ValueLengthLimitBox" Header="Maximum value length when typing" InputScope="Number"
+                         AutomationProperties.AutomationId="ValueLengthLimit" />
+                <InfoBar x:Name="ValueOptionsError" IsOpen="False" Severity="Error" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Saving XML" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <CheckBox x:Name="AutoFormatBox" Content="Format XML on save" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <ComboBox x:Name="IndentCharacterBox" Header="Indent with">
+                        <ComboBoxItem Content="Spaces" />
+                        <ComboBoxItem Content="Tabs" />
+                    </ComboBox>
+                    <NumberBox x:Name="IndentSizeBox" Header="Indent size" Minimum="0"
+                               SmallChange="1" SpinButtonPlacementMode="Compact" Width="120" />
+                </StackPanel>
+                <ComboBox x:Name="LineEndingsBox" Header="Line endings">
+                    <ComboBoxItem Content="Windows (CRLF)" />
+                    <ComboBoxItem Content="Unix (LF)" />
+                    <ComboBoxItem Content="Classic Mac (CR)" />
+                </ComboBox>
+                <CheckBox x:Name="NewLineOnAttributesBox" Content="Put each attribute on a new line" />
+                <CheckBox x:Name="OmitUtf8BomBox" Content="Save UTF-8 without a byte order mark" />
+            </StackPanel>
+            <StackPanel Spacing="8">
+                <TextBlock Text="External tools" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBox x:Name="TextEditorBox" Header="Text editor executable" />
+                    <Button Grid.Column="1" Content="Browse…" VerticalAlignment="Bottom" Click="BrowseEditor_Click"
+                            AutomationProperties.Name="Browse for a text editor" />
+                </Grid>
+                <CheckBox x:Name="DefaultXsltBox" Content="Use the built-in stylesheet for XSLT preview" />
+                <CheckBox x:Name="XsltScriptsBox" Content="Allow approval for local XSLT scripts" />
+            </StackPanel>
+            <StackPanel x:Name="UpdateOptions" Spacing="4">
+                <TextBlock Text="Updates" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <CheckBox x:Name="AutomaticUpdatesBox" Content="Check for updates automatically" />
+                <TextBox x:Name="UpdateLocationBox" Header="Update feed" />
+                <TextBox x:Name="UpdateIntervalBox" Header="Check interval (days.hours:minutes:seconds)" />
+                <InfoBar x:Name="UpdateOptionsError" IsOpen="False" Severity="Error" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

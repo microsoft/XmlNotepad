@@ -1,64 +1,20 @@
+# Options
 
-## Options
+Open **View > Options**. **Apply** saves your changes, **Cancel** closes the dialog, and **Reset options** loads the defaults for you to review and apply.
 
-The options dialog is available from the "Options..." item under the [View Menu](menus.md). See [Settings](settings.md)
-for information on where these settings are stored.
+## Appearance and editing
 
-![Options](../assets/images/options.jpg)
+- Choose **Use system setting**, **Light**, or **Dark**. Set the editor font and tree indentation, or expand **XML colors** to edit either palette.
+- Turn on **Show identifying text next to element names** to tell similar rows apart. The editor uses schema IDs, `xml:id`, or the first match from your list of attribute or child names.
+- Use **Show Error List and Dynamic Help** to show or hide the bottom pane.
+- Under **Editing values**, set the long-line threshold, default wrapping, or the maximum length for new input. Enter `0` to disable a limit. Wrapping affects the display only.
 
-### Analytics
-Options that enable or disable the collection of anonymous app usage information. See [Analytics](analytics.md).
+## Opening, validating, and saving files
 
-### Color Theme, Colors and Fonts
-The options dialog allows you to select a color theme, light or dark, or configure the specific colors used in each type
-of node as well as the font used and the background color. A drop-down arrow on each color lets you pick from different
-color palettes. You can also customize the font used in the XML Notepad tree view.
+- Enable **Preserve whitespace when opening XML** if you want whitespace nodes to stay visible. Use **Ask before reloading files changed on disk** to control reload prompts.
+- Set **Maximum nodes to index for line navigation** to limit how many source positions the editor records. Lower it for very large files, or set it to `0` to skip indexing. Reopen the file after changing the limit.
+- Set **Dynamic Help language** to choose a language for schema annotations. Leave it blank to show all available languages.
+- Leave **Process document type declarations (DTDs)** off for unfamiliar files. See [Validate XML](validation.md).
+- Under **Saving XML**, choose whether to format on save, how to indent, and which line endings to write.
 
-### Editor
-The editor to use if the XML file is invalid and cannot be opened by XML Notepad.
-You can also disable the "prompt before reload" so that if your XML file is changed on disk, it
-will automatically reload that file (unless you have pending unsaved edits).
-
-### Formatting
-You can also configure the formatting options used when you save an XML file, or turn off formatting
-altogether. Preserve Whitespace controls how the file is opened; when true, you will see all the whitespace nodes in
-the document, which are used also when the file is saved. You can also configure the TreeView indentation level in
-pixels. You can also format attributes so they each have a separate line.
-
-### Language
-Specify which language annotations to pick from associated XSD schemas.
-
-### Long Lines
-How to deal with editing of long lines.
-
-### Schema Options
-Controls whether the tree view shows special information with the nodes in the tree. It will promote the text of the
-specially named child nodes to the text of the parent node in the tree.
-
-### Settings Location
-Where to store these settings. See [Settings](settings.md) for more information.
-
-### Updates
-
-These settings configure the auto-update mechanism associated with the ClickOnce installer. If the "Enable updates"
-field is true, then XML Notepad will ping the specified "Update Location" for an "Updates.xml" file to see if a new
-version of XML Notepad is available. You can set the update frequency, but only if it is more than the update
-frequency defined in the updates.xml file. See [Updates](updates.md) for more information on how this works.
-
-### Validation
-You can turn off DTD validation and you can modify the size of the node line/col index.
-This limit exists because it takes a lot of extra memory to index the location of every node in a
-large document and can make editing very large XML files slower.
-
-The `Ignore DTD` option is important, is True by default. See [validation](validation.md) for
-details on the security implications of this setting.
-
-### XmlDiff
-Options that control how the XmlDiff works when you compare XML documents.
-
-### XSLT
-Options that control how the the XSLT Output works. Set `Enable Scripts` to false if you don't trust the script code in
-your XSLT stylesheets. Set the `Disable default XSLT` to true if you do not want a default XSLT transform on documents
-that have no `<?xml-stylesheet` processing instruction. Toggle the Web Browser Version to WebView2 if you have the new
-[WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) component installed on your machine. Note:
-the Preserve Whitespace option can also affect XSLT output.
+You can also choose the text editor executable, adjust [update checks](updates.md), or move the [settings file](settings.md). For built-in stylesheet and script approval settings, see [XSLT transformations](xslt.md).

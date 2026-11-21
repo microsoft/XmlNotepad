@@ -1,4 +1,4 @@
-name: .NET Core Desktop CI
+name: WinUI desktop CI
 
 on:
   push:
@@ -29,26 +29,17 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup NuGet.exe
-      uses: NuGet/setup-nuget@fd55a6f3b34392fa83fde1454582407d8c714123 # v4.0
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+      with:
+        dotnet-version: 11.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
-
-    # Restore the application
-    - name: Restore the application
-      run: nuget restore ./src/XmlNotepad.sln
-
-    # Build the application
-    - name: Build the application
-      run: |
-        echo namespace XmlNotepad { public partial class AppAnalytics { private const string ApiKey=""; } }  >> .\src\Model\ApiKey.cs
-        msbuild ./src/XmlNotepad.sln /p:Configuration=$env:Configuration "/p:Platform=Any CPU" /verbosity:minimal
+    - name: Build XML Notepad (WinUI)
+      run: dotnet build ./src/xmlnotepad.slnx --configuration $env:Configuration -p:Platform=x64 -warnaserror
       env:
         Configuration: ${{ matrix.configuration }}
 
-    - name: Run headless model regression tests
-      run: dotnet test .\src\Model.Tests\Model.Tests.csproj --configuration $env:Configuration --no-build --verbosity normal
+    - name: Run unit tests
+      run: dotnet test ./src/UnitTests/UnitTests.csproj --configuration $env:Configuration --verbosity normal
       env:
         Configuration: ${{ matrix.configuration }}

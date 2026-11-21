@@ -1,0 +1,10 @@
+﻿<Project Sdk="WixToolset.Sdk/7.0.1">
+  <Import Project="..\WixInstaller.props" />
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="7.0.1" />
+    <ProjectReference Include="..\Msi\XmlNotepadSetup.wixproj" AdditionalProperties="Platform=$(InstallerPlatform)" />
+  </ItemGroup>
+</Project>

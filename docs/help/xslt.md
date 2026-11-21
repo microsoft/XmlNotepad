@@ -1,40 +1,19 @@
-## XSLT Transformation
+# Run an XSLT transformation
 
-The `XSL Output` tab on the main window provides a rendering of the XSLT output from the specified XSLT stylesheet. XSLT
-stylesheets can be referenced in the XML document using this syntax, as shown in the `hamlet.xml` sample.
+Use **View > View XSLT result** to run the stylesheet linked by the current document. The bundled Hamlet sample links to `willy.xsl` with this processing instruction.
 
 ```xml
 <?xml-stylesheet type="text/xsl" href="willy.xsl"?>
 ```
 
-![image](../assets/images/xsltviewer.png)
+To choose a different stylesheet, use **View > Transform with XSLT**. Browse for a file, pick a recent stylesheet, or enter a path or an HTTP or HTTPS URL. Relative paths are resolved against the current document.
 
-You can also enter your own XSLT file name on this tab by changing the contents of the XSLT Location field at the top of
-the XSLT output tab.
+The preview displays HTML in WebView2 and shows XML or plain text in a read-only editor. Choose **Save output as** to keep the result. If a transformation takes a while, use **Cancel** in the progress dialog.
 
-By default the HTML output is written to the same folder that contains your XML file, but if that folder is not writable
-it writes to your system `%TEMP%` folder.
+Add `<?xsl-output default="hamlet"?>` to suggest an output filename. If you leave out the extension, XML Notepad chooses it from the output method. Without a linked stylesheet, the built-in stylesheet can display colorized XML. Change that preference in **View > Options**.
 
-You can also customize the default output file name by adding the following additional processing instruction to your
-XML document:
+## Stylesheets with scripts
 
-```xml
-<?xsl-output default="hamlet"?>
-```
+Ordinary XSLT 1.0 runs on .NET 11. A local stylesheet with an embedded `msxsl:script` block needs your approval for that run. The prompt identifies the source file, including a script loaded through `xsl:include` or `xsl:import`.
 
-Then depending on the `<?xsl-output method="..."` the appropriate file extension will be added. You can also override
-this by directly editing the Output: text box. If you modify the XML or XSLT file you can press the `Transform` button
-to perform another XSLT transformation and the changes will be rendered and saved.
-
-This tab supports 2 different web browser engines. The original WinForms web browser and the new Chromium based
-WebView2. The new WebView2 control is much faster on large XSLT outputs.
-
-XML Notepad does not automatically install this new WebView2 component. Please see [Microsoft Edge
-WebView2](https://docs.microsoft.com/en-us/DeployOffice/webview2-install) for information on how to install this
-optional component.
-
-You will know it is using WebView2 if you see that name mentioned in the status bar.
-
-If there is no stylesheet associated with your XML document you will see a default stylesheet that produces an HTML
-document containing a colorized version of your XML document. This default transform can be disabled in the Options
-dialog.
+Approved scripts run in a separate .NET Framework process with your Windows account’s permissions. Its XSLT file references are limited to local drives. Turn off **Allow approval for local XSLT scripts** to disable those runs. See [Microsoft’s script-block documentation](https://learn.microsoft.com/dotnet/standard/data/xml/script-blocks-using-msxsl-script).

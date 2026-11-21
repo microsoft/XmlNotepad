@@ -9,6 +9,10 @@
     <history>https://github.com/microsoft/XmlNotepad/blob/master/src/Updates/Updates.xml</history>
     <frequency>1.00:00:00</frequency>
   </application>
+	<version number="3.0.0.0">
+		<feature>Migrated XML Notepad to WinUI 3 and .NET 11, with a redesigned interface and light and dark themes.</feature>
+		<feature>Modernized the installers and the XmlStats command-line tool.</feature>
+	</version>
 	<version number="2.9.0.25">
 		<bug>Fix #543 : Support CTRL+Backspace in the text editing fields</bug>
 	</version>

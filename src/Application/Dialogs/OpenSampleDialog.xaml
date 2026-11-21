@@ -1,0 +1,13 @@
+<ContentDialog
+    x:Class="XmlNotepad.OpenSampleDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    AutomationProperties.AutomationId="OpenSampleDialog"
+    Title="Open sample"
+    CornerRadius="{ThemeResource OverlayCornerRadius}"
+    PrimaryButtonText="Open"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+    <ListView x:Name="SamplesList" MaxHeight="300" SelectionChanged="SamplesList_SelectionChanged"
+              AutomationProperties.Name="Bundled samples" />
+</ContentDialog>

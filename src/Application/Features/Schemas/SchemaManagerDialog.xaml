@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentDialog
+    x:Class="XmlNotepad.SchemaManagerDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModels="using:XmlNotepad.ViewModels"
+    Title="XML schemas"
+    CornerRadius="8"
+    PrimaryButtonText="Apply"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary"
+    PrimaryButtonClick="Apply_Click">
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">848</x:Double>
+    </ContentDialog.Resources>
+    <Grid
+        x:Name="LayoutRoot"
+        RowDefinitions="Auto,Auto,*,Auto"
+        RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <TextBlock Text="Manage schemas used for validation and XML suggestions."
+                       TextWrapping="Wrap" VerticalAlignment="Center" />
+            <ComboBox x:Name="SchemaSortBox" Grid.Column="1" SelectionChanged="SchemaSort_SelectionChanged"
+                      AutomationProperties.Name="Sort schemas" AutomationProperties.AutomationId="SortSchemas">
+                <ComboBoxItem Content="Registration order" />
+                <ComboBoxItem Content="Name (ascending)" />
+                <ComboBoxItem Content="Name (descending)" />
+                <ComboBoxItem Content="Namespace (ascending)" />
+                <ComboBoxItem Content="Namespace (descending)" />
+            </ComboBox>
+        </Grid>
+        <InfoBar
+            x:Name="ErrorInfoBar"
+            Grid.Row="1"
+            IsClosable="True"
+            IsOpen="False"
+            Severity="Error"
+            Title="Schema operation failed" />
+        <ListView
+            x:Name="SchemaList"
+            Grid.Row="2"
+            SelectionMode="Extended"
+            SelectionChanged="SchemaList_SelectionChanged"
+            ContainerContentChanging="SchemaList_ContainerContentChanging"
+            AutomationProperties.AutomationId="SchemaList">
+            <ListView.KeyboardAccelerators>
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="Z" Modifiers="Control" Invoked="UndoSchema_Invoked" />
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="Y" Modifiers="Control" Invoked="RedoSchema_Invoked" />
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="X" Modifiers="Control" Invoked="CutSchema_Invoked" />
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="C" Modifiers="Control" Invoked="CopySchema_Invoked" />
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="V" Modifiers="Control" Invoked="PasteSchema_Invoked" />
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="Delete" Invoked="RemoveSchema_Invoked" />
+                <KeyboardAccelerator ScopeOwner="{x:Bind SchemaList, Mode=OneTime}" Key="A" Modifiers="Control" Invoked="SelectAllSchemas_Invoked" />
+            </ListView.KeyboardAccelerators>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:SchemaListItem">
+                    <Grid ColumnDefinitions="*,Auto" Padding="12,8" ColumnSpacing="16">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{x:Bind FileName, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock
+                                Text="{x:Bind DisplayNamespace, Mode=OneWay}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <ToggleSwitch
+                            Grid.Column="1"
+                            IsOn="{x:Bind IsEnabled, Mode=OneWay}"
+                            OnContent="Enabled"
+                            OffContent="Disabled"
+                            Toggled="SchemaEnabled_Toggled"
+                            AutomationProperties.Name="{x:Bind FileName, Mode=OneWay}"
+                            AutomationProperties.AutomationId="SchemaEnabledToggle" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackPanel Grid.Row="3" Spacing="8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <TextBox x:Name="SchemaLocationBox" PlaceholderText="Schema path or URL"
+                         AutomationProperties.Name="Schema location" AutomationProperties.AutomationId="SchemaLocation" />
+                <Button Grid.Column="1" x:Name="SetSchemaLocationButton" Content="Add location" Click="SetSchemaLocation_Click"
+                        AutomationProperties.AutomationId="SetSchemaLocation" />
+            </Grid>
+            <CommandBar DefaultLabelPosition="Right" HorizontalAlignment="Stretch">
+                <AppBarButton x:Name="UndoSchemaButton" Icon="Undo" Label="Undo" LabelPosition="Collapsed"
+                              IsEnabled="False" Click="UndoSchema_Click" AutomationProperties.AutomationId="UndoSchema" />
+                <AppBarButton x:Name="RedoSchemaButton" Icon="Redo" Label="Redo" LabelPosition="Collapsed"
+                              IsEnabled="False" Click="RedoSchema_Click" AutomationProperties.AutomationId="RedoSchema" />
+                <AppBarSeparator />
+                <AppBarButton Icon="OpenFile" Label="Add files" Click="AddSchema_Click" AutomationProperties.AutomationId="AddSchema" />
+                <AppBarButton x:Name="RemoveSchemaButton" Icon="Delete" Label="Remove" IsEnabled="False" Click="RemoveSchema_Click"
+                              AutomationProperties.AutomationId="RemoveSchema" />
+                <AppBarButton x:Name="GenerateSchemaButton" Icon="Page" Label="Generate XML" IsEnabled="False" Click="GenerateSchema_Click"
+                              AutomationProperties.AutomationId="GenerateSchemaXml" />
+                <CommandBar.SecondaryCommands>
+                    <AppBarButton x:Name="CutSchemaButton" Icon="Cut" Label="Cut location" IsEnabled="False" Click="CutSchema_Click"
+                                  AutomationProperties.AutomationId="CutSchemaLocation" />
+                    <AppBarButton x:Name="CopySchemaButton" Icon="Copy" Label="Copy location" IsEnabled="False" Click="CopySchema_Click"
+                                  AutomationProperties.AutomationId="CopySchemaLocation" />
+                    <AppBarButton Icon="Paste" Label="Paste locations" Click="PasteSchema_Click"
+                                  AutomationProperties.AutomationId="PasteSchemaLocations" />
+                    <AppBarButton x:Name="SelectAllSchemasButton" Icon="SelectAll" Label="Select all" Click="SelectAllSchemas_Click"
+                                  AutomationProperties.AutomationId="SelectAllSchemas" />
+                    <AppBarButton x:Name="ClearSchemaListButton" Icon="Clear" Label="Clear list" Click="ClearSchemaList_Click"
+                                  AutomationProperties.AutomationId="ClearSchemaList" />
+                </CommandBar.SecondaryCommands>
+            </CommandBar>
+            <Grid x:Name="GenerationOptions" ColumnDefinitions="*,Auto" ColumnSpacing="8" Visibility="Collapsed">
+                <ComboBox x:Name="RootElementBox" HorizontalAlignment="Stretch" PlaceholderText="Root element"
+                          AutomationProperties.Name="Root element" AutomationProperties.AutomationId="SchemaRootElement" />
+                <Button Grid.Column="1" Content="Create document" Click="CreateGeneratedDocument_Click"
+                        AutomationProperties.AutomationId="CreateGeneratedDocument" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

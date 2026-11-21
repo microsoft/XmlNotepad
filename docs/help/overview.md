@@ -1,49 +1,22 @@
+# Getting started
 
-#### User Interface
+1. Press **Ctrl+O** to open a file, or use **Help > Open sample** to try the editor with a sample document.
+2. Expand an element in the **Node** column. Its text appears alongside it in the **Value** column.
+3. Double-click a value or select its row and press **Enter**. Press **Enter** to apply an inline edit or **Esc** to cancel.
+4. Press **Ctrl+S** to save. For a new copy, use **File > Save As**.
 
-The interface consists of the following components:
+Long or multiline values open in the editor below the tree. Press **Ctrl+Enter** to apply the change. You can drag the divider between the columns and the dividers above the value editor and bottom pane.
 
-![Screen](../assets/images/screen.png)
+The **Error List** and **Dynamic Help** share the bottom pane. Select a validation issue to jump to its node, or select a node in the tree to read any schema documentation for it. The status bar shows the current XPath and, when available, its line and column.
 
-See also [Keyboard](keyboard.md) Interface.
+Use **File > Open from URL** to load an HTTP or HTTPS document. XML Notepad also opens CSV, JSON, and HTML and converts them to XML.
 
-#### Menubar
-See [Menus](menus.md) for a description of each menu.
+## Open a file from the command line
 
-#### Toolbar
-The toolbar provides shortcuts for commonly used menu commands. Hover over the toolbar buttons to see a popup
-showing the menu command they invoke.
+```powershell
+XmlNotepad.exe "C:\work\document.xml"
+```
 
-#### Address
-Displays the current file being edited. This is also a convenient place to enter an HTTP address for editing an online XML file.
+You can pass a file URI or an HTTP or HTTPS URL. Put `--` before a relative filename that starts with a dash.
 
-#### XSL Output Tab
-The [XSLT Output tab](xslt.md) contains a web browser-rendered view of the HTML output from an associated XSLT
-transformation. XSLT transforms are defined when your XML documents contain an `xml-stylesheet` processing instruction.
-
-#### Node Values
-The view on the right shows the text value of the adjacent node in the tree view. For element nodes that have children
-it shows a light blue band because the text is in the child nodes.
-
-#### Node Names
-The TreeView on the left shows the XML document hierarchy in a tree, displaying element, attribute, and processing
-instructions names as well as standard names for comment, text, CDATA, whitespace, and significant-whitespace nodes.
-
-#### Intellisense
-When you have an associated XSD schema, [intellisense](intellisense.md) popups will prompt with expected node names and
-enumerated node values.
-
-#### XSD Annotations
-When you have an associated XSD schema, the `xsd:documentation` associated with the current node is displayed in a
-tooltip popup and in the [Dynamic help](dynamic.md) tab.
-
-#### Validation Errors
-The Error List at the bottom shows [validation](validation.md) errors and warnings.
-
-#### Status Bar
-The status bar at the bottom shows various messages indicating the state of the program.
-
-#### Resizers
-You can move the resizers to change the ratio of space allocated to each of the main three panels.
-
-See also [XML Notepad File Association](fileassociation.md).
+See [Keyboard shortcuts](keyboard.md), [Menus](menus.md), or [Find and Replace](find.md).

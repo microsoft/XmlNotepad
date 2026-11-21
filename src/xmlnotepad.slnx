@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="../tools/publish.ps1" />
+  </Folder>
+  <Folder Name="/Solution Items/Updates/">
+    <File Path="Updates/LatestVersion.xslt" />
+    <File Path="Updates/Updates.xml" />
+    <File Path="Updates/Updates.xsd" />
+    <File Path="Updates/Updates.xslt" />
+    <File Path="Updates/xmlicon.png" />
+  </Folder>
+  <Project Path="Application/XmlNotepad.csproj">
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
+  <Project Path="Core/Core.csproj" />
+  <Project Path="UnitTests/UnitTests.csproj" />
+  <Project Path="XmlStats/XmlStats.csproj" />
+  <Project Path="XsltScriptHost/XsltScriptHost.csproj" />
+</Solution>

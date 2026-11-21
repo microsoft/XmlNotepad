@@ -1,0 +1,29 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <DirectoryRef Id="APPINSTALLROOTDIR">
+      <Component Id="FileAssociations">
+        <RegistryValue Root="HKLM" Key="Software\RegisteredApplications" Name="XML Notepad"
+                       Value="Software\LovettSoftware\XmlNotepad\Capabilities" KeyPath="yes" />
+        <RegistryKey Root="HKLM" Key="Software\LovettSoftware\XmlNotepad\Capabilities">
+          <RegistryValue Name="ApplicationName" Value="XML Notepad" />
+          <RegistryValue Name="ApplicationDescription" Value="Edit XML documents, schemas, and stylesheets." />
+          <RegistryKey Key="FileAssociations">
+            <RegistryValue Name=".xml" Value="XmlNotepad.Document" />
+            <RegistryValue Name=".xsd" Value="XmlNotepad.Document" />
+            <RegistryValue Name=".xsl" Value="XmlNotepad.Document" />
+            <RegistryValue Name=".xslt" Value="XmlNotepad.Document" />
+          </RegistryKey>
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes">
+          <RegistryValue Key="XmlNotepad.Document" Value="XML document" />
+          <RegistryValue Key="XmlNotepad.Document\DefaultIcon" Value="&quot;[APPINSTALLROOTDIR]XmlNotepad.exe&quot;,0" />
+          <RegistryValue Key="XmlNotepad.Document\shell\open\command" Value="&quot;[APPINSTALLROOTDIR]XmlNotepad.exe&quot; &quot;%1&quot;" />
+          <RegistryValue Key=".xml\OpenWithProgids" Name="XmlNotepad.Document" Value="" />
+          <RegistryValue Key=".xsd\OpenWithProgids" Name="XmlNotepad.Document" Value="" />
+          <RegistryValue Key=".xsl\OpenWithProgids" Name="XmlNotepad.Document" Value="" />
+          <RegistryValue Key=".xslt\OpenWithProgids" Name="XmlNotepad.Document" Value="" />
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

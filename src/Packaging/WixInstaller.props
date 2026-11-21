@@ -1,0 +1,10 @@
+<Project>
+  <Import Project="..\Version\Version.props" />
+  <PropertyGroup>
+    <AcceptEula>wix7</AcceptEula>
+    <Platforms>x64;x86;ARM64</Platforms>
+    <InstallerPlatform Condition="'$(Platform)' == 'x86' or '$(Platform)' == 'ARM64'">$(Platform.ToLowerInvariant())</InstallerPlatform>
+    <InstallerPlatform Condition="'$(InstallerPlatform)' == ''">x64</InstallerPlatform>
+    <DefineConstants>$(DefineConstants);AppVersion=$(ApplicationVersion)</DefineConstants>
+  </PropertyGroup>
+</Project>

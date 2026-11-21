@@ -1,14 +1,7 @@
+# Cut, copy, and paste
 
+Select a node and press **Ctrl+C** to copy it or **Ctrl+X** to cut it. XML Notepad puts the node and its children on the clipboard as XML text, including namespace declarations needed by the fragment. You can paste it into another XML Notepad window or a text editor.
 
-## Clipboard
+Press **Ctrl+V** with the tree focused to paste XML into the document. The editor reuses namespace declarations that are already in scope. With a value field focused, paste inserts text into that field.
 
-Cut/Copy/Paste and [Drag/drop](dragdrop.md) are based on the same XML clipboard format. For example, you can drag a node
-out of XML Notepad and into any editor that supports a text clipboard format and its the same as doing a Cut & Paste
-operation.
-
-The clipboard format is the XML serialization of the selected node, along with any necessary any namespace declarations
-needed to ensure the fragment well formed.
-
-When XML is pasted from the clipboard (or dropped) onto the [tree view](overview.md), the namespace declarations are
-matched those already present in the target document and normalized accordingly. This prevents your document from
-accumulating redundant namespace declarations as a side effect of these editing operations.
+Use **Edit > Copy XPath** when you only need the path to the selected node. See [Drag and drop](dragdrop.md) for moving a node within the tree.

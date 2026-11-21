@@ -1,6 +1,6 @@
 site_name: XmlNotepad
 site_url: http://127.0.0.1:8000/
-repo_url: https://microsoft.github.io/XmlNotepad/
+repo_url: https://github.com/microsoft/XmlNotepad
 theme:
     name: null
     custom_dir: docs/windmill_dark
@@ -16,13 +16,6 @@ theme:
     features:
     - search.highlight
 
-markdown_extensions:
-    - smarty
-
-extra_css:
-    - css/main.css
-    - css/syntax.css
-
 extra_javascript:
     - https://www.googletagmanager.com/gtag/js?id=UA-89203408-1
     - https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js
@@ -35,7 +28,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/microsoft/coyote
+      link: https://github.com/microsoft/XmlNotepad
   generator: false
 
 markdown_extensions:
@@ -46,21 +39,21 @@ nav:
   - Home: index.md
   - Install: install.md
   - Help:
-    - Overview:  help/overview.md
-    - Keyboard:  help/keyboard.md
-    - Menus:  help/menus.md
-    - Find:  help/find.md
-    - Options:  help/options.md
-    - Intellisense:  help/intellisense.md
-    - Schemas:  help/schemas.md
-    - Dynamic Help:  help/dynamic.md
-    - Validation:  help/validation.md
-    - Xslt:  help/xslt.md
-    - Custom Editors:  help/customeditors.md
-    - Clipboard:  help/clipboard.md
-    - Updates:  help/updates.md
-    - Analytics:  help/analytics.md
-    - Settings:  help/settings.md
+    - Getting started: help/overview.md
+    - Keyboard shortcuts: help/keyboard.md
+    - Menus: help/menus.md
+    - Find and Replace: help/find.md
+    - Cut, copy, and paste: help/clipboard.md
+    - Drag and drop: help/dragdrop.md
+    - Schemas: help/schemas.md
+    - IntelliSense: help/intellisense.md
+    - Dynamic Help: help/dynamic.md
+    - Validation: help/validation.md
+    - XSLT: help/xslt.md
+    - Options: help/options.md
+    - Settings: help/settings.md
+    - File associations: help/fileassociation.md
+    - Updates: help/updates.md
   - Development:
-    - Overview: dev/index.md
-    - Design:  dev/design.md
+    - Build and contribute: dev/index.md
+    - Architecture: dev/design.md

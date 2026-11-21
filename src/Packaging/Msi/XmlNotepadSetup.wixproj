@@ -1,0 +1,23 @@
+﻿<Project Sdk="WixToolset.Sdk/7.0.1">
+  <Import Project="..\WixInstaller.props" />
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <PayloadRoot>$(MSBuildProjectDirectory)\obj\payload\</PayloadRoot>
+    <PortablePublishDir>$(PayloadRoot)$(Configuration)\win-$(InstallerPlatform)</PortablePublishDir>
+    <MsiVersion>$([System.Version]::Parse('$(ApplicationVersion)').ToString(3))</MsiVersion>
+    <DefineConstants>$(DefineConstants);MsiVersion=$(MsiVersion)</DefineConstants>
+    <SuppressIces>$(SuppressIces);ICE03</SuppressIces>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="7.0.1" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="7.0.1" />
+    <BindPath Include="$(PortablePublishDir)" BindName="AppPayload" />
+  </ItemGroup>
+  <Target Name="PublishInstallerPayload" BeforeTargets="CoreCompile">
+    <Error Condition="!$([System.IO.Path]::GetFullPath('$(PortablePublishDir)').StartsWith('$(MSBuildProjectDirectory)\obj\payload\'))"
+           Text="The MSI publish directory must be under the project's obj\payload directory." />
+    <RemoveDir Directories="$(PortablePublishDir)" />
+    <Exec Command='dotnet publish "..\..\Application\XmlNotepad.csproj" -c "$(Configuration)" -r win-$(InstallerPlatform) -p:Platform=$(InstallerPlatform) -p:PublishProfile=Portable -o "$(PortablePublishDir)" -warnaserror' />
+    <Exec Command='dotnet publish "..\..\XmlStats\XmlStats.csproj" -c "$(Configuration)" -r win-$(InstallerPlatform) --self-contained -p:PublishSingleFile=true -o "$(PortablePublishDir)" -warnaserror' />
+  </Target>
+</Project>
