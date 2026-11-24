@@ -11,6 +11,9 @@ public sealed partial class EditorTypography : ObservableObject
     internal const double DefaultSize = 10;
     internal const double MinimumSize = 6;
     internal const double MaximumSize = 72;
+    internal const int DefaultLineHeight = 40;
+    internal const int MinimumLineHeight = 24;
+    internal const int MaximumLineHeight = 160;
     internal const int DefaultTreeIndent = 12;
     internal const int MaximumTreeIndent = 80;
 
@@ -50,10 +53,13 @@ public sealed partial class EditorTypography : ObservableObject
         Size = GetPointSize(settings) * 96 / 72;
         Weight = settings.GetString("FontWeight") == "Bold" ? FontWeights.Bold : FontWeights.Normal;
         Style = settings.GetString("FontStyle") == "Italic" ? FontStyle.Italic : FontStyle.Normal;
-        RowHeight = Math.Max(32, Math.Ceiling(Size * 1.35) + 10);
+        RowHeight = Math.Max(GetLineHeight(settings), Math.Ceiling(Size * 1.35) + 4);
         TreeIndent = GetTreeIndent(settings);
     }
 
     internal static int GetTreeIndent(Settings settings) =>
         Math.Clamp(settings.GetInteger("TreeIndent", DefaultTreeIndent), 0, MaximumTreeIndent);
+
+    internal static int GetLineHeight(Settings settings) =>
+        Math.Clamp(settings.GetInteger("EditorLineHeight", DefaultLineHeight), MinimumLineHeight, MaximumLineHeight);
 }

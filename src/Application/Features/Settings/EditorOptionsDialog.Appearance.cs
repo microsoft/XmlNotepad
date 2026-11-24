@@ -19,6 +19,9 @@ public sealed partial class EditorOptionsDialog
         EditorFontSizeBox.Value = EditorTypography.GetPointSize(source);
         EditorFontBoldBox.IsChecked = source.GetString("FontWeight") == "Bold";
         EditorFontItalicBox.IsChecked = source.GetString("FontStyle") == "Italic";
+        EditorLineHeightBox.Minimum = EditorTypography.MinimumLineHeight;
+        EditorLineHeightBox.Maximum = EditorTypography.MaximumLineHeight;
+        EditorLineHeightBox.Value = EditorTypography.GetLineHeight(source);
         TreeIndentBox.Minimum = 0;
         TreeIndentBox.Maximum = EditorTypography.MaximumTreeIndent;
         TreeIndentBox.Value = EditorTypography.GetTreeIndent(source);
@@ -38,6 +41,10 @@ public sealed partial class EditorOptionsDialog
         }
         _settings["FontWeight"] = EditorFontBoldBox.IsChecked == true ? "Bold" : "Normal";
         _settings["FontStyle"] = EditorFontItalicBox.IsChecked == true ? "Italic" : "Normal";
+        if (double.IsFinite(EditorLineHeightBox.Value))
+        {
+            _settings["EditorLineHeight"] = (int)Math.Round(EditorLineHeightBox.Value);
+        }
         if (double.IsFinite(TreeIndentBox.Value))
         {
             _settings["TreeIndent"] = (int)Math.Round(TreeIndentBox.Value);

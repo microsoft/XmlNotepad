@@ -15,9 +15,9 @@ public sealed partial class MainPage
     private XmlNode? _draggedNode;
     private bool _openingDroppedFile;
 
-    private void Node_DragStarting(TreeView sender, TreeViewDragItemsStartingEventArgs e)
+    private void Node_DragStarting(object sender, DragItemsStartingEventArgs e)
     {
-        if (XmlTreeNodeContent.GetItem(e.Items.FirstOrDefault()) is not { IsPlaceholder: false } item)
+        if (e.Items.FirstOrDefault() is not XmlNodeItem { IsPlaceholder: false } item)
         {
             e.Cancel = true;
             return;
@@ -25,12 +25,11 @@ public sealed partial class MainPage
 
         ViewModel.CommitSelectedValue();
         _draggedNode = item.Node;
-        // The tree's native Move drop edits its visual nodes before the XML command can run.
         e.Data.RequestedOperation = DataPackageOperation.Copy;
         e.Data.SetText(item.Node.OuterXml);
     }
 
-    private void Node_DropCompleted(TreeView sender, TreeViewDragItemsCompletedEventArgs e) => _draggedNode = null;
+    private void Node_DropCompleted(ListViewBase sender, DragItemsCompletedEventArgs e) => _draggedNode = null;
 
     private void Node_DragOver(object sender, DragEventArgs e)
     {
@@ -88,7 +87,7 @@ public sealed partial class MainPage
         target = null!;
         position = InsertPosition.Child;
         copy = (e.Modifiers & DragDropModifiers.Control) != 0;
-        if (sender is not TreeViewItem row || XmlTreeNodeContent.GetItem(XmlTree.NodeFromContainer(row)) is not { IsPlaceholder: false } item)
+        if (sender is not FrameworkElement { DataContext: XmlNodeItem { IsPlaceholder: false } item } row)
         {
             return false;
         }

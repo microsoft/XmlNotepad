@@ -5,6 +5,7 @@ Open **View > Options**. **Apply** saves your changes, **Cancel** closes the dia
 ## Appearance and editing
 
 - Choose **Use system setting**, **Light**, or **Dark**. Set the editor font and tree indentation, or expand **XML colors** to edit either palette.
+- Lower **Line height (px)** to fit more rows in the tree and value editor. The default is 40 px, and rows grow as needed for larger fonts.
 - Turn on **Show identifying text next to element names** to tell similar rows apart. The editor uses schema IDs, `xml:id`, or the first match from your list of attribute or child names.
 - Use **Show Error List and Dynamic Help** to show or hide the bottom pane.
 - Under **Editing values**, set the long-line threshold, default wrapping, or the maximum length for new input. Enter `0` to disable a limit. Wrapping affects the display only.

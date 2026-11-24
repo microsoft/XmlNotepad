@@ -40,8 +40,12 @@
                     <CheckBox x:Name="EditorFontBoldBox" Content="Bold" />
                     <CheckBox x:Name="EditorFontItalicBox" Content="Italic" />
                 </StackPanel>
-                <NumberBox x:Name="TreeIndentBox" Header="Tree indentation per level" Width="192"
-                           HorizontalAlignment="Left" AutomationProperties.AutomationId="TreeIndent" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <NumberBox x:Name="EditorLineHeightBox" Header="Line height (px)" SpinButtonPlacementMode="Inline"
+                               AutomationProperties.AutomationId="EditorLineHeight" />
+                    <NumberBox x:Name="TreeIndentBox" Grid.Column="1" Header="Tree indentation per level"
+                               AutomationProperties.AutomationId="TreeIndent" />
+                </Grid>
                 <Expander Header="XML colors" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                           AutomationProperties.AutomationId="EditorColors">
                     <StackPanel Spacing="8">

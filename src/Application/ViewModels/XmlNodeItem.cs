@@ -1,8 +1,6 @@
-using System.Collections.ObjectModel;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using XmlNotepad.Services;
 
 namespace XmlNotepad.ViewModels;
@@ -14,8 +12,9 @@ public sealed class XmlNodeItem : ObservableObject
     private readonly XmlNodeLabels? _labels;
     private bool _childrenLoaded;
     private bool _isExpanded;
-    private TreeViewNode? _treeNode;
+    private List<XmlNodeItem>? _children;
     private readonly int _depth;
+    internal event Action? TreeChanged;
 
     public XmlNode Node => _node ?? throw new InvalidOperationException("Placeholder rows do not represent XML nodes.");
 
@@ -35,42 +34,23 @@ public sealed class XmlNodeItem : ObservableObject
 
     public bool IsExpanded
     {
-        get => _treeNode?.IsExpanded ?? _isExpanded;
+        get => _isExpanded;
         set
         {
-            _isExpanded = value;
-            if (_treeNode is { } treeNode)
+            if (SetProperty(ref _isExpanded, value))
             {
-                treeNode.IsExpanded = value;
+                OnPropertyChanged(nameof(ExpansionGlyph));
+                OnPropertyChanged(nameof(ExpansionLabel));
+                NotifyTreeChanged();
             }
         }
     }
 
-    public ObservableCollection<XmlNodeItem> Children { get; } = [];
-
-    internal TreeViewNode TreeNode => _treeNode ?? CreateTreeNode();
-
-    private TreeViewNode CreateTreeNode()
-    {
-        var treeNode = new TreeViewNode { Content = new XmlTreeNodeContent(this) };
-        _treeNode = treeNode;
-        foreach (var child in Children)
-        {
-            treeNode.Children.Add(child.TreeNode);
-        }
-        Children.CollectionChanged += (_, change) => XmlTreeNodeContent.UpdateNodes(treeNode.Children, Children, change);
-        UpdateUnrealizedChildren();
-        treeNode.IsExpanded = _isExpanded;
-        return treeNode;
-    }
-
-    private void UpdateUnrealizedChildren()
-    {
-        if (_treeNode is { } treeNode)
-        {
-            treeNode.HasUnrealizedChildren = !_childrenLoaded && _node is not null && HasChildren(_node);
-        }
-    }
+    public IReadOnlyList<XmlNodeItem> Children => _children is null ? Array.Empty<XmlNodeItem>() : _children;
+    public bool CanExpand => _node is not null && HasChildren(_node);
+    public string ExpansionGlyph => IsExpanded ? "\uE70D" : "\uE76C";
+    public string ExpansionLabel => IsExpanded ? $"Collapse {DisplayName}" : $"Expand {DisplayName}";
+    public int Level => _depth + 1;
 
     public string DisplayName => _node is null ? string.Empty : _node.NodeType switch
     {
@@ -160,11 +140,14 @@ public sealed class XmlNodeItem : ObservableObject
         }
 
         _childrenLoaded = true;
+        if (!HasChildren(_node))
+        {
+            return;
+        }
         foreach (var child in EnumerateChildren())
         {
-            Children.Add(new XmlNodeItem(child, this));
+            InsertChild(Children.Count, new XmlNodeItem(child, this));
         }
-        UpdateUnrealizedChildren();
     }
 
     public void RefreshChildren()
@@ -173,10 +156,6 @@ public sealed class XmlNodeItem : ObservableObject
         if (_childrenLoaded && _node is not null)
         {
             SynchronizeChildren();
-        }
-        else
-        {
-            UpdateUnrealizedChildren();
         }
         NotifyChanged();
     }
@@ -200,7 +179,7 @@ public sealed class XmlNodeItem : ObservableObject
             }
             else
             {
-                Children.RemoveAt(index);
+                RemoveChildAt(index);
             }
         }
 
@@ -213,13 +192,29 @@ public sealed class XmlNodeItem : ObservableObject
             }
             if (retained.TryGetValue(node, out var item))
             {
-                Children.Move(Children.IndexOf(item), index);
+                RemoveChildAt(_children!.IndexOf(item));
+                InsertChild(index, item);
             }
             else
             {
-                Children.Insert(index, new XmlNodeItem(node, this));
+                InsertChild(index, new XmlNodeItem(node, this));
             }
         }
+        if (nodes.Length == 0)
+        {
+            IsExpanded = false;
+        }
+        NotifyTreeChanged();
+    }
+
+    private void InsertChild(int index, XmlNodeItem item)
+    {
+        (_children ??= []).Insert(index, item);
+    }
+
+    private void RemoveChildAt(int index)
+    {
+        _children!.RemoveAt(index);
     }
 
     private IEnumerable<XmlNode> EnumerateChildren()
@@ -244,6 +239,8 @@ public sealed class XmlNodeItem : ObservableObject
     public void NotifyChanged()
     {
         OnPropertyChanged(nameof(DisplayName));
+        OnPropertyChanged(nameof(ExpansionLabel));
+        OnPropertyChanged(nameof(CanExpand));
         OnPropertyChanged(nameof(ValuePreview));
         OnPropertyChanged(nameof(IsContainer));
         NotifyIdentifyingTextChanged();
@@ -251,6 +248,18 @@ public sealed class XmlNodeItem : ObservableObject
     }
 
     internal void NotifyIdentifyingTextChanged() => OnPropertyChanged(nameof(IdentifyingText));
+
+    private void NotifyTreeChanged()
+    {
+        var root = this;
+        while (root.ParentItem is { IsDocument: false } parent)
+        {
+            root = parent;
+        }
+        root.TreeChanged?.Invoke();
+    }
+
+    private bool IsDocument => _node is XmlDocument;
 
     internal static bool IsValueEditable(XmlNode node) => node.NodeType switch
     {

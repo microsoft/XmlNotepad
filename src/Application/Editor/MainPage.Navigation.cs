@@ -8,23 +8,20 @@ namespace XmlNotepad;
 
 public sealed partial class MainPage
 {
-    private void InitializeTree()
-    {
-        foreach (var root in ViewModel.RootNodes)
-        {
-            XmlTree.RootNodes.Add(root.TreeNode);
-        }
-        ViewModel.RootNodes.CollectionChanged += (_, change) =>
-            XmlTreeNodeContent.UpdateNodes(XmlTree.RootNodes, ViewModel.RootNodes, change);
-    }
-
     private void ExpandBranch_Click(object sender, RoutedEventArgs e) => SetSelectedBranchExpansion(true);
 
     private void CollapseBranch_Click(object sender, RoutedEventArgs e) => SetSelectedBranchExpansion(false);
 
     private void ExpandAll_Click(object sender, RoutedEventArgs e) => SetBranchExpansion(ViewModel.RootNodes, true);
 
-    private void CollapseAll_Click(object sender, RoutedEventArgs e) => SetBranchExpansion(ViewModel.RootNodes, false);
+    private void CollapseAll_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var root in ViewModel.RootNodes)
+        {
+            SelectCollapsingAncestor(root);
+        }
+        SetBranchExpansion(ViewModel.RootNodes, false);
+    }
 
     private void SetSelectedBranchExpansion(bool expand)
     {
@@ -35,10 +32,13 @@ public sealed partial class MainPage
         }
     }
 
-    private static void SetBranchExpansion(IEnumerable<XmlNodeItem> roots, bool expand)
+    private void SetBranchExpansion(IReadOnlyList<XmlNodeItem> roots, bool expand)
     {
-        var pending = new Stack<XmlNodeItem>(roots.Reverse());
-        var branches = new Stack<XmlNodeItem>();
+        var pending = new Stack<XmlNodeItem>();
+        for (var index = roots.Count - 1; index >= 0; index--)
+        {
+            pending.Push(roots[index]);
+        }
         while (pending.TryPop(out var item))
         {
             if (item.IsPlaceholder)
@@ -48,24 +48,15 @@ public sealed partial class MainPage
             if (expand)
             {
                 item.LoadChildren();
-                if (item.Children.Count > 0)
-                {
-                    branches.Push(item);
-                }
             }
-            else
+            var children = item.Children;
+            item.IsExpanded = expand && children.Count > 0;
+            for (var index = children.Count - 1; index >= 0; index--)
             {
-                item.IsExpanded = false;
-            }
-            foreach (var child in item.Children.Reverse())
-            {
-                pending.Push(child);
+                pending.Push(children[index]);
             }
         }
-        while (branches.TryPop(out var branch))
-        {
-            branch.IsExpanded = true;
-        }
+        UpdateTreeRows();
     }
 
     private void ValidationIssue_Click(object sender, ItemClickEventArgs e)
@@ -107,12 +98,6 @@ public sealed partial class MainPage
 
     private void RevealTreeItem(XmlNodeItem item)
     {
-        if (FindDescendant<ListViewBase>(XmlTree) is not { } list)
-        {
-            return;
-        }
-
-        var node = item.TreeNode;
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
         {
             if (!XmlTree.IsLoaded || !ReferenceEquals(ViewModel.SelectedNode, item))
@@ -120,23 +105,27 @@ public sealed partial class MainPage
                 return;
             }
 
-            var index = list.Items.IndexOf(node);
-            if (index >= 0)
+            UpdateTreeRows();
+            if (_treeRows.Contains(item))
             {
-                list.SelectedIndex = index;
-                list.ScrollIntoView(node);
+                XmlTree.SelectedItem = item;
+                XmlTree.ScrollIntoView(item);
             }
         });
     }
 
-    internal static T? FindDescendant<T>(DependencyObject element) where T : DependencyObject
+    internal static T? FindDescendant<T>(DependencyObject element, Predicate<T>? filter = null) where T : DependencyObject
     {
         for (int index = 0; index < VisualTreeHelper.GetChildrenCount(element); index++)
         {
             var child = VisualTreeHelper.GetChild(element, index);
-            if ((child as T ?? FindDescendant<T>(child)) is { } match)
+            if (child is T match && (filter is null || filter(match)))
             {
                 return match;
+            }
+            if (FindDescendant(child, filter) is { } descendant)
+            {
+                return descendant;
             }
         }
 

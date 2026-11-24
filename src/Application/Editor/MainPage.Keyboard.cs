@@ -18,7 +18,7 @@ public sealed partial class MainPage
 
     private bool FocusSelectedTreeRow() =>
         ViewModel.SelectedNode is { IsPlaceholder: false } item &&
-        XmlTree.ContainerFromNode(item.TreeNode) is TreeViewItem row && row.Focus(FocusState.Programmatic) ||
+        XmlTree.ContainerFromItem(item) is ListViewItem row && row.Focus(FocusState.Programmatic) ||
         XmlTree.Focus(FocusState.Programmatic);
 
     private void Undo_AcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs e)
@@ -83,7 +83,7 @@ public sealed partial class MainPage
 
     private async void XmlTree_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
     {
-        if (e.OriginalSource is not (TreeViewItem or TreeView) || _inlineValueEditor is not null ||
+        if (e.OriginalSource is not (ListViewItem or ListView) || _inlineValueEditor is not null ||
             ViewModel.SelectedNode is not { IsPlaceholder: false } item)
         {
             return;
@@ -134,8 +134,8 @@ public sealed partial class MainPage
         switch (e.Key)
         {
             case VirtualKey.Enter:
-                var row = (XmlTree.ContainerFromNode(item.TreeNode) as TreeViewItem)?.Content as Grid;
-                var cell = row?.Children.OfType<Grid>().FirstOrDefault(grid => grid.Name == "ValueCell");
+                var cell = XmlTree.ContainerFromItem(item) is ListViewItem row
+                    ? FindDescendant<Grid>(row, grid => grid.Name == "ValueCell") : null;
                 e.Handled = BeginNodeValueEdit(item, cell);
                 break;
             case VirtualKey.Delete:
@@ -147,16 +147,37 @@ public sealed partial class MainPage
                 break;
             case VirtualKey.Add:
                 e.Handled = true;
-                ViewModel.Expand(item);
-                item.IsExpanded = item.Children.Count > 0;
+                SetTreeRowExpansion(item, true);
                 break;
             case VirtualKey.Subtract:
                 e.Handled = true;
-                item.IsExpanded = false;
+                SetTreeRowExpansion(item, false);
                 break;
             case VirtualKey.Multiply:
                 e.Handled = true;
                 SetBranchExpansion(new[] { item }, true);
+                break;
+            case VirtualKey.Right:
+                e.Handled = true;
+                if (!item.IsExpanded)
+                {
+                    SetTreeRowExpansion(item, true);
+                }
+                else if (item.Children.Count > 0)
+                {
+                    FocusTreeItem(item.Children[0]);
+                }
+                break;
+            case VirtualKey.Left:
+                e.Handled = true;
+                if (item.IsExpanded)
+                {
+                    SetTreeRowExpansion(item, false);
+                }
+                else if (item.Level > 1 && item.ParentItem is { } parent)
+                {
+                    FocusTreeItem(parent);
+                }
                 break;
         }
     }

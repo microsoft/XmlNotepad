@@ -85,13 +85,13 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     public bool CanCutSelectedNode => CanCopySelectedNode && CanDeleteSelectedNode;
 
-    public bool CanNudgeUp => GetNudgeCommand(NudgeDirection.Up) is not null;
+    public bool CanNudgeUp => GetNudgeTarget(NudgeDirection.Up) is not null;
 
-    public bool CanNudgeDown => GetNudgeCommand(NudgeDirection.Down) is not null;
+    public bool CanNudgeDown => GetNudgeTarget(NudgeDirection.Down) is not null;
 
-    public bool CanNudgeLeft => GetNudgeCommand(NudgeDirection.Left) is not null;
+    public bool CanNudgeLeft => GetNudgeTarget(NudgeDirection.Left) is not null;
 
-    public bool CanNudgeRight => GetNudgeCommand(NudgeDirection.Right) is not null;
+    public bool CanNudgeRight => GetNudgeTarget(NudgeDirection.Right) is not null;
 
     public bool IsValueReadOnly => !CanEditValue;
 
@@ -281,8 +281,6 @@ public sealed partial class MainPageViewModel : ObservableObject
             IsBusy = false;
         }
     }
-
-    public void Expand(XmlNodeItem item) => item.LoadChildren();
 
     internal bool ShowIdentifyingText => _nodeLabels.Enabled;
 
@@ -632,12 +630,12 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     public void NudgeSelectedNode(NudgeDirection direction)
     {
-        if (SelectedNode is not { IsPlaceholder: false } item || GetNudgeCommand(direction) is not { } command)
+        if (SelectedNode is not { IsPlaceholder: false } item || GetNudgeTarget(direction) is not { } target)
         {
             return;
         }
 
-        MoveNode(item.Node, command);
+        MoveNode(item.Node, new XmlNodeMoveCommand(item.Node, target.Parent, target.Before));
     }
 
     private void MoveNode(XmlNode node, XmlNodeMoveCommand command)
@@ -775,7 +773,7 @@ public sealed partial class MainPageViewModel : ObservableObject
         item?.RefreshChildren();
     }
 
-    private XmlNodeMoveCommand? GetNudgeCommand(NudgeDirection direction)
+    private (XmlNode Parent, XmlNode? Before)? GetNudgeTarget(NudgeDirection direction)
     {
         if (SelectedNode is not { IsPlaceholder: false } item)
         {
@@ -790,17 +788,30 @@ public sealed partial class MainPageViewModel : ObservableObject
             {
                 return null;
             }
-            var attributes = owner.Attributes.Cast<XmlAttribute>().ToArray();
-            var index = Array.IndexOf(attributes, attribute);
-            return direction switch
+            var attributes = owner.Attributes;
+            if (direction == NudgeDirection.Left)
             {
-                NudgeDirection.Up when index > 0 => new XmlNodeMoveCommand(attribute, owner, attributes[index - 1]),
-                NudgeDirection.Down when index >= 0 && index < attributes.Length - 1 => new XmlNodeMoveCommand(attribute, owner, GetNextAttribute(owner, attributes[index + 1])),
-                NudgeDirection.Left when owner != _session.Document.DocumentElement && owner.ParentNode is XmlElement parent &&
-                    !parent.Attributes.Cast<XmlAttribute>().Any(existing => existing.LocalName == attribute.LocalName && existing.NamespaceURI == attribute.NamespaceURI)
-                    => new XmlNodeMoveCommand(attribute, parent, null),
-                _ => null
-            };
+                return owner != _session.Document.DocumentElement && owner.ParentNode is XmlElement parent &&
+                    parent.Attributes.GetNamedItem(attribute.LocalName, attribute.NamespaceURI) is null
+                    ? (parent, null) : null;
+            }
+            if (direction is NudgeDirection.Up or NudgeDirection.Down)
+            {
+                for (var index = 0; index < attributes.Count; index++)
+                {
+                    if (ReferenceEquals(attributes[index], attribute))
+                    {
+                        return direction switch
+                        {
+                            NudgeDirection.Up when index > 0 => (owner, attributes[index - 1]),
+                            NudgeDirection.Down when index < attributes.Count - 1 =>
+                                (owner, index + 2 < attributes.Count ? attributes[index + 2] : null),
+                            _ => null
+                        };
+                    }
+                }
+            }
+            return null;
         }
 
         var oldParent = node.ParentNode;
@@ -812,13 +823,13 @@ public sealed partial class MainPageViewModel : ObservableObject
         return direction switch
         {
             NudgeDirection.Up when node.PreviousSibling is { } previous
-                => new XmlNodeMoveCommand(node, oldParent, previous),
+                => (oldParent, previous),
             NudgeDirection.Down when node.NextSibling is { } next
-                => new XmlNodeMoveCommand(node, oldParent, next.NextSibling),
+                => (oldParent, next.NextSibling),
             NudgeDirection.Left when oldParent is XmlElement parent && parent.ParentNode is XmlElement grandParent
-                => new XmlNodeMoveCommand(node, grandParent, ReferenceEquals(node, parent.FirstChild) ? parent : parent.NextSibling),
+                => (grandParent, ReferenceEquals(node, parent.FirstChild) ? parent : parent.NextSibling),
             NudgeDirection.Right when node.PreviousSibling is XmlElement previousElement
-                => new XmlNodeMoveCommand(node, previousElement, null),
+                => (previousElement, null),
             _ => null
         };
     }

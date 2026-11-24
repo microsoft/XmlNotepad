@@ -198,12 +198,42 @@ public sealed partial class MainPage : Page
         }
     }
 
-    private void XmlTreeItem_RightTapped(object sender, RightTappedRoutedEventArgs e)
+    private void XmlTreeItem_ContextRequested(UIElement sender, ContextRequestedEventArgs e)
     {
-        if (sender is TreeViewItem row && XmlTreeNodeContent.GetItem(XmlTree.NodeFromContainer(row)) is { IsPlaceholder: false } item)
+        var row = e.OriginalSource as DependencyObject;
+        while (row is not null and not ListViewItem && !ReferenceEquals(row, XmlTree))
         {
-            ViewModel.SelectedNode = item;
-            XmlTree.SelectedItem = item.TreeNode;
+            row = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(row);
+        }
+        if (row is ListViewItem container &&
+            XmlTree.ItemFromContainer(container) is XmlNodeItem { IsPlaceholder: false } item)
+        {
+            XmlTree.SelectedItem = item;
+            var menu = (MenuFlyout)Resources["XmlNodeContextMenu"];
+            foreach (var entry in menu.Items)
+            {
+                switch (entry)
+                {
+                    case MenuFlyoutItem { Tag: "Duplicate" } duplicate:
+                        duplicate.IsEnabled = item.CanDuplicate;
+                        break;
+                    case MenuFlyoutSubItem conversions:
+                        foreach (var conversion in conversions.Items.OfType<MenuFlyoutItem>())
+                        {
+                            conversion.IsEnabled = conversion.Tag is string type && item.CanConvertTo(type);
+                        }
+                        break;
+                }
+            }
+            if (e.TryGetPosition(container, out var position))
+            {
+                menu.ShowAt(container, position);
+            }
+            else
+            {
+                menu.ShowAt(container);
+            }
+            e.Handled = true;
         }
     }
 
@@ -561,17 +591,9 @@ public sealed partial class MainPage : Page
     private bool IsValueEditorFocused() => ValueEditor.FocusState != FocusState.Unfocused ||
         _inlineValueEditor is { FocusState: not FocusState.Unfocused };
 
-    private void XmlTree_Expanding(TreeView sender, TreeViewExpandingEventArgs args)
+    private void XmlTree_SelectionChanged(object sender, SelectionChangedEventArgs args)
     {
-        if (XmlTreeNodeContent.GetItem(args.Node) is { } item)
-        {
-            ViewModel.Expand(item);
-        }
-    }
-
-    private void XmlTree_SelectionChanged(TreeView sender, TreeViewSelectionChangedEventArgs args)
-    {
-        if (XmlTreeNodeContent.GetItem(args.AddedItems.FirstOrDefault()) is { IsPlaceholder: false } item)
+        if (!_updatingTreeRows && args.AddedItems.FirstOrDefault() is XmlNodeItem { IsPlaceholder: false } item)
         {
             if (!ReferenceEquals(ViewModel.SelectedNode, item))
             {
@@ -678,7 +700,11 @@ public sealed partial class MainPage : Page
     {
         if (ViewModel.SelectedNode is { } item)
         {
-            XmlTree.SelectedItem = item.TreeNode;
+            UpdateTreeRows();
+            if (!ReferenceEquals(XmlTree.SelectedItem, item))
+            {
+                XmlTree.SelectedItem = item;
+            }
             SelectedNodeTitle.Text = item.DisplayName;
         }
     }

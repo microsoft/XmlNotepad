@@ -91,7 +91,7 @@ public sealed partial class MainPage
 
         CloseValueDetails();
         var suggestions = GetValueSuggestions(item);
-        var editorHeight = Typography.RowHeight;
+        var editorHeight = Math.Max(32, Typography.RowHeight);
         var suggestBox = suggestions.Count > 0 ? CreateValueSuggestBox(value, suggestions, cell.ActualWidth) : null;
         TextBox? textBox = null;
         if (suggestBox is not null)

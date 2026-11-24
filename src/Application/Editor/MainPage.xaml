@@ -38,6 +38,33 @@
             <Setter Property="Height" Value="40" />
             <Setter Property="LabelPosition" Value="Collapsed" />
         </Style>
+        <MenuFlyout x:Key="XmlNodeContextMenu">
+            <MenuFlyoutItem Text="Expand Branch" Click="ExpandBranch_Click" AutomationProperties.AutomationId="ExpandBranchContext" />
+            <MenuFlyoutItem Text="Collapse Branch" Click="CollapseBranch_Click" AutomationProperties.AutomationId="CollapseBranchContext" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Insert Element..." Click="InsertElement_Click" />
+            <MenuFlyoutItem Text="Insert Attribute..." Click="InsertAttribute_Click" />
+            <MenuFlyoutItem Text="Insert Text..." Click="InsertText_Click" />
+            <MenuFlyoutItem Text="Insert Comment..." Click="InsertComment_Click" />
+            <MenuFlyoutItem Text="Rename..." Click="RenameNode_Click" />
+            <MenuFlyoutItem Text="Duplicate" Tag="Duplicate" Click="DuplicateNode_Click" />
+            <MenuFlyoutSubItem Text="Change To" AutomationProperties.AutomationId="ChangeNodeTypeContext">
+                <MenuFlyoutItem Text="Element" Tag="Element" Click="ChangeNodeType_Click" />
+                <MenuFlyoutItem Text="Attribute" Tag="Attribute" Click="ChangeNodeType_Click" />
+                <MenuFlyoutItem Text="Text" Tag="Text" Click="ChangeNodeType_Click" />
+                <MenuFlyoutItem Text="CDATA" Tag="CDATA" Click="ChangeNodeType_Click" />
+                <MenuFlyoutItem Text="Comment" Tag="Comment" Click="ChangeNodeType_Click" />
+                <MenuFlyoutItem Text="Processing Instruction" Tag="ProcessingInstruction" Click="ChangeNodeType_Click" />
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Cut" Click="Cut_Click" />
+            <MenuFlyoutItem Text="Copy" Click="Copy_Click" />
+            <MenuFlyoutItem Text="Copy XPath" Click="CopyXPath_Click" AutomationProperties.AutomationId="CopyXPathContext" />
+            <MenuFlyoutItem Text="Go to Definition" Click="GoToDefinition_Click" AutomationProperties.AutomationId="GoToDefinitionContext" />
+            <MenuFlyoutItem Text="Paste" Click="Paste_Click" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Delete" Click="DeleteNode_Click" />
+        </MenuFlyout>
     </Page.Resources>
     <Page.KeyboardAccelerators>
         <KeyboardAccelerator Key="N" Modifiers="Control" Invoked="New_AcceleratorInvoked" />
@@ -257,7 +284,7 @@
                         BorderThickness="0,0,0,1" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" />
                 <TextBlock Text="Node" Margin="16,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" />
                 <TextBlock Grid.Column="2" Text="Value" Margin="14,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" />
-                <TreeView
+                <controls:XmlTreeList
                     x:Name="XmlTree"
                     Grid.Row="1"
                     Grid.ColumnSpan="3"
@@ -265,88 +292,75 @@
                     ScrollViewer.HorizontalScrollMode="Disabled"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     SelectionMode="Single"
+                    SingleSelectionFollowsFocus="True"
                     CanDragItems="True"
                     CanReorderItems="False"
                     DragItemsStarting="Node_DragStarting"
                     DragItemsCompleted="Node_DropCompleted"
-                    Expanding="XmlTree_Expanding"
                     SelectionChanged="XmlTree_SelectionChanged"
                     PreviewKeyDown="XmlTree_PreviewKeyDown"
+                    ContextRequested="XmlTreeItem_ContextRequested"
                     AutomationProperties.HelpText="Press Enter to edit the selected node value."
                     AutomationProperties.AutomationId="XmlTree">
-                    <TreeView.ItemTemplate>
-                        <DataTemplate x:DataType="TreeViewNode">
-                            <controls:XmlTreeViewItem HorizontalContentAlignment="Stretch"
-                                          Template="{StaticResource XmlTreeViewItemTemplate}"
-                                          Indentation="{x:Bind ((models:XmlTreeNodeContent)Content).Item.GetIndentation(((models:XmlTreeNodeContent)Content).Item.Typography.TreeIndent), Mode=OneWay}"
-                                          AutomationProperties.Name="{x:Bind ((models:XmlTreeNodeContent)Content).Item.DisplayName, Mode=OneWay}"
-                                          AutomationProperties.ItemType="{x:Bind ((models:XmlTreeNodeContent)Content).Item.KindLabel, Mode=OneTime}"
-                                          RightTapped="XmlTreeItem_RightTapped"
-                                          AllowDrop="True" DragEnter="Node_DragOver" DragOver="Node_DragOver" Drop="Node_Drop">
-                                <TreeViewItem.ContextFlyout>
-                                    <MenuFlyout>
-                                        <MenuFlyoutItem Text="Expand Branch" Click="ExpandBranch_Click" AutomationProperties.AutomationId="ExpandBranchContext" />
-                                        <MenuFlyoutItem Text="Collapse Branch" Click="CollapseBranch_Click" AutomationProperties.AutomationId="CollapseBranchContext" />
-                                        <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="Insert Element..." Click="InsertElement_Click" />
-                                        <MenuFlyoutItem Text="Insert Attribute..." Click="InsertAttribute_Click" />
-                                        <MenuFlyoutItem Text="Insert Text..." Click="InsertText_Click" />
-                                        <MenuFlyoutItem Text="Insert Comment..." Click="InsertComment_Click" />
-                                        <MenuFlyoutItem Text="Rename..." Click="RenameNode_Click" />
-                                        <MenuFlyoutItem Text="Duplicate" Click="DuplicateNode_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanDuplicate, Mode=OneWay}" />
-                                        <MenuFlyoutSubItem Text="Change To" AutomationProperties.AutomationId="ChangeNodeTypeContext">
-                                            <MenuFlyoutItem Text="Element" Tag="Element" Click="ChangeNodeType_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanConvertTo('Element'), Mode=OneTime}" />
-                                            <MenuFlyoutItem Text="Attribute" Tag="Attribute" Click="ChangeNodeType_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanConvertTo('Attribute'), Mode=OneTime}" />
-                                            <MenuFlyoutItem Text="Text" Tag="Text" Click="ChangeNodeType_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanConvertTo('Text'), Mode=OneTime}" />
-                                            <MenuFlyoutItem Text="CDATA" Tag="CDATA" Click="ChangeNodeType_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanConvertTo('CDATA'), Mode=OneTime}" />
-                                            <MenuFlyoutItem Text="Comment" Tag="Comment" Click="ChangeNodeType_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanConvertTo('Comment'), Mode=OneTime}" />
-                                            <MenuFlyoutItem Text="Processing Instruction" Tag="ProcessingInstruction" Click="ChangeNodeType_Click" IsEnabled="{x:Bind ((models:XmlTreeNodeContent)Content).Item.CanConvertTo('ProcessingInstruction'), Mode=OneTime}" />
-                                        </MenuFlyoutSubItem>
-                                        <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="Cut" Click="Cut_Click" />
-                                        <MenuFlyoutItem Text="Copy" Click="Copy_Click" />
-                                        <MenuFlyoutItem Text="Copy XPath" Click="CopyXPath_Click" AutomationProperties.AutomationId="CopyXPathContext" />
-                                        <MenuFlyoutItem Text="Go to Definition" Click="GoToDefinition_Click" AutomationProperties.AutomationId="GoToDefinitionContext" />
-                                        <MenuFlyoutItem Text="Paste" Click="Paste_Click" />
-                                        <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="Delete" Click="DeleteNode_Click" />
-                                    </MenuFlyout>
-                                </TreeViewItem.ContextFlyout>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="{Binding Width, Source={StaticResource XmlValueColumnWidth}}" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid ColumnDefinitions="16,*" ColumnSpacing="8" Margin="0,0,12,0">
-                                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="14"
-                                                  Glyph="{x:Bind ((models:XmlTreeNodeContent)Content).Item.IconGlyph, Mode=OneTime}"
-                                                  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                                  AutomationProperties.AccessibilityView="Raw" />
-                                        <TextBlock Grid.Column="1"
-                                                   FontFamily="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Family, Mode=OneWay}" FontSize="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Size, Mode=OneWay}"
-                                                   FontWeight="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Weight, Mode=OneWay}" FontStyle="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Style, Mode=OneWay}"
-                                                   controls:EditorColorOverride.Foreground="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Palette.Brushes.GetNode(((models:XmlTreeNodeContent)Content).Item.NodeType), Mode=OneWay}"
-                                                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxLines="1">
-                                            <Run Text="{x:Bind ((models:XmlTreeNodeContent)Content).Item.DisplayName, Mode=OneWay}" /><Run Text="{x:Bind ((models:XmlTreeNodeContent)Content).Item.IdentifyingText, Mode=OneWay}"
-                                                 controls:EditorColorOverride.Foreground="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Palette.Brushes.IdentifyingText, Mode=OneWay, FallbackValue={x:Null}}" />
-                                        </TextBlock>
-                                    </Grid>
-                                    <Grid x:Name="ValueCell" Grid.Column="1" MinHeight="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.RowHeight, Mode=OneWay}"
-                                          Style="{StaticResource NodeValueCellStyle}" Margin="6,0,12,0"
-                                          controls:EditorColorOverride.Background="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Palette.Brushes.GetContainerBackground(((models:XmlTreeNodeContent)Content).Item.IsContainer), Mode=OneWay}"
-                                          DataContext="{x:Bind ((models:XmlTreeNodeContent)Content).Item, Mode=OneTime}" DoubleTapped="NodeValue_DoubleTapped">
-                                        <TextBlock Text="{x:Bind ((models:XmlTreeNodeContent)Content).Item.ValuePreview, Mode=OneWay}" VerticalAlignment="Center" Margin="8,0,8,0"
-                                                   Style="{StaticResource NodeValuePreviewStyle}"
-                                                   FontFamily="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Family, Mode=OneWay}" FontSize="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Size, Mode=OneWay}"
-                                                   FontWeight="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Weight, Mode=OneWay}" FontStyle="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Typography.Style, Mode=OneWay}"
-                                                   TextTrimming="CharacterEllipsis" MaxLines="1"
-                                                   controls:EditorColorOverride.Foreground="{x:Bind ((models:XmlTreeNodeContent)Content).Item.Palette.Brushes.GetNode(((models:XmlTreeNodeContent)Content).Item.NodeType), Mode=OneWay}" />
-                                    </Grid>
+                    <controls:XmlTreeList.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel ItemsUpdatingScrollMode="KeepItemsInView" />
+                        </ItemsPanelTemplate>
+                    </controls:XmlTreeList.ItemsPanel>
+                    <controls:XmlTreeList.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="MinHeight" Value="0" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </controls:XmlTreeList.ItemContainerStyle>
+                    <controls:XmlTreeList.ItemTemplate>
+                        <DataTemplate x:DataType="models:XmlNodeItem">
+                            <Grid AllowDrop="True" DragEnter="Node_DragOver" DragOver="Node_DragOver" Drop="Node_Drop">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="{Binding Width, Source={StaticResource XmlValueColumnWidth}}" />
+                                </Grid.ColumnDefinitions>
+                                <Grid ColumnDefinitions="28,16,*" ColumnSpacing="8"
+                                      Padding="{x:Bind GetIndentation(Typography.TreeIndent), Mode=OneWay}" Margin="0,0,12,0">
+                                    <Button Width="28" MinWidth="0" MinHeight="0" Padding="0" HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch" Background="Transparent" BorderThickness="0"
+                                            IsTabStop="False" Click="TreeRowExpansion_Click"
+                                            Visibility="{x:Bind CanExpand, Mode=OneWay}"
+                                            AutomationProperties.AccessibilityView="Raw"
+                                            AutomationProperties.Name="{x:Bind ExpansionLabel, Mode=OneWay}">
+                                        <TextBlock Text="{x:Bind ExpansionGlyph, Mode=OneWay}" FontSize="10"
+                                                   FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+                                    </Button>
+                                    <TextBlock Grid.Column="1" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="14"
+                                               Text="{x:Bind IconGlyph, Mode=OneTime}"
+                                               Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               AutomationProperties.AccessibilityView="Raw" />
+                                    <TextBlock Grid.Column="2"
+                                               FontFamily="{x:Bind Typography.Family, Mode=OneWay}" FontSize="{x:Bind Typography.Size, Mode=OneWay}"
+                                               FontWeight="{x:Bind Typography.Weight, Mode=OneWay}" FontStyle="{x:Bind Typography.Style, Mode=OneWay}"
+                                               controls:EditorColorOverride.Foreground="{x:Bind Palette.Brushes.GetNode(NodeType), Mode=OneWay}"
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxLines="1">
+                                        <Run Text="{x:Bind DisplayName, Mode=OneWay}" /><Run Text="{x:Bind IdentifyingText, Mode=OneWay}"
+                                             controls:EditorColorOverride.Foreground="{x:Bind Palette.Brushes.IdentifyingText, Mode=OneWay, FallbackValue={x:Null}}" />
+                                    </TextBlock>
                                 </Grid>
-                            </controls:XmlTreeViewItem>
+                                <Grid x:Name="ValueCell" Grid.Column="1" MinHeight="{x:Bind Typography.RowHeight, Mode=OneWay}"
+                                      Style="{StaticResource NodeValueCellStyle}" Margin="6,0,12,0"
+                                      controls:EditorColorOverride.Background="{x:Bind Palette.Brushes.GetContainerBackground(IsContainer), Mode=OneWay}"
+                                      DoubleTapped="NodeValue_DoubleTapped">
+                                    <TextBlock Text="{x:Bind ValuePreview, Mode=OneWay}" VerticalAlignment="Center" Margin="8,0,8,0"
+                                               Style="{StaticResource NodeValuePreviewStyle}"
+                                               FontFamily="{x:Bind Typography.Family, Mode=OneWay}" FontSize="{x:Bind Typography.Size, Mode=OneWay}"
+                                               FontWeight="{x:Bind Typography.Weight, Mode=OneWay}" FontStyle="{x:Bind Typography.Style, Mode=OneWay}"
+                                               TextTrimming="CharacterEllipsis" MaxLines="1"
+                                               controls:EditorColorOverride.Foreground="{x:Bind Palette.Brushes.GetNode(NodeType), Mode=OneWay}" />
+                                </Grid>
+                            </Grid>
                         </DataTemplate>
-                    </TreeView.ItemTemplate>
-                </TreeView>
+                    </controls:XmlTreeList.ItemTemplate>
+                </controls:XmlTreeList>
                 <Border Grid.Row="1" Grid.Column="1" Width="1" HorizontalAlignment="Center" IsHitTestVisible="False"
                         Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
 

@@ -814,6 +814,7 @@ namespace XmlNotepad
             this["Font"] = "deleted";
             this["FontFamily"] = "Courier New";
             this["FontSize"] = 10.0;
+            this["EditorLineHeight"] = 40;
             this["TreeIndent"] = 12;
             this["FontStyle"] = "Normal";
             this["FontWeight"] = "Normal";
