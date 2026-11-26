@@ -145,6 +145,8 @@
                         <KeyboardAccelerator Key="G" Modifiers="Control" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+                <MenuFlyoutSeparator />              
+                <MenuFlyoutItem Text="GC.Collect" Click="CollectGarbage_Click" />
             </MenuBarItem>
             <MenuBarItem Title="View">
                 <MenuFlyoutItem Text="Expand Branch" Click="ExpandBranch_Click" AutomationProperties.AutomationId="ExpandBranch" />
