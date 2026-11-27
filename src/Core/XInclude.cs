@@ -66,7 +66,6 @@ namespace XmlNotepad
                 count++;
                 if (current.FirstChild is XmlNode child)
                 {
-                    count++;
                     current = child;
                     continue;
                 }
