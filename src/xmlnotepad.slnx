@@ -20,6 +20,7 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
+    <Deploy Solution="Debug|Any CPU" />
   </Project>
   <Project Path="Core/Core.csproj" />
   <Project Path="UnitTests/UnitTests.csproj" />

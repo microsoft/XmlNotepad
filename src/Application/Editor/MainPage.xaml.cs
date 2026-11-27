@@ -709,4 +709,8 @@ public sealed partial class MainPage : Page
         }
     }
 
+    private void CollectGarbage_Click(object sender, RoutedEventArgs e)
+    {
+        GC.Collect();
+    }
 }
