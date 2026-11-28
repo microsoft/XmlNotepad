@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectDir)..\Version\Version.props" />
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RuntimeIdentifiers Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <RootNamespace>XmlNotepad</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

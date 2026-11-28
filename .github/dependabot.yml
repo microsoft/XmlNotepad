@@ -26,62 +26,7 @@ updates:
     #   - reviewer_one
 
   - package-ecosystem: 'nuget'
-    directory: 'src/BuildTasks'
-    open-pull-requests-limit: 10
-    schedule:
-      interval: 'daily'
-    # target-branch: 'develop'
-    # assignees:
-    #   - assignee_one
-    # reviewers:
-    #   - reviewer_one
-
-  - package-ecosystem: 'nuget'
-    directory: 'src/FontBuilder'
-    open-pull-requests-limit: 10
-    schedule:
-      interval: 'daily'
-    # target-branch: 'develop'
-    # assignees:
-    #   - assignee_one
-    # reviewers:
-    #   - reviewer_one
-
-  - package-ecosystem: 'nuget'
-    directory: 'src/Model'
-    open-pull-requests-limit: 10
-    schedule:
-      interval: 'daily'
-    # target-branch: 'develop'
-    # assignees:
-    #   - assignee_one
-    # reviewers:
-    #   - reviewer_one
-
-  - package-ecosystem: 'nuget'
-    directory: 'src/WpfApp'
-    open-pull-requests-limit: 10
-    schedule:
-      interval: 'daily'
-    # target-branch: 'develop'
-    # assignees:
-    #   - assignee_one
-    # reviewers:
-    #   - reviewer_one
-
-  - package-ecosystem: 'nuget'
-    directory: 'src/XmlNotepad'
-    open-pull-requests-limit: 10
-    schedule:
-      interval: 'daily'
-    # target-branch: 'develop'
-    # assignees:
-    #   - assignee_one
-    # reviewers:
-    #   - reviewer_one
-
-  - package-ecosystem: 'nuget'
-    directory: 'src/XmlStats'
+    directory: 'src/UnitTests'
     open-pull-requests-limit: 10
     schedule:
       interval: 'daily'

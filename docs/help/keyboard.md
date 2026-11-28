@@ -1,35 +1,34 @@
+# Keyboard shortcuts
 
-### Keyboard Interface
+## Files and search
 
-The keyboard interface has been designed for convenient data entry. The usual sequence when building up an XML fragment
-is to use INSERT to enter a new node of the same type as the current node, type in its name then hit TAB to enter its
-value, then repeat this process and soon you will have quickly built up a document from scratch.
+| Shortcut | Action |
+| --- | --- |
+| **Ctrl+N**, **Ctrl+O**, **Ctrl+S** | New, open, or save a document |
+| **Ctrl+F**, **Ctrl+H** | Open Find or Find and Replace |
+| **Ctrl+I** | Find names starting with what you type, or value prefixes if focus was in a value editor |
+| **F3**, **Shift+F3** | Repeat the last search forward or backward |
+| **Ctrl+G** | Go to a source line |
+| **F4** | Jump to the next validation issue |
+| **F12** | Go to the selected node’s definition |
+| **F6**, **Shift+F6** | Cycle focus through the tree, Find bar, and diagnostics when visible |
+| **F1** | Open help |
 
-Handy Keyboard short cuts include:
+## Editing the tree
 
+| Shortcut | Action |
+| --- | --- |
+| **Arrow keys** | Move through the tree |
+| **Enter** | Edit the selected value or commit the current inline edit |
+| **Shift+Enter** | Open the selected value in the multiline editor from the tree |
+| **Ctrl+Enter** | Apply an edit in the multiline editor |
+| **Esc** | Cancel the current edit |
+| **F2** | Rename the selected node |
+| **Insert**, **Ctrl+Insert**, **Alt+Insert** | Insert a sibling of the same type, a child element, or an attribute |
+| **Ctrl+D**, **Delete** | Duplicate or delete the selected node |
+| **Ctrl+Shift+Arrow** | Move the selected node up, down, left, or right |
+| **Ctrl+X**, **Ctrl+C**, **Ctrl+V** | Cut, copy, or paste |
+| **Ctrl+Z**, **Ctrl+Y** | Undo or redo a document edit when focus is outside a text field |
+| Number pad **+**, **−**, **\*** | Expand the node, collapse it, or expand its whole branch |
 
-| Key        | Description      |
-| ------------- |-------------|
-| TAB     | Navigates from the tree view to the corresponding node value then to the next node in the tree view and so on. SHIFT-TAB does the reverse. |
-| Arrow Keys      | Up/Down/Left/Right navigate the tree view. |
-| CTRL+SHIFT+Arrow | Nudges the selected node up, down, left or right. |
-| HOME/END	| Navigate to the first and last visible nodes in the tree view. |
-| PAGE UP/DOWN	   | Scrolls the tree view up or down one page.|
-| INSERT	       | Inserts another node of the same type.|
-| CTRL+INSERT	   | Inserts a child element.|
-| ALT+INSERT	   | Inserts a child attribute.|
-| ENTER	           | Enters and exits edit mode on a node name and/or node value. You can also enter edit mode by just typing in some non-navigational keystrokes and what you type will replace what was selected.|
-| CTRL+D	      |  Duplicates the current node, so you can quickly create similar fragments of XML and then just edit the values. |
-| CTRL+F	      |  Brings up the [Find dialog](find.md). |
-| CTRL+H	      |  Brings up the [Find/Replace dialog](find.md). |
-| CTRL+I	      |  Incremental search - as you type a sequence of letters, this search mode will match the next node that starts with that sequence. The more letters you type the more precise the match becomes. In a large document this is a convenient way to navigate around. |
-| CTRL+C, CTRL+V, CTRL+X  | Cut/Copy/Paste - see [Clipboard support](clipboard.md). |
-| F2	                      |  Edit the current node name or value. |
-| F3	                      |  After dismissing the find dialog, this keystroke repeats the last Find operation. SHIFT+F3 finds in the reverse direction. |
-| F6	                      |  Move focus to next panel (cycles between tree view, value view and error list). SHIFT+F6 cycles in the reverse order. |
-| F4	                      |  Move to the next error. |
-| SHIFT+ENTER	              |  Add a new line to a multi-line node value |
-| CTRL+DRAG-DROP	          |  Normally [drag/drop](dragdrop.md) is a move operation. If you hold down the Control key then it becomes a Copy operation. |
-| Multiply                    |  (* on number pad)	Expand all nodes under the selected node. |
-| Add (+ on number pad)	      |  Expand the selected node. |
-| Subtract (- on number pad)  |  Collapse the selected node. |
+For mouse actions, see [Drag and drop](dragdrop.md).

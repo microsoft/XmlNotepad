@@ -1,0 +1,65 @@
+<UserControl
+    x:Class="XmlNotepad.EditorDiagnosticsPane"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:XmlNotepad"
+    xmlns:services="using:XmlNotepad.Services"
+    AutomationProperties.AutomationId="EditorDiagnostics">
+    <UserControl.Resources>
+        <Style x:Key="DiagnosticIconStyle" TargetType="FontIcon">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+            <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
+        </Style>
+    </UserControl.Resources>
+    <Border Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}">
+        <TabView x:Name="Tabs" IsAddTabButtonVisible="False" CanDragTabs="False"
+                 CanReorderTabs="False" TabWidthMode="SizeToContent" SelectionChanged="Tabs_SelectionChanged">
+            <TabViewItem Header="Error List" IsClosable="False" AutomationProperties.AutomationId="DiagnosticsErrors">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid ColumnDefinitions="16,*,160,64,64" ColumnSpacing="8" Padding="12,4"
+                          Background="{ThemeResource LayerFillColorDefaultBrush}">
+                        <TextBlock Grid.Column="1" Text="Description" Style="{StaticResource CaptionTextBlockStyle}" />
+                        <TextBlock Grid.Column="2" Text="File" Style="{StaticResource CaptionTextBlockStyle}" />
+                        <TextBlock Grid.Column="3" Text="Line" Style="{StaticResource CaptionTextBlockStyle}" />
+                        <TextBlock Grid.Column="4" Text="Column" Style="{StaticResource CaptionTextBlockStyle}" />
+                    </Grid>
+                    <ListView x:Name="Issues" Grid.Row="1" SelectionMode="Single" IsItemClickEnabled="True"
+                              ItemClick="Issues_ItemClick" AutomationProperties.Name="Validation results">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="MinHeight" Value="30" />
+                                <Setter Property="Padding" Value="0" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="services:XmlValidationIssue">
+                                <Grid ColumnDefinitions="16,*,160,64,64" ColumnSpacing="8" Padding="12,5">
+                                    <FontIcon Glyph="&#xEA39;" Style="{StaticResource DiagnosticIconStyle}"
+                                              Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                              Visibility="{x:Bind controls:EditorDiagnosticsPane.SeverityVisibility(SeverityLabel, 'Error'), Mode=OneTime}" />
+                                    <FontIcon Glyph="&#xE7BA;" Style="{StaticResource DiagnosticIconStyle}"
+                                              Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                              Visibility="{x:Bind controls:EditorDiagnosticsPane.SeverityVisibility(SeverityLabel, 'Warning'), Mode=OneTime}" />
+                                    <FontIcon Glyph="&#xE946;" Style="{StaticResource DiagnosticIconStyle}"
+                                              Foreground="{ThemeResource SystemFillColorAttentionBrush}"
+                                              Visibility="{x:Bind controls:EditorDiagnosticsPane.SeverityVisibility(SeverityLabel, 'Info'), Mode=OneTime}" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Summary, Mode=OneTime}" TextWrapping="Wrap" />
+                                    <TextBlock Grid.Column="2" Text="{x:Bind FileName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="3" Text="{x:Bind Line, Mode=OneTime}" />
+                                    <TextBlock Grid.Column="4" Text="{x:Bind Column, Mode=OneTime}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </TabViewItem>
+            <TabViewItem Header="Dynamic Help" IsClosable="False" AutomationProperties.AutomationId="DiagnosticsHelp">
+                <controls:SchemaDocumentationPane x:Name="DocumentationPane" />
+            </TabViewItem>
+        </TabView>
+    </Border>
+</UserControl>

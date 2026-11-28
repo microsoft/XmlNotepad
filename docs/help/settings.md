@@ -1,43 +1,23 @@
-## Settings
+# Where settings are stored
 
-XML Notepad stores your user settings in a file located in this folder, by default:
+XML Notepad saves its window position, recent files, search history, and [options](options.md) in `XmlNotepad.settings`. Use **File > Open XML Settings** to see which file the app is using.
+
+| Location | Folder |
+| --- | --- |
+| **Portable** | Beside `XmlNotepad.exe`. The folder must be writable. |
+| **Local** | `%LOCALAPPDATA%\Microsoft\Xml Notepad\` |
+| **Roaming** | `%APPDATA%\Microsoft\Xml Notepad\` |
+
+Change the folder under **View > Options > Settings location**. XML Notepad moves the active settings file. If you already have a file at the destination, move it aside first.
+
+The app checks for a writable portable settings file, then uses your saved location preference. If you have yet to choose a location, it looks for existing local and roaming settings. It also recognizes the local settings file from earlier WinUI builds.
+
+## Set up defaults for a deployment
+
+Put `XmlNotepad.template.settings` next to `XmlNotepad.exe` to supply initial settings for new profiles. Use the template flag to preview it with a separate profile.
 
 ```powershell
-%APPDATA%\Microsoft\Xml Notepad\XmlNotepad.settings
+XmlNotepad.exe -template
 ```
 
-The settings include the last size and location of the window, a list of most recently opened files, recent find
-strings, and all the things you see in the [Options Dialog](options.md).
-
-You can change where XML Notepad stores the settings file if you go to the [Options Dialog](options.md) and change the
-`Settings Location` option. The options are:
-
-| Name         | Location      |
-| ------------- |-------------|
-| Portable | Stored whereever XmlNotepad.exe was installed |
-| Local   | %LOCALAPPDATA%\Microsoft\Xml Notepad\ |
-| Roaming | %APPDATA%\Microsoft\Xml Notepad\ |
-
-The `Roaming` folder might be automatically migrated to all your machines because it is associated with a [Roaming User
-Profile](https://blogs.windows.com/windowsdeveloper/2016/05/03/getting-started-with-roaming-app-data/).
-
-The `Portable` option makes it easy for you to `xcopy` the folder to other machines and get the same settings. This
-option will not be available if you are running XML Notepad in a folder that is read only (like `c:\Program Files`).
-
-Changing the `Settings Location` option moves the `XmlNotepad.settings` file accordingly. This means you should not have
-multiple `XmlNotepad.settings` files in all these locations, if you do it will search in this priority order:
-
-1. Portable
-2. Local
-3. Roaming
-
-and it will use the first one that it finds.
-
-## Settings Template
-
-o make it easier to pre-configure XML Notepad across a bunch of machines, you can provide a customized
-`XmlNotepad.template.settings` template file next to `XmlNotepad.exe` and the first time a user launches XmlNotepad on a
-machine it will use this template for the initial default settings for that user, which is then copied to the `Roaming`
-location.
-
-See also [XML Notepad File Association](fileassociation.md).
+Preview changes go to `XmlNotepad.template-preview.settings` under `%TEMP%\Microsoft\Xml Notepad\`. Use `XmlNotepad.exe -test` for a separate test profile named `XmlNotepad.test.settings` in the same folder.

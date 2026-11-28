@@ -1,73 +1,37 @@
+# Menu reference
 
-## Menus
-XML Notepad provides the following menu commands.
+## File
 
-### File
-The file menu contains the following commands:
+| Command | What it does |
+| --- | --- |
+| **New** / **New Window** | Start a blank document or open another window for the current document. |
+| **Open** / **Open from URL** | Open a local file or an HTTP or HTTPS address. CSV, JSON, and HTML input is converted to XML. |
+| **Save** / **Save As** | Save the current document or choose a new name. XML Notepad asks before overwriting a file that changed on disk. |
+| **Reload from disk** | Read the file again. Save any edits you want to keep first. |
+| **Compare XML files** | Compare the current document with another XML file. Save the report from the results dialog. |
+| **Open Comparison Styles** | Edit the CSS used by the next comparison and its saved report. Delete the custom file to restore the default style. |
+| **Recent Files** | Reopen a recent document. |
+| **Open XML Settings** | Open the active settings file. See [Settings](settings.md). |
 
-- **New:** Start a new XML document.
-- **Open:** Open an XML document for editing. Can also open .csv, .json and .htm files converting them to XML.
-- **Reload:** Discard any edits you've made and reload the file as it exists on disk.
-- **Open Xml Settings...:** Opens the current XmlNotepad.settings file in Xml Notepad.
-- **Open XmlDiff Styles...:** Opens the XmlDiffStyles.css file in your text editor so you can change the appearence of
-the XmlDiff output window. Delete the file to reset back to the original styles. The files lives in
-%LOCALAPPDATA%\Microsoft\Xml Notepad\XmlDiffStyles.css.
-- **Save:** Save any edits you've made to the file disk.
-- **Save As:** Save the current document to a different file name on disk.
-- **Export Errors:** Save the contents of the Error List in an XML format.
-- **Recent Files:** This menu provides quick access to the last 10 XML documents you've edited.
-- **Exit:** Closes XML Notepad.
+## Edit and Insert
 
-### Edit
-The edit menu contains the following commands:
+Use **Edit** to undo changes, work with the clipboard, rename or duplicate a node, or convert it to a different XML node type. **Copy XPath** copies the selected node’s path. **Go To Line** jumps to a line in the opened file.
 
-- **Undo:** Undo the previous edit operation.
-- **Redo:** Reverses the last undo operation.
-- **Cut:** Copy the selected node to the clipboard (and its children) and remove that node from the tree. See [Clipboard
-  support](clipboard.md).
-- **Copy:** Copy the selected node to the clipboard (and its children).
-- **Copy XPath:** Copy the XPath expression that locates the selected node.
-- **Paste:** Parse the XML in the clipboard and create new nodes in the tree under the selected node.
-- **Delete:** Delete the selected node.
-- **Insert:** Insert a new node of the same type (element, attribute, processing instruction, comment, etc) as the
-  currently selected node. This makes it easy to build a list of nodes that have the same type.
-- **Rename:** Enter edit mode on the current element or attribute so you can rename it (or type Enter key)
-- **Duplicate:** Clone the selected node (and its children) and insert the clone as the next sibling.
-- **Change To:** Changes the selected node to the specified node type.
-- **Goto Definition:** Open the selected XInclude or open the XML Schema that defines the selected node in a new instance
-  of XML Notepad.
-- **Expand XIncludes:** Expand all XInclude elements with the contents of the XML documents they point to.
-- **Nudge:** Moves the selected node:
-    - **Up:** Before the previous sibling, or before the parent if there are no previous siblings.
-    - **Down:** After the next sibling, or after the parent if there is no next sibling.
-    - **Left:** Before the parent if this is the first child, otherwise after the parent.
-    - **Right:** so it becomes the last child of the previous sibling.
-- **Find...:** Brings up the [find dialog](find.md).
-- **Replace...:** Brings up the [replace dialog](find.md).
-- **Incremental Search...:** Allows you to instantly find what you type.
+**Find and Replace**, **Incremental Search**, and **Find Next** use the [Find bar](find.md). Choose **Edit Multiline Value** when you need room to work on a longer value.
 
-### View
+Use **Insert** to add an element, attribute, text node, comment, CDATA section, or processing instruction before, after, or inside the selected node. The choices depend on what is valid at that position.
 
-- **Expand All:** Expand all collapsed nodes in the entire tree. See "Expand" item on the context menu if you just want
-  to expand the selected node.
-- **Collapse all:** Collapse all expanded nodes in the entire tree (except the root node). See "Collapse" item on the
-  context menu if you just want to collapse the selected node.
-- **Status Bar:** Toggle the visibility of the status bar.
-- **Source:** Show the current XML document in text form using "Notepad".
-- **Options...:** Display the [Options Dialog](options.md).
-- **Schemas...:** Display the [Schemas Dialog](schemas.md).
-- **Statistics...:** Opens a command prompt with the results of running XmlStats.exe on the current file. The
-XmlStats.exe program is in the current working directory so you can play with it further. Type `XmlStats -?` for help.
-- **Next Error:** Navigate to the next error in the list of errors.
-- **Compare XML Files...:** Launches XML Diff which compares the current document you are editing with another document
-  on disk and displays the results.
+## View
 
-### Insert
-Contains commands for inserting various node types. You can insert before, after or as a child of the currently selected
-node. Only those insert operations that result in well formed document will be enabled.
+- **Expand Branch**, **Collapse Branch**, **Expand All**, and **Collapse All** control how much of the tree is visible.
+- **Open in text editor** opens the source in the editor configured under [Options](options.md).
+- **Go to Definition** follows an ID reference or opens an XInclude or a schema declaration.
+- **Validate XML**, **Next Error**, and **Export Errors** work with the [Error List](validation.md).
+- **XML Statistics** counts nodes and characters, including unsaved changes. Use **Copy report** to keep the results.
+- **Expand XIncludes** replaces XInclude nodes with the referenced content.
+- **View XSLT result** and **Transform with XSLT** open a [transformation preview](xslt.md).
+- **Manage schemas** opens the [schema list](schemas.md). **Options** controls appearance, validation, and settings storage.
 
-### Window
-Provides a "New window" command for launching another instance of XML Notepad.
+## Help
 
-### Help
-Bring up the help contents and index as well as the About Dialog.
+Use **Documentation** for the help pages or **Open sample** to try a bundled document. **File Associations** opens the Windows defaults workflow. **Check for updates** checks the release feed. **About XML Notepad** shows the running version.

@@ -1,25 +1,7 @@
+# Drag and drop
 
-## Drag/Drop Support
+Drag a file from File Explorer onto XML Notepad to open it. If the current document has unsaved edits, respond to the save prompt before opening the dropped file.
 
-You can drag and drop nodes from the tree view to rearrange them within the document or more them across documents using
-multiple instances of XML Notepad. (Note: You can easily create a new instance of XML Notepad by selecting the
-Window/New Window menu item). Additionally, you can drag an XML file from Windows Explorer onto XML Notepad as a quick
-way to open that file.
+Within the tree, drop a node on the top, middle, or bottom of another row to place it before, inside, or after that node. Read the drop label before releasing the mouse. Hold **Ctrl** while dragging to copy the node instead of moving it.
 
-When you drag and drop nodes across programs, it uses the same text format as [Cut/Copy/Paste](clipboard.md).
-
-As you drag the selected element, a shadow node will appear in the tree, moving with the cursor to indicate where
-the node will be placed. In the example below, the "Street" element is being dragged to a new location after the
-"First" element and before the "Middle" element:
-
-![DragDrop](../assets/images/dragdrop.jpg)
-
-When hovering the mouse over a collapsed node, automatically expands to facilitate dropping the node inside that
-collapsed container. Conversely, when hovering over an expanded node, it automatically collapses, aiding in finding
-nodes above or below that container.
-
-By default, dragging is a move operation, even across XML Notepad instances, meaning if you drag a node from one XML
-Notepad instance to another, it will be removed from the first instance. If you wish to perform a copy operation
-instead, hold down the CONTROL key.
-
-See [Keyboard](keyboard.md) for more information.
+Use [cut and paste](clipboard.md) when moving XML between documents. You can open another editor window with **File > New Window**.

@@ -1,51 +1,29 @@
-## Install XML Notepad
+# Install XML Notepad
 
-There are thee ways to install XML Notepad.
+## WinGet
 
-First you must install [.NET Framework version 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48).
+Install from PowerShell or Windows Terminal.
 
-Then the most convenient is to install it directly from the web browser using the ClickOnce installer:
-
-<div>
-<a href="https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application"
-   class="btn btn-primary mt-20 mr-30" target="_blank">ClickOnce® installer</a>
-<br/>
-<br/>
-</div>
-
-If you need something that installs offline for machines that have no network or are isolated from the internet then use
-the standalone installer:
-
-<div>
-<a href="https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepadSetup.zip"
-   class="btn btn-primary mt-20 mr-30" target="_blank">Standalone installer</a>
-<br/>
-<br/>
-</div>
-
-Just download the zip file, copy it to the machine you want to install it on, unzip the file on that machine and run
-`XmlNotepadSetup.msi`.
-
-And lastly, you can also use `winget` to install XML Notepad:
-
-<a href="https://winget.run/pkg/Microsoft/XMLNotepad" class="btn btn-primary mt-20 mr-30" target="_blank">winget
-   installer</a>
-
-Or use this command line if you have the [winget cli](https://github.com/microsoft/winget-cli) installed:
-
-```shell
-winget install XmlNotepad
+```powershell
+winget install --exact --id Microsoft.XMLNotepad
 ```
 
-<div>
-<a href="https://docs.microsoft.com/en-us/DeployOffice/webview2-install"
-   class="btn btn-primary mt-20 mr-30" target="_blank"> webview2</a>
-<br/>
-<br/>
-</div>
+Use WinGet to update an existing WinGet installation.
 
-WebView2 is an optional component that you can install from Microsoft. XML Notepad will use this component as the HTML
-rendering engine behind the [XSLT Output tab](help/xslt.md). WebView2 provides a significant performance boost on large
-XSLT outputs.
+```powershell
+winget upgrade --exact --id Microsoft.XMLNotepad
+```
 
-See [XML Notepad File Association](help/fileassociation.md).
+## Manual and offline installs
+
+Open **Assets** on the [latest GitHub release](https://github.com/microsoft/XmlNotepad/releases/latest). Pick an installer for your PC if the release offers separate versions for x64, x86, or ARM64. **Windows Settings > System > About** shows your system type.
+
+- For an MSIX release, open the `.msixbundle` or `.appinstaller` file in Windows App Installer. An App Installer feed can download prerequisites and check for updates.
+- For an offline install, copy the Windows Installer download to the target PC. If it is a ZIP, extract it before running `XmlNotepadSetup.msi`. Releases may also offer a setup EXE.
+- If the release includes a portable build, extract the whole folder and run `XmlNotepad.exe`. Keep the files together.
+
+The older Windows Forms releases use .NET Framework 4.8. They are available from the [ClickOnce download](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepad.application) and the [standalone ZIP](https://lovettsoftwarestorage.blob.core.windows.net/downloads/XmlNotepad/XmlNotepadSetup.zip).
+
+HTML previews of XSLT results use the [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/). The separate host for approved legacy XSLT scripts uses .NET Framework 4.8 or later. See [XSLT transformations](help/xslt.md) for details.
+
+To open XML Notepad from File Explorer by default, [set up file associations](help/fileassociation.md).

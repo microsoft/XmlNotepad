@@ -1,0 +1,24 @@
+<ContentDialog
+    x:Class="XmlNotepad.ComparisonResultsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="XML comparison"
+    CornerRadius="8"
+    CloseButtonText="Close">
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">1248</x:Double>
+    </ContentDialog.Resources>
+    <Grid x:Name="LayoutRoot" RowDefinitions="Auto,*,Auto" RowSpacing="8">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
+            <Button x:Name="PreviousButton" Content="Previous change" Click="Previous_Click" IsEnabled="False" />
+            <Button x:Name="NextButton" Grid.Column="1" Content="Next change" Click="Next_Click" IsEnabled="False" />
+            <TextBlock x:Name="ChangePosition" Grid.Column="2" VerticalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Button Grid.Column="3" Content="Save report…" Click="SaveReport_Click" />
+        </Grid>
+        <Border Grid.Row="1" CornerRadius="6" BorderThickness="1" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+            <WebView2 x:Name="Report" NavigationCompleted="Report_NavigationCompleted" />
+        </Border>
+        <InfoBar x:Name="ReportError" Grid.Row="2" Severity="Error" IsOpen="False" />
+    </Grid>
+</ContentDialog>

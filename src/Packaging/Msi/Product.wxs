@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="XmlNotepad" Manufacturer="Lovett Software" Version="$(MsiVersion)"
+           UpgradeCode="14C1B5E8-3198-4AF2-B4BC-351017A109D3" Scope="perMachine">
+    <MajorUpgrade Schedule="afterInstallInitialize"
+                  DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="LovettSoftware" Name="LovettSoftware">
+        <Directory Id="APPINSTALLROOTDIR" Name="XmlNotepad">
+          <Component Id="AppExecutable">
+            <File Id="XmlNotepadExe" Source="!(bindpath.AppPayload)\XmlNotepad.exe" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="CompanyProgramsFolder" Name="Lovett Software">
+        <Directory Id="ApplicationProgramsFolder" Name="XML Notepad">
+          <Component Id="ApplicationShortcut" Bitness="always32" Guid="01D93FF2-E181-4C0A-B0FC-D85B413DDB8D">
+            <Shortcut Id="ApplicationStartMenuShortcut" Name="XML Notepad" Description="XML editor"
+                      Target="[APPINSTALLROOTDIR]XmlNotepad.exe" WorkingDirectory="APPINSTALLROOTDIR" />
+            <RemoveFolder Id="RemoveApplicationProgramsFolder" On="uninstall" />
+            <RemoveFolder Id="RemoveCompanyProgramsFolder" Directory="CompanyProgramsFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\LovettSoftware\XmlNotepad" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="ProductFeature" Title="XML Notepad">
+      <ComponentRef Id="AppExecutable" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="FileAssociations" />
+      <ComponentGroupRef Id="AppFiles" />
+    </Feature>
+
+    <Icon Id="AppIcon" SourceFile="!(bindpath.AppPayload)\Assets\XmlNotepad.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[APPINSTALLROOTDIR]" After="CostFinalize" />
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="APPINSTALLROOTDIR" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch XML Notepad" />
+    <Property Id="WixUnelevatedShellExecTarget" Value="[#XmlNotepadExe]" />
+    <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)"
+                  DllEntry="WixUnelevatedShellExec" Execute="immediate" Return="ignore" />
+    <UI>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication"
+               Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
+    </UI>
+  </Package>
+
+  <Fragment>
+    <ComponentGroup Id="AppFiles" Directory="APPINSTALLROOTDIR">
+      <Files Include="!(bindpath.AppPayload)\**">
+        <Exclude Files="!(bindpath.AppPayload)\XmlNotepad.exe" />
+        <Exclude Files="!(bindpath.AppPayload)\**\*.pdb" />
+      </Files>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

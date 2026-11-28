@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap uap3 rescap">
+  <Identity Name="43906ChrisLovett.XmlNotepad" Publisher="CN=Chris Lovett, O=Chris Lovett, S=Washington, C=US" Version="3.0.0.0" />
+  <Properties>
+    <DisplayName>XmlNotepad</DisplayName>
+    <PublisherDisplayName>Chris Lovett</PublisherDisplayName>
+    <Logo>Images\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="8.0.0.0" MaxVersionTested="10.0.19043.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
+      <uap:VisualElements DisplayName="XmlNotepad" Description="XML Notepad is a lightweight and fast tool for editing XML documents. XML has proliferated across the planet and XML Notepad has been downloaded over 3 million times!" BackgroundColor="transparent" Square150x150Logo="Images\Square150x150Logo.png" Square44x44Logo="Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png" />
+        <uap:SplashScreen Image="Images\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap3:FileTypeAssociation Name="xmlnotepad.xmlfile" MultiSelectModel="Document" Parameters="&quot;%1&quot;">
+            <uap:SupportedFileTypes>
+              <uap:FileType ContentType="text/xml">.xml</uap:FileType>
+              <uap:FileType ContentType="application/xml">.xsd</uap:FileType>
+              <uap:FileType ContentType="application/xslt+xml">.xsl</uap:FileType>
+              <uap:FileType ContentType="application/xslt+xml">.xslt</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>XML Files</uap:DisplayName>
+            <uap:Logo>Images\Square150x150Logo.png</uap:Logo>
+            <uap:EditFlags OpenIsSafe="true" />
+          </uap3:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

@@ -1,0 +1,50 @@
+<ContentDialog
+    x:Class="XmlNotepad.XmlStatisticsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:services="using:XmlNotepad.Services"
+    Title="XML Statistics"
+    PrimaryButtonText="Copy report"
+    CloseButtonText="Close"
+    DefaultButton="Close"
+    PrimaryButtonClick="CopyReport_Click"
+    CornerRadius="{ThemeResource OverlayCornerRadius}"
+    AutomationProperties.AutomationId="XmlStatistics">
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">760</x:Double>
+        <DataTemplate x:Key="StatisticRowTemplate" x:DataType="services:XmlStatisticRow">
+            <Grid ColumnDefinitions="*,96,96" ColumnSpacing="12" Padding="12,2">
+                <TextBlock Text="{x:Bind Name, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" Text="{x:Bind CountLabel, Mode=OneTime}" TextAlignment="Right" />
+                <TextBlock Grid.Column="2" Text="{x:Bind CharacterLabel, Mode=OneTime}" TextAlignment="Right" />
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="StatisticRowStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinHeight" Value="28" />
+        </Style>
+    </ContentDialog.Resources>
+    <Grid x:Name="ReportLayout" RowDefinitions="Auto,Auto,*" RowSpacing="8">
+        <TextBlock x:Name="DocumentLabel" TextTrimming="CharacterEllipsis"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,96,96" ColumnSpacing="12" Padding="12,4"
+              Background="{ThemeResource LayerFillColorDefaultBrush}">
+            <TextBlock Text="Item" FontWeight="SemiBold" />
+            <TextBlock Grid.Column="1" Text="Count" FontWeight="SemiBold" TextAlignment="Right" />
+            <TextBlock Grid.Column="2" Text="Characters" FontWeight="SemiBold" TextAlignment="Right" />
+        </Grid>
+        <ListView x:Name="StatisticsList" Grid.Row="2" SelectionMode="None"
+                  ItemTemplate="{StaticResource StatisticRowTemplate}" ItemContainerStyle="{StaticResource StatisticRowStyle}"
+                  AutomationProperties.Name="XML statistics report">
+            <ListView.Header>
+                <StackPanel>
+                    <TextBlock Text="Summary" Padding="12,4" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <ItemsControl x:Name="SummaryRows" ItemTemplate="{StaticResource StatisticRowTemplate}" />
+                    <TextBlock Text="Elements and attributes by name" Padding="12,12,12,4"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                </StackPanel>
+            </ListView.Header>
+        </ListView>
+    </Grid>
+</ContentDialog>

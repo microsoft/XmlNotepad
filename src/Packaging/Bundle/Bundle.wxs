@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Bundle Name="XML Notepad" Version="$(AppVersion)" Manufacturer="Lovett Software"
+          UpgradeCode="b39cd92c-6bf2-4f4c-9e2c-fb402781a316">
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication Theme="rtfLicense" LicenseFile="..\Msi\license.rtf" />
+    </BootstrapperApplication>
+    <Chain>
+      <MsiPackage Id="XmlNotepad" SourceFile="$(XmlNotepadSetup.TargetPath)" DisplayName="XML Notepad" />
+    </Chain>
+  </Bundle>
+</Wix>

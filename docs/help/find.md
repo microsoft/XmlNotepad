@@ -1,42 +1,25 @@
+# Find and Replace
 
-## Find/Replace
+Press **Ctrl+F** to open Find over the tree. Press **Ctrl+H** or expand the arrow on the left to show the replacement field. The arrows next to Find move through matches. **Esc** dismisses suggestions or closes the bar.
 
-Selecting the "Find..." item under the [Edit Menu](menus.md) (CTRL+F) opens the following dialog:
+Type part of a node name or value and choose a suggestion with the arrow keys and **Enter**. The bar can suggest recent searches and XML names from the document. Use **Replace** for the current match or **Replace all** to change every match in the search.
 
-![Find](../assets/images/find.png)
+## Search options
 
-Choosing "Replace..." item under the [Edit Menu](menus.md) (CTRL+H) modifies this dialog to display additional replace
-fields:
+| Option | Use it to |
+| --- | --- |
+| **Match case** | Distinguish `Name` from `name`. |
+| **Match whole word** | Find `item` without matching `items`. |
+| **Regular expression** | Match a pattern such as `^INV-[0-9]+$`. |
+| **Search in** | Search everything, or limit the search to names, text, or comments. |
+| **Replace backwards** | Move backward through the matches after each replacement. |
 
-![Find](../assets/images/replace.png)
+Use **Ctrl+I** to find names starting with what you type. If you start from a value editor, it matches the beginning of values instead.
 
-By default this dialog will allow you to search "Everything" in the current XML document with a specified find string.
-You can refine the search using the following options:
+## Find nodes with XPath
 
-**Match case**: Only find nodes that contain the exact search string in the same case.
+Enable **XPath** in **Search options**. For example, `//item[@status='draft']` finds `item` elements with a draft status.
 
-**Match whole word**: Only find nodes that contain the search string as a complete word, i.e., not a
-substring.
+**XPath namespaces** lists the prefixes in scope for the selected node. Use one of those prefixes in your query. If the document uses a default namespace with no prefix, use **Edit > Copy XPath** to get an expression for a selected node in that namespace.
 
-**Use Regular Expressions**: Treats the find string as a regular expression. See .NET regular expressions for
-help with the regular expression language.
-
-**Use XPath**: Allows you to find nodes using an XPath expression. Choosing this option reveals an extra table
-where you can edit the namespace prefix mappings used in the XPath expression. See [XPath
-Syntax](https://docs.microsoft.com/en-us/previous-versions/dotnet/netframework-4.0/ms256471(v=vs.100)?redirectedfrom=MSDN)
-for help with the XPath expression language.
-
-![Find](../assets/images/findxpath.png)
-
-**Search Filter**: Limits the search to just "Names" which means only search node names, or
-"Text" which means only search node values, or "Comments" which means only search comment nodes.
-
-**Direction**: Determines the search direction: "Up" (backwards from the current location) or "Down" (forwards).
-
-**Find Next**: Finds the next matching node in the specified direction after the currently selected node and
-highlights the matching substring within the node name or value.
-
-**Replace**: Finds the next matching node in the specified direction after the currently selected node and
-replaces it with the specified replace text.
-
-**Replace All**: Replaces all matching text with the specified replace text.
+Use **Edit > Copy XPath** to start from the path of a node you already selected.

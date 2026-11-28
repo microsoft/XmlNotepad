@@ -1,4 +1,4 @@
-﻿<!-- This XML Document demonstrates a DTD entity data leakage.  Please make sure you
+<!-- This XML Document demonstrates a DTD entity data leakage.  Please make sure you
 know and trust the DTD's you process before you enable DTD processing in XML Notepad. -->
 
 <!DOCTYPE root SYSTEM "MaliciousDtd.dtd" [

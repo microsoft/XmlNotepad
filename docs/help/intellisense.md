@@ -1,23 +1,7 @@
+# IntelliSense
 
-## Intellisense
+When a document has an [XSD schema](schemas.md), the editor can suggest element and attribute names and allowed values. The suggestions depend on where you are in the tree. A schema might allow `fruit`, `vegetable`, or `berry` at one position and different elements elsewhere.
 
-If an XML schema is provided for validation, the same schema is also used to provide intellisense. For example, if
-your schema defines an `<xsd:choice>` between the elements "fruit", "vegetable", and "berry", then when you insert a new
-node at this location, you will be prompted with those choices as shown below:
+Start typing a name or value to narrow the suggestions. Use the arrow keys to pick an item and press **Enter** to accept it. Enum values are especially useful for fields such as a `status` attribute with values like `draft`, `review`, and `published`.
 
-![Intellisense](../assets/images/intellisense.jpg)
-
-Similarly, if your schema defines a simpleType with a list of `<xsd:enumeration>` facets, then this list of valid values
-is prompted when you edit the node value as follows:
-
-![Intellisense](../assets/images/intellisense2.jpg)
-
-As you type, the item matching the letters you have typed so far will be automatically selected in the drop-down
-list. When you press ENTER, the selected item is copied to your edit field, and the intellisense selection is completed,
-saving you from having to type the whole string in manually. This can result in much more efficient editing of XML
-documents.
-
-XML Notepad also supports special [custom editors](customeditors.md) for well-known data types like date, time and
-color.
-
-See also [Schemas Dialog](schemas.md).
+Open the employee document through **Help > Open sample** to try editing a schema-backed value. To read a schema author’s notes for a field, use [Dynamic Help](dynamic.md).

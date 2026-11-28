@@ -1,0 +1,31 @@
+<ContentDialog
+    x:Class="XmlNotepad.OutputPreviewDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="XSLT results"
+    CornerRadius="{ThemeResource OverlayCornerRadius}"
+    CloseButtonText="Close"
+    DefaultButton="Close"
+    AutomationProperties.AutomationId="OutputPreviewDialog">
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">1120</x:Double>
+    </ContentDialog.Resources>
+    <Grid x:Name="LayoutRoot" RowDefinitions="Auto,*,Auto" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <TextBlock x:Name="OutputFileName" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Button x:Name="SaveOutputButton" Grid.Column="1" Content="Save output as…"
+                    Click="SaveOutput_Click" AutomationProperties.AutomationId="SavePreviewOutput" />
+        </Grid>
+        <TextBox x:Name="TextPreview" Grid.Row="1" IsReadOnly="True" AcceptsReturn="True"
+                 FontFamily="Consolas" TextWrapping="NoWrap" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 Visibility="Collapsed" AutomationProperties.Name="Transformation output"
+                 AutomationProperties.AutomationId="TextPreview" />
+        <Border x:Name="HtmlPreview" Grid.Row="1" CornerRadius="6" BorderThickness="1"
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Visibility="Collapsed">
+            <WebView2 x:Name="Preview" AutomationProperties.Name="Transformation output" />
+        </Border>
+        <InfoBar x:Name="PreviewError" Grid.Row="2" Severity="Error" IsOpen="False"
+                 AutomationProperties.AutomationId="PreviewError" />
+    </Grid>
+</ContentDialog>

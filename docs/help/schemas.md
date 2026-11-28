@@ -1,24 +1,15 @@
+# Manage schemas
 
-## Schemas
+Open **View > Manage schemas** to choose which XSDs XML Notepad uses for [validation](validation.md) and [IntelliSense](intellisense.md).
 
-The "Schemas..." item under the [View Menu](menus.md) brings up the following dialog showing the current set of known
-XML schemas. These schemas are used for [Validation](validation.md) and [Intellisense](intellisense.md).
+1. Choose **Add files** for local XSDs. To enter an absolute path or an HTTP or HTTPS URL, use the location field and choose **Add location**.
+2. Use the switch beside each schema to enable or disable it.
+3. Choose **Apply** to save the list, or **Cancel** to discard the changes.
 
-![Schemas](../assets/images/schemas.png)
+Select an entry to replace its location. Hold **Ctrl** or **Shift** to select multiple rows for copy, cut, or removal. **Paste locations** accepts one location per line, optionally preceded by a namespace. Valid entries are still added if another line is invalid.
 
-You can click the browse buttons on the right-hand side to bring up the Open File Dialog to browse for new files, or you
-can select the "Add Files" item in the File Menu to add a batch of schemas. You can click the column
-headings to sort by that column.
+You can sort by name or namespace without changing the registration order. **Undo** and **Redo** work on the edits you make in the schema dialog before applying them.
 
-The first column contains checkboxes, which can be used to temporarily disable a schema from being used in validation.
+## Start a document from an XSD
 
-This list of schemas is persisted in the `XmlNotepad.settings` file, so it is remembered the next time you load XML Notepad.
-
-When you add schemas this way you can create a new document and when you add a new root element you should see some
-intellisense showing possible root elements and when you select from the dropdown the new element is associated with the
-correct namespace so that intellisense continues from there.
-
-You can also select a row in this dialog and choose `File/Generate XML Instance` to get a new document that contains
-a template containing all required elements from the associated schema.  If there is more than one top level element
-in the schema a menu will appear from which you can select the element you would like to start with.
-See [demo video](ttps://youtu.be/5I_q1oXz02I).
+Select a schema and choose **Generate XML**. Pick a root element, then choose **Create document**. The generated XML opens in a new unsaved window. Review the generated values before saving.

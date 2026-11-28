@@ -31,8 +31,7 @@ jobs:
         run: python3 -m pip install --upgrade pip setuptools wheel
 
       - name: Install MkDocs
-        run: |
-          pip install mkdocs mkdocs-macros-plugin
+        run: python3 -m pip install --upgrade mkdocs mkdocs-macros-plugin
 
       - name: MkDocs build
         run: mkdocs build

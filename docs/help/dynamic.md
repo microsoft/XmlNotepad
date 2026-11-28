@@ -1,24 +1,7 @@
-## Dynamic Help
+# Dynamic Help
 
-When you have an associated [XSD schema](schemas.md), the `xsd:documentation` associated with the current node is
-displayed in a tooltip popup and in the Dynamic Help Tab.
+Select an element or attribute and open the **Dynamic Help** tab below the tree. XML Notepad shows documentation from the matching declaration in the [XSD schema](schemas.md).
 
-For example, the `Employee.xsd` schema contains the following annotation on the definition of the Employee Id attribute:
+For an example, use **Help > Open sample** to open `Employee.xml`, then select an employee’s `id` attribute. Its explanation comes from an `xs:documentation` annotation in `Employee.xsd`. Use **View > Options > Dynamic Help language** to select a language such as `en` or `fr`.
 
-```xml
-  <xs:simpleType name="EmployeeID">
-    <xs:annotation>
-      <xs:documentation xml:lang="en">The ITG assigned 5 digit employee identification</xs:documentation>
-      <xs:documentation xml:lang="fr">Le groupe ITG assignés 5 identification d'employé à chiffres</xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:length value="5" />
-    </xs:restriction>
-  </xs:simpleType>
-```
-
-Now, if you open Employee.xml and select the Employee Id attribute you will see this annotation listed in the Dynamic
-Help tab as follows:
-
-![annotations](../assets/images/annotations.png)
-
+Drag the divider above the bottom pane to give the text more room. With the divider focused, use **Up** or **Down** to resize or **Home** to reset the height. Use **View > Options > Show Error List and Dynamic Help** to hide or restore the pane.

@@ -1,0 +1,17 @@
+<ContentDialog
+    x:Class="XmlNotepad.XmlComparisonDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Compare XML files"
+    CornerRadius="8"
+    PrimaryButtonText="Compare"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+    <ScrollViewer MaxHeight="310" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="8">
+            <TextBlock Text="Ignore differences in" Style="{StaticResource BodyStrongTextBlockStyle}" />
+            <StackPanel x:Name="IgnoreOptions" />
+            <CheckBox x:Name="HideIdentical" Content="Hide identical content in the report" />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>
